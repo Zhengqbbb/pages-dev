@@ -1,0 +1,400 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>并发服务器（四）：libuv - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="并发服务器（四）：libuv - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="并发服务器（四）：libuv - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201803/20171109 Concurrent Servers- Part 4 - libuv#page","@type":"TechArticle","headline":"并发服务器（四）：libuv","inLanguage":"en","name":"并发服务器（四）：libuv","url":"https://zhengqbbb.github.io/pages-dev/201803/20171109 Concurrent Servers- Part 4 - libuv","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201803/20171109 Concurrent Servers- Part 4 - libuv"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-libuv-抽象出事件驱动循环">使用 libuv 抽象出事件驱动循环</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-libuv-的并发服务器">使用 libuv 的并发服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在事件驱动循环中的长周期运行的操作">在事件驱动循环中的长周期运行的操作</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#转换-阻塞调用为异步调用的线程">“转换” 阻塞调用为异步调用的线程</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#一个用于练习的素数测试服务器">一个用于练习的素数测试服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在非阻塞文件系统中使用工作队列">在非阻塞文件系统中使用工作队列</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>并发服务器（四）：libuv</h1><p>这是并发网络服务器系列文章的第四部分。在这一部分中，我们将使用 libuv 再次重写我们的服务器，并且也会讨论关于使用一个线程池在回调中去处理耗时任务。最终，我们去看一下底层的 libuv，花一点时间去学习如何用异步 API 对文件系统阻塞操作进行封装。</p>
+<p>本系列的所有文章：</p>
+<ul>
+<li><a href="https://linux.cn/article-8993-1.html">第一节 - 简介</a></li>
+<li><a href="https://linux.cn/article-9002-1.html">第二节 - 线程</a></li>
+<li><a href="https://linux.cn/article-9117-1.html">第三节 - 事件驱动</a></li>
+<li><a href="http://eli.thegreenplace.net/2017/concurrent-servers-part-4-libuv/">第四节 - libuv</a></li>
+</ul>
+<h3 id="使用-libuv-抽象出事件驱动循环">使用 libuv 抽象出事件驱动循环</h3>
+<p>在 <a href="https://linux.cn/article-9117-1.html">第三节</a> 中，我们看到了基于 <code>select</code> 和 <code>epoll</code> 的服务器的相似之处，并且，我说过，在它们之间抽象出细微的差别是件很有吸引力的事。许多库已经做到了这些，所以在这一部分中我将去选一个并使用它。我选的这个库是 <a href="http://libuv.org/">libuv</a>，它最初设计用于 Node.js 底层的可移植平台层，并且，后来发现在其它的项目中也有使用。libuv 是用 C 写的，因此，它具有很高的可移植性，非常适用嵌入到像 JavaScript 和 Python 这样的高级语言中。</p>
+<p>虽然 libuv 为了抽象出底层平台细节已经变成了一个相当大的框架，但它仍然是以 <em>事件循环</em> 思想为中心的。在我们第三部分的事件驱动服务器中，事件循环是显式定义在 <code>main</code> 函数中的；当使用 libuv 时，该循环通常隐藏在库自身中，而用户代码仅需要注册事件句柄（作为一个回调函数）和运行这个循环。此外，libuv 会在给定的平台上使用更快的事件循环实现，对于 Linux 它是 <code>epoll</code>，等等。</p>
+<p><img src="https://eli.thegreenplace.net/images/2017/libuvloop.png" alt="libuv loop"></p>
+<p>libuv 支持多路事件循环，因此事件循环在库中是非常重要的；它有一个句柄 —— <code>uv_loop_t</code>，以及创建/杀死/启动/停止循环的函数。也就是说，在这篇文章中，我将仅需要使用 “默认的” 循环，libuv 可通过 <code>uv_default_loop()</code> 提供它；多路循环大多用于多线程事件驱动的服务器，这是一个更高级别的话题，我将留在这一系列文章的以后部分。</p>
+<h3 id="使用-libuv-的并发服务器">使用 libuv 的并发服务器</h3>
+<p>为了对 libuv 有一个更深的印象，让我们跳转到我们的可靠协议的服务器，它通过我们的这个系列已经有了一个强大的重新实现。这个服务器的结构与第三部分中的基于 <code>select</code> 和 <code>epoll</code> 的服务器有一些相似之处，因为，它也依赖回调。完整的 <a href="https://github.com/eliben/code-for-blog/blob/master/2017/async-socket-server/uv-server.c">示例代码在这里</a>；我们开始设置这个服务器的套接字绑定到一个本地端口：</p>
+<pre><code>int portnum = 9090;
+if (argc &gt;= 2) {
+  portnum = atoi(argv[1]);
+}
+printf(&quot;Serving on port %d\n&quot;, portnum);
+
+int rc;
+uv_tcp_t server_stream;
+if ((rc = uv_tcp_init(uv_default_loop(), &amp;server_stream)) &lt; 0) {
+  die(&quot;uv_tcp_init failed: %s&quot;, uv_strerror(rc));
+}
+
+struct sockaddr_in server_address;
+if ((rc = uv_ip4_addr(&quot;0.0.0.0&quot;, portnum, &amp;server_address)) &lt; 0) {
+  die(&quot;uv_ip4_addr failed: %s&quot;, uv_strerror(rc));
+}
+
+if ((rc = uv_tcp_bind(&amp;server_stream, (const struct sockaddr*)&amp;server_address, 0)) &lt; 0) {
+  die(&quot;uv_tcp_bind failed: %s&quot;, uv_strerror(rc));
+}
+</code></pre>
+<p>除了它被封装进 libuv API 中之外，你看到的是一个相当标准的套接字。在它的返回中，我们取得了一个可工作于任何 libuv 支持的平台上的可移植接口。</p>
+<p>这些代码也展示了很认真负责的错误处理；多数的 libuv 函数返回一个整数状态，返回一个负数意味着出现了一个错误。在我们的服务器中，我们把这些错误看做致命问题进行处理，但也可以设想一个更优雅的错误恢复。</p>
+<p>现在，那个套接字已经绑定，是时候去监听它了。这里我们运行首个回调注册：</p>
+<pre><code>// Listen on the socket for new peers to connect. When a new peer connects,
+// the on_peer_connected callback will be invoked.
+if ((rc = uv_listen((uv_stream_t*)&amp;server_stream, N_BACKLOG, on_peer_connected)) &lt; 0) {
+  die(&quot;uv_listen failed: %s&quot;, uv_strerror(rc));
+}
+</code></pre>
+<p><code>uv_listen</code> 注册一个事件回调，当新的对端连接到这个套接字时将会调用事件循环。我们的回调在这里被称为 <code>on_peer_connected</code>，我们一会儿将去查看它。</p>
+<p>最终，<code>main</code> 运行这个 libuv 循环，直到它被停止（<code>uv_run</code> 仅在循环被停止或者发生错误时返回）。</p>
+<pre><code>// Run the libuv event loop.
+uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+
+// If uv_run returned, close the default loop before exiting.
+return uv_loop_close(uv_default_loop());
+</code></pre>
+<p>注意，在运行事件循环之前，只有一个回调是通过 <code>main</code> 注册的；我们稍后将看到怎么去添加更多的回调。在事件循环的整个运行过程中，添加和删除回调并不是一个问题 —— 事实上，大多数服务器就是这么写的。</p>
+<p>这是一个 <code>on_peer_connected</code>，它处理到服务器的新的客户端连接：</p>
+<pre><code>void on_peer_connected(uv_stream_t* server_stream, int status) {
+  if (status &lt; 0) {
+    fprintf(stderr, &quot;Peer connection error: %s\n&quot;, uv_strerror(status));
+    return;
+  }
+
+  // client will represent this peer; it&#39;s allocated on the heap and only
+  // released when the client disconnects. The client holds a pointer to
+  // peer_state_t in its data field; this peer state tracks the protocol state
+  // with this client throughout interaction.
+  uv_tcp_t* client = (uv_tcp_t*)xmalloc(sizeof(*client));
+  int rc;
+  if ((rc = uv_tcp_init(uv_default_loop(), client)) &lt; 0) {
+    die(&quot;uv_tcp_init failed: %s&quot;, uv_strerror(rc));
+  }
+  client-&gt;data = NULL;
+
+  if (uv_accept(server_stream, (uv_stream_t*)client) == 0) {
+    struct sockaddr_storage peername;
+    int namelen = sizeof(peername);
+    if ((rc = uv_tcp_getpeername(client, (struct sockaddr*)&amp;peername,
+                                 &amp;namelen)) &lt; 0) {
+      die(&quot;uv_tcp_getpeername failed: %s&quot;, uv_strerror(rc));
+    }
+    report_peer_connected((const struct sockaddr_in*)&amp;peername, namelen);
+
+    // Initialize the peer state for a new client: we start by sending the peer
+    // the initial &#39;*&#39; ack.
+    peer_state_t* peerstate = (peer_state_t*)xmalloc(sizeof(*peerstate));
+    peerstate-&gt;state = INITIAL_ACK;
+    peerstate-&gt;sendbuf[0] = &#39;*&#39;;
+    peerstate-&gt;sendbuf_end = 1;
+    peerstate-&gt;client = client;
+    client-&gt;data = peerstate;
+
+    // Enqueue the write request to send the ack; when it&#39;s done,
+    // on_wrote_init_ack will be called. The peer state is passed to the write
+    // request via the data pointer; the write request does not own this peer
+    // state - it&#39;s owned by the client handle.
+    uv_buf_t writebuf = uv_buf_init(peerstate-&gt;sendbuf, peerstate-&gt;sendbuf_end);
+    uv_write_t* req = (uv_write_t*)xmalloc(sizeof(*req));
+    req-&gt;data = peerstate;
+    if ((rc = uv_write(req, (uv_stream_t*)client, &amp;writebuf, 1,
+                       on_wrote_init_ack)) &lt; 0) {
+      die(&quot;uv_write failed: %s&quot;, uv_strerror(rc));
+    }
+  } else {
+    uv_close((uv_handle_t*)client, on_client_closed);
+  }
+}
+</code></pre>
+<p>这些代码都有很好的注释，但是，这里有一些重要的 libuv 语法我想去强调一下：</p>
+<ul>
+<li>传入自定义数据到回调中：因为 C 语言还没有闭包，这可能是个挑战，libuv 在它的所有的处理类型中有一个 <code>void* data</code> 字段；这些字段可以被用于传递用户数据。例如，注意 <code>client-&gt;data</code> 是如何指向到一个 <code>peer_state_t</code> 结构上，以便于 <code>uv_write</code> 和 <code>uv_read_start</code> 注册的回调可以知道它们正在处理的是哪个客户端的数据。</li>
+<li>内存管理：在带有垃圾回收的语言中进行事件驱动编程是非常容易的，因为，回调通常运行在一个与它们注册的地方完全不同的栈帧中，使得基于栈的内存管理很困难。它总是需要传递堆分配的数据到 libuv 回调中（当所有回调运行时，除了 <code>main</code>，其它的都运行在栈上），并且，为了避免泄漏，许多情况下都要求这些数据去安全释放（<code>free()</code>）。这些都是些需要实践的内容 ^注1 。</li>
+</ul>
+<p>这个服务器上对端的状态如下：</p>
+<pre><code>typedef struct {
+  ProcessingState state;
+  char sendbuf[SENDBUF_SIZE];
+  int sendbuf_end;
+  uv_tcp_t* client;
+} peer_state_t;
+</code></pre>
+<p>它与第三部分中的状态非常类似；我们不再需要 <code>sendptr</code>，因为，在调用 “done writing” 回调之前，<code>uv_write</code> 将确保发送它提供的整个缓冲。我们也为其它的回调使用保持了一个到客户端的指针。这里是 <code>on_wrote_init_ack</code>：</p>
+<pre><code>void on_wrote_init_ack(uv_write_t* req, int status) {
+  if (status) {
+    die(&quot;Write error: %s\n&quot;, uv_strerror(status));
+  }
+  peer_state_t* peerstate = (peer_state_t*)req-&gt;data;
+  // Flip the peer state to WAIT_FOR_MSG, and start listening for incoming data
+  // from this peer.
+  peerstate-&gt;state = WAIT_FOR_MSG;
+  peerstate-&gt;sendbuf_end = 0;
+
+  int rc;
+  if ((rc = uv_read_start((uv_stream_t*)peerstate-&gt;client, on_alloc_buffer,
+                          on_peer_read)) &lt; 0) {
+    die(&quot;uv_read_start failed: %s&quot;, uv_strerror(rc));
+  }
+
+  // Note: the write request doesn&#39;t own the peer state, hence we only free the
+  // request itself, not the state.
+  free(req);
+}
+</code></pre>
+<p>然后，我们确信知道了这个初始的 <code>&#39;*&#39;</code> 已经被发送到对端，我们通过调用 <code>uv_read_start</code> 去监听从这个对端来的入站数据，它注册一个将被事件循环调用的回调（<code>on_peer_read</code>），不论什么时候，事件循环都在套接字上接收来自客户端的调用：</p>
+<pre><code>void on_peer_read(uv_stream_t* client, ssize_t nread, const uv_buf_t* buf) {
+  if (nread &lt; 0) {
+    if (nread != uv_eof) {
+      fprintf(stderr, &quot;read error: %s\n&quot;, uv_strerror(nread));
+    }
+    uv_close((uv_handle_t*)client, on_client_closed);
+  } else if (nread == 0) {
+    // from the documentation of uv_read_cb: nread might be 0, which does not
+    // indicate an error or eof. this is equivalent to eagain or ewouldblock
+    // under read(2).
+  } else {
+    // nread &gt; 0
+    assert(buf-&gt;len &gt;= nread);
+
+    peer_state_t* peerstate = (peer_state_t*)client-&gt;data;
+    if (peerstate-&gt;state == initial_ack) {
+      // if the initial ack hasn&#39;t been sent for some reason, ignore whatever
+      // the client sends in.
+      free(buf-&gt;base);
+      return;
+    }
+
+    // run the protocol state machine.
+    for (int i = 0; i &lt; nread; ++i) {
+      switch (peerstate-&gt;state) {
+      case initial_ack:
+        assert(0 &amp;&amp; &quot;can&#39;t reach here&quot;);
+        break;
+      case wait_for_msg:
+        if (buf-&gt;base[i] == &#39;^&#39;) {
+          peerstate-&gt;state = in_msg;
+        }
+        break;
+      case in_msg:
+        if (buf-&gt;base[i] == &#39;$&#39;) {
+          peerstate-&gt;state = wait_for_msg;
+        } else {
+          assert(peerstate-&gt;sendbuf_end &lt; sendbuf_size);
+          peerstate-&gt;sendbuf[peerstate-&gt;sendbuf_end++] = buf-&gt;base[i] + 1;
+        }
+        break;
+      }
+    }
+
+    if (peerstate-&gt;sendbuf_end &gt; 0) {
+      // we have data to send. the write buffer will point to the buffer stored
+      // in the peer state for this client.
+      uv_buf_t writebuf =
+          uv_buf_init(peerstate-&gt;sendbuf, peerstate-&gt;sendbuf_end);
+      uv_write_t* writereq = (uv_write_t*)xmalloc(sizeof(*writereq));
+      writereq-&gt;data = peerstate;
+      int rc;
+      if ((rc = uv_write(writereq, (uv_stream_t*)client, &amp;writebuf, 1,
+                         on_wrote_buf)) &lt; 0) {
+        die(&quot;uv_write failed: %s&quot;, uv_strerror(rc));
+      }
+    }
+  }
+  free(buf-&gt;base);
+}
+</code></pre>
+<p>这个服务器的运行时行为非常类似于第三部分的事件驱动服务器：所有的客户端都在一个单个的线程中并发处理。并且类似的，一些特定的行为必须在服务器代码中维护：服务器的逻辑实现为一个集成的回调，并且长周期运行是禁止的，因为它会阻塞事件循环。这一点也很类似。让我们进一步探索这个问题。</p>
+<h3 id="在事件驱动循环中的长周期运行的操作">在事件驱动循环中的长周期运行的操作</h3>
+<p>单线程的事件驱动代码使它先天就容易受到一些常见问题的影响：长周期运行的代码会阻塞整个循环。参见如下的程序：</p>
+<pre><code>void on_timer(uv_timer_t* timer) {
+  uint64_t timestamp = uv_hrtime();
+  printf(&quot;on_timer [%&quot; PRIu64 &quot; ms]\n&quot;, (timestamp / 1000000) % 100000);
+
+  // &quot;Work&quot;
+  if (random() % 5 == 0) {
+    printf(&quot;Sleeping...\n&quot;);
+    sleep(3);
+  }
+}
+
+int main(int argc, const char** argv) {
+  uv_timer_t timer;
+  uv_timer_init(uv_default_loop(), &amp;timer);
+  uv_timer_start(&amp;timer, on_timer, 0, 1000);
+  return uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+}
+</code></pre>
+<p>它用一个单个注册的回调运行一个 libuv 事件循环：<code>on_timer</code>，它被每秒钟循环调用一次。回调报告一个时间戳，并且，偶尔通过睡眠 3 秒去模拟一个长周期运行。这是运行示例：</p>
+<pre><code>$ ./uv-timer-sleep-demo
+on_timer [4840 ms]
+on_timer [5842 ms]
+on_timer [6843 ms]
+on_timer [7844 ms]
+Sleeping...
+on_timer [11845 ms]
+on_timer [12846 ms]
+Sleeping...
+on_timer [16847 ms]
+on_timer [17849 ms]
+on_timer [18850 ms]
+...
+</code></pre>
+<p><code>on_timer</code> 忠实地每秒执行一次，直到随机出现的睡眠为止。在那个时间点，<code>on_timer</code> 不再被调用，直到睡眠时间结束；事实上，<em>没有其它的回调</em>  会在这个时间帧中被调用。这个睡眠调用阻塞了当前线程，它正是被调用的线程，并且也是事件循环使用的线程。当这个线程被阻塞后，事件循环也被阻塞。</p>
+<p>这个示例演示了在事件驱动的调用中为什么回调不能被阻塞是多少的重要。并且，同样适用于 Node.js 服务器、客户端侧的 Javascript、大多数的 GUI 编程框架、以及许多其它的异步编程模型。</p>
+<p>但是，有时候运行耗时的任务是不可避免的。并不是所有任务都有一个异步 API；例如，我们可能使用一些仅有同步 API 的库去处理，或者，正在执行一个可能的长周期计算。我们如何用事件驱动编程去结合这些代码？线程可以帮到你！</p>
+<h3 id="转换-阻塞调用为异步调用的线程">“转换” 阻塞调用为异步调用的线程</h3>
+<p>一个线程池可以用于转换阻塞调用为异步调用，通过与事件循环并行运行，并且当任务完成时去由它去公布事件。以阻塞函数 <code>do_work()</code> 为例，这里介绍了它是怎么运行的：</p>
+<ol>
+<li>不在一个回调中直接调用 <code>do_work()</code> ，而是将它打包进一个 “任务”，让线程池去运行这个任务。当任务完成时，我们也为循环去调用它注册一个回调；我们称它为 <code>on_work_done()</code>。</li>
+<li>在这个时间点，我们的回调就可以返回了，而事件循环保持运行；在同一时间点，线程池中的有一个线程运行这个任务。</li>
+<li>一旦任务运行完成，通知主线程（指正在运行事件循环的线程），并且事件循环调用 <code>on_work_done()</code>。</li>
+</ol>
+<p>让我们看一下，使用 libuv 的工作调度 API，是怎么去解决我们前面的计时器/睡眠示例中展示的问题的：</p>
+<pre><code>void on_after_work(uv_work_t* req, int status) {
+  free(req);
+}
+
+void on_work(uv_work_t* req) {
+  // &quot;Work&quot;
+  if (random() % 5 == 0) {
+    printf(&quot;Sleeping...\n&quot;);
+    sleep(3);
+  }
+}
+
+void on_timer(uv_timer_t* timer) {
+  uint64_t timestamp = uv_hrtime();
+  printf(&quot;on_timer [%&quot; PRIu64 &quot; ms]\n&quot;, (timestamp / 1000000) % 100000);
+
+  uv_work_t* work_req = (uv_work_t*)malloc(sizeof(*work_req));
+  uv_queue_work(uv_default_loop(), work_req, on_work, on_after_work);
+}
+
+int main(int argc, const char** argv) {
+  uv_timer_t timer;
+  uv_timer_init(uv_default_loop(), &amp;timer);
+  uv_timer_start(&amp;timer, on_timer, 0, 1000);
+  return uv_run(uv_default_loop(), UV_RUN_DEFAULT);
+}
+</code></pre>
+<p>通过一个 <code>work_req</code> ^注2 类型的句柄，我们进入一个任务队列，代替在 <code>on_timer</code> 上直接调用 sleep，这个函数在任务中（<code>on_work</code>）运行，并且，一旦任务完成（<code>on_after_work</code>），这个函数被调用一次。<code>on_work</code> 是指 “work”（阻塞中的/耗时的操作）进行的地方。注意在这两个回调传递到 <code>uv_queue_work</code> 时的一个关键区别：<code>on_work</code> 运行在线程池中，而 <code>on_after_work</code> 运行在事件循环中的主线程上 —— 就好像是其它的回调一样。</p>
+<p>让我们看一下这种方式的运行：</p>
+<pre><code>$ ./uv-timer-work-demo
+on_timer [89571 ms]
+on_timer [90572 ms]
+on_timer [91573 ms]
+on_timer [92575 ms]
+Sleeping...
+on_timer [93576 ms]
+on_timer [94577 ms]
+Sleeping...
+on_timer [95577 ms]
+on_timer [96578 ms]
+on_timer [97578 ms]
+...
+</code></pre>
+<p>即便在 sleep 函数被调用时，定时器也每秒钟滴答一下，睡眠现在运行在一个单独的线程中，并且不会阻塞事件循环。</p>
+<h3 id="一个用于练习的素数测试服务器">一个用于练习的素数测试服务器</h3>
+<p>因为通过睡眠去模拟工作并不是件让人兴奋的事，我有一个事先准备好的更综合的一个示例 —— 一个基于套接字接受来自客户端的数字的服务器，检查这个数字是否是素数，然后去返回一个 “prime&quot; 或者 “composite”。完整的 <a href="https://github.com/eliben/code-for-blog/blob/master/2017/async-socket-server/uv-isprime-server.c">服务器代码在这里</a> —— 我不在这里粘贴了，因为它太长了，更希望读者在一些自己的练习中去体会它。</p>
+<p>这个服务器使用了一个原生的素数测试算法，因此，对于大的素数可能花很长时间才返回一个回答。在我的机器中，对于 2305843009213693951，它花了 ~5 秒钟去计算，但是，你的方法可能不同。</p>
+<p>练习 1：服务器有一个设置（通过一个名为 <code>MODE</code> 的环境变量）要么在套接字回调（意味着在主线程上）中运行素数测试，要么在 libuv 工作队列中。当多个客户端同时连接时，使用这个设置来观察服务器的行为。当它计算一个大的任务时，在阻塞模式中，服务器将不回复其它客户端，而在非阻塞模式中，它会回复。</p>
+<p>练习 2：libuv 有一个缺省大小的线程池，并且线程池的大小可以通过环境变量配置。你可以通过使用多个客户端去实验找出它的缺省值是多少？找到线程池缺省值后，使用不同的设置去看一下，在重负载下怎么去影响服务器的响应能力。</p>
+<h3 id="在非阻塞文件系统中使用工作队列">在非阻塞文件系统中使用工作队列</h3>
+<p>对于只是呆板的演示和 CPU 密集型的计算来说，将可能的阻塞操作委托给一个线程池并不是明智的；libuv 在它的文件系统 API 中本身就大量使用了这种能力。通过这种方式，libuv 使用一个异步 API，以一个轻便的方式显示出它强大的文件系统的处理能力。</p>
+<p>让我们使用 <code>uv_fs_read()</code>，例如，这个函数从一个文件中（表示为一个 <code>uv_fs_t</code> 句柄）读取一个文件到一个缓冲中 ^注3，并且当读取完成后调用一个回调。换句话说，<code>uv_fs_read()</code> 总是立即返回，即使是文件在一个类似 NFS 的系统上，而数据到达缓冲区可能需要一些时间。换句话说，这个 API 与这种方式中其它的 libuv API 是异步的。这是怎么工作的呢？</p>
+<p>在这一点上，我们看一下 libuv 的底层；内部实际上非常简单，并且它是一个很好的练习。作为一个可移植的库，libuv 对于 Windows 和 Unix 系统在它的许多函数上有不同的实现。我们去看一下在 libuv 源树中的 <code>src/unix/fs.c</code>。</p>
+<p>这是 <code>uv_fs_read</code> 的代码：</p>
+<pre><code>int uv_fs_read(uv_loop_t* loop, uv_fs_t* req,
+               uv_file file,
+               const uv_buf_t bufs[],
+               unsigned int nbufs,
+               int64_t off,
+               uv_fs_cb cb) {
+  if (bufs == NULL || nbufs == 0)
+    return -EINVAL;
+
+  INIT(READ);
+  req-&gt;file = file;
+
+  req-&gt;nbufs = nbufs;
+  req-&gt;bufs = req-&gt;bufsml;
+  if (nbufs &gt; ARRAY_SIZE(req-&gt;bufsml))
+    req-&gt;bufs = uv__malloc(nbufs * sizeof(*bufs));
+
+  if (req-&gt;bufs == NULL) {
+    if (cb != NULL)
+      uv__req_unregister(loop, req);
+    return -ENOMEM;
+  }
+
+  memcpy(req-&gt;bufs, bufs, nbufs * sizeof(*bufs));
+
+  req-&gt;off = off;
+  POST;
+}
+</code></pre>
+<p>第一次看可能觉得很困难，因为它延缓真实的工作到 <code>INIT</code> 和 <code>POST</code> 宏中，以及为 <code>POST</code> 设置了一些本地变量。这样做可以避免了文件中的许多重复代码。</p>
+<p>这是 <code>INIT</code> 宏：</p>
+<pre><code>#define INIT(subtype)                                                         \
+  do {                                                                        \
+    req-&gt;type = UV_FS;                                                        \
+    if (cb != NULL)                                                           \
+      uv__req_init(loop, req, UV_FS);                                         \
+    req-&gt;fs_type = UV_FS_ ## subtype;                                         \
+    req-&gt;result = 0;                                                          \
+    req-&gt;ptr = NULL;                                                          \
+    req-&gt;loop = loop;                                                         \
+    req-&gt;path = NULL;                                                         \
+    req-&gt;new_path = NULL;                                                     \
+    req-&gt;cb = cb;                                                             \
+  }                                                                           \
+  while (0)
+</code></pre>
+<p>它设置了请求，并且更重要的是，设置 <code>req-&gt;fs_type</code> 域为真实的 FS 请求类型。因为 <code>uv_fs_read</code> 调用 <code>INIT(READ)</code>，它意味着 <code>req-&gt;fs_type</code> 被分配一个常数 <code>UV_FS_READ</code>。</p>
+<p>这是 <code>POST</code> 宏：</p>
+<pre><code>#define POST                                                                  \
+  do {                                                                        \
+    if (cb != NULL) {                                                         \
+      uv__work_submit(loop, &amp;req-&gt;work_req, uv__fs_work, uv__fs_done);        \
+      return 0;                                                               \
+    }                                                                         \
+    else {                                                                    \
+      uv__fs_work(&amp;req-&gt;work_req);                                            \
+      return req-&gt;result;                                                     \
+    }                                                                         \
+  }                                                                           \
+  while (0)
+</code></pre>
+<p>它做什么取决于回调是否为 <code>NULL</code>。在 libuv 文件系统 API 中，一个 <code>NULL</code> 回调意味着我们真实地希望去执行一个 <em>同步</em> 操作。在这种情况下，<code>POST</code> 直接调用 <code>uv__fs_work</code>（我们需要了解一下这个函数的功能），而对于一个非 <code>NULL</code> 回调，它把 <code>uv__fs_work</code> 作为一个工作项提交到工作队列（指的是线程池），然后，注册 <code>uv__fs_done</code> 作为回调；该函数执行一些登记并调用用户提供的回调。</p>
+<p>如果我们去看 <code>uv__fs_work</code> 的代码，我们将看到它使用很多宏按照需求将工作分发到实际的文件系统调用。在我们的案例中，对于 <code>UV_FS_READ</code> 这个调用将被 <code>uv__fs_read</code> 生成，它（最终）使用普通的 POSIX API 去读取。这个函数可以在一个 <em>阻塞</em> 方式中很安全地实现。因为，它通过异步 API 调用时被置于一个线程池中。</p>
+<p>在 Node.js 中，<code>fs.readFile</code> 函数是映射到 <code>uv_fs_read</code> 上。因此，可以在一个非阻塞模式中读取文件，甚至是当底层文件系统 API 是阻塞方式时。</p>
+<hr>
+<ul>
+<li>注1： 为确保服务器不泄露内存，我在一个启用泄露检查的 Valgrind 中运行它。因为服务器经常是被设计为永久运行，这是一个挑战；为克服这个问题，我在服务器上添加了一个 “kill 开关” —— 一个从客户端接收的特定序列，以使它可以停止事件循环并退出。这个代码在 <code>theon_wrote_buf</code> 句柄中。 </li>
+<li>注2： 在这里我们不过多地使用 <code>work_req</code>；讨论的素数测试服务器接下来将展示怎么被用于去传递上下文信息到回调中。</li>
+<li>注3： <code>uv_fs_read()</code> 提供了一个类似于 <code>preadv</code> Linux 系统调用的通用 API：它使用多缓冲区用于排序，并且支持一个到文件中的偏移。基于我们讨论的目的可以忽略这些特性。</li>
+</ul>
+<hr>
+<p>via: <a href="https://eli.thegreenplace.net/2017/concurrent-servers-part-4-libuv/">https://eli.thegreenplace.net/2017/concurrent-servers-part-4-libuv/</a></p>
+<p>作者：<a href="https://eli.thegreenplace.net/">Eli Bendersky</a>
+译者：<a href="https://github.com/qhwdw">qhwdw</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-libuv-抽象出事件驱动循环">使用 libuv 抽象出事件驱动循环</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-libuv-的并发服务器">使用 libuv 的并发服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在事件驱动循环中的长周期运行的操作">在事件驱动循环中的长周期运行的操作</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#转换-阻塞调用为异步调用的线程">“转换” 阻塞调用为异步调用的线程</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#一个用于练习的素数测试服务器">一个用于练习的素数测试服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在非阻塞文件系统中使用工作队列">在非阻塞文件系统中使用工作队列</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201803/20171109 Concurrent Servers- Part 4 - libuv","title":"并发服务器（四）：libuv"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

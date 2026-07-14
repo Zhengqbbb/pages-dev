@@ -1,0 +1,329 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>怎样用 parted 管理硬盘分区 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="怎样用 parted 管理硬盘分区 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="怎样用 parted 管理硬盘分区 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201804/20180318 How To Manage Disk Partitions Using Parted Command#page","@type":"TechArticle","headline":"怎样用 parted 管理硬盘分区","inLanguage":"en","name":"怎样用 parted 管理硬盘分区","url":"https://zhengqbbb.github.io/pages-dev/201804/20180318 How To Manage Disk Partitions Using Parted Command","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201804/20180318 How To Manage Disk Partitions Using Parted Command"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-parted">什么是 parted</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样安装-parted">怎样安装 parted</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样启动-parted">怎样启动 parted</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-列出所有可用的硬盘">怎样用 parted 列出所有可用的硬盘</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-创建硬盘分区">怎样用 parted 创建硬盘分区</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样使用所有剩余空间创建分区">怎样使用所有剩余空间创建分区</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-列出所有的分区">怎样用 parted 列出所有的分区</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-mkfs-格式化分区">怎样用 mkfs 格式化分区</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样检查硬盘空闲空间">怎样检查硬盘空闲空间</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样使用-parted-命令来重新调整分区大小">怎样使用 parted 命令来重新调整分区大小</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-删除分区">怎样用 parted 删除分区</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-命令设置更改分区标志">怎样用 parted 命令设置/更改分区标志</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>怎样用 parted 管理硬盘分区</h1><p>众所周知，对硬盘分区是 Linux 管理员一项最重要的管理任务之一，他们不能不知道这个。</p>
+<p>在最糟糕的时候，你至少每周会收到一次依赖小组的请求，而在更大的环境里会更加频繁 。</p>
+<p>你可能会问为什么我们要用 <code>parted</code> 而不是 <code>fdisk</code>？ 它们有什么区别？好问题，我会告诉你这两者的区别。</p>
+<ul>
+<li><code>parted</code> 支持用户在大于 2TB 的硬盘上创建硬盘分区， 但 <code>fdisk</code> 命令不支持</li>
+<li>对比 <code>fdisk</code> 来说，<code>parted</code> 是一个更高级的工具</li>
+<li>支持更多的分区表类型，包括 GPT （LCTT 译注：全局唯一标识分区表）</li>
+<li>它允许用户调整分区大小， 但当缩减分区空间的时候，它没有如我意料的工作，多数情况下我会得到错误消息。所以我会建议用户不要用 <code>parted</code> 来缩减分区大小。</li>
+</ul>
+<h3 id="什么是-parted">什么是 parted</h3>
+<p><code>parted</code> 是一个操作硬盘分区的程序。它支持多种分区表类型，包括 MS-DOS 和 GPT。</p>
+<p>它允许用户创建、删除、调整、缩减、移动和复制分区，以及重新组织硬盘的使用，复制数据到新的硬盘上。<code>gparted</code> 是 <code>parted</code> 的图形界面前端。</p>
+<h3 id="怎样安装-parted">怎样安装 parted</h3>
+<p>大部分发行版已经预安装了 <code>parted</code>。如果没有，用下列命令来安装 <code>parted</code>。</p>
+<p>对于 Debian/Ubuntu 用户, 使用 <a href="https://www.2daygeek.com/apt-get-apt-cache-command-examples-manage-packages-debian-ubuntu-systems/">APT-GET 命令</a> 或者 <a href="https://www.2daygeek.com/apt-command-examples-manage-packages-debian-ubuntu-systems/">APT 命令</a> 来安装 <code>parted</code>。</p>
+<pre><code>$ sudo apt install parted
+</code></pre>
+<p>对于 RHEL/CentOS 用户，用 <a href="https://www.2daygeek.com/yum-command-examples-manage-packages-rhel-centos-systems/">YUM 命令</a> 来安装 <code>parted</code>。</p>
+<pre><code>$ sudo yum install parted
+</code></pre>
+<p>对于 Fedora 用户，用 <a href="https://www.2daygeek.com/dnf-command-examples-manage-packages-fedora-system/">DNF 命令</a> 来安装 <code>parted</code>。</p>
+<pre><code>$ sudo dnf install parted
+</code></pre>
+<p>对于 Arch Linux 用户，用 <a href="https://www.2daygeek.com/pacman-command-examples-manage-packages-arch-linux-system/">Pacman 命令</a>来安装 <code>parted</code>。</p>
+<pre><code>$ sudo pacman -S parted
+</code></pre>
+<p>对于 openSUSE 用户， 用 <a href="https://www.2daygeek.com/zypper-command-examples-manage-packages-opensuse-system/">Zypper 命令</a>来安装 <code>parted</code>。</p>
+<pre><code>$ sudo zypper in parted
+</code></pre>
+<h3 id="怎样启动-parted">怎样启动 parted</h3>
+<p>下面的 <code>parted</code> 命令会自动选择 <code>/dev/sda</code> ，因为这是系统的第一个硬盘。</p>
+<pre><code>$ sudo parted
+GNU parted 3.2
+Using /dev/sda
+Welcome to GNU parted! Type &#39;help&#39; to view a list of commands.
+(parted)
+</code></pre>
+<p>同时我们也可以用下面的命令来重新选择对应的的硬盘。</p>
+<pre><code>(parted) select /dev/sdb
+Using /dev/sdb
+(parted)
+</code></pre>
+<p>如果你想选择特定的硬盘, 用下列的格式来输入命令。 这次 ，我们将选择 <code>/dev/sdb</code>。</p>
+<pre><code>$ sudo parted [Device Name]
+</code></pre>
+<pre><code>$ sudo parted /dev/sdb
+GNU parted 3.2
+Using /dev/sdb
+Welcome to GNU parted! Type &#39;help&#39; to view a list of commands.
+(parted)
+</code></pre>
+<h3 id="怎样用-parted-列出所有可用的硬盘">怎样用 parted 列出所有可用的硬盘</h3>
+<p>如果你不知道你的电脑上有什么硬盘，只需要运行下列命令，该命令会显示所有可用硬盘的名字，以及其它的有用信息比如储存空间、型号、扇区大小、硬盘标志以及分区信息。</p>
+<pre><code>$ sudo parted -l
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sda: 32.2GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number Start End Size Type File system Flags
+ 1 1049kB 32.2GB 32.2GB primary ext4 boot
+
+
+Error: /dev/sdb: unrecognised disk label
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:
+</code></pre>
+<p>上面的错误信息清晰地显示出硬盘  <code>/dev/sdb</code> 没有有效的<ruby>磁盘标签<rt>disk label</rt></ruby>。 它不会自动得到磁盘标签，所以， 我们便要自己设置硬盘标签。</p>
+<h3 id="怎样用-parted-创建硬盘分区">怎样用 parted 创建硬盘分区</h3>
+<p><code>parted</code> 允许用户创建主分区或者拓展分区。创建这两种类型的分区的步骤还是一样，但请确保你已经指定了需要的分区类型，比如 <code>primary</code> （主分区）或者 <code>extended</code> （扩展分区）。</p>
+<p>为了演示这项操作 ，我们安装了一个新的 <code>50 GB</code> 的硬盘到到电脑上，挂载在 <code>/dev/sdb</code> 上。</p>
+<p>有两种方法创建分区，第一种是更详细的方法，另一种只是一个命令。 在下面的例子中，我们将用更详细的方法添加一个主分区。提醒一下， 我们应该先设置磁盘标签，因为它不会自动设置任何标签。</p>
+<p>在下面的例子中，我们将要创建一个 <code>10 GB</code> 的分区 </p>
+<pre><code>$ sudo parted /dev/sdb
+GNU parted 3.2
+Using /dev/sdb
+Welcome to GNU parted! Type &#39;help&#39; to view a list of commands.
+(parted) mklabel msdos
+(parted) unit GB
+(parted) mkpart
+Partition type? primary/extended? primary
+File system type? [ext2]? ext4
+Start? 0.00GB
+End? 10.00GB
+(parted) print
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number Start End Size Type File system Flags
+ 1 0.00GB 10.0GB 10.0GB primary ext4 lba
+
+(parted) quit
+Information: You may need to update /etc/fstab.
+</code></pre>
+<p>同时，我们也可以使用单条 <code>parted</code> 命令</p>
+<p>在下面的例子中，我们将在硬盘上创建一个 <code>10 GB</code> 的分区。 </p>
+<pre><code>$ sudo parted [Disk Name] [mkpart] [Partition Type] [Filesystem Type] [Partition Start Size] [Partition End Size]
+</code></pre>
+<pre><code>$ sudo parted /dev/sdb mkpart primary ext4 10.0GB 20.0GB
+Information: You may need to update /etc/fstab.
+</code></pre>
+<h3 id="怎样使用所有剩余空间创建分区">怎样使用所有剩余空间创建分区</h3>
+<p>你已经创建了除了 <code>/home</code> 之外等所有要求的分区，而且你想要用硬盘上所有剩余的空间来创建 <code>/home</code> 分区，要怎样做？可以使用下面的命令来创建分区。</p>
+<p>下面的命令创建了一个 33.7 GB 的分区，从  <code>20 GB</code> 开始到  <code>53 GB</code> 结束。 <code>100%</code> 使用率允许用户用硬盘上所有剩余的空余空间。</p>
+<pre><code>$ sudo parted [Disk Name] [mkpart] [Partition Type] [Filesystem Type] [Partition Start Size] [Partition End Size]
+
+$ sudo parted /dev/sdb mkpart primary ext4 20.0GB 100%
+Information: You may need to update /etc/fstab.
+</code></pre>
+<h3 id="怎样用-parted-列出所有的分区">怎样用 parted 列出所有的分区</h3>
+<p>你也许注意到了，我们已经在上述步骤中创建了三个分区，如果你想要列出所有在硬盘上可用的分区，可以使用 <code>print</code> 命令。</p>
+<pre><code>$ sudo parted /dev/sdb print
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number Start End Size Type File system Flags
+ 1 1049kB 10.0GB 9999MB primary ext4
+ 2 10.0GB 20.0GB 9999MB primary ext4
+ 3 20.0GB 53.7GB 33.7GB primary ext4
+</code></pre>
+<h3 id="怎样用-mkfs-格式化分区">怎样用 mkfs 格式化分区</h3>
+<p>用户可以用 <code>mkfs</code> 命令格式化分区。下面的步骤会用 <code>mkfs</code> 来格式化分区。</p>
+<pre><code>$ sudo mkfs.ext4 /dev/sdb1
+mke2fs 1.43.4 (31-Jan-2017)
+Creating filesystem with 2621440 4k blocks and 656640 inodes
+Filesystem UUID: 415cf467-634c-4403-8c9f-47526bbaa381
+Superblock backups stored on blocks:
+    32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done
+</code></pre>
+<p>同样的。</p>
+<pre><code>$ sudo mkfs.ext4 /dev/sdb2
+$ sudo mkfs.ext4 /dev/sdb3
+</code></pre>
+<p>创建必要的文件夹然后将这些分区挂载在上面。</p>
+<pre><code>$ sudo mkdir /par1 /par2 /par3
+</code></pre>
+<pre><code>$ sudo mount /dev/sdb1 /par1
+$ sudo mount /dev/sdb2 /par2
+$ sudo mount /dev/sdb3 /par3
+</code></pre>
+<p>运行下列命令来检查是否成功挂载上新创建的分区。</p>
+<pre><code>$ df -h /dev/sdb[1-3]
+Filesystem Size Used Avail Use% Mounted on
+/dev/sdb1 9.2G 37M 8.6G 1% /par1
+/dev/sdb2 9.2G 37M 8.6G 1% /par2
+/dev/sdb3 31G 49M 30G 1% /par3
+</code></pre>
+<h3 id="怎样检查硬盘空闲空间">怎样检查硬盘空闲空间</h3>
+<p>运行下列命令来检查硬盘上的空闲空间，这块硬盘上有 <code>25.7 GB</code> 的空闲空间。</p>
+<pre><code>$ sudo parted /dev/sdb print free
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number Start End Size Type File system Flags
+ 32.3kB 1049kB 1016kB Free Space
+ 1 1049kB 10.0GB 9999MB primary ext4
+ 2 10.0GB 20.0GB 9999MB primary ext4
+ 3 20.0GB 28.0GB 8001MB primary ext4
+ 28.0GB 53.7GB 25.7GB Free Space
+</code></pre>
+<h3 id="怎样使用-parted-命令来重新调整分区大小">怎样使用 parted 命令来重新调整分区大小</h3>
+<p><code>parted</code> 允许用户重新调整分区大小。不过我已在文章的开头说了，不要缩小分区大小，不然会有许多错误。</p>
+<p>运行下列命令来检查硬盘分区以及所有可用空间。 可以看到硬盘上有 <code>25.7GB</code> 的可用空间。</p>
+<pre><code>$ sudo parted /dev/sdb print free
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number Start End Size Type File system Flags
+ 32.3kB 1049kB 1016kB Free Space
+ 1 1049kB 10.0GB 9999MB primary ext4
+ 2 10.0GB 20.0GB 9999MB primary ext4
+ 3 20.0GB 28.0GB 8001MB primary ext4
+ 28.0GB 53.7GB 25.7GB Free Space
+</code></pre>
+<p>运行下列命令来重新调整分区大小。 我们将要重新调整（增加）分区 3 的结束位置，从 <code>28GB</code> 到 <code>33GB</code>。</p>
+<pre><code>$ sudo parted [Disk Name] [resizepart] [Partition Number] [Partition New End Size]
+
+$ sudo parted /dev/sdb resizepart 3 33.0GB
+Information: You may need to update /etc/fstab.
+</code></pre>
+<p>运行下列命令来确认分区是否已经扩容。可以看到，分区 3 已经从 <code>8GB</code> 增加到 <code>13GB</code>。</p>
+<pre><code>$ sudo parted /dev/sdb print
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number Start End Size Type File system Flags
+ 1 1049kB 10.0GB 9999MB primary ext4
+ 2 10.0GB 20.0GB 9999MB primary ext4
+ 3 20.0GB 33.0GB 13.0GB primary ext4
+</code></pre>
+<p>重新调整文件系统大小。</p>
+<pre><code>$ sudo resize2fs /dev/sdb3
+resize2fs 1.43.4 (31-Jan-2017)
+Resizing the filesystem on /dev/sdb3 to 3173952 (4k) blocks.
+The filesystem on /dev/sdb3 is now 3173952 (4k) blocks long.
+</code></pre>
+<p>最后，确认分区是否已经扩容。</p>
+<pre><code>$ df -h /dev/sdb[1-3]
+Filesystem Size Used Avail Use% Mounted on
+/dev/sdb1 9.2G 5.1G 3.6G 59% /par1
+/dev/sdb2 9.2G 2.1G 6.6G 24% /par2
+/dev/sdb3 12G 1.1G 11G 10% /par3
+</code></pre>
+<h3 id="怎样用-parted-删除分区">怎样用 parted 删除分区</h3>
+<p>我们用 <code>rm</code> 命令方便地删除未使用的分区（如果该分区不会再被用到了）。下列步骤中，我们将会删除分区 3 （<code>/dev/sdb3</code>）。</p>
+<pre><code>$ sudo parted [Disk Name] [rm] [Partition Number]
+
+$ sudo parted /dev/sdb rm 3
+Warning: Partition /dev/sdb3 is being used. Are you sure you want to continue?
+Yes/No? Yes
+Error: Partition(s) 3 on /dev/sdb have been written, but we have been unable to inform the kernel of the change, probably because it/they are in use. As a result, the old partition(s) will remain in use.
+You should reboot now before making further changes.
+Ignore/Cancel? Ignore
+Information: You may need to update /etc/fstab.
+</code></pre>
+<p>我们也可以用下列的命令检查。可以看到，分区 3 已经被成功移除。</p>
+<pre><code>$ sudo parted /dev/sdb print
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number Start End Size Type File system Flags
+ 1 1049kB 10.0GB 9999MB primary ext4
+ 2 10.0GB 20.0GB 9999MB primary ext4
+</code></pre>
+<h3 id="怎样用-parted-命令设置更改分区标志">怎样用 parted 命令设置/更改分区标志</h3>
+<p>我们可以用下列的命令来轻易更改分区的标志。 我们将对 <code>/dev/sdb2</code> 设置 <code>lvm</code>  标志。</p>
+<pre><code>$ sudo parted [Disk Name] [set] [Partition Number] [Flags Name] [Flag On/Off]
+
+$ sudo parted /dev/sdb set 2 lvm on
+Information: You may need to update /etc/fstab.
+</code></pre>
+<p>我们可以列出分区来验证这次的更改。</p>
+<pre><code>$ sudo parted /dev/sdb print
+Model: ATA VBOX HARDDISK (scsi)
+Disk /dev/sdb: 53.7GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number Start End Size Type File system Flags
+ 1 1049kB 10.0GB 9999MB primary ext4
+ 2 10.0GB 20.0GB 9999MB primary ext4 lvm
+</code></pre>
+<p>如果你想知道可用的标志，只需要用如下的命令。</p>
+<pre><code>$ (parted) help set
+ set NUMBER FLAG STATE change the FLAG on partition NUMBER
+
+    NUMBER is the partition number used by Linux. On MS-DOS disk labels, the primary partitions number from 1 to 4, logical partitions from 5 onwards.
+ FLAG is one of: boot, root, swap, hidden, raid, lvm, lba, hp-service, palo, prep, msftres, bios_grub, atvrecv, diag, legacy_boot, msftdata, irst, esp
+ STATE is one of: on, off
+</code></pre>
+<p>如果你想知道 <code>parted</code> 的其它可用命令， 只需要去到 <code>help</code> 页面。</p>
+<pre><code>$ sudo parted
+GNU parted 3.2
+Using /dev/sda
+Welcome to GNU parted! Type &#39;help&#39; to view a list of commands.
+(parted) help
+ align-check TYPE N check partition N for TYPE(min|opt) alignment
+ help [COMMAND] print general help, or help on COMMAND
+ mklabel,mktable LABEL-TYPE create a new disklabel (partition table)
+ mkpart PART-TYPE [FS-TYPE] START END make a partition
+ name NUMBER NAME name partition NUMBER as NAME
+ print [devices|free|list,all|NUMBER] display the partition table, available devices, free space, all found partitions, or a particular partition
+ quit exit program
+ rescue START END rescue a lost partition near START and END
+ resizepart NUMBER END resize partition NUMBER
+ rm NUMBER delete partition NUMBER
+ select DEVICE choose the device to edit
+ disk_set FLAG STATE change the FLAG on selected device
+ disk_toggle [FLAG] toggle the state of FLAG on selected device
+ set NUMBER FLAG STATE change the FLAG on partition NUMBER
+ toggle [NUMBER [FLAG]] toggle the state of FLAG on partition NUMBER
+ unit UNIT set the default unit to UNIT
+ version display the version number and copyright information of GNU parted
+(parted) quit
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/how-to-manage-disk-partitions-using-parted-command/">https://www.2daygeek.com/how-to-manage-disk-partitions-using-parted-command/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/magesh/">Magesh Maruthamuthu</a>
+译者：<a href="https://github.com/zyk2290">zyk2290</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-parted">什么是 parted</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样安装-parted">怎样安装 parted</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样启动-parted">怎样启动 parted</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-列出所有可用的硬盘">怎样用 parted 列出所有可用的硬盘</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-创建硬盘分区">怎样用 parted 创建硬盘分区</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样使用所有剩余空间创建分区">怎样使用所有剩余空间创建分区</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-列出所有的分区">怎样用 parted 列出所有的分区</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-mkfs-格式化分区">怎样用 mkfs 格式化分区</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样检查硬盘空闲空间">怎样检查硬盘空闲空间</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样使用-parted-命令来重新调整分区大小">怎样使用 parted 命令来重新调整分区大小</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-删除分区">怎样用 parted 删除分区</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎样用-parted-命令设置更改分区标志">怎样用 parted 命令设置/更改分区标志</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201804/20180318 How To Manage Disk Partitions Using Parted Command","title":"怎样用 parted 管理硬盘分区"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>用 NumPy 在 Python 中处理数字 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="用 NumPy 在 Python 中处理数字 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="用 NumPy 在 Python 中处理数字 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202201/20210916 Crunch numbers in Python with NumPy#page","@type":"TechArticle","headline":"用 NumPy 在 Python 中处理数字","inLanguage":"en","name":"用 NumPy 在 Python 中处理数字","url":"https://zhengqbbb.github.io/pages-dev/202201/20210916 Crunch numbers in Python with NumPy","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202201/20210916 Crunch numbers in Python with NumPy"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装-numpy">安装 NumPy</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#为什么使用-numpy-因为它比-python-列表要快好几个数量级">为什么使用 NumPy? 因为它比 Python 列表要快好几个数量级</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-python-列表创建-ndarray">使用 Python 列表创建 ndarray</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-numpy-方法创建-ndarray">使用 NumPy 方法创建 ndarray</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#读取-ndarray">读取 ndarray</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ndarray-的矢量和标量算术">ndarray 的矢量和标量算术</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ndarray-的排序">ndarray 的排序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>用 NumPy 在 Python 中处理数字</h1><blockquote>
+<p>这篇文章讨论了安装 NumPy，然后创建、读取和排序 NumPy 数组。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202201/08/174635srrhdhh8wq9fdkrh.jpg" alt=""></p>
+<p>NumPy（即 <strong>Num</strong>erical <strong>Py</strong>thon）是一个库，它使得在 Python 中对线性数列和矩阵进行统计和集合操作变得容易。<a href="https://notes.ayushsharma.in/2018/09/data-types-in-python">我在 Python 数据类型的笔记中介绍过</a>，它比 Python 的列表快几个数量级。NumPy 在数据分析和科学计算中使用得相当频繁。</p>
+<p>我将介绍安装 NumPy，然后创建、读取和排序 NumPy 数组。NumPy 数组也被称为 ndarray，即 N 维数组的缩写。</p>
+<h3 id="安装-numpy">安装 NumPy</h3>
+<p>使用 <code>pip</code> 安装 NumPy 包非常简单，可以像安装其他软件包一样进行安装：</p>
+<pre><code>pip install numpy
+</code></pre>
+<p>安装了 NumPy 包后，只需将其导入你的 Python 文件中：</p>
+<pre><code>import numpy as np
+</code></pre>
+<p>将 <code>numpy</code> 以 <code>np</code> 之名导入是一个标准的惯例，但你可以不使用 <code>np</code>，而是使用你想要的任何其他别名。</p>
+<h3 id="为什么使用-numpy-因为它比-python-列表要快好几个数量级">为什么使用 NumPy? 因为它比 Python 列表要快好几个数量级</h3>
+<p>当涉及到处理大量的数值时，NumPy 比普通的 Python 列表快几个数量级。为了看看它到底有多快，我首先测量在普通 Python 列表上进行 <code>min()</code> 和 <code>max()</code> 操作的时间。</p>
+<p>我将首先创建一个具有 999,999,999 项的 Python 列表：</p>
+<pre><code>&gt;&gt;&gt; my_list = range(1, 1000000000)
+&gt;&gt;&gt; len(my_list)
+999999999
+</code></pre>
+<p>现在我将测量在这个列表中找到最小值的时间：</p>
+<pre><code>&gt;&gt;&gt; start = time.time()
+&gt;&gt;&gt; min(my_list)
+1
+&gt;&gt;&gt; print(&#39;Time elapsed in milliseconds: &#39; + str((time.time() - start) * 1000))
+Time elapsed in milliseconds: 27007.00879096985
+</code></pre>
+<p>这花了大约 27,007 毫秒，也就是大约 <strong>27 秒</strong>。这是个很长的时间。现在我试着找出寻找最大值的时间：</p>
+<pre><code>&gt;&gt;&gt; start = time.time()
+&gt;&gt;&gt; max(my_list)
+999999999
+&gt;&gt;&gt; print(&#39;Time elapsed in milliseconds: &#39; + str((time.time() - start) * 1000))
+Time elapsed in milliseconds: 28111.071348190308
+</code></pre>
+<p>这花了大约 28,111 毫秒，也就是大约 <strong>28 秒</strong>。</p>
+<p>现在我试试用 NumPy 找到最小值和最大值的时间：</p>
+<pre><code>&gt;&gt;&gt; my_list = np.arange(1, 1000000000)
+&gt;&gt;&gt; len(my_list)
+999999999
+&gt;&gt;&gt; start = time.time()
+&gt;&gt;&gt; my_list.min()
+1
+&gt;&gt;&gt; print(&#39;Time elapsed in milliseconds: &#39; + str((time.time() - start) * 1000))
+Time elapsed in milliseconds: 1151.1778831481934
+&gt;&gt;&gt;
+&gt;&gt;&gt; start = time.time()
+&gt;&gt;&gt; my_list.max()
+999999999
+&gt;&gt;&gt; print(&#39;Time elapsed in milliseconds: &#39; + str((time.time() - start) * 1000))
+Time elapsed in milliseconds: 1114.8970127105713
+</code></pre>
+<p>找到最小值花了大约 1151 毫秒，找到最大值 1114 毫秒。这大约是 <strong>1 秒</strong>。</p>
+<p>正如你所看到的，使用 NumPy 可以将寻找一个大约有 10 亿个值的列表的最小值和最大值的时间 <strong>从大约 28 秒减少到 1 秒</strong>。这就是 NumPy 的强大之处。</p>
+<h3 id="使用-python-列表创建-ndarray">使用 Python 列表创建 ndarray</h3>
+<p>有几种方法可以在 NumPy 中创建 ndarray。</p>
+<p>你可以通过使用元素列表来创建一个 ndarray：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.array([1, 2, 3, 4, 5])
+&gt;&gt;&gt; print(my_ndarray)
+[1 2 3 4 5]
+</code></pre>
+<p>有了上面的 ndarray 定义，我将检查几件事。首先，上面定义的变量的类型是 <code>numpy.ndarray</code>。这是所有 NumPy ndarray 的类型：</p>
+<pre><code>&gt;&gt;&gt; type(my_ndarray)
+&lt;class &#39;numpy.ndarray&#39;&gt;
+</code></pre>
+<p>这里要注意的另一件事是 “<ruby>形状<rt>shape</rt></ruby>”。ndarray 的形状是 ndarray 的每个维度的长度。你可以看到，<code>my_ndarray</code> 的形状是 <code>(5,)</code>。这意味着 <code>my_ndarray</code> 包含一个有 5 个元素的维度（轴）。</p>
+<pre><code>&gt;&gt;&gt; np.shape(my_ndarray)
+(5,)
+</code></pre>
+<p>数组中的维数被称为它的 “<ruby>秩<rt>rank</rt></ruby>”。所以上面的 ndarray 的秩是 1。</p>
+<p>我将定义另一个 ndarray <code>my_ndarray2</code> 作为一个多维 ndarray。那么它的形状会是什么呢？请看下面：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray2 = np.array([(1, 2, 3), (4, 5, 6)])
+&gt;&gt;&gt; np.shape(my_ndarray2)
+(2, 3)
+</code></pre>
+<p>这是一个秩为 2 的 ndarray。另一个要检查的属性是 <code>dtype</code>，也就是数据类型。检查我们的 ndarray 的 <code>dtype</code> 可以得到以下结果：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray.dtype
+dtype(&#39;int64&#39;)
+</code></pre>
+<p><code>int64</code> 意味着我们的 ndarray 是由 64 位整数组成的。NumPy 不能创建混合类型的 ndarray，必须只包含一种类型的元素。如果你定义了一个包含混合元素类型的 ndarray，NumPy 会自动将所有的元素类型转换为可以包含所有元素的最高元素类型。</p>
+<p>例如，创建一个 <code>int</code> 和 <code>float</code> 的混合序列将创建一个 <code>float64</code> 的 ndarray：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray2 = np.array([1, 2.0, 3])
+&gt;&gt;&gt; print(my_ndarray2)
+[1. 2. 3.]
+&gt;&gt;&gt; my_ndarray2.dtype
+dtype(&#39;float64&#39;)
+</code></pre>
+<p>另外，将其中一个元素设置为 <code>string</code> 将创建 <code>dtype</code> 等于 <code>&lt;U21</code> 的字符串 ndarray，意味着我们的 ndarray 包含 unicode 字符串：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray2 = np.array([1, &#39;2&#39;, 3])
+&gt;&gt;&gt; print(my_ndarray2)
+[&#39;1&#39; &#39;2&#39; &#39;3&#39;]
+&gt;&gt;&gt; my_ndarray2.dtype
+dtype(&#39;&lt;U21&#39;)
+</code></pre>
+<p><code>size</code> 属性将显示我们的 ndarray 中存在的元素总数：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.array([1, 2, 3, 4, 5])
+&gt;&gt;&gt; my_ndarray.size
+5
+</code></pre>
+<h3 id="使用-numpy-方法创建-ndarray">使用 NumPy 方法创建 ndarray</h3>
+<p>如果你不想直接使用列表来创建 ndarray，还有几种可以用来创建它的 NumPy 方法。</p>
+<p>你可以使用 <code>np.zeros()</code> 来创建一个填满 0 的 ndarray。它需要一个“形状”作为参数，这是一个包含行数和列数的列表。它还可以接受一个可选的 <code>dtype</code> 参数，这是 ndarray 的数据类型：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.zeros([2,3], dtype=int)
+&gt;&gt;&gt; print(my_ndarray)
+[[0 0 0]
+ [0 0 0]]
+</code></pre>
+<p>你可以使用 <code>np. ones()</code> 来创建一个填满 <code>1</code> 的 ndarray：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.ones([2,3], dtype=int)
+&gt;&gt;&gt; print(my_ndarray)
+[[1 1 1]
+ [1 1 1]]
+</code></pre>
+<p>你可以使用 <code>np.full()</code> 来给 ndarray 填充一个特定的值：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.full([2,3], 10, dtype=int)
+&gt;&gt;&gt; print(my_ndarray)
+[[10 10 10]
+ [10 10 10]]
+</code></pre>
+<p>你可以使用 <code>np.eye()</code> 来创建一个单位矩阵 / ndarray，这是一个沿主对角线都是 <code>1</code> 的正方形矩阵。正方形矩阵是一个行数和列数相同的矩阵：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.eye(3, dtype=int)
+&gt;&gt;&gt; print(my_ndarray)
+[[1 0 0]
+ [0 1 0]
+ [0 0 1]]
+</code></pre>
+<p>你可以使用 <code>np.diag()</code> 来创建一个沿对角线有指定数值的矩阵，而在矩阵的其他部分为 <code>0</code>：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.diag([10, 20, 30, 40, 50])
+&gt;&gt;&gt; print(my_ndarray)
+[[10  0  0  0  0]
+ [ 0 20  0  0  0]
+ [ 0  0 30  0  0]
+ [ 0  0  0 40  0]
+ [ 0  0  0  0 50]]
+</code></pre>
+<p>你可以使用 <code>np.range()</code> 来创建一个具有特定数值范围的 ndarray。它是通过指定一个整数的开始和结束（不包括）范围以及一个步长来创建的：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.arange(1, 20, 3)
+&gt;&gt;&gt; print(my_ndarray)
+[ 1  4  7 10 13 16 19]
+</code></pre>
+<h3 id="读取-ndarray">读取 ndarray</h3>
+<p>ndarray 的值可以使用索引、分片或布尔索引来读取。</p>
+<h4 id="使用索引读取-ndarray-的值">使用索引读取 ndarray 的值</h4>
+<p>在索引中，你可以使用 ndarray 的元素的整数索引来读取数值，就像你读取 Python 列表一样。就像  Python 列表一样，索引从 <code>0</code> 开始。</p>
+<p>例如，在定义如下的 ndarray 中：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.arange(1, 20, 3)
+</code></pre>
+<p>第四个值将是 <code>my_ndarray[3]</code>，即 <code>10</code>。最后一个值是 <code>my_ndarray[-1]</code>，即 <code>19</code>：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.arange(1, 20, 3)
+&gt;&gt;&gt; print(my_ndarray[0])
+1
+&gt;&gt;&gt; print(my_ndarray[3])
+10
+&gt;&gt;&gt; print(my_ndarray[-1])
+19
+&gt;&gt;&gt; print(my_ndarray[5])
+16
+&gt;&gt;&gt; print(my_ndarray[6])
+19
+</code></pre>
+<h4 id="使用分片读取-ndarray">使用分片读取 ndarray</h4>
+<p>你也可以使用分片来读取 ndarray 的块。分片的工作方式是用冒号（<code>:</code>）操作符指定一个开始索引和一个结束索引。然后，Python 将获取该开始和结束索引之间的 ndarray 片断：</p>
+<pre><code>&gt;&gt;&gt; print(my_ndarray[:])
+[ 1  4  7 10 13 16 19]
+&gt;&gt;&gt; print(my_ndarray[2:4])
+[ 7 10]
+&gt;&gt;&gt; print(my_ndarray[5:6])
+[16]
+&gt;&gt;&gt; print(my_ndarray[6:7])
+[19]
+&gt;&gt;&gt; print(my_ndarray[:-1])
+[ 1  4  7 10 13 16]
+&gt;&gt;&gt; print(my_ndarray[-1:])
+[19]
+</code></pre>
+<p>分片创建了一个 ndarray 的引用（或视图）。这意味着，修改分片中的值也会改变原始 ndarray 的值。</p>
+<p>比如说：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray[-1:] = 100
+&gt;&gt;&gt; print(my_ndarray)
+[  1   4   7  10  13  16 100]
+</code></pre>
+<p>对于秩超过 1 的 ndarray 的分片，可以使用 <code>[行开始索引:行结束索引, 列开始索引:列结束索引]</code> 语法：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray2 = np.array([(1, 2, 3), (4, 5, 6)])
+&gt;&gt;&gt; print(my_ndarray2)
+[[1 2 3]
+ [4 5 6]]
+&gt;&gt;&gt; print(my_ndarray2[0:2,1:3])
+[[2 3]
+ [5 6]]
+</code></pre>
+<h4 id="使用布尔索引读取-ndarray-的方法">使用布尔索引读取 ndarray 的方法</h4>
+<p>读取 ndarray 的另一种方法是使用布尔索引。在这种方法中，你在方括号内指定一个过滤条件，然后返回符合该条件的 ndarray 的一个部分。</p>
+<p>例如，为了获得一个 ndarray 中所有大于 5 的值，你可以指定布尔索引操作 <code>my_ndarray[my_ndarray &gt; 5]</code>。这个操作将返回一个包含所有大于 5 的值的 ndarray：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+&gt;&gt;&gt; my_ndarray2 = my_ndarray[my_ndarray &gt; 5]
+&gt;&gt;&gt; print(my_ndarray2)
+[ 6  7  8  9 10]
+</code></pre>
+<p>例如，为了获得一个 ndarray 中的所有偶数值，你可以使用如下的布尔索引操作：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray2 = my_ndarray[my_ndarray % 2 == 0]
+&gt;&gt;&gt; print(my_ndarray2)
+[ 2  4  6  8 10]
+</code></pre>
+<p>而要得到所有的奇数值，你可以用这个方法：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray2 = my_ndarray[my_ndarray % 2 == 1]
+&gt;&gt;&gt; print(my_ndarray2)
+[1 3 5 7 9]
+</code></pre>
+<h3 id="ndarray-的矢量和标量算术">ndarray 的矢量和标量算术</h3>
+<p>NumPy 的 ndarray 允许进行矢量和标量算术操作。在矢量算术中，在两个 ndarray 之间进行一个元素的算术操作。在标量算术中，算术运算是在一个 ndarray 和一个常数标量值之间进行的。</p>
+<p>如下的两个 ndarray：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.array([1, 2, 3, 4, 5])
+&gt;&gt;&gt; my_ndarray2 = np.array([6, 7, 8, 9, 10])
+</code></pre>
+<p>如果你将上述两个 ndarray 相加，就会产生一个两个 ndarray 的元素相加的新的 ndarray。例如，产生的 ndarray 的第一个元素将是原始 ndarray 的第一个元素相加的结果，以此类推：</p>
+<pre><code>&gt;&gt;&gt; print(my_ndarray2 + my_ndarray)
+[ 7  9 11 13 15]
+</code></pre>
+<p>这里，<code>7</code> 是 <code>1</code> 和 <code>6</code> 的和，这是我相加的 ndarray 中的前两个元素。同样，<code>15</code> 是 <code>5</code> 和<code>10</code> 之和，是最后一个元素。</p>
+<p>请看以下算术运算：</p>
+<pre><code>&gt;&gt;&gt; print(my_ndarray2 - my_ndarray)
+[5 5 5 5 5]
+&gt;&gt;&gt;
+&gt;&gt;&gt; print(my_ndarray2 * my_ndarray)
+[ 6 14 24 36 50]
+&gt;&gt;&gt;
+&gt;&gt;&gt; print(my_ndarray2 / my_ndarray)
+[6.         3.5        2.66666667 2.25       2.        ]
+</code></pre>
+<p>在 ndarray 中加一个标量值也有类似的效果，标量值被添加到 ndarray 的所有元素中。这被称为“<ruby>广播<rt>broadcasting</rt></ruby>”：</p>
+<pre><code>&gt;&gt;&gt; print(my_ndarray + 10)
+[11 12 13 14 15]
+&gt;&gt;&gt;
+&gt;&gt;&gt; print(my_ndarray - 10)
+[-9 -8 -7 -6 -5]
+&gt;&gt;&gt;
+&gt;&gt;&gt; print(my_ndarray * 10)
+[10 20 30 40 50]
+&gt;&gt;&gt;
+&gt;&gt;&gt; print(my_ndarray / 10)
+[0.1 0.2 0.3 0.4 0.5]
+</code></pre>
+<h3 id="ndarray-的排序">ndarray 的排序</h3>
+<p>有两种方法可以对 ndarray 进行原地或非原地排序。原地排序会对原始 ndarray 进行排序和修改，而非原地排序会返回排序后的 ndarray，但不会修改原始 ndarray。我将尝试这两个例子：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.array([3, 1, 2, 5, 4])
+&gt;&gt;&gt; my_ndarray.sort()
+&gt;&gt;&gt; print(my_ndarray)
+[1 2 3 4 5]
+</code></pre>
+<p>正如你所看到的，<code>sort()</code> 方法对 ndarray 进行原地排序，并修改了原数组。</p>
+<p>还有一个方法叫 <code>np.sort()</code>，它对数组进行非原地排序：</p>
+<pre><code>&gt;&gt;&gt; my_ndarray = np.array([3, 1, 2, 5, 4])
+&gt;&gt;&gt; print(np.sort(my_ndarray))
+[1 2 3 4 5]
+&gt;&gt;&gt; print(my_ndarray)
+[3 1 2 5 4]
+</code></pre>
+<p>正如你所看到的，<code>np.sort()</code> 方法返回一个已排序的 ndarray，但没有修改它。</p>
+<h3 id="总结">总结</h3>
+<p>我已经介绍了很多关于 NumPy 和 ndarray 的内容。我谈到了创建 ndarray，读取它们的不同方法，基本的向量和标量算术，以及排序。NumPy 还有很多东西可以探索，包括像 <code>union()</code> 和 <code>intersection()</code>这样的集合操作，像 <code>min()</code> 和 <code>max()</code> 这样的统计操作，等等。</p>
+<p>我希望我上面演示的例子是有用的。祝你在探索 NumPy 时愉快。</p>
+<p>本文最初发表于 <a href="https://notes.ayushsharma.in/2018/10/working-with-numpy-in-python">作者的个人博客</a>，经授权后改编。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/21/9/python-numpy">https://opensource.com/article/21/9/python-numpy</a></p>
+<p>作者：<a href="https://opensource.com/users/ayushsharma">Ayush Sharma</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装-numpy">安装 NumPy</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#为什么使用-numpy-因为它比-python-列表要快好几个数量级">为什么使用 NumPy? 因为它比 Python 列表要快好几个数量级</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-python-列表创建-ndarray">使用 Python 列表创建 ndarray</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-numpy-方法创建-ndarray">使用 NumPy 方法创建 ndarray</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#读取-ndarray">读取 ndarray</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ndarray-的矢量和标量算术">ndarray 的矢量和标量算术</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ndarray-的排序">ndarray 的排序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202201/20210916 Crunch numbers in Python with NumPy","title":"用 NumPy 在 Python 中处理数字"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

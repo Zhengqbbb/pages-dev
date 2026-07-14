@@ -1,0 +1,252 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用 fail2ban 和 FirewallD 黑名单保护你的系统 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用 fail2ban 和 FirewallD 黑名单保护你的系统 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用 fail2ban 和 FirewallD 黑名单保护你的系统 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202007/20200622 Protect your system with fail2ban and firewalld blacklists#page","@type":"TechArticle","headline":"使用 fail2ban 和 FirewallD 黑名单保护你的系统","inLanguage":"en","name":"使用 fail2ban 和 FirewallD 黑名单保护你的系统","url":"https://zhengqbbb.github.io/pages-dev/202007/20200622 Protect your system with fail2ban and firewalld blacklists","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202007/20200622 Protect your system with fail2ban and firewalld blacklists"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#假定前提">假定前提</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装与配置">安装与配置</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#那么现在我该怎么做">那么现在我该怎么做？</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用 fail2ban 和 FirewallD 黑名单保护你的系统</h1><p><img src="https://fedoramagazine.org/wp-content/uploads/2020/06/fail2ban-and-firewalld-816x345.png" alt=""></p>
+<p>如果你运行的服务器有面向公众的 SSH 访问，你可能遇到过恶意登录尝试。本文介绍了如何使用两个实用程序来防止入侵者进入我们的系统。</p>
+<p>为了防止反复的 ssh 登录尝试，我们来看看 fail2ban。而且，如果你不经常旅行，基本上停留在一两个国家，你可以将 FirewallD 配置为只允许<a href="https://www.linode.com/community/questions/11143/top-tip-firewalld-and-ipset-country-blacklist">从你选择的国家访问</a>。</p>
+<p>首先，让我们为不熟悉这些应用程序的人员介绍一些术语，以完成这项工作：</p>
+<p><strong>fail2ban</strong>：一个守护进程，用于禁止发生多次认证错误的主机。fail2ban 将监控 SystemD 日志，以查找对任何已启用的“<ruby>监狱<rt>jail</rt></ruby>”的失败的验证尝试。在达到指定失败次数后，它将添加一个防火墙规则，在配置的时间内阻止该特定 IP 地址。</p>
+<p><strong>FirewallD</strong>：一个带有 D-Bus 接口的防火墙守护进程，提供动态防火墙。除非你另行决定使用传统的 iptables，否则你已经在所有支持的 Fedora 和 CentOS 上安装了 FirewallD。</p>
+<h3 id="假定前提">假定前提</h3>
+<ul>
+<li>主机系统有一个互联网连接，并且要么是直接暴露在互联网上，要么是通过 DMZ（这两个都是非常糟糕的想法，除非你知道你在做什么），要么是有一个端口从路由器转发过来。</li>
+<li>虽然大部分的内容可能适用于其他系统，但本文假设当前系统是 Fedora（31 及以上）或 RHEL/CentOS 8 版本。在 CentOS 上，你必须用 <code>sudo dnf install epel-release</code> 启用 Fedora EPEL 仓库。</li>
+</ul>
+<h3 id="安装与配置">安装与配置</h3>
+<h4 id="fail2ban">Fail2Ban</h4>
+<p>很有可能已经有某个 Firewalld 区已经允许 SSH 访问，但 sshd 服务本身默认没有启用。要手动启动它，并且不在启动时永久启用它：</p>
+<pre><code>$ sudo systemctl start sshd
+</code></pre>
+<p>或者在系统启动时启用，并同时启动它：</p>
+<pre><code>$ sudo systemctl enable --now sshd
+</code></pre>
+<p>下一步就是安装、配置、启用 fail2ban。和往常一样，安装可以通过命令行完成：</p>
+<pre><code>$ sudo dnf install fail2ban
+</code></pre>
+<p>安装完毕后，下一步就是配置“监狱”（你要以设置的任何阈值监视并禁止的服务）。默认情况下，IP 会被禁止 1 小时（这其实不够长）。最好的做法是使用 <code>*.local</code> 文件覆盖系统默认值，而不是直接修改 <code>*.config</code> 文件。如果我们查看我的 <code>jail.local</code>，我们可以看到：</p>
+<pre><code># cat /etc/fail2ban/jail.local
+[DEFAULT]
+
+# &quot;bantime&quot; is the number of seconds that a host is banned.
+bantime  = 1d
+
+# A host is banned if it has generated &quot;maxretry&quot; during the last &quot;findtime&quot;
+findtime  = 1h
+
+# &quot;maxretry&quot; is the number of failures before a host get banned.
+maxretry = 5
+</code></pre>
+<p>换成通俗的语言讲，就是在过去一小时内尝试 5 次后，该 IP 将被封禁 1 天。对于多次被封的 IP，也可以选择增加封禁时间，但这是另一篇文章的主题。</p>
+<p>下一步是配置“监狱”。在本教程中显示的是 <code>sshd</code>，但其他服务的步骤大致相同。在 <code>/etc/fail2ban/jail.d</code> 中创建一个配置文件。这是我的文件：</p>
+<pre><code># cat /etc/fail2ban/jail.d/sshd.local
+[sshd]
+enabled = true
+</code></pre>
+<p>就这么简单! 很多配置已经在为 Fedora 构建的软件包中处理了（提示：我是当前的维护者）。接下来启用并启动 fail2ban 服务：</p>
+<pre><code>$ sudo systemctl enable --now fail2ban
+</code></pre>
+<p>希望没有立即出错，如果没有，请使用下面的命令检查 fail2ban 的状态：</p>
+<pre><code>$ sudo systemctl status fail2ban
+</code></pre>
+<p>如果它没有错误地启动，应该是这样的：</p>
+<pre><code>$ systemctl status fail2ban
+● fail2ban.service - Fail2Ban Service
+Loaded: loaded (/usr/lib/systemd/system/fail2ban.service; disabled; vendor preset: disabled)
+Active: active (running) since Tue 2020-06-16 07:57:40 CDT; 5s ago
+Docs: man:fail2ban(1)
+Process: 11230 ExecStartPre=/bin/mkdir -p /run/fail2ban (code=exited, status=0/SUCCESS)
+Main PID: 11235 (f2b/server)
+Tasks: 5 (limit: 4630)
+Memory: 12.7M
+CPU: 109ms
+CGroup: /system.slice/fail2ban.service
+└─11235 /usr/bin/python3 -s /usr/bin/fail2ban-server -xf start
+Jun 16 07:57:40 localhost.localdomain systemd[1]: Starting Fail2Ban Service…
+Jun 16 07:57:40 localhost.localdomain systemd[1]: Started Fail2Ban Service.
+Jun 16 07:57:41 localhost.localdomain fail2ban-server[11235]: Server ready
+</code></pre>
+<p>如果是刚刚启动的，fail2ban 不太可能显示任何有意思的信息，但要检查 fail2ban 的状态，并确保“监狱”被启用，请输入：</p>
+<pre><code>$ sudo fail2ban-client status
+Status
+|- Number of jail:      1
+`- Jail list:   sshd
+</code></pre>
+<p>sshd “监狱”的上级状态也会显示出来。如果启用了多个“监狱”，它们会在这里显示出来。</p>
+<p>要查看一个“监狱”的详细状态，只需在前面的命令中添加“监狱”名称。下面是我的系统的输出，它已经运行了一段时间。我已经从输出中删除了被禁止的 IP：</p>
+<pre><code>$ sudo fail2ban-client status sshd
+Status for the jail: sshd
+|- Filter
+|  |- Currently failed: 8
+|  |- Total failed:     4399
+|  `- Journal matches:  _SYSTEMD_UNIT=sshd.service + _COMM=sshd
+`- Actions
+   |- Currently banned: 101
+   |- Total banned:     684
+   `- Banned IP list:   ...
+</code></pre>
+<p>监控 fail2ban 日志文件是否有入侵尝试，可以通过“尾随”日志来实现：</p>
+<pre><code>$ sudo tail -f /var/log/fail2ban.log
+</code></pre>
+<p><code>tail</code> 是一个很好的命令行工具，默认情况下，它可以显示一个文件的最后 10 行。添加 <code>-f</code> 告诉它尾随文件，这是个观察一个仍在被写入的文件的很好方式。</p>
+<p>由于输出的内容中有真实的 IP，所以这里不会提供样本，但它的可读性很高。<code>INFO</code> 行通常是登录的尝试。如果从一个特定的 IP 地址进行了足够多的尝试，你会看到一个 <code>NOTICE</code> 行显示一个 IP 地址被禁止。在达到禁止时间后，你会看到一个 <code>NOTICE</code> 解禁行。</p>
+<p>注意几个警告行。最常见的情况是，当添加了一个禁止后，fail2ban 发现该 IP 地址已经在其禁止数据库中，这意味着禁止可能无法正常工作。如果是最近安装的 fail2ban 包，它应该被设置为 FirewallD 的富规则。这个包在 fail2ban-0.11.1-6 版本时从 ipset 方式切换到了富规则方式，所以如果你的 fail2ban 安装时间较早，它可能还在尝试使用 ipset 方式，这种方式使用的是传统的 iptables，不是很可靠。</p>
+<h4 id="firewalld-配置">FirewallD 配置</h4>
+<h5 id="被动还是主动">被动还是主动？</h5>
+<p>有两种策略可以分开或一起使用：<strong>被动</strong>地将单个 IP 地址或<strong>主动</strong>地根据来源国将子网永久列入黑名单。</p>
+<p>对于被动方式，一旦 fail2ban 运行了一段时间，最好再运行 <code>sudo fail2ban-client status sshd</code> 来看看有哪些坏蛋。很可能会有很多被禁止的 IP 地址。选择一个，然后试着对它运行 <code>whois</code>。在输出结果中可能会有很多有趣的信息，但是对于这个方法来说，只有来源国是重要的。为了保持简单，让我们过滤掉除了国家以外的所有信息。</p>
+<p>在这个例子中，我们将使用一些著名的域名：</p>
+<pre><code>$ whois google.com | grep -i country
+Registrant Country: US
+Admin Country: US
+Tech Country: US
+</code></pre>
+<pre><code>$ whois rpmfusion.org | grep -i country
+Registrant Country: FR
+</code></pre>
+<pre><code>$ whois aliexpress.com | grep -i country
+Registrant Country: CN
+</code></pre>
+<p>使用 <code>grep -i</code> 的原因是为了使 <code>grep</code> 不区分大小写，而大多数条目都使用的是 “Country”，而有些条目则是全小写的 “country”，所以这种方法无论如何都能匹配。</p>
+<p>现在知道了尝试入侵的来源国，问题是，“是否有来自这个国家的人有合法的理由连接到这台计算机？”如果答案是否定的，那么封锁整个国家应该是可以接受的。</p>
+<p>从功能上看，主动式方法它与被动式方法没有太大区别，然而，来自有些国家的入侵企图是非常普遍的。如果你的系统既不放在这些国家里，也没有任何源自这些国家的客户，那么为什么不现在就把它们加入黑名单而是等待呢？（LCTT 译注：我的经验是，动辄以国家的范畴而列入黑名单有些过于武断。建议可以将该 IP 所属的 WHOIS 网段放入到黑名单，因为这些网段往往具有相同的使用性质，如都用于用户接入或 IDC 托管，其安全状况也大致相同，因此，如果有来自该网段的某个 IP 的恶意尝试，可以预期该网段内的其它 IP 也可能被利用来做这样的尝试。）</p>
+<h5 id="黑名单脚本和配置">黑名单脚本和配置</h5>
+<p>那么如何做到这一点呢？用 FirewallD ipset。我开发了下面的脚本来尽可能地自动化这个过程：</p>
+<pre><code>#!/bin/bash
+# Based on the below article
+# https://www.linode.com/community/questions/11143/top-tip-firewalld-and-ipset-country-blacklist
+
+# Source the blacklisted countries from the configuration file
+. /etc/blacklist-by-country
+
+# Create a temporary working directory
+ipdeny_tmp_dir=$(mktemp -d -t blacklist-XXXXXXXXXX)
+pushd $ipdeny_tmp_dir
+
+# Download the latest network addresses by country file
+curl -LO http://www.ipdeny.com/ipblocks/data/countries/all-zones.tar.gz
+tar xf all-zones.tar.gz
+
+# For updates, remove the ipset blacklist and recreate
+if firewall-cmd -q --zone=drop --query-source=ipset:blacklist; then
+    firewall-cmd -q --permanent --delete-ipset=blacklist
+fi
+
+# Create the ipset blacklist which accepts both IP addresses and networks
+firewall-cmd -q --permanent --new-ipset=blacklist --type=hash:net \
+    --option=family=inet --option=hashsize=4096 --option=maxelem=200000 \
+    --set-description=&quot;An ipset list of networks or ips to be dropped.&quot;
+
+# Add the address ranges by country per ipdeny.com to the blacklist
+for country in $countries; do
+    firewall-cmd -q --permanent --ipset=blacklist \
+        --add-entries-from-file=./$country.zone &amp;&amp; \
+        echo &quot;Added $country to blacklist ipset.&quot;
+done
+
+# Block individual IPs if the configuration file exists and is not empty
+if [ -s &quot;/etc/blacklist-by-ip&quot; ]; then
+    echo &quot;Adding IPs blacklists.&quot;
+    firewall-cmd -q --permanent --ipset=blacklist \
+        --add-entries-from-file=/etc/blacklist-by-ip &amp;&amp; \
+        echo &quot;Added IPs to blacklist ipset.&quot;
+fi
+
+# Add the blacklist ipset to the drop zone if not already setup
+if firewall-cmd -q --zone=drop --query-source=ipset:blacklist; then
+    echo &quot;Blacklist already in firewalld drop zone.&quot;
+else
+    echo &quot;Adding ipset blacklist to firewalld drop zone.&quot;
+    firewall-cmd --permanent --zone=drop --add-source=ipset:blacklist
+fi
+
+firewall-cmd -q --reload
+
+popd
+rm -rf $ipdeny_tmp_dir
+</code></pre>
+<p>这个应该安装到 <code>/usr/local/sbin</code>，不要忘了让它可执行！</p>
+<pre><code>$ sudo chmod +x /usr/local/sbin/firewalld-blacklist
+</code></pre>
+<p>然后创建一个配置文件 <code>/etc/blacklist-by-country</code>：</p>
+<pre><code># Which countries should be blocked?
+# Use the two letter designation separated by a space.
+countries=&quot;&quot;
+</code></pre>
+<p>而另一个配置文件 <code>/etc/blacklist-by-ip</code>，每行只有一个 IP，没有任何额外的格式化。</p>
+<p>在这个例子中，从 ipdeny 的区文件中随机选择了 10 个国家：</p>
+<pre><code># ls | shuf -n 10 | sed &quot;s/\.zone//g&quot; | tr &#39;\n&#39; &#39; &#39;
+nl ee ie pk is sv na om gp bn
+</code></pre>
+<p>现在只要在配置文件中加入至少一个国家，就可以运行了！</p>
+<pre><code>$ sudo firewalld-blacklist
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   142  100   142    0     0   1014      0 --:--:-- --:--:-- --:--:--  1014
+100  662k  100  662k    0     0   989k      0 --:--:-- --:--:-- --:--:--  989k
+Added nl to blacklist ipset.
+Added ee to blacklist ipset.
+Added ie to blacklist ipset.
+Added pk to blacklist ipset.
+Added is to blacklist ipset.
+Added sv to blacklist ipset.
+Added na to blacklist ipset.
+Added om to blacklist ipset.
+Added gp to blacklist ipset.
+Added bn to blacklist ipset.
+Adding ipset blacklist to firewalld drop zone.
+success
+</code></pre>
+<p>要验证 FirewallD 黑名单是否成功，请检查 <code>drop</code> 区和 <code>blacklist</code> ipset。</p>
+<pre><code>$ sudo firewall-cmd --info-zone=drop
+drop (active)
+  target: DROP
+  icmp-block-inversion: no
+  interfaces:
+  sources: ipset:blacklist
+  services:
+  ports:
+  protocols:
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+
+$ sudo firewall-cmd --info-ipset=blacklist | less
+blacklist
+  type: hash:net
+  options: family=inet hashsize=4096 maxelem=200000
+  entries:
+</code></pre>
+<p>第二条命令将输出所有的子网，这些子网是基于被封杀的国家而添加的，可能会相当长。</p>
+<h3 id="那么现在我该怎么做">那么现在我该怎么做？</h3>
+<p>虽然在开始的时候，监控的频率会比较高，但随着时间的推移，入侵尝试的次数应该会随着黑名单的增加而减少。那么目标应该是维护而不是主动监控。</p>
+<p>为此，我创建了一个 SystemD 服务文件和定时器，这样每月都会刷新由 ipdeny 维护的每个国家的子网。事实上，这里讨论的所有内容都可以从我的 <a href="https://pagure.io/firewalld-blacklist">pagure.io</a> 项目中下载。</p>
+<p>是不是很高兴你看完了整篇文章？现在只要把服务文件和定时器下载到 <code>/etc/systemd/system/</code>，并启用定时器就行了：</p>
+<pre><code>$ sudo systemctl daemon-reload
+$ sudo systemctl enable --now firewalld-blacklist.timer
+</code></pre>
+<hr>
+<p>via: <a href="https://fedoramagazine.org/protect-your-system-with-fail2ban-and-firewalld-blacklists/">https://fedoramagazine.org/protect-your-system-with-fail2ban-and-firewalld-blacklists/</a></p>
+<p>作者：<a href="https://fedoramagazine.org/author/hobbes1069/">hobbes1069</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#假定前提">假定前提</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装与配置">安装与配置</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#那么现在我该怎么做">那么现在我该怎么做？</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202007/20200622 Protect your system with fail2ban and firewalld blacklists","title":"使用 fail2ban 和 FirewallD 黑名单保护你的系统"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

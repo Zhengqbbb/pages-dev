@@ -1,0 +1,340 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PowerTOP：在 Linux 上监视电量使用和改善笔记本电池寿命 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="PowerTOP：在 Linux 上监视电量使用和改善笔记本电池寿命 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="PowerTOP：在 Linux 上监视电量使用和改善笔记本电池寿命 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201902/20181219 PowerTOP - Monitors Power Usage and Improve Laptop Battery Life in Linux#page","@type":"TechArticle","headline":"PowerTOP：在 Linux 上监视电量使用和改善笔记本电池寿命","inLanguage":"en","name":"PowerTOP：在 Linux 上监视电量使用和改善笔记本电池寿命","url":"https://zhengqbbb.github.io/pages-dev/201902/20181219 PowerTOP - Monitors Power Usage and Improve Laptop Battery Life in Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201902/20181219 PowerTOP - Monitors Power Usage and Improve Laptop Battery Life in Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-powertop">什么是 PowerTOP</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何安装-powertop">如何安装 PowerTOP</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何使用-powertop">如何使用 PowerTOP</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#空闲状态页">空闲状态页</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#频率状态页">频率状态页</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#设备状态页">设备状态页</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#可调整状态页">可调整状态页</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何生成-powertop-的-html-报告">如何生成 PowerTop 的 HTML 报告</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#自动调整模式">自动调整模式</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>PowerTOP：在 Linux 上监视电量使用和改善笔记本电池寿命</h1><p>我们都知道，现在几乎都从 PC 机换到了笔记本电脑了。但是使用笔记本有个问题，我们希望电池耐用，我们可以使用到每一点电量。所以，我们需要知道电量都去哪里了，是不是浪费了。</p>
+<p>你可以使用 PowerTOP 工具来查看没有接入电源线时电量都用在了何处。你需要在终端中使用超级用户权限来运行 PowerTOP 工具。它可以访问该电池硬件并测量电量使用情况。</p>
+<h3 id="什么是-powertop">什么是 PowerTOP</h3>
+<p>PowerTOP 是一个 Linux 工具，用于诊断电量消耗和电源管理的问题。</p>
+<p>它是由 Intel 开发的，可以在内核、用户空间和硬件中启用各种节电模式。</p>
+<p>除了作为一个一个诊断工具之外，PowweTop 还有一个交互模式，可以让你实验 Linux 发行版没有启用的各种电源管理设置。</p>
+<p>它也能监控进程，并展示其中哪个正在使用 CPU，以及从休眠状态页将其唤醒，也可以找出电量消耗特别高的应用程序。</p>
+<h3 id="如何安装-powertop">如何安装 PowerTOP</h3>
+<p>PowerTOP 软件包在大多数发行版的软件库中可用，使用发行版的 <a href="https://www.2daygeek.com/category/package-management/">包管理器</a> 安装即可。</p>
+<p>对于 Fedora 系统，使用 <a href="https://www.2daygeek.com/dnf-command-examples-manage-packages-fedora-system/">DNF 命令</a> 来安装 PowerTOP。</p>
+<pre><code>$ sudo dnf install powertop
+</code></pre>
+<p>对于 Debian/Ubuntu 系统，使用 <a href="https://www.2daygeek.com/apt-get-apt-cache-command-examples-manage-packages-debian-ubuntu-systems/">APT-GET 命令</a> 或 <a href="https://www.2daygeek.com/apt-command-examples-manage-packages-debian-ubuntu-systems/">APT 命令</a> 来安装 PowerTOP。</p>
+<pre><code>$ sudo apt install powertop
+</code></pre>
+<p>对于基于 Arch Linux 的系统，使用 <a href="https://www.2daygeek.com/pacman-command-examples-manage-packages-arch-linux-system/">Pacman 命令</a> 来安装 PowerTOP。</p>
+<pre><code>$ sudo pacman -S powertop
+</code></pre>
+<p>对于 RHEL/CentOS 系统，使用 <a href="https://www.2daygeek.com/yum-command-examples-manage-packages-rhel-centos-systems/">YUM 命令</a> 来安装 PowerTOP。</p>
+<pre><code>$ sudo yum install powertop
+</code></pre>
+<p>对于 openSUSE Leap 系统，使用 <a href="https://www.2daygeek.com/zypper-command-examples-manage-packages-opensuse-system/">Zypper 命令</a> 来安装 PowerTOP。</p>
+<pre><code>$ sudo zypper install powertop
+</code></pre>
+<h3 id="如何使用-powertop">如何使用 PowerTOP</h3>
+<p>PowerTOP 需要超级用户权限，所以在 Linux 系统中以 root 身份运行 PowerTOP 工具。</p>
+<p>默认情况下其显示 “概览” 页，在这里我们可以看到所有设备的电量消耗情况，也可以看到系统的唤醒秒数。</p>
+<pre><code>$ sudo powertop
+
+PowerTOP v2.9     Overview   Idle stats   Frequency stats   Device stats   Tunables                                     
+
+The battery reports a discharge rate of 12.6 W
+The power consumed was 259 J
+The estimated remaining time is 1 hours, 52 minutes
+
+Summary: 1692.9 wakeups/second,  0.0 GPU ops/seconds, 0.0 VFS ops/sec and 54.9% CPU use
+
+                Usage       Events/s    Category       Description
+              9.3 ms/s     529.4        Timer          tick_sched_timer
+            378.5 ms/s     139.8        Process        [PID 2991] /usr/lib/firefox/firefox -contentproc -childID 7 -isForBrowser -prefsLen 8314 -prefMapSize 173895 -schedulerPrefs 00
+              7.5 ms/s     141.7        Timer          hrtimer_wakeup
+              3.3 ms/s     102.7        Process        [PID 1527] /usr/lib/firefox/firefox --new-window
+             11.6 ms/s      69.1        Process        [PID 1568] /usr/lib/firefox/firefox -contentproc -childID 1 -isForBrowser -prefsLen 1 -prefMapSize 173895 -schedulerPrefs 0001,
+              6.2 ms/s      59.0        Process        [PID 1496] /usr/lib/firefox/firefox --new-window
+              2.1 ms/s      59.6        Process        [PID 2466] /usr/lib/firefox/firefox -contentproc -childID 3 -isForBrowser -prefsLen 5814 -prefMapSize 173895 -schedulerPrefs 00
+              1.8 ms/s      52.3        Process        [PID 2052] /usr/lib/firefox/firefox -contentproc -childID 4 -isForBrowser -prefsLen 5814 -prefMapSize 173895 -schedulerPrefs 00
+              1.8 ms/s      50.8        Process        [PID 3034] /usr/lib/firefox/firefox -contentproc -childID 7 -isForBrowser -prefsLen 8314 -prefMapSize 173895 -schedulerPrefs 00
+              3.6 ms/s      48.4        Process        [PID 3009] /usr/lib/firefox/firefox -contentproc -childID 7 -isForBrowser -prefsLen 8314 -prefMapSize 173895 -schedulerPrefs 00
+              7.5 ms/s      46.2        Process        [PID 2996] /usr/lib/firefox/firefox -contentproc -childID 7 -isForBrowser -prefsLen 8314 -prefMapSize 173895 -schedulerPrefs 00
+             25.2 ms/s      33.6        Process        [PID 1528] /usr/lib/firefox/firefox --new-window
+              5.7 ms/s      32.2        Interrupt      [7] sched(softirq)
+              2.1 ms/s      32.2        Process        [PID 1811] /usr/lib/firefox/firefox -contentproc -childID 4 -isForBrowser -prefsLen 5814 -prefMapSize 173895 -schedulerPrefs 00
+             19.7 ms/s      25.0        Process        [PID 1794] /usr/lib/firefox/firefox -contentproc -childID 4 -isForBrowser -prefsLen 5814 -prefMapSize 173895 -schedulerPrefs 00
+              1.9 ms/s      31.5        Process        [PID 1596] /usr/lib/firefox/firefox -contentproc -childID 1 -isForBrowser -prefsLen 1 -prefMapSize 173895 -schedulerPrefs 0001,
+              3.1 ms/s      29.9        Process        [PID 1535] /usr/lib/firefox/firefox --new-window
+              7.1 ms/s      28.2        Process        [PID 1488] /usr/lib/firefox/firefox --new-window
+              1.8 ms/s      29.5        Process        [PID 1762] /usr/lib/firefox/firefox -contentproc -childID 3 -isForBrowser -prefsLen 5814 -prefMapSize 173895 -schedulerPrefs 00
+              8.8 ms/s      23.3        Process        [PID 1121] /usr/bin/gnome-shell
+              1.2 ms/s      21.8        Process        [PID 1657] /usr/lib/firefox/firefox -contentproc -childID 2 -isForBrowser -prefsLen 920 -prefMapSize 173895 -schedulerPrefs 000
+             13.3 ms/s      13.9        Process        [PID 1746] /usr/lib/firefox/firefox -contentproc -childID 3 -isForBrowser -prefsLen 5814 -prefMapSize 173895 -schedulerPrefs 00
+              2.7 ms/s      11.1        Process        [PID 3410] /usr/lib/gnome-terminal-server
+              3.8 ms/s      10.8        Process        [PID 1057] /usr/lib/Xorg vt2 -displayfd 3 -auth /run/user/1000/gdm/Xauthority -nolisten tcp -background none -noreset -keeptty
+              3.1 ms/s       9.8        Process        [PID 1629] /usr/lib/firefox/firefox -contentproc -childID 2 -isForBrowser -prefsLen 920 -prefMapSize 173895 -schedulerPrefs 000
+              0.9 ms/s       6.7        Interrupt      [136] xhci_hcd
+            278.0 us/s       6.4        Process        [PID 414] [irq/141-iwlwifi]
+            128.7 us/s       5.7        Process        [PID 1] /sbin/init
+            118.5 us/s       5.2        Process        [PID 10] [rcu_preempt]
+             49.0 us/s       4.7        Interrupt      [0] HI_SOFTIRQ
+            459.3 us/s       3.1        Interrupt      [142] i915
+              2.1 ms/s       2.3        Process        [PID 3451] powertop
+              8.4 us/s       2.7        kWork          intel_atomic_helper_free_state_
+              1.2 ms/s       1.8        kWork          intel_atomic_commit_work
+            374.2 us/s       2.1        Interrupt      [9] acpi
+             42.1 us/s       1.8        kWork          intel_atomic_cleanup_work
+              3.5 ms/s      0.25        kWork          delayed_fput
+            238.0 us/s       1.5        Process        [PID 907] /usr/lib/upowerd
+             17.7 us/s       1.5        Timer          intel_uncore_fw_release_timer
+             26.4 us/s       1.4        Process        [PID 576] [i915/signal:0]
+             19.8 us/s       1.3        Timer          watchdog_timer_fn
+              1.1 ms/s      0.00        Process        [PID 206] [kworker/7:2]
+              2.4 ms/s      0.00        Interrupt      [1] timer(softirq)
+             13.4 us/s       0.9        Process        [PID 9] [ksoftirqd/0]
+
+ Exit |  /  Navigate |
+</code></pre>
+<p>PowerTOP 的输出类似如上截屏，在你的机器上由于硬件不同会稍有不同。它的显示有很多页，你可以使用 <code>Tab</code> 和 <code>Shift+Tab</code> 在它们之间切换。</p>
+<h3 id="空闲状态页">空闲状态页</h3>
+<p>它会显示处理器的各种信息。</p>
+<pre><code>PowerTOP v2.9     Overview   Idle stats   Frequency stats   Device stats   Tunables                                     
+
+
+          Package   |             Core    |            CPU 0       CPU 4
+                    |                     | C0 active   6.7%        7.2%
+                    |                     | POLL        0.0%    0.1 ms  0.0%    0.1 ms
+                    |                     | C1E         1.2%    0.2 ms  1.6%    0.3 ms
+C2 (pc2)    7.5%    |                     |
+C3 (pc3)   25.2%    | C3 (cc3)    0.7%    | C3          0.5%    0.2 ms  0.6%    0.1 ms
+C6 (pc6)    0.0%    | C6 (cc6)    7.1%    | C6          6.6%    0.5 ms  6.3%    0.5 ms
+C7 (pc7)    0.0%    | C7 (cc7)   59.8%    | C7s         0.0%    0.0 ms  0.0%    0.0 ms
+C8 (pc8)    0.0%    |                     | C8         33.9%    1.6 ms 32.3%    1.5 ms
+C9 (pc9)    0.0%    |                     | C9          2.1%    3.4 ms  0.7%    2.8 ms
+C10 (pc10)  0.0%    |                     | C10        39.5%    4.7 ms 41.4%    4.7 ms
+
+                    |             Core    |            CPU 1       CPU 5
+                    |                     | C0 active   8.3%        7.2%
+                    |                     | POLL        0.0%    0.0 ms  0.0%    0.1 ms
+                    |                     | C1E         1.3%    0.2 ms  1.4%    0.3 ms
+                    |                     |
+                    | C3 (cc3)    0.5%    | C3          0.5%    0.2 ms  0.4%    0.2 ms
+                    | C6 (cc6)    6.0%    | C6          5.3%    0.5 ms  4.7%    0.5 ms
+                    | C7 (cc7)   59.3%    | C7s         0.0%    0.8 ms  0.0%    1.0 ms
+                    |                     | C8         27.2%    1.5 ms 23.8%    1.4 ms
+                    |                     | C9          1.6%    3.0 ms  0.5%    3.0 ms
+                    |                     | C10        44.5%    4.7 ms 52.2%    4.6 ms
+
+                    |             Core    |            CPU 2       CPU 6
+                    |                     | C0 active  11.2%        8.4%
+                    |                     | POLL        0.0%    0.0 ms  0.0%    0.0 ms
+                    |                     | C1E         1.4%    0.4 ms  1.3%    0.3 ms
+                    |                     |
+                    | C3 (cc3)    0.3%    | C3          0.2%    0.1 ms  0.4%    0.2 ms
+                    | C6 (cc6)    4.0%    | C6          3.7%    0.5 ms  4.3%    0.5 ms
+                    | C7 (cc7)   54.2%    | C7s         0.0%    0.0 ms  0.0%    1.0 ms
+                    |                     | C8         20.0%    1.5 ms 20.7%    1.4 ms
+                    |                     | C9          1.0%    3.4 ms  0.4%    3.8 ms
+                    |                     | C10        48.8%    4.6 ms 52.3%    5.0 ms
+
+                    |             Core    |            CPU 3       CPU 7
+                    |                     | C0 active   8.8%        8.1%
+                    |                     | POLL        0.0%    0.1 ms  0.0%    0.0 ms
+                    |                     | C1E         1.2%    0.2 ms  1.2%    0.2 ms
+                    |                     |
+                    | C3 (cc3)    0.6%    | C3          0.6%    0.2 ms  0.4%    0.2 ms
+                    | C6 (cc6)    7.0%    | C6          7.5%    0.5 ms  4.4%    0.5 ms
+                    | C7 (cc7)   56.8%    | C7s         0.0%    0.0 ms  0.0%    0.9 ms
+                    |                     | C8         29.4%    1.4 ms 23.8%    1.4 ms
+                    |                     | C9          1.1%    2.7 ms  0.7%    3.9 ms
+                    |                     | C10        41.0%    4.0 ms 50.0%    4.8 ms
+
+
+ Exit |  /  Navigate |
+</code></pre>
+<h3 id="频率状态页">频率状态页</h3>
+<p>它会显示 CPU 的主频。</p>
+<pre><code>PowerTOP v2.9     Overview   Idle stats   Frequency stats   Device stats   Tunables                                     
+
+
+            Package |             Core    |            CPU 0       CPU 4
+                    |                     | Average      930 MHz    1101 MHz
+Idle                | Idle                | Idle
+
+                    |             Core    |            CPU 1       CPU 5
+                    |                     | Average     1063 MHz     979 MHz
+                    | Idle                | Idle
+
+                    |             Core    |            CPU 2       CPU 6
+                    |                     | Average      976 MHz     942 MHz
+                    | Idle                | Idle
+
+                    |             Core    |            CPU 3       CPU 7
+                    |                     | Average      924 MHz     957 MHz
+                    | Idle                | Idle
+</code></pre>
+<h3 id="设备状态页">设备状态页</h3>
+<p>它仅针对设备显示其电量使用信息。</p>
+<pre><code>PowerTOP v2.9     Overview   Idle stats   Frequency stats   Device stats   Tunables                                     
+
+
+The battery reports a discharge rate of 13.8 W
+The power consumed was 280 J
+
+              Usage     Device name
+             46.7%        CPU misc
+             46.7%        DRAM
+             46.7%        CPU core
+             19.0%        Display backlight
+              0.0%        Audio codec hwC0D0: Realtek
+              0.0%        USB device: Lenovo EasyCamera (160709000341)
+            100.0%        PCI Device: Intel Corporation HD Graphics 530
+            100.0%        Radio device: iwlwifi
+            100.0%        PCI Device: O2 Micro, Inc. SD/MMC Card Reader Controller
+            100.0%        PCI Device: Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers
+            100.0%        USB device: Lenovo Wireless Optical Mouse N100
+            100.0%        PCI Device: Intel Corporation Wireless 8260
+            100.0%        PCI Device: Intel Corporation HM170/QM170 Chipset SATA Controller [AHCI Mode]
+            100.0%        Radio device: btusb
+            100.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family PCI Express Root Port #4
+            100.0%        USB device: xHCI Host Controller
+            100.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family USB 3.0 xHCI Controller
+            100.0%        PCI Device: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller
+            100.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family PCI Express Root Port #3
+            100.0%        PCI Device: Samsung Electronics Co Ltd NVMe SSD Controller SM951/PM951
+            100.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family PCI Express Root Port #2
+            100.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family PCI Express Root Port #9
+            100.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family SMBus
+             26.1 pkts/s  Network interface: wlp8s0 (iwlwifi)
+              0.0%        USB device: usb-device-8087-0a2b
+              0.0%        runtime-reg-dummy
+              0.0%        Audio codec hwC0D2: Intel
+              0.0 pkts/s  Network interface: enp9s0 (r8168)
+              0.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family Power Management Controller
+              0.0%        PCI Device: Intel Corporation HM170 Chipset LPC/eSPI Controller
+              0.0%        PCI Device: Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor PCIe Controller (x16)
+              0.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family MEI Controller #1
+              0.0%        PCI Device: NVIDIA Corporation GM107M [GeForce GTX 960M]
+              0.0%        I2C Adapter (i2c-8): nvkm-0000:01:00.0-bus-0005
+              0.0%        runtime-PNP0C14:00
+              0.0%        PCI Device: Intel Corporation 100 Series/C230 Series Chipset Family HD Audio Controller
+              0.0%        runtime-PNP0C0C:00
+              0.0%        USB device: xHCI Host Controller
+              0.0%        runtime-ACPI000C:00
+              0.0%        runtime-regulatory.0
+              0.0%        runtime-PNP0C14:01
+              0.0%        runtime-vesa-framebuffer.0
+              0.0%        runtime-coretemp.0
+              0.0%        runtime-alarmtimer
+
+ Exit |  /  Navigate |    
+</code></pre>
+<h3 id="可调整状态页">可调整状态页</h3>
+<p>这个页面是个重要区域，可以为你的笔记本电池优化提供建议。</p>
+<pre><code>PowerTOP v2.9     Overview   Idle stats   Frequency stats   Device stats   Tunables                                     
+
+
+&gt;&gt; Bad           Enable SATA link power management for host2                                                            
+   Bad           Enable SATA link power management for host3
+   Bad           Enable SATA link power management for host0
+   Bad           Enable SATA link power management for host1
+   Bad           VM writeback timeout
+   Bad           Autosuspend for USB device Lenovo Wireless Optical Mouse N100 [1-2]
+   Good          Bluetooth device interface status
+   Good          Enable Audio codec power management
+   Good          NMI watchdog should be turned off
+   Good          Runtime PM for I2C Adapter i2c-7 (nvkm-0000:01:00.0-bus-0002)
+   Good          Autosuspend for unknown USB device 1-11 (8087:0a2b)
+   Good          Runtime PM for I2C Adapter i2c-3 (i915 gmbus dpd)
+   Good          Autosuspend for USB device Lenovo EasyCamera [160709000341]
+   Good          Runtime PM for I2C Adapter i2c-1 (i915 gmbus dpc)
+   Good          Runtime PM for I2C Adapter i2c-12 (nvkm-0000:01:00.0-bus-0009)
+   Good          Autosuspend for USB device xHCI Host Controller [usb1]
+   Good          Runtime PM for I2C Adapter i2c-13 (nvkm-0000:01:00.0-aux-000a)
+   Good          Runtime PM for I2C Adapter i2c-2 (i915 gmbus dpb)
+   Good          Runtime PM for I2C Adapter i2c-8 (nvkm-0000:01:00.0-bus-0005)
+   Good          Runtime PM for I2C Adapter i2c-15 (nvkm-0000:01:00.0-aux-000c)
+   Good          Runtime PM for I2C Adapter i2c-16 (nvkm-0000:01:00.0-aux-000d)
+   Good          Runtime PM for I2C Adapter i2c-5 (nvkm-0000:01:00.0-bus-0000)
+   Good          Runtime PM for I2C Adapter i2c-0 (SMBus I801 adapter at 6040)
+   Good          Runtime PM for I2C Adapter i2c-11 (nvkm-0000:01:00.0-bus-0008)
+   Good          Runtime PM for I2C Adapter i2c-14 (nvkm-0000:01:00.0-aux-000b)
+   Good          Autosuspend for USB device xHCI Host Controller [usb2]
+   Good          Runtime PM for I2C Adapter i2c-9 (nvkm-0000:01:00.0-bus-0006)
+   Good          Runtime PM for I2C Adapter i2c-10 (nvkm-0000:01:00.0-bus-0007)
+   Good          Runtime PM for I2C Adapter i2c-6 (nvkm-0000:01:00.0-bus-0001)
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family HD Audio Controller
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family USB 3.0 xHCI Controller
+   Good          Runtime PM for PCI Device Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family PCI Express Root Port #9
+   Good          Runtime PM for PCI Device Intel Corporation HD Graphics 530
+   Good          Runtime PM for PCI Device Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family PCI Express Root Port #3
+   Good          Runtime PM for PCI Device O2 Micro, Inc. SD/MMC Card Reader Controller
+   Good          Runtime PM for PCI Device Intel Corporation HM170 Chipset LPC/eSPI Controller
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family MEI Controller #1
+   Good          Runtime PM for PCI Device Samsung Electronics Co Ltd NVMe SSD Controller SM951/PM951
+   Good          Runtime PM for PCI Device Intel Corporation HM170/QM170 Chipset SATA Controller [AHCI Mode]
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family Power Management Controller
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family PCI Express Root Port #2
+   Good          Runtime PM for PCI Device Intel Corporation Wireless 8260
+   Good          Runtime PM for PCI Device Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor PCIe Controller (x16)
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family PCI Express Root Port #4
+   Good          Runtime PM for PCI Device Intel Corporation 100 Series/C230 Series Chipset Family SMBus
+   Good          Runtime PM for PCI Device NVIDIA Corporation GM107M [GeForce GTX 960M]
+
+  Exit |  Toggle tunable |  Window refresh
+</code></pre>
+<h3 id="如何生成-powertop-的-html-报告">如何生成 PowerTop 的 HTML 报告</h3>
+<p>运行如下命令生成 PowerTop 的 HTML 报告。</p>
+<pre><code>$ sudo powertop --html=powertop.html
+modprobe cpufreq_stats failedLoaded 100 prior measurements
+Cannot load from file /var/cache/powertop/saved_parameters.powertop
+File will be loaded after taking minimum number of measurement(s) with battery only
+RAPL device for cpu 0
+RAPL Using PowerCap Sysfs : Domain Mask f
+RAPL device for cpu 0
+RAPL Using PowerCap Sysfs : Domain Mask f
+Devfreq not enabled
+glob returned GLOB_ABORTED
+Cannot load from file /var/cache/powertop/saved_parameters.powertop
+File will be loaded after taking minimum number of measurement(s) with battery only
+Preparing to take measurements
+To show power estimates do 182 measurement(s) connected to battery only
+Taking 1 measurement(s) for a duration of 20 second(s) each.
+PowerTOP outputing using base filename powertop.html
+</code></pre>
+<p>打开 <code>file:///home/daygeek/powertop.html</code> 文件以访问生成的 PowerTOP 的 HTML 报告。</p>
+<p><img src="https://www.2daygeek.com/wp-content/uploads/2015/07/powertop-html-output.jpg" alt=""></p>
+<h3 id="自动调整模式">自动调整模式</h3>
+<p>这个功能可以将所有可调整选项从 BAD 设置为 GOOD，这可以提升 Linux 中的笔记本电池寿命。</p>
+<pre><code>$ sudo powertop --auto-tune
+modprobe cpufreq_stats failedLoaded 210 prior measurements
+Cannot load from file /var/cache/powertop/saved_parameters.powertop
+File will be loaded after taking minimum number of measurement(s) with battery only
+RAPL device for cpu 0
+RAPL Using PowerCap Sysfs : Domain Mask f
+RAPL device for cpu 0
+RAPL Using PowerCap Sysfs : Domain Mask f
+Devfreq not enabled
+glob returned GLOB_ABORTED
+Cannot load from file /var/cache/powertop/saved_parameters.powertop
+File will be loaded after taking minimum number of measurement(s) with battery only
+To show power estimates do 72 measurement(s) connected to battery only
+Leaving PowerTOP
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/powertop-monitors-laptop-battery-usage-linux/">https://www.2daygeek.com/powertop-monitors-laptop-battery-usage-linux/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/vinoth/">Vinoth Kumar</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-powertop">什么是 PowerTOP</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何安装-powertop">如何安装 PowerTOP</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何使用-powertop">如何使用 PowerTOP</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#空闲状态页">空闲状态页</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#频率状态页">频率状态页</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#设备状态页">设备状态页</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#可调整状态页">可调整状态页</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何生成-powertop-的-html-报告">如何生成 PowerTop 的 HTML 报告</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#自动调整模式">自动调整模式</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201902/20181219 PowerTOP - Monitors Power Usage and Improve Laptop Battery Life in Linux","title":"PowerTOP：在 Linux 上监视电量使用和改善笔记本电池寿命"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

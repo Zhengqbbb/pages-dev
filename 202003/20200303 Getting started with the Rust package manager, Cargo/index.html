@@ -1,0 +1,390 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Rust 包管理器 Cargo 入门 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Rust 包管理器 Cargo 入门 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Rust 包管理器 Cargo 入门 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202003/20200303 Getting started with the Rust package manager, Cargo#page","@type":"TechArticle","headline":"Rust 包管理器 Cargo 入门","inLanguage":"en","name":"Rust 包管理器 Cargo 入门","url":"https://zhengqbbb.github.io/pages-dev/202003/20200303 Getting started with the Rust package manager, Cargo","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202003/20200303 Getting started with the Rust package manager, Cargo"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装-rust-和-cargo">安装 Rust 和 Cargo</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#手动构建和运行-rust">手动构建和运行 Rust</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-创建新包">使用 Cargo 创建新包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-构建程序">使用 Cargo 构建程序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-运行你的应用程序">使用 Cargo 运行你的应用程序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-添加依赖项">使用 Cargo 添加依赖项</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用单个命令进行编译和运行">使用单个命令进行编译和运行</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在开发过程中检查代码">在开发过程中检查代码</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#建立外部-rust-包">建立外部 Rust 包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-构建优化的-rust-程序">使用 Cargo 构建优化的 Rust 程序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-创建库还是二进制文件">使用 Cargo 创建库还是二进制文件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-运行测试">使用 Cargo 运行测试</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#深入了解-cargo-内部">深入了解 Cargo 内部</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#不要让你的技能生锈">不要让你的技能生锈</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Rust 包管理器 Cargo 入门</h1><blockquote>
+<p>了解 Rust 的软件包管理器和构建工具。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202003/09/104906tdl21k977t8999qt.jpg" alt=""></p>
+<p><a href="https://www.rust-lang.org/">Rust</a> 是一种现代编程语言，可提供高性能、可靠性和生产力。几年来，它一直被 StackOverflow 调查评为<a href="https://insights.stackoverflow.com/survey/2019#technology-_-most-loved-dreaded-and-wanted-languages">最受欢迎的语言</a>。</p>
+<p>除了是一种出色的编程语言之外，Rust 还具有一个称为 Cargo 的构建系统和软件包管理器。Cargo 处理许多任务，例如构建代码、下载库或依赖项等等。这两者捆绑在一起，因此在安装 Rust 时会得到 Cargo。</p>
+<h3 id="安装-rust-和-cargo">安装 Rust 和 Cargo</h3>
+<p>在开始之前，你需要安装 Rust 和 Cargo。Rust 项目提供了一个可下载的脚本来处理安装。要获取该脚本，请打开浏览器以访问 <a href="https://sh.rustup.rs/">https://sh.rustup.rs</a> 并保存该文件。阅读该脚本以确保你对它的具体行为有所了解，然后再运行它：</p>
+<pre><code>$ sh ./rustup.rs
+</code></pre>
+<p>你也可以参考这个<a href="https://www.rust-lang.org/tools/install">安装 Rust</a> 的网页以获取更多信息。</p>
+<p>安装 Rust 和 Cargo 之后，你必须<ruby>获取<rt>source</rt></ruby> <code>env</code> 文件中的配置：</p>
+<pre><code>$ source $HOME/.cargo/env
+</code></pre>
+<p>更好的办法是，将所需目录添加到 <code>PATH</code> 环境变量中：</p>
+<pre><code>export PATH=$PATH:~/.cargo/bin
+</code></pre>
+<p>如果你更喜欢使用软件包管理器（例如 Linux 上的 DNF 或 Apt），请在发行版本的存储库中查找 Rust 和 Cargo 软件包，并进行相应的安装。 例如：</p>
+<pre><code>$ dnf install rust cargo
+</code></pre>
+<p>安装并设置它们后，请验证你拥有的 Rust 和 Cargo 版本：</p>
+<pre><code>$ rustc --version
+rustc 1.41.0 (5e1a79984 2020-01-27)
+$ cargo --version
+cargo 1.41.0 (626f0f40e 2019-12-03)
+</code></pre>
+<h3 id="手动构建和运行-rust">手动构建和运行 Rust</h3>
+<p>从在屏幕上打印“Hello, world!”的简单程序开始。打开你喜欢的文本编辑器，然后键入以下程序：</p>
+<pre><code>$ cat hello.rs
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>以扩展名 <code>.rs</code> 保存文件，以将其标识为 Rust 源代码文件。</p>
+<p>使用 Rust 编译器 <code>rustc</code> 编译程序：</p>
+<pre><code>$ rustc hello.rs
+</code></pre>
+<p>编译后，你将拥有一个与源程序同名的二进制文件：</p>
+<pre><code>$ ls -l
+total 2592
+-rwxr-xr-x. 1 user group 2647944 Feb 13 14:14 hello
+-rw-r--r--. 1 user group      45 Feb 13 14:14 hello.rs
+$
+</code></pre>
+<p>执行程序以验证其是否按预期运行：</p>
+<pre><code>$ ./hello
+Hello, world!
+</code></pre>
+<p>这些步骤对于较小的程序或任何你想快速测试的东西就足够了。但是，在进行涉及到多人的大型程序时，Cargo 是前进的最佳之路。</p>
+<h3 id="使用-cargo-创建新包">使用 Cargo 创建新包</h3>
+<p>Cargo 是 Rust 的构建系统和包管理器。它可以帮助开发人员下载和管理依赖项，并帮助创建 Rust 包。在 Rust 社区中，Rust 中的“包”通常被称为“crate”（板条箱），但是在本文中，这两个词是可以互换的。请参阅 Rust 社区提供的 Cargo <a href="https://doc.rust-lang.org/cargo/faq.html">FAQ</a> 来区分。</p>
+<p>如果你需要有关 Cargo 命令行实用程序的任何帮助，请使用 <code>--help</code> 或 <code>-h</code> 命令行参数：</p>
+<pre><code>$ cargo –help
+</code></pre>
+<p>要创建一个新的包，请使用关键字 <code>new</code>，跟上包名称。在这个例子中，使用 <code>hello_opensource</code> 作为新的包名称。运行该命令后，你将看到一条消息，确认 Cargo 已创建具有给定名称的二进制包：</p>
+<pre><code>$ cargo new hello_opensource
+     Created binary (application) `hello_opensource` package
+</code></pre>
+<p>运行 <code>tree</code> 命令以查看目录结构，它会报告已创建了一些文件和目录。首先，它创建一个带有包名称的目录，并且在该目录内有一个存放你的源代码文件的 <code>src</code> 目录：</p>
+<pre><code>$ tree .
+.
+└── hello_opensource
+    ├── Cargo.toml
+    └── src
+        └── main.rs
+
+2 directories, 2 files
+</code></pre>
+<p>Cargo 不仅可以创建包，它也创建了一个简单的 “Hello, world” 程序。打开 <code>main.rs</code> 文件看看：</p>
+<pre><code>$ cat hello_opensource/src/main.rs
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>下一个要处理的文件是 <code>Cargo.toml</code>，这是你的包的配置文件。它包含有关包的信息，例如其名称、版本、作者信息和 Rust 版本信息。</p>
+<p>程序通常依赖于外部库或依赖项来运行，这使你可以编写应用程序来执行不知道如何编码或不想花时间编码的任务。你所有的依赖项都将在此文件中列出。此时，你的新程序还没有任何依赖关系。打开 <code>Cargo.toml</code> 文件并查看其内容：</p>
+<pre><code>$ cat hello_opensource/Cargo.toml
+[package]
+name = &quot;hello_opensource&quot;
+version = &quot;0.1.0&quot;
+authors = [&quot;user &lt;user@mail.com&gt;&quot;]
+edition = &quot;2018&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+</code></pre>
+<h3 id="使用-cargo-构建程序">使用 Cargo 构建程序</h3>
+<p>到目前为止，一切都很顺利。现在你已经有了一个包，可构建一个二进制文件（也称为可执行文件）。在此之前，进入包目录：</p>
+<pre><code>$ cd hello_opensource/
+</code></pre>
+<p>你可以使用 Cargo 的 <code>build</code> 命令来构建包。注意消息说它正在“编译”你的程序：</p>
+<pre><code>$ cargo build
+   Compiling hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.38s
+</code></pre>
+<p>运行 <code>build</code> 命令后，检查项目目录发生了什么：</p>
+<pre><code>$ tree .
+.
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── main.rs
+└── target
+    └── debug
+        ├── build
+        ├── deps
+        │   ├── hello_opensource-147b8a0f466515dd
+        │   └── hello_opensource-147b8a0f466515dd.d
+        ├── examples
+        ├── hello_opensource
+        ├── hello_opensource.d
+        └── incremental
+            └── hello_opensource-3pouh4i8ttpvz
+                ├── s-fkmhjmt8tj-x962ep-1hivstog8wvf
+                │   ├── 1r37g6m45p8rx66m.o
+                │   ├── 2469ykny0eqo592v.o
+                │   ├── 2g5i2x8ie8zed30i.o
+                │   ├── 2yrvd7azhgjog6zy.o
+                │   ├── 3g9rrdr4hyk76jtd.o
+                │   ├── dep-graph.bin
+                │   ├── query-cache.bin
+                │   ├── work-products.bin
+                │   └── wqif2s56aj0qtct.o
+                └── s-fkmhjmt8tj-x962ep.lock
+
+9 directories, 17 files
+</code></pre>
+<p>哇！编译过程产生了许多中间文件。另外，你的二进制文件将以与软件包相同的名称保存在 <code>./target/debug</code> 目录中。</p>
+<h3 id="使用-cargo-运行你的应用程序">使用 Cargo 运行你的应用程序</h3>
+<p>现在你的二进制文件已经构建好了，使用 Cargo 的 <code>run</code> 命令运行它。如预期的那样，它将在屏幕上打印 <code>Hello, world!</code>。</p>
+<pre><code>$ cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/hello_opensource`
+Hello, world!
+</code></pre>
+<p>或者，你可以直接运行二进制文件，该文件位于：</p>
+<pre><code>$ ls -l ./target/debug/hello_opensource
+-rwxr-xr-x. 2 root root 2655552 Feb 13 14:19 ./target/debug/hello_opensource
+</code></pre>
+<p>如预期的那样，它产生相同的结果：</p>
+<pre><code>$ ./target/debug/hello_opensource
+Hello, world!
+</code></pre>
+<p>假设你需要重建包，并丢弃早期编译过程创建的所有二进制文件和中间文件。Cargo 提供了一个方便的<code>clean</code> 选项来删除所有中间文件，但源代码和其他必需文件除外：</p>
+<pre><code>$ cargo clean
+$ tree .
+.
+├── Cargo.lock
+├── Cargo.toml
+└── src
+    └── main.rs
+
+1 directory, 3 files
+</code></pre>
+<p>对程序进行一些更改，然后再次运行以查看其工作方式。例如，下面这个较小的更改将 <code>Opensource</code> 添加到 <code>Hello, world!</code> 字符串中：</p>
+<pre><code>$ cat src/main.rs
+fn main() {
+    println!(&quot;Hello, Opensource world!&quot;);
+}
+</code></pre>
+<p>现在，构建该程序并再次运行它。这次，你会在屏幕上看到 <code>Hello, Opensource world!</code>：</p>
+<pre><code>$ cargo build
+   Compiling hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.39s
+
+$ cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/hello_opensource`
+Hello, Opensource world!
+</code></pre>
+<h3 id="使用-cargo-添加依赖项">使用 Cargo 添加依赖项</h3>
+<p>Cargo 允许你添加程序需要运行的依赖项。使用 Cargo 添加依赖项非常容易。每个 Rust 包都包含一个 <code>Cargo.toml</code> 文件，其中包含一个依赖关系列表（默认为空）。用你喜欢的文本编辑器打开该文件，找到 <code>[dependencies]</code> 部分，然后添加要包含在包中的库。例如，将 <code>rand</code> 库添加为依赖项：</p>
+<pre><code>$ cat Cargo.toml
+[package]
+name = &quot;hello_opensource&quot;
+version = &quot;0.1.0&quot;
+authors = [&quot;test user &lt;test@mail.com&gt;&quot;]
+edition = &quot;2018&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = &quot;0.3.14&quot;
+</code></pre>
+<p>试试构建你的包，看看会发生什么。</p>
+<pre><code>$ cargo build
+    Updating crates.io index
+   Compiling libc v0.2.66
+   Compiling rand v0.4.6
+   Compiling rand v0.3.23
+   Compiling hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.48s
+</code></pre>
+<p>现在，Cargo 会联系 <a href="http://crates.io">Crates.io</a>（这是 Rust 用于存储 crate（或包）的中央仓库），并下载和编译 <code>rand</code>。但是，等等 —— <code>libc</code> 包是怎么回事？你没有要安装 libc 啊。是的，<code>rand</code> 包依赖于 <code>libc</code> 包；因此，Cargo 也会下载并编译 <code>libc</code>。</p>
+<p>库的新版本会不断涌现，而 Cargo 提供了一种使用 <code>update</code> 命令更新其所有依赖关系的简便方法：</p>
+<pre><code>cargo update
+</code></pre>
+<p>你还可以选择使用 <code>-p</code> 标志跟上包名称来更新特定的库：</p>
+<pre><code>cargo update -p rand
+</code></pre>
+<h3 id="使用单个命令进行编译和运行">使用单个命令进行编译和运行</h3>
+<p>到目前为止，每当对程序进行更改时，都先使用了 <code>build</code> 之后是 <code>run</code>。有一个更简单的方法：你可以直接使用 <code>run</code> 命令，该命令会在内部进行编译并运行该程序。要查看其工作原理，请首先清理你的软件包目录：</p>
+<pre><code>$ cargo clean
+$ tree .
+.
+├── Cargo.lock
+├── Cargo.toml
+└── src
+    └── main.rs
+
+1 directory, 3 files
+</code></pre>
+<p>现在执行 <code>run</code>。输出信息表明它已进行编译，然后运行了该程序，这意味着你不需要每次都显式地运行 <code>build</code>：</p>
+<pre><code>$ cargo run
+   Compiling hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.41s
+     Running `target/debug/hello_opensource`
+Hello, world!
+</code></pre>
+<h3 id="在开发过程中检查代码">在开发过程中检查代码</h3>
+<p>在开发程序时，你经常会经历多次迭代。你需要确保你的程序没有编码错误并且可以正常编译。你不需要负担在每次编译时生成二进制文件的开销。Cargo 为你提供了一个 <code>check</code> 选项，该选项可以编译代码，但跳过了生成可执行文件的最后一步。首先在包目录中运行 <code>cargo clean</code>：</p>
+<pre><code>$ tree .
+.
+├── Cargo.lock
+├── Cargo.toml
+└── src
+    └── main.rs
+
+1 directory, 3 files
+</code></pre>
+<p>现在运行 <code>check</code> 命令，查看对目录进行了哪些更改：</p>
+<pre><code>$ cargo check
+    Checking hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.18s
+</code></pre>
+<p>该输出显示，即使在编译过程中创建了中间文件，但没有创建最终的二进制文件或可执行文件。这样可以节省一些时间，如果该包包含了数千行代码，这非常重要：</p>
+<pre><code>$ tree .
+.
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── main.rs
+└── target
+    └── debug
+        ├── build
+        ├── deps
+        │   ├── hello_opensource-842d9a06b2b6a19b.d
+        │   └── libhello_opensource-842d9a06b2b6a19b.rmeta
+        ├── examples
+        └── incremental
+            └── hello_opensource-1m3f8arxhgo1u
+                ├── s-fkmhw18fjk-542o8d-18nukzzq7hpxe
+                │   ├── dep-graph.bin
+                │   ├── query-cache.bin
+                │   └── work-products.bin
+                └── s-fkmhw18fjk-542o8d.lock
+
+9 directories, 9 files
+</code></pre>
+<p>要查看你是否真的节省了时间，请对 <code>build</code> 和 <code>check</code> 命令进行计时并进行比较。首先，计时 <code>build</code> 命令：</p>
+<pre><code>$ time cargo build
+   Compiling hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.40s
+
+real    0m0.416s
+user    0m0.251s
+sys     0m0.199s
+</code></pre>
+<p>在运行 <code>check</code> 命令之前清理目录：</p>
+<pre><code>$ cargo clean
+</code></pre>
+<p>计时 <code>check</code> 命令：</p>
+<pre><code>$ time cargo check
+    Checking hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.15s
+
+real    0m0.166s
+user    0m0.086s
+sys     0m0.081s
+</code></pre>
+<p>显然，<code>check</code> 命令要快得多。</p>
+<h3 id="建立外部-rust-包">建立外部 Rust 包</h3>
+<p>到目前为止，你所做的这些都可以应用于你从互联网上获得的任何 Rust crate。你只需要下载或克隆存储库，移至包文件夹，然后运行 <code>build</code> 命令，就可以了：</p>
+<pre><code>git clone &lt;github-like-url&gt;
+cd &lt;package-folder&gt;
+cargo build
+</code></pre>
+<h3 id="使用-cargo-构建优化的-rust-程序">使用 Cargo 构建优化的 Rust 程序</h3>
+<p>到目前为止，你已经多次运行 <code>build</code>，但是你注意到它的输出了吗？不用担心，再次构建它并密切注意：</p>
+<pre><code>$ cargo build
+   Compiling hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.36s
+</code></pre>
+<p>看到了每次编译后的 <code>[unoptimized + debuginfo]</code> 文本了吗？这意味着 Cargo 生成的二进制文件包含大量调试信息，并且未针对执行进行优化。开发人员经常经历开发的多次迭代，并且需要此调试信息进行分析。同样，性能并不是开发软件时的近期目标。因此，对于现在而言是没问题的。</p>
+<p>但是，一旦准备好发布软件，就不再需要这些调试信息。而是需要对其进行优化以获得最佳性能。在开发的最后阶段，可以将 <code>--release</code> 标志与 <code>build</code> 一起使用。仔细看，编译后，你应该会看到 <code>[optimized]</code> 文本：</p>
+<pre><code>$ cargo build --release
+   Compiling hello_opensource v0.1.0 (/opensource/hello_opensource)
+    Finished release [optimized] target(s) in 0.29s
+</code></pre>
+<p>如果愿意，你可以通过这种练习来了解运行优化软件与未优化软件时节省的时间。</p>
+<h3 id="使用-cargo-创建库还是二进制文件">使用 Cargo 创建库还是二进制文件</h3>
+<p>任何软件程序都可以粗略地分类为独立二进制文件或库。一个独立二进制文件也许即使是当做外部库使用的，自身也是可以运行的。但是，作为一个库，是可以被另一个独立二进制文件所利用的。到目前为止，你在本教程中构建的所有程序都是独立二进制文件，因为这是 Cargo 的默认设置。 要创建一个<strong>库</strong>，请添加 <code>--lib</code> 选项：</p>
+<pre><code>$ cargo new --lib libhello
+     Created library `libhello` package
+</code></pre>
+<p>这次，Cargo 不会创建 <code>main.rs</code> 文件，而是创建一个 <code>lib.rs</code> 文件。 你的库的代码应该是这样的：</p>
+<pre><code>$ tree .
+.
+└── libhello
+    ├── Cargo.toml
+    └── src
+        └── lib.rs
+
+2 directories, 2 files
+</code></pre>
+<p>Cargo 就是这样的，不要奇怪，它在你的新库文件中添加了一些代码。通过移至包目录并查看文件来查找添加的内容。默认情况下，Cargo 在库文件中放置一个测试函数。</p>
+<h3 id="使用-cargo-运行测试">使用 Cargo 运行测试</h3>
+<p>Rust 为单元测试和集成测试提供了一流的支持，而 Cargo 允许你执行以下任何测试：</p>
+<pre><code>$ cd libhello/
+
+$ cat src/lib.rs
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4);
+    }
+}
+</code></pre>
+<p>Cargo 有一个方便的 <code>test</code> 命令，可以运行代码中存在的任何测试。尝试默认运行 Cargo 在库代码中放入的测试：</p>
+<pre><code>$ cargo test
+   Compiling libhello v0.1.0 (/opensource/libhello)
+    Finished test [unoptimized + debuginfo] target(s) in 0.55s
+     Running target/debug/deps/libhello-d52e35bb47939653
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+   Doc-tests libhello
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+</code></pre>
+<h3 id="深入了解-cargo-内部">深入了解 Cargo 内部</h3>
+<p>你可能有兴趣了解在运行一个 Cargo 命令时它底下发生了什么。毕竟，在许多方面，Cargo 只是个封装器。要了解它在做什么，你可以将 <code>-v</code> 选项与任何 Cargo 命令一起使用，以将详细信息输出到屏幕。</p>
+<p>这是使用 <code>-v</code> 选项运行 <code>build</code> 和 <code>clean</code> 的几个例子。</p>
+<p>在 <code>build</code> 命令中，你可以看到这些给定的命令行选项触发了底层的 <code>rustc</code>（Rust 编译器）：</p>
+<pre><code>$ cargo build -v
+   Compiling hello_opensource v0.1.0 (/opensource/hello_opensource)
+     Running `rustc --edition=2018 --crate-name hello_opensource src/main.rs --error-format=json --json=diagnostic-rendered-ansi --crate-type bin --emit=dep-info,link -C debuginfo=2 -C metadata=147b8a0f466515dd -C extra-filename=-147b8a0f466515dd --out-dir /opensource/hello_opensource/target/debug/deps -C incremental=/opensource/hello_opensource/target/debug/incremental -L dependency=/opensource/hello_opensource/target/debug/deps`
+    Finished dev [unoptimized + debuginfo] target(s) in 0.36s
+</code></pre>
+<p>而 <code>clean</code> 命令表明它只是删除了包含中间文件和二进制文件的目录：</p>
+<pre><code>$ cargo clean -v
+    Removing /opensource/hello_opensource/target
+</code></pre>
+<h3 id="不要让你的技能生锈">不要让你的技能生锈</h3>
+<p>要扩展你的技能，请尝试使用 Rust 和 Cargo 编写并运行一个稍微复杂的程序。很简单就可以做到：例如，尝试列出当前目录中的所有文件（可以用 9 行代码完成），或者尝试自己回显输入。小型的实践应用程序可帮助你熟悉语法以及编写和测试代码的过程。</p>
+<p>本文为刚起步的 Rust 程序员提供了大量信息，以使他们可以开始入门 Cargo。但是，当你开始处理更大、更复杂的程序时，你需要对 Cargo 有更深入的了解。当你准备好迎接更多内容时，请下载并阅读 Rust 团队编写的开源的《<a href="https://doc.rust-lang.org/cargo">Cargo 手册</a>》，看看你可以创造什么！</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/3/rust-cargo">https://opensource.com/article/20/3/rust-cargo</a></p>
+<p>作者：<a href="https://opensource.com/users/gkamathe">Gaurav Kamathe</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装-rust-和-cargo">安装 Rust 和 Cargo</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#手动构建和运行-rust">手动构建和运行 Rust</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-创建新包">使用 Cargo 创建新包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-构建程序">使用 Cargo 构建程序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-运行你的应用程序">使用 Cargo 运行你的应用程序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-添加依赖项">使用 Cargo 添加依赖项</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用单个命令进行编译和运行">使用单个命令进行编译和运行</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在开发过程中检查代码">在开发过程中检查代码</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#建立外部-rust-包">建立外部 Rust 包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-构建优化的-rust-程序">使用 Cargo 构建优化的 Rust 程序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-创建库还是二进制文件">使用 Cargo 创建库还是二进制文件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cargo-运行测试">使用 Cargo 运行测试</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#深入了解-cargo-内部">深入了解 Cargo 内部</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#不要让你的技能生锈">不要让你的技能生锈</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202003/20200303 Getting started with the Rust package manager, Cargo","title":"Rust 包管理器 Cargo 入门"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

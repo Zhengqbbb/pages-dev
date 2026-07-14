@@ -1,0 +1,298 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>用树莓派构建 Kubernetes 集群 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="用树莓派构建 Kubernetes 集群 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="用树莓派构建 Kubernetes 集群 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202007/20200605 Build a Kubernetes cluster with the Raspberry Pi#page","@type":"TechArticle","headline":"用树莓派构建 Kubernetes 集群","inLanguage":"en","name":"用树莓派构建 Kubernetes 集群","url":"https://zhengqbbb.github.io/pages-dev/202007/20200605 Build a Kubernetes cluster with the Raspberry Pi","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202007/20200605 Build a Kubernetes cluster with the Raspberry Pi"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在树莓派上安装-kubernetes-集群">在树莓派上安装 Kubernetes 集群</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#配置主机">配置主机</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建-kubernetes-集群">创建 Kubernetes 集群</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#去吧kubernetes">去吧，Kubernetes</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>用树莓派构建 Kubernetes 集群</h1><blockquote>
+<p>将 Kubernetes 安装在多个树莓派上，实现自己的“家庭私有云”容器服务。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202007/15/234152ivw1y2wwhmhmpuvo.jpg" alt=""></p>
+<p><a href="https://opensource.com/resources/what-is-kubernetes">Kubernetes</a> 从一开始就被设计为云原生的企业级容器编排系统。它已经成长为事实上的云容器平台，并由于接受了容器原生虚拟化和无服务器计算等新技术而继续发展。</p>
+<p>从微型的边缘计算到大规模的容器环境，无论是公有云还是私有云环境，Kubernetes 都可以管理其中的容器。它是“家庭私有云”项目的理想选择，既提供了强大的容器编排，又让你有机会了解一项这样的技术 —— 它的需求如此之大，与云计算结合得如此彻底，以至于它的名字几乎就是“云计算”的代名词。</p>
+<p>没有什么比 Kubernetes 更懂“云”，也没有什么能比树莓派更合适“集群起来”！在廉价的树莓派硬件上运行本地的 Kubernetes 集群是获得在真正的云技术巨头上进行管理和开发的经验的好方法。</p>
+<h3 id="在树莓派上安装-kubernetes-集群">在树莓派上安装 Kubernetes 集群</h3>
+<p>本练习将在三个或更多运行 Ubuntu 20.04 的树莓派 4 上安装 Kubernetes 1.18.2 集群。Ubuntu 20.04（Focal Fossa）提供了针对 64 位 ARM（ARM64）的树莓派镜像（64 位内核和用户空间）。由于目标是使用这些树莓派来运行 Kubernetes 集群，因此运行 AArch64 容器镜像的能力非常重要：很难找到 32 位的通用软件镜像乃至于标准基础镜像。借助 Ubuntu 20.04 的 ARM64 镜像，可以让你在 Kubernetes 上使用 64 位容器镜像。</p>
+<h4 id="aarch64-vs-arm6432-位-vs-64-位arm-vs-x86">AArch64 vs. ARM64；32 位 vs. 64 位；ARM vs. x86</h4>
+<p>请注意，AArch64 和 ARM64 实际上是同一种东西。不同的名称源于它们在不同社区中的使用。许多容器镜像都标为 AArch64，并能在标为 ARM64 的系统上正常运行。采用 AArch64/ARM64 架构的系统也能够运行 32 位的 ARM 镜像，但反之则不然：32 位的 ARM 系统无法运行 64 位的容器镜像。这就是 Ubuntu 20.04 ARM64 镜像如此有用的原因。</p>
+<p>这里不会太深入地解释不同的架构类型，值得注意的是，ARM64/AArch64 和 x86_64 架构是不同的，运行在 64 位 ARM 架构上的 Kubernetes 节点无法运行为 x86_64 构建的容器镜像。在实践中，你会发现有些镜像没有为两种架构构建，这些镜像可能无法在你的集群中使用。你还需要在基于 Arch64 的系统上构建自己的镜像，或者跳过一些限制以让你的常规的 x86_64 系统构建 Arch64 镜像。在“家庭私有云”项目的后续文章中，我将介绍如何在常规系统上构建 AArch64 镜像。</p>
+<p>为了达到两全其美的效果，在本教程中设置好 Kubernetes 集群后，你可以在以后向其中添加 x86_64 节点。你可以通过使用 <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">Kubernetes 的<ruby>污点<rt>taint</rt></ruby> 和<ruby>容忍<rt>toleration</rt></ruby></a> 能力，由 Kubernetes 的调度器将给定架构的镜像调度到相应的节点上运行。</p>
+<p>关于架构和镜像的内容就不多说了。是时候安装 Kubernetes 了，开始吧！</p>
+<h4 id="前置需求">前置需求</h4>
+<p>这个练习的要求很低。你将需要：</p>
+<ul>
+<li>三台（或更多）树莓派 4（最好是 4GB 内存的型号）。</li>
+<li>在全部树莓派上安装 Ubuntu 20.04 ARM64。</li>
+</ul>
+<p>为了简化初始设置，请阅读《<a href="https://linux.cn/article-12277-1.html">修改磁盘镜像来创建基于树莓派的家庭实验室</a>》，在将 Ubuntu 镜像写入 SD 卡并安装在树莓派上之前，添加一个用户和 SSH 授权密钥（<code>authorized_keys</code>）。</p>
+<h3 id="配置主机">配置主机</h3>
+<p>在 Ubuntu 被安装在树莓派上，并且可以通过 SSH 访问后，你需要在安装 Kubernetes 之前做一些修改。</p>
+<h4 id="安装和配置-docker">安装和配置 Docker</h4>
+<p>截至目前，Ubuntu 20.04 在 base 软件库中提供了最新版本的 Docker，即 v19.03，可以直接使用 <code>apt</code> 命令安装它。请注意，包名是 <code>docker.io</code>。请在所有的树莓派上安装 Docker：</p>
+<pre><code># 安装 docker.io 软件包
+$ sudo apt install -y docker.io
+</code></pre>
+<p>安装好软件包后，你需要做一些修改来启用 <a href="https://en.wikipedia.org/wiki/Cgroups">cgroup</a>（控制组）。cgroup 允许 Linux 内核限制和隔离资源。实际上，这可以让 Kubernetes 更好地管理其运行的容器所使用的资源，并通过让容器彼此隔离来增加安全性。</p>
+<p>在对所有树莓派进行以下修改之前，请检查 <code>docker info</code> 的输出：</p>
+<pre><code># 检查 `docker info`
+# 省略了某些输出
+$ sudo docker info
+(...)
+ Cgroup Driver: cgroups
+(...)
+WARNING: No memory limit support
+WARNING: No swap limit support
+WARNING: No kernel memory limit support
+WARNING: No kernel memory TCP limit support
+WARNING: No oom kill disable support
+</code></pre>
+<p>上面的输出突出显示了需要修改的部分：cgroup 驱动和限制支持。</p>
+<p>首先，将 Docker 使用的默认 cgroup 驱动从 <code>cgroups</code> 改为 <code>systemd</code>，让 systemd 充当 cgroup 管理器，确保只有一个 cgroup 管理器在使用。这有助于系统的稳定性，这也是 Kubernetes 所推荐的。要做到这一点，请创建 <code>/etc/docker/daemon.json</code> 文件或将内容替换为：</p>
+<pre><code># 创建或替换 /etc/docker/daemon.json 以启用 cgroup 的 systemd 驱动
+
+$ sudo cat &gt; /etc/docker/daemon.json &lt;&lt;EOF
+{
+  &quot;exec-opts&quot;: [&quot;native.cgroupdriver=systemd&quot;],
+  &quot;log-driver&quot;: &quot;json-file&quot;,
+  &quot;log-opts&quot;: {
+    &quot;max-size&quot;: &quot;100m&quot;
+  },
+  &quot;storage-driver&quot;: &quot;overlay2&quot;
+}
+EOF
+</code></pre>
+<h4 id="启用-cgroup-限制支持">启用 cgroup 限制支持</h4>
+<p>接下来，启用限制支持，如上面的 <code>docker info</code> 输出中的警告所示。你需要修改内核命令行以在引导时启用这些选项。对于树莓派 4，将以下内容添加到 <code>/boot/firmware/cmdline.txt</code> 文件中：</p>
+<pre><code>cgroup_enable=cpuset
+cgroup_enable=memory
+cgroup_memory=1
+swapaccount=1
+</code></pre>
+<p>确保它们被添加到 <code>cmdline.txt</code> 文件的行末。这可以通过使用 <code>sed</code> 在一行中完成。</p>
+<pre><code># 将 cgroup 和交换选项添加到内核命令行中
+# 请注意 &quot;cgroup_enable=cpuset&quot; 前的空格，以便在该行的最后一个项目后添加一个空格
+$ sudo sed -i &#39;$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1/&#39; /boot/firmware/cmdline.txt
+</code></pre>
+<p><code>sed</code> 命令匹配该行的终止符（由第一个 <code>$</code> 代表），用列出的选项代替它（它实际上是将选项附加到该行）。</p>
+<p>有了这些改变，Docker 和内核应该按照 Kubernetes 的需要配置好了。重新启动树莓派，当它们重新启动后，再次检查 <code>docker info</code> 的输出。现在，<code>Cgroups driver</code> 变成了 <code>systemd</code>，警告也消失了。</p>
+<h4 id="允许-iptables-查看桥接流量">允许 iptables 查看桥接流量</h4>
+<p>根据文档，Kubernetes 需要配置 iptables 来查看桥接网络流量。你可以通过修改 <code>sysctl</code> 配置来实现。</p>
+<pre><code># 启用 net.bridge.bridge-nf-call-iptables 和 -iptables6
+cat &lt;&lt;EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+$ sudo sysctl --system
+</code></pre>
+<h4 id="安装-ubuntu-的-kubernetes-包">安装 Ubuntu 的 Kubernetes 包</h4>
+<p>由于你使用的是 Ubuntu，你可以从 Kubernetes.io 的 apt 仓库中安装 Kubernetes 软件包。目前没有 Ubuntu 20.04（Focal）的仓库，但最近的 Ubuntu LTS 仓库 Ubuntu 18.04（Xenial） 中有 Kubernetes 1.18.2。最新的 Kubernetes 软件包可以从那里安装。</p>
+<p>将 Kubernetes 软件库添加到 Ubuntu 的源列表之中：</p>
+<pre><code># 添加 packages.cloud.google.com 的 atp 密钥
+$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+# 添加 Kubernetes 软件库
+cat &lt;&lt;EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+</code></pre>
+<p>当 Kubernetes 添加了 Ubuntu 20.04（Focal）仓库时 —— 也许是在下一个 Kubernetes 版本发布时 —— 请确保切换到它。</p>
+<p>将仓库添加到源列表后，安装三个必要的 Kubernetes 包：kubelet、kubeadm 和 kubectl：</p>
+<pre><code># 更新 apt 缓存并安装 kubelet、kubeadm kubectl
+# （输出略）
+$ sudo apt update &amp;amp;&amp;amp; sudo apt install -y kubelet kubeadm kubectl
+</code></pre>
+<p>最后，使用 <code>apt-mark hold</code> 命令禁用这三个包的定期更新。升级到 Kubernetes 需要比一般的更新过程更多的手工操作，需要人工关注。</p>
+<pre><code># 禁止（标记为保持）Kubernetes 软件包的更新
+$ sudo apt-mark hold kubelet kubeadm kubectl
+kubelet set on hold.
+kubeadm set on hold.
+kubectl set on hold.
+</code></pre>
+<p>主机配置就到这里了! 现在你可以继续设置 Kubernetes 本身了。</p>
+<h3 id="创建-kubernetes-集群">创建 Kubernetes 集群</h3>
+<p>在安装了 Kubernetes 软件包之后，你现在可以继续创建集群了。在开始之前，你需要做一些决定。首先，其中一个树莓派需要被指定为控制平面节点（即主节点）。其余的节点将被指定为计算节点。</p>
+<p>你还需要选择一个 <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">CIDR</a>（无类别域间路由）地址用于 Kubernetes 集群中的 Pod。在集群创建过程中设置 <code>pod-network-cidr</code> 可以确保设置了 <code>podCIDR</code> 值，它以后可以被<ruby>容器网络接口<rt>Container Network Interface</rt></ruby>（CNI）加载项使用。本练习使用的是 <a href="https://github.com/coreos/flannel">Flannel</a> CNI。你选择的 CIDR 不应该与你的家庭网络中当前使用的任何 CIDR 重叠，也不应该与你的路由器或 DHCP 服务器管理的 CIDR 重叠。确保使用一个比你预期需要的更大的子网：<strong>总是</strong>有比你最初计划的更多的 Pod！在这个例子中，我将使用 CIDR 地址 <code>10.244.0.0/16</code>，但你可以选择一个适合你的。</p>
+<p>有了这些决定，你就可以初始化控制平面节点了。用 SSH 或其他方式登录到你为控制平面指定的节点。</p>
+<h4 id="初始化控制平面">初始化控制平面</h4>
+<p>Kubernetes 使用一个引导令牌来验证被加入集群的节点。当初始化控制平面节点时，需要将此令牌传递给 <code>kubeadm init</code> 命令。用 <code>kubeadm token generate</code> 命令生成一个令牌：</p>
+<pre><code># 生成一个引导令牌来验证加入集群的节点
+$ TOKEN=$(sudo kubeadm token generate)
+$ echo $TOKEN
+d584xg.xupvwv7wllcpmwjy
+</code></pre>
+<p>现在你可以使用 <code>kubeadm init</code> 命令来初始化控制平面了：</p>
+<pre><code># 初始化控制平面
+#（输出略）
+$ sudo kubeadm init --token=${TOKEN} --kubernetes-version=v1.18.2 --pod-network-cidr=10.244.0.0/16
+</code></pre>
+<p>如果一切顺利，你应该在输出的最后看到类似这样的东西：</p>
+<pre><code>Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+You should now deploy a pod network to the cluster.
+Run &quot;kubectl apply -f [podnetwork].yaml&quot; with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.2.114:6443 --token zqqoy7.9oi8dpkfmqkop2p5 \
+    --discovery-token-ca-cert-hash sha256:71270ea137214422221319c1bdb9ba6d4b76abfa2506753703ed654a90c4982b
+</code></pre>
+<p>注意两点：第一，Kubernetes 的 <code>kubectl</code> 连接信息已经写入到 <code>/etc/kubernetes/admin.conf</code>。这个 kubeconfig 文件可以复制到用户的 <code>~/.kube/config</code> 中，可以是主节点上的 root 用户或普通用户，也可以是远程机器。这样你就可以用 <code>kubectl</code> 命令来控制你的集群。</p>
+<p>其次，输出中以 <code>kubernetes join</code> 开头的最后一行是你可以运行的命令，你可以运行这些命令加入更多的节点到集群中。</p>
+<p>将新的 kubeconfig 复制到你的用户可以使用的地方后，你可以用 <code>kubectl get nodes</code> 命令来验证控制平面是否已经安装：</p>
+<pre><code># 显示 Kubernetes 集群中的节点
+# 你的节点名称会有所不同
+$ kubectl get nodes
+NAME         STATUS   ROLES    AGE     VERSION
+elderberry   Ready    master   7m32s   v1.18.2
+</code></pre>
+<h4 id="安装-cni-加载项">安装 CNI 加载项</h4>
+<p>CNI 加载项负责 Pod 网络的配置和清理。如前所述，这个练习使用的是 Flannel CNI 加载项，在已经设置好 <code>podCIDR</code> 值的情况下，你只需下载 Flannel YAML 并使用 <code>kubectl apply</code> 将其安装到集群中。这可以用 <code>kubectl apply -f -</code> 从标准输入中获取数据，用一行命令完成。这将创建管理 Pod 网络所需的 ClusterRoles、ServiceAccounts 和 DaemonSets 等。</p>
+<p>下载并应用 Flannel YAML 数据到集群中：</p>
+<pre><code># 下载 Flannel YAML 数据并应用它
+# （输出略）
+$ curl -sSL https://raw.githubusercontent.com/coreos/flannel/v0.12.0/Documentation/kube-flannel.yml | kubectl apply -f -
+</code></pre>
+<h4 id="将计算节点加入到集群中">将计算节点加入到集群中</h4>
+<p>有了 CNI 加载项，现在是时候将计算节点添加到集群中了。加入计算节点只需运行 <code>kube init</code> 命令末尾提供的 <code>kubeadm join</code> 命令来初始化控制平面节点。对于你想加入集群的其他树莓派，登录主机，运行命令即可：</p>
+<pre><code># 加入节点到集群，你的令牌和 ca-cert-hash 应各有不同
+$ sudo kubeadm join 192.168.2.114:6443 --token zqqoy7.9oi8dpkfmqkop2p5 \
+    --discovery-token-ca-cert-hash sha256:71270ea137214422221319c1bdb9ba6d4b76abfa2506753703ed654a90c4982b
+</code></pre>
+<p>一旦你完成了每个节点的加入，你应该能够在 <code>kubectl get nodes</code> 的输出中看到新节点：</p>
+<pre><code># 显示 Kubernetes 集群中的节点
+# 你的节点名称会有所不同
+$ kubectl get nodes
+NAME         STATUS   ROLES    AGE     VERSION
+elderberry   Ready    master   7m32s   v1.18.2
+gooseberry    Ready    &amp;lt;none&amp;gt;   2m39s   v1.18.2
+huckleberry   Ready    &amp;lt;none&amp;gt;   17s     v1.18.2
+</code></pre>
+<h4 id="验证集群">验证集群</h4>
+<p>此时，你已经拥有了一个完全正常工作的 Kubernetes 集群。你可以运行 Pod、创建部署和作业等。你可以使用<a href="https://kubernetes.io/docs/concepts/services-networking/service/">服务</a>从集群中的任何一个节点访问集群中运行的应用程序。你可以通过 NodePort 服务或入口控制器实现外部访问。</p>
+<p>要验证集群正在运行，请创建一个新的命名空间、部署和服务，并检查在部署中运行的 Pod 是否按预期响应。此部署使用 <code>quay.io/clcollins/kube-verify:01</code> 镜像，这是一个监听请求的 Nginx 容器（实际上，与文章《<a href="https://linux.cn/article-12407-1.html">使用 Cloud-init 将节点添加到你的私有云</a>》中使用的镜像相同）。你可以在<a href="https://github.com/clcollins/homelabCloudInit/blob/master/simpleCloudInitService/data/Containerfile">这里</a>查看镜像的容器文件。</p>
+<p>为部署创建一个名为 <code>kube-verify</code> 的命名空间：</p>
+<pre><code># 创建一个新的命名空间
+$ kubectl create namespace kube-verify
+# 列出命名空间
+$ kubectl get namespaces
+NAME              STATUS   AGE
+default           Active   63m
+kube-node-lease   Active   63m
+kube-public       Active   63m
+kube-system       Active   63m
+kube-verify       Active   19s
+</code></pre>
+<p>现在，在新的命名空间创建一个部署：</p>
+<pre><code># 创建一个新的部署
+$ cat &lt;&lt;EOF | kubectl create -f -
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-verify
+  namespace: kube-verify
+  labels:
+    app: kube-verify
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kube-verify
+  template:
+    metadata:
+      labels:
+        app: kube-verify
+    spec:
+      containers:
+      - name: nginx
+        image: quay.io/clcollins/kube-verify:01
+        ports:
+        - containerPort: 8080
+EOF
+deployment.apps/kube-verify created
+</code></pre>
+<p>Kubernetes 现在将开始创建部署，它由三个 Pod 组成，每个 Pod 都运行 <code>quay.io/clcollins/kube-verify:01</code> 镜像。一分钟左右后，新的 Pod 应该运行了，你可以用 <code>kubectl get all -n kube-verify</code> 来查看它们，以列出新命名空间中创建的所有资源：</p>
+<pre><code># 检查由该部署创建的资源
+$ kubectl get all -n kube-verify
+NAME                               READY   STATUS              RESTARTS   AGE
+pod/kube-verify-5f976b5474-25p5r   0/1     Running             0          46s
+pod/kube-verify-5f976b5474-sc7zd   1/1     Running             0          46s
+pod/kube-verify-5f976b5474-tvl7w   1/1     Running             0          46s
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/kube-verify   3/3     3            3           47s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/kube-verify-5f976b5474   3         3         3       47s
+</code></pre>
+<p>你可以看到新的部署、由部署创建的复制子集，以及由复制子集创建的三个 Pod，以满足部署中的 <code>replicas: 3</code> 的要求。你可以看到 Kubernetes 内部工作正常。</p>
+<p>现在，创建一个服务来暴露在三个 Pod 中运行的 Nginx “应用程序”（在本例中是“欢迎”页面）。这将作为一个单一端点，你可以通过它连接到 Pod：</p>
+<pre><code># 为该部署创建服务
+$ cat &lt;&lt;EOF | kubectl create -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-verify
+  namespace: kube-verify
+spec:
+  selector:
+    app: kube-verify
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+EOF
+service/kube-verify created
+</code></pre>
+<p>创建服务后，你可以对其进行检查并获取新服务的 IP 地址：</p>
+<pre><code># 检查新服务
+$ kubectl get -n kube-verify service/kube-verify
+NAME          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+kube-verify   ClusterIP   10.98.188.200   &amp;lt;none&amp;gt;        80/TCP    30s
+</code></pre>
+<p>你可以看到 <code>kube-verify</code> 服务已经被分配了一个 ClusterIP（仅对集群内部）<code>10.98.188.200</code>。这个 IP 可以从你的任何节点到达，但不能从集群外部到达。你可以通过在这个 IP 上连接到部署内部的容器来验证它们是否在工作：</p>
+<pre><code># 使用 curl 连接到 ClusterIP：
+# （简洁期间，输出有删节）
+$ curl 10.98.188.200
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot;
+    &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot; lang=&quot;en&quot;&gt;
+&lt;head&gt;
+</code></pre>
+<p>成功了！你的服务正在运行，容器内的 Nginx 正在响应你的请求。你的服务正在运行，容器内的 Nginx 正在响应你的请求。</p>
+<p>此时，你的树莓派上有一个正在运行的 Kubernetes 集群，安装了一个 CNI 加载项（Flannel），并有一个运行 Nginx Web 服务器的测试部署和服务。在大型公有云中，Kubernetes 有不同的入口控制器来与不同的解决方案交互，比如最近报道的 <a href="https://opensource.com/article/20/4/http-kubernetes-skipper">Skipper</a> 项目。同样，私有云也有与硬件负载均衡器设备（如 F5 Networks 的负载均衡器）交互的入口控制器，或用于处理进入节点的流量的 Nginx 和 HAProxy 控制器。</p>
+<p>在以后的文章中，我将通过安装自己的入口控制器来解决将集群中的服务暴露给外界的问题。我还将研究动态存储供应器和 StorageClasses，以便为应用程序分配持久性存储，包括利用你在上一篇文章《<a href="https://linux.cn/article-12413-1.html">将树莓派家庭实验室变成网络文件系统</a>》中设置的 NFS 服务器来为你的 Pod 创建按需存储。</p>
+<h3 id="去吧kubernetes">去吧，Kubernetes</h3>
+<p>“Kubernetes”（κυβερνήτης）在希腊语中是飞行员的意思 —— 但这是否意味着驾驶船只以及引导船只的人？诶，不是。“Kubernan”（κυβερνάω）是希腊语“驾驶”或“引导”的意思，因此，去吧，Kubernan，如果你在会议上或其它什么活动上看到我，请试着给我一个动词或名词的通行证，以另一种语言 —— 我不会说的语言。</p>
+<p>免责声明：如前所述，我不会读也不会讲希腊语，尤其是古希腊语，所以我选择相信我在网上读到的东西。你知道那是怎么一回事。我对此有所保留，放过我吧，因为我没有开“对我来说都是希腊语”这种玩笑。然而，只是提一下，虽然我可以开玩笑，但是实际上没有，所以我要么偷偷摸摸，要么聪明，要么两者兼而有之。或者，两者都不是。我并没有说这是个好笑话。</p>
+<p>所以，去吧，像专业人员一样在你的家庭私有云中用自己的 Kubernetes 容器服务来试运行你的容器吧！当你越来越得心应手时，你可以修改你的 Kubernetes 集群，尝试不同的选项，比如前面提到的入口控制器和用于持久卷的动态 StorageClasses。</p>
+<p>这种持续学习是 <a href="https://opensource.com/tags/devops">DevOps</a> 的核心，持续集成和新服务交付反映了敏捷方法论，当我们学会了处理云实现的大规模扩容，并发现我们的传统做法无法跟上步伐时，我们就接受了这两种方法论。</p>
+<p>你看，技术、策略、哲学、一小段希腊语和一个可怕的原始笑话，都汇聚在一篇文章当中。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/6/kubernetes-raspberry-pi">https://opensource.com/article/20/6/kubernetes-raspberry-pi</a></p>
+<p>作者：<a href="https://opensource.com/users/clcollins">Chris Collins</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在树莓派上安装-kubernetes-集群">在树莓派上安装 Kubernetes 集群</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#配置主机">配置主机</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建-kubernetes-集群">创建 Kubernetes 集群</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#去吧kubernetes">去吧，Kubernetes</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202007/20200605 Build a Kubernetes cluster with the Raspberry Pi","title":"用树莓派构建 Kubernetes 集群"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

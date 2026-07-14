@@ -1,0 +1,484 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>R 语言绘制数据：图表篇 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="R 语言绘制数据：图表篇 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="R 语言绘制数据：图表篇 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202207/20220527 Plotting Data in R- Graphs#page","@type":"TechArticle","headline":"R 语言绘制数据：图表篇","inLanguage":"en","name":"R 语言绘制数据：图表篇","url":"https://zhengqbbb.github.io/pages-dev/202207/20220527 Plotting Data in R- Graphs","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202207/20220527 Plotting Data in R- Graphs"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#折线图">折线图</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#自相关图">自相关图</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#柱状图">柱状图</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#饼图">饼图</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#箱线图">箱线图</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#qq-图">QQ 图</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#等高图">等高图</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>R 语言绘制数据：图表篇</h1><p>R 语言有非常多的绘图和数据可视化的包，比如 <code>graphics</code>、<code>lattice</code>、<code>ggplot2</code> 等。这是 R 语言系列的第 9 篇文章，我们会介绍 R 中用来绘图的各种函数。</p>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202207/15/155129rsfee22secwyii8w.jpg" alt=""></p>
+<p>本文使用的 R 是 4.1.2 版本，运行环境为 Parabola GNU/Linux-libre (x86-64)。</p>
+<pre><code>$ R --version
+
+R version 4.1.2 (2021-11-01) -- &quot;Bird Hippie&quot;
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+</code></pre>
+<p>R 是自由软件，没有任何担保责任。只要遵守 GNU 通用公共许可证的版本 2 或者版本 3，你就可以对它进行（修改和）再分发。详情见 <a href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>。</p>
+<h3 id="折线图">折线图</h3>
+<p>我们以印度全境消费者物价指数（CPI -- 乡村/城市）数据集为研究对象，它可以从 <a href="https://data.gov.in/catalog/all-india-consumer-price-index-ruralurban-0">https://data.gov.in/catalog/all-india-consumer-price-index-ruralurban-0</a> 下载。选择“截止到 2021 年 11 月” 的版本，用 <code>read.csv</code> 函数读取下载好的文件，如下所示：</p>
+<pre><code>&gt; cpi &lt;- read.csv(file=&quot;CPI.csv&quot;, sep=&quot;,&quot;)
+
+&gt; head(cpi)
+Sector Year Name Andhra.Pradesh Arunachal.Pradesh Assam Bihar
+1 Rural 2011 January 104 NA 104 NA
+2 Urban 2011 January 103 NA 103 NA
+3 Rural+Urban 2011 January 103 NA 104 NA
+4 Rural 2011 February 107 NA 105 NA
+5 Urban 2011 February 106 NA 106 NA
+6 Rural+Urban 2011 February 105 NA 105 NA
+Chattisgarh Delhi Goa Gujarat Haryana Himachal.Pradesh Jharkhand Karnataka
+1 105 NA 103 104 104 104 105 104
+2 104 NA 103 104 104 103 104 104
+3 104 NA 103 104 104 103 105 104
+4 107 NA 105 106 106 105 107 106
+5 106 NA 105 107 107 105 107 108
+6 105 NA 104 105 106 104 106 106
+...
+</code></pre>
+<p>以 Punjab 州为例，对每年各月份的 CPI 值求和，然后用 <code>plot</code> 函数画一张折线图：</p>
+<pre><code>&gt; punjab &lt;- aggregate(x=cpi$Punjab, by=list(cpi$Year), FUN=sum)
+
+&gt; head(punjab)
+Group.1 x
+1 2011 3881.76
+2 2012 4183.30
+3 2013 4368.40
+4 2014 4455.50
+5 2015 4584.30
+6 2016 4715.80
+
+&gt; plot(punjab$Group.1, punjab$x, type=&quot;l&quot;, main=&quot;Punjab Consumer Price Index upto November 2021&quot;, xlab=&quot;Year&quot;, ylab=&quot;Consumer Price Index&quot;)
+</code></pre>
+<p><code>plot</code> 函数可以传入如下参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>x</code></td>
+<td align="left">向量类型，用于绘制 x 轴的数据</td>
+</tr>
+<tr>
+<td align="left"><code>y</code></td>
+<td align="left">向量或列表类型，用于绘制 y 轴的数据</td>
+</tr>
+<tr>
+<td align="left"><code>type</code></td>
+<td align="left">设置绘图类型：<code>p</code> 画点；<code>l</code> 画线；<code>o</code> 同时画点和线，且相互重叠；<code>s</code> 画阶梯线；<code>h</code> 画铅垂线</td>
+</tr>
+<tr>
+<td align="left"><code>xlim</code></td>
+<td align="left">x 轴范围</td>
+</tr>
+<tr>
+<td align="left"><code>ylim</code></td>
+<td align="left">y 轴范围</td>
+</tr>
+<tr>
+<td align="left"><code>main</code></td>
+<td align="left">标题</td>
+</tr>
+<tr>
+<td align="left"><code>sub</code></td>
+<td align="left">副标题</td>
+</tr>
+<tr>
+<td align="left"><code>xlab</code></td>
+<td align="left">x 轴标题</td>
+</tr>
+<tr>
+<td align="left"><code>ylab</code></td>
+<td align="left">y 轴标题</td>
+</tr>
+<tr>
+<td align="left"><code>axes</code></td>
+<td align="left">逻辑型，是否绘制坐标轴</td>
+</tr>
+</tbody></table>
+<p>结果如图 1。</p>
+<p><img src="https://www.opensourceforu.com/wp-content/uploads/2022/04/Figure-1-Line-chart.jpg" alt="Figure 1: Line chart"></p>
+<h3 id="自相关图">自相关图</h3>
+<p>自相关图能在时序分析中展示一个变量是否具有自相关性，可以用 R 中的 <code>acf</code> 函数绘制。<code>acf</code> 函数可以设置三种自相关类型：<code>correlation</code>、<code>covariance</code> 或 <code>partial</code>。图 2 是 Punjab 州 CPI 值的自相关图，x 表示 CPI。</p>
+<pre><code>acf(punjab$x,main=&#39;x&#39;)
+</code></pre>
+<p><img src="https://www.opensourceforu.com/wp-content/uploads/2022/04/Figure-2-ACF-chart.jpg" alt="Figure 2: ACF chart"></p>
+<p><code>acf</code> 函数可以传入以下参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>x</code></td>
+<td align="left">一个单变量或多变量的时序对象，或者一个数值向量或数值矩阵</td>
+</tr>
+<tr>
+<td align="left"><code>lag.max</code></td>
+<td align="left">最大滞后阶数</td>
+</tr>
+<tr>
+<td align="left"><code>type</code></td>
+<td align="left">字符型，设置所计算的自相关类型：<code>correlation</code>、<code>covariance</code> 或 <code>partial</code></td>
+</tr>
+<tr>
+<td align="left"><code>plot</code></td>
+<td align="left">逻辑性，若 <code>TRUE</code> 则绘制图像，若 <code>FALSE</code> 则打印传入数据的描述信息</td>
+</tr>
+<tr>
+<td align="left"><code>i</code></td>
+<td align="left">一组要保留的时差滞后</td>
+</tr>
+<tr>
+<td align="left"><code>j</code></td>
+<td align="left">一组要保留的名称或数字</td>
+</tr>
+</tbody></table>
+<h3 id="柱状图">柱状图</h3>
+<p>R 中画柱状图的函数是 <code>barplot</code>。下面的代码用来画 Punjab 州 CPI 的柱状图，如图3：</p>
+<pre><code>&gt; barplot(punjab$x, main=&quot;Punjab Consumer Price Index&quot;, sub=&quot;Upto November 2021&quot;, xlab=&quot;Year&quot;, ylab=&quot;Consumer Price Index&quot;, col=&quot;navy&quot;)
+</code></pre>
+<p><img src="https://www.opensourceforu.com/wp-content/uploads/2022/04/Figure-3-Line-chart-of-Punjabs-CPI.jpg" alt="Figure 3: Line chart of Punjab&#39;s CPI"></p>
+<p><code>barplot</code> 函数的使用方法非常灵活，可以传入以下参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>height</code></td>
+<td align="left">数值向量或数值矩阵，包含用于绘图的数据</td>
+</tr>
+<tr>
+<td align="left"><code>width</code></td>
+<td align="left">数值向量，用于设置柱宽</td>
+</tr>
+<tr>
+<td align="left"><code>space</code></td>
+<td align="left">柱间距</td>
+</tr>
+<tr>
+<td align="left"><code>beside</code></td>
+<td align="left">逻辑型，若 <code>FALSE</code> 则绘制堆积柱状图，若 <code>TRUE</code> 则绘制并列柱状图</td>
+</tr>
+<tr>
+<td align="left"><code>density</code></td>
+<td align="left">数值型，设置阴影线的填充密度（条数/英寸），默认为 <code>NULL</code>，即不填充阴影线</td>
+</tr>
+<tr>
+<td align="left"><code>angle</code></td>
+<td align="left">数值型，填充线条的角度，默认为 45</td>
+</tr>
+<tr>
+<td align="left"><code>border</code></td>
+<td align="left">柱形边缘的颜色</td>
+</tr>
+<tr>
+<td align="left"><code>main</code></td>
+<td align="left">标题</td>
+</tr>
+<tr>
+<td align="left"><code>sub</code></td>
+<td align="left">副标题</td>
+</tr>
+<tr>
+<td align="left"><code>xlab</code></td>
+<td align="left">x 轴标题</td>
+</tr>
+<tr>
+<td align="left"><code>ylab</code></td>
+<td align="left">y 轴标题</td>
+</tr>
+<tr>
+<td align="left"><code>xlim</code></td>
+<td align="left">x 轴范围</td>
+</tr>
+<tr>
+<td align="left"><code>ylim</code></td>
+<td align="left">y 轴范围</td>
+</tr>
+<tr>
+<td align="left"><code>axes</code></td>
+<td align="left">逻辑型，是否绘制坐标轴</td>
+</tr>
+</tbody></table>
+<p>用 <code>help</code> 命令可以查看 <code>barplot</code> 函数的详细信息：</p>
+<pre><code>&gt; help(barplot)
+
+barplot                package:graphics                R Documentation
+
+Bar Plots
+
+Description:
+
+     Creates a bar plot with vertical or horizontal bars.
+
+Usage:
+
+     barplot(height, ...)
+
+     ## Default S3 method:
+     barplot(height, width = 1, space = NULL,
+             names.arg = NULL, legend.text = NULL, beside = FALSE,
+             horiz = FALSE, density = NULL, angle = 45,
+             col = NULL, border = par(&quot;fg&quot;),
+             main = NULL, sub = NULL, xlab = NULL, ylab = NULL,
+             xlim = NULL, ylim = NULL, xpd = TRUE, log = &quot;&quot;,
+             axes = TRUE, axisnames = TRUE,
+             cex.axis = par(&quot;cex.axis&quot;), cex.names = par(&quot;cex.axis&quot;),
+             inside = TRUE, plot = TRUE, axis.lty = 0, offset = 0,
+             add = FALSE, ann = !add &amp;&amp; par(&quot;ann&quot;), args.legend = NULL, ...)
+
+     ## S3 method for class &#39;formula&#39;
+     barplot(formula, data, subset, na.action,
+             horiz = FALSE, xlab = NULL, ylab = NULL, ...)
+</code></pre>
+<h3 id="饼图">饼图</h3>
+<p>绘制饼图时要多加注意，因为饼图不一定能展示出各扇形间的区别。（LCTT 译注：根据统计学家和一些心理学家的调查结果，这种以比例展示数据的统计图形 <a href="https://bookdown.org/xiangyun/msg/gallery.html#sec:pie">实际上是很糟糕的可视化方式</a>，因此，R 关于饼图的帮助文件中清楚地说明了并不推荐使用饼图，而是使用条形图或点图作为替代。） 用 <code>subset</code> 函数获得 Gujarat 州在 2021 年 1 月 Rural、Urban、Rurual+Urban 的 CPI 值：</p>
+<pre><code>&gt; jan2021 &lt;- subset(cpi, Name==&quot;January&quot; &amp; Year==&quot;2021&quot;)
+
+&gt; jan2021$Gujarat
+[1] 153.9 151.2 149.1
+
+&gt; names &lt;- c(&#39;Rural&#39;, &#39;Urban&#39;, &#39;Rural+Urban&#39;)
+</code></pre>
+<p>使用 <code>pie</code> 函数为 Gujarat 州的 CPI 值生成饼图，如下所示：</p>
+<pre><code>&gt; pie(jan2021$Gujarat, names, main=&quot;Gujarat CPI Rural and Urban Pie Chart&quot;)
+</code></pre>
+<p><img src="https://www.opensourceforu.com/wp-content/uploads/2022/04/Figure-4-Pie-chart.jpg" alt="Figure 4: Pie chart"></p>
+<p><code>pie</code> 函数可以传入以下参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">`x</td>
+<td align="left">元素大于 0 的数值向量</td>
+</tr>
+<tr>
+<td align="left"><code>label</code></td>
+<td align="left">字符向量，用于设置每个扇形的标签</td>
+</tr>
+<tr>
+<td align="left"><code>radius</code></td>
+<td align="left">饼图的半径</td>
+</tr>
+<tr>
+<td align="left"><code>clockwise</code></td>
+<td align="left">逻辑型，若 <code>TRUE</code> 则顺时针绘图，若 <code>FALSE</code> 则逆时针绘图</td>
+</tr>
+<tr>
+<td align="left"><code>density</code></td>
+<td align="left">数值型，设置阴影线的填充密度（条数/英寸），默认为 <code>NULL</code>，即不填充阴影线</td>
+</tr>
+<tr>
+<td align="left"><code>angle</code></td>
+<td align="left">数值型，填充线条的角度，默认为 45</td>
+</tr>
+<tr>
+<td align="left"><code>col</code></td>
+<td align="left">数值向量，用于设置颜色</td>
+</tr>
+<tr>
+<td align="left"><code>lty</code></td>
+<td align="left">每个扇形的线条类型</td>
+</tr>
+<tr>
+<td align="left"><code>main</code></td>
+<td align="left">标题</td>
+</tr>
+</tbody></table>
+<h3 id="箱线图">箱线图</h3>
+<p>（LCTT 译注：箱线图主要是 <a href="https://bookdown.org/xiangyun/msg/gallery.html#sec:boxplot">从四分位数的角度出发</a> 描述数据的分布，它通过最大值（Q4）、上四分位数（Q3）、中位数（Q2）、下四分位数（Q1） 和最小值（Q0）五处位置来获取一维数据的分布概况。我们知道，这五处位置之间依次包含了四段数据，每段中数据量均为总数据量的 1/4。通过每一段数据占据的长度，我们可以大致推断出数据的集中或离散趋势。长度越短，说明数据在该区间上越密集，反之则稀疏。）</p>
+<p>箱线图能够用“<ruby>须线<rt>whisker</rt></ruby>” 展示一个变量的<ruby>四分位距<rt>Interquartile Range</rt></ruby>（简称 IQR=Q3-Q1）。用上下四分位数分别加/减内四分位距，再乘以一个人为设定的倍数 <code>range</code>（见下面的参数列表），得到 <code>range * c(Q1-IQR, Q3+IQR)</code>，超过这个范围的数据点就被视作离群点，在图中直接以点的形式表示出来。</p>
+<p><code>boxplot</code> 函数可以传入以下参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>data</code></td>
+<td align="left">数据框或列表，用于参数类型为公式的情况</td>
+</tr>
+<tr>
+<td align="left"><code>x</code></td>
+<td align="left">数值向量或者列表，若为列表则对列表中每一个子对象依次作出箱线图</td>
+</tr>
+<tr>
+<td align="left"><code>width</code></td>
+<td align="left">设置箱子的宽度</td>
+</tr>
+<tr>
+<td align="left"><code>outline</code></td>
+<td align="left">逻辑型，设置是否绘制离群点</td>
+</tr>
+<tr>
+<td align="left"><code>names</code></td>
+<td align="left">设置每个箱子的标签</td>
+</tr>
+<tr>
+<td align="left"><code>border</code></td>
+<td align="left">设置每个箱子的边缘的颜色</td>
+</tr>
+<tr>
+<td align="left"><code>range</code></td>
+<td align="left">延伸倍数，设置箱线图末端（须）延伸到什么位置</td>
+</tr>
+<tr>
+<td align="left"><code>plot</code></td>
+<td align="left">逻辑型，设置是否生成图像，若 TRUE 则生成图像，若 FALSE 则打印传入数据的描述信息</td>
+</tr>
+<tr>
+<td align="left"><code>horizontal</code></td>
+<td align="left">逻辑型，设置箱线图是否水平放置</td>
+</tr>
+</tbody></table>
+<p>用 <code>boxplot</code> 函数绘制部分州的箱线图：</p>
+<pre><code>&gt; names &lt;- c (&#39;Andaman and Nicobar&#39;, &#39;Lakshadweep&#39;, &#39;Delhi&#39;, &#39;Goa&#39;, &#39;Gujarat&#39;, &#39;Bihar&#39;)
+&gt; boxplot(cpi$Andaman.and.Nicobar, cpi$Lakshadweep, cpi$Delhi, cpi$Goa, cpi$Gujarat, cpi$Bihar, names=names)
+</code></pre>
+<p><img src="https://www.opensourceforu.com/wp-content/uploads/2022/04/Figure-5-ox-plot.jpg" alt="Figure 5: Box plot"></p>
+<h3 id="qq-图">QQ 图</h3>
+<p><ruby>QQ 图<rt>Quantile-Quantile plot</rt></ruby>可以用来对比两个数据集，也可以用来检查数据是否服从某种理论分布。<code>qqnorm</code> 函数能绘制正态分布 QQ 图，可以检验数据是否服从正态分布，用下面的代码绘制 Punjab 州 CPI 数据的 QQ 图：</p>
+<pre><code>&gt; qqnorm(punjab$x)
+</code></pre>
+<p><img src="https://www.opensourceforu.com/wp-content/uploads/2022/04/Figure-6-Q-Q-plot.jpg" alt="Figure 6: Q-Q plot"></p>
+<p><code>qqline</code> 函数可以向正态分布 QQ 图上添加理论分布曲线，它可以传入以下参数：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>x</code></td>
+<td align="left">第一个数据样本</td>
+</tr>
+<tr>
+<td align="left"><code>y</code></td>
+<td align="left">第二个数据样本</td>
+</tr>
+<tr>
+<td align="left"><code>datax</code></td>
+<td align="left">逻辑型，设置是否以 x 轴表示理论曲线的值，默认为 <code>FALSE</code></td>
+</tr>
+<tr>
+<td align="left"><code>probs</code></td>
+<td align="left">长度为 2 的数值向量，代表概率</td>
+</tr>
+<tr>
+<td align="left"><code>xlab</code></td>
+<td align="left">x 轴标题</td>
+</tr>
+<tr>
+<td align="left"><code>ylab</code></td>
+<td align="left">y 轴标题</td>
+</tr>
+<tr>
+<td align="left"><code>qtype</code></td>
+<td align="left"><code>[1,9]</code> 内的整数，设置分位计算类型，详情见 <code>help(quantile)</code> 的类型小节</td>
+</tr>
+</tbody></table>
+<h3 id="等高图">等高图</h3>
+<p>等高图可以描述三维数据，在 R 中对应的函数是 <code>contour</code>，这个函数也可以用来向已有的图表添加等高线。等高图常与其他图表一起使用。我们用 <code>contour</code> 对 R 中的 <code>volcano</code> 数据集（奥克兰的火山地形信息）绘制等高图，代码如下：</p>
+<pre><code>&gt; contour(volcano)
+</code></pre>
+<p><img src="https://www.opensourceforu.com/wp-content/uploads/2022/04/Figure-7-Volcano.jpg" alt="Figure 7: Volcano"></p>
+<p><code>contour</code> 函数的常用参数如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>x,y</code></td>
+<td align="left">z 中数值对应的点在平面上的位置</td>
+</tr>
+<tr>
+<td align="left"><code>z</code></td>
+<td align="left">数值向量</td>
+</tr>
+<tr>
+<td align="left"><code>nlevels</code></td>
+<td align="left">设置等高线的条数，调整等高线的疏密</td>
+</tr>
+<tr>
+<td align="left"><code>labels</code></td>
+<td align="left">等高线上的标记字符串，默认是高度的数值</td>
+</tr>
+<tr>
+<td align="left"><code>xlim</code></td>
+<td align="left">设置 x 轴的范围</td>
+</tr>
+<tr>
+<td align="left"><code>ylim</code></td>
+<td align="left">设置 y 轴的范围</td>
+</tr>
+<tr>
+<td align="left"><code>zlim</code></td>
+<td align="left">设置 z 轴的范围</td>
+</tr>
+<tr>
+<td align="left"><code>axes</code></td>
+<td align="left">设置是否绘制坐标轴</td>
+</tr>
+<tr>
+<td align="left"><code>col</code></td>
+<td align="left">设置等高线的颜色</td>
+</tr>
+<tr>
+<td align="left"><code>lty</code></td>
+<td align="left">设置线条的类型</td>
+</tr>
+<tr>
+<td align="left"><code>lwd</code></td>
+<td align="left">设置线条的粗细</td>
+</tr>
+<tr>
+<td align="left"><code>vfont</code></td>
+<td align="left">设置标签字体</td>
+</tr>
+</tbody></table>
+<p>等高线之间的区域可以用颜色填充，每种颜色表示一个高度范围，如下所示：</p>
+<pre><code>&gt; filled.contour(volcano, asp = 1)
+# asp 为图形纵横比，即 y 轴上的 1 单位长度和 x 轴上 1 单位长度的比率
+</code></pre>
+<p>填充结果见图 8。</p>
+<p><img src="https://www.opensourceforu.com/wp-content/uploads/2022/04/Figure-8-Filled-volcano.jpg" alt="Figure 8: Filled volcano"></p>
+<p>掌握上述内容后，你可以尝试 R 语言 <code>graphics</code> 包中的其他函数和图表（LCTT 译注：用 <code>help(package=graphics)</code> 可以查看 graphics 包提供的函数列表）。</p>
+<hr>
+<p>via: <a href="https://www.opensourceforu.com/2022/05/plotting-data-in-r-graphs/">https://www.opensourceforu.com/2022/05/plotting-data-in-r-graphs/</a></p>
+<p>作者：<a href="https://www.opensourceforu.com/author/shakthi-kannan/">Shakthi Kannan</a>
+选题：<a href="https://github.com/lkxed">lkxed</a>
+译者：<a href="https://github.com/tanloong">tanloong</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#折线图">折线图</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#自相关图">自相关图</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#柱状图">柱状图</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#饼图">饼图</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#箱线图">箱线图</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#qq-图">QQ 图</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#等高图">等高图</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202207/20220527 Plotting Data in R- Graphs","title":"R 语言绘制数据：图表篇"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

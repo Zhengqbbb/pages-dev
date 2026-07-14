@@ -1,0 +1,515 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>利用 Vely 在 Linux 构建你自己的 SaaS - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="利用 Vely 在 Linux 构建你自己的 SaaS - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="利用 Vely 在 Linux 构建你自己的 SaaS - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202312/20221107.2 ⭐️⭐️⭐️ Build your own SaaS on Linux with Vely#page","@type":"TechArticle","headline":"利用 Vely 在 Linux 构建你自己的 SaaS","inLanguage":"en","name":"利用 Vely 在 Linux 构建你自己的 SaaS","url":"https://zhengqbbb.github.io/pages-dev/202312/20221107.2 ⭐️⭐️⭐️ Build your own SaaS on Linux with Vely","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202312/20221107.2 ⭐️⭐️⭐️ Build your own SaaS on Linux with Vely"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#利用-vely-构建-saas">利用 Vely 构建 SaaS</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建应用程序">创建应用程序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建数据库">创建数据库</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#将-vely-连接至数据库">将 Vely 连接至数据库</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#构建应用程序">构建应用程序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#启用应用服务器">启用应用服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建网络服务器">创建网络服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#设置本地邮箱">设置本地邮箱</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从浏览器访问应用服务器">从浏览器访问应用服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#源代码">源代码</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#具有-c-性能的-saas">具有 C 性能的 SaaS</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>利用 Vely 在 Linux 构建你自己的 SaaS</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202312/12/110902myyfcm3hdmwqv3zy.jpg" alt=""></p>
+<blockquote>
+<p>Vely 可让你在网络应用程序中利用 C 语言的强大功能。</p>
+</blockquote>
+<p><a href="https://opensource.com/article/22/5/write-c-appplications-vely-linux">Vely</a> 将 C 语言的高性能和低内存占用与 PHP 等语言的易用性和安全性相结合。作为自由开源软件，它以 GPLv3 和 LGPL 3 授权，所以你甚至可以用它来构建商业软件。</p>
+<h3 id="利用-vely-构建-saas">利用 Vely 构建 SaaS</h3>
+<p>你可以使用 Vely 创建一个多租户网络应用程序，它可以作为软件即服务模式（SaaS）在互联网上运行。每个用户都有一个完全独立的数据空间。</p>
+<p>在这个网络应用程序示例中，用户可以注册一个笔记本服务来创建笔记，然后查看和删除它们。它仅用了 7 个源文件，310 行代码，就展示了如何集成多项技术:</p>
+<ul>
+<li>MariaDB</li>
+<li>网络浏览器</li>
+<li>Apache</li>
+<li>Unix 套接字</li>
+</ul>
+<h4 id="运作原理">运作原理</h4>
+<p>以下是从用户的角度来看应用程序是如何工作的。下图是代码演示。</p>
+<p>该应用允许用户通过指定电子邮件地址和密码创建新的登录名。你可以用任何你喜欢的方式设置它们，例如运用 CSS：</p>
+<p><img src="https://opensource.com/sites/default/files/2022-10/1createuser.png" alt="创建一个用户账户"></p>
+<p>验证用户的电子邮件:</p>
+<p><img src="https://opensource.com/sites/default/files/2022-10/2verifyemail.png" alt="验证用户的电子邮件地址"></p>
+<p>每个用户使用自己独有的用户名和密码登录：</p>
+<p><img src="https://opensource.com/sites/default/files/2022-10/3login.png" alt="用户登录"></p>
+<p>一旦登录，用户就可以添加笔记：</p>
+<p><img src="https://opensource.com/sites/default/files/2022-10/4addnote.png" alt="用户可以添加笔记"></p>
+<p>用户可以获取笔记列表：</p>
+<p><img src="https://opensource.com/sites/default/files/2022-10/5listnotes.png" alt="用户列举笔记"></p>
+<p>删除笔记之前，应用会申请确认信息：</p>
+<p><img src="https://opensource.com/sites/default/files/2022-10/6confirmdelete.png" alt="删除笔记之前，应用会申请确认信息"></p>
+<p>用户确认后，笔记被删除：</p>
+<p><img src="https://opensource.com/sites/default/files/2022-10/7notedeleted.png" alt="用户确认后，笔记被删除"></p>
+<h4 id="设置先决条件">设置先决条件</h4>
+<p>遵照 <a href="https://vely.dev/">Vely.dev</a> 上的安装指示。这是一个使用 DNF、APT、Pacman 或者 Zypper 等标准工具包的快速流程。</p>
+<p>由于它们都是这个范例的一部分，你必须安装 Apache 作为网络服务器，安装 MariaDB 作为数据库。</p>
+<p>安装 Vely 后，如使用 Vim，打开里面的“语法高亮显示”：</p>
+<pre><code>vv -m
+</code></pre>
+<h4 id="获取源代码">获取源代码</h4>
+<p>这个演示 SaaS 应用程序的源代码是 Vely 安装的一部分。为每个应用程序创建一个单独的源代码目录不失为一个好主意（而且你可以按自己喜好命名）。在这种情况下，解包源代码会帮你完成这些工作:</p>
+<pre><code>$ tar xvf $(vv -o)/examples/multitenant_SaaS.tar.gz
+$ cd multitenant_SaaS
+</code></pre>
+<p>默认情况下，该应用程序以 <code>multitenant_SaaS</code> 命名，但你可以将其命名为任何内容（如果这么做，其他每个地方你都需要改一下）。</p>
+<h3 id="创建应用程序">创建应用程序</h3>
+<p>第一步是创建一个应用程序。使用 Vely 的 <code>vf</code> 工具就可以轻松完成：</p>
+<pre><code>$ sudo vf -i-u $(whoami) multitenant_SaaS
+</code></pre>
+<p>这个命令创建了一个新的应用程序主目录（<code>/var/lib/vv/multitenant_SaaS</code>），并帮你执行应用程序设置。通常，这意味着在该主目录中创建各种子目录并分配权限。在这种情况下，只有当前用户（<code>whoami</code> 的结果）拥有目录，具有 <code>0700</code> 权限，这确保了其他人没有访问文件的权限。</p>
+<h3 id="创建数据库">创建数据库</h3>
+<p>在你键入任何代码之前，你需要一个能够存储该应用程序所用信息的空间。首先，创建一个名为 <code>db_multitenant_SaaS</code> 的 MariaDB 数据库，由用户名为 <code>vely</code> 的用户所有，密码为 <code>your_password</code> 。你可以修改刚才提到的任何值，但得记住，在这个示例里，你需要将包含这些内容的每个地方都得修改一遍。</p>
+<p>在 MySQL 中以 root 身份登录：</p>
+<pre><code>create database if not exists db_multitenant_SaaS;
+create user if not exists vely identified by &#39;your_password&#39;;
+grant create,alter,drop,select,insert,delete,update on db_multitenant_SaaS.* to vely;
+</code></pre>
+<p>然后在数据库内创建数据库对象（表，记录等等）：</p>
+<pre><code>use db_multitenant_SaaS;
+source setup.sql;
+exit
+</code></pre>
+<h3 id="将-vely-连接至数据库">将 Vely 连接至数据库</h3>
+<p>为了让 Vely 知晓你数据库的位置以及如何登录进去，创建一个名为 <code>db_multitenant_SaaS</code> 的数据库配置文件。（该名称用于在源代码中的数据库声明，所以如果你改了它，确保在它存在的每个地方都改一遍。）</p>
+<p>Vely 使用原生的 MariaDB 数据库连接，因此你可以指定给定的数据库所能允许的任何选项:</p>
+<pre><code>$ echo &#39;[client]
+user=vely
+password=your_password
+database=db_multitenant_SaaS
+protocol=TCP
+host=127.0.0.1
+port=3306&#39; &gt; db_multitenant_SaaS
+</code></pre>
+<h3 id="构建应用程序">构建应用程序</h3>
+<p>使用 <code>vv</code> 工具构建应用程序，利用 <code>--db</code> 选项指定 MariaDB 数据库和数据库配置文件：</p>
+<pre><code>$ vv -q--db=mariadb:db_multitenant_SaaS
+</code></pre>
+<h3 id="启用应用服务器">启用应用服务器</h3>
+<p>启动你的网络应用程序的服务器，需要使用 <code>vf</code> FastCGI 进程管理器。应用程序服务器使用 Unix 套接字与网络服务器（创建反向代理）通信：</p>
+<pre><code>$ vf -w3 multitenant_SaaS
+</code></pre>
+<p>这么做会启用三个守护进程，为接收到的请求提供服务。你也可以启动一个自适应服务器，它会增加进程的数量从而服务更多的请求，并在不需要他们时减少进程的数量：</p>
+<pre><code>$ vf multitenant_SaaS
+</code></pre>
+<p>请参阅 <code>vf</code> 了解更多选项，以帮助你实现最佳性能。</p>
+<p>当你需要停止你的应用程序服务器，使用 <code>-m quit</code> 选项：</p>
+<pre><code>$ vf -m quit multitenant_SaaS
+</code></pre>
+<h3 id="创建网络服务器">创建网络服务器</h3>
+<p>这是一个网络应用程序，那么应用程序就得需要一个网络服务器。该示例通过一个 Unix 套接字监听器使用 Apache。</p>
+<h4 id="1设置-apache">1、设置 Apache</h4>
+<p>将 Apache 配置为一个反向代理，并将你的应用程序与之连接，你需要启用 FastCGI 代理支持，这通常使用 <code>proxy</code> 和 <code>proxy_fcgi</code> 模块。</p>
+<p>对于 Fedora 系统（或者其它的，比如 Arch）来说，通过在 Apache 配置文件 <code>/etc/httpd/conf/httpd.conf</code> 中添加（或取消注释）适当的 <code>LoadModule</code> 指令，就可启用 <code>proxy</code> 和 <code>proxy_fcgi</code> 模块。</p>
+<p>以下指令适用于 Debian，Ubuntu 以及类似的系统，启用 <code>proxy</code> 和 <code>proxy_fcgi</code> 模块：</p>
+<pre><code>$ sudo a2enmod proxy
+$ sudo a2enmod proxy_fcgi
+</code></pre>
+<p>以下指令适用于 OpenSUSE，将这几行添加在 <code>/etc/apache2/httpd.conf</code> 结尾处：</p>
+<pre><code>LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
+</code></pre>
+<h4 id="2配置-apache">2、配置 Apache</h4>
+<p>现在你必须将代理信息添加在 Apache 的配置文件中：</p>
+<pre><code>ProxyPass &quot;/multitenant_SaaS&quot; unix:///var/lib/vv/multitenant_SaaS/sock/sock|fcgi://localhost/multitenant_SaaS
+</code></pre>
+<p>你的配置文件的位置可能会有所不同，这取决于不同的 Linux 发行版：</p>
+<ul>
+<li>Fedora、CentOS、Mageia 和 Arch： <code>/etc/httpd/conf/httpd.conf</code></li>
+<li>Debian、Ubuntu、Mint： <code>/etc/apache2/apache2.conf</code></li>
+<li>OpenSUSE：<code>/etc/apache2/httpd.conf</code></li>
+</ul>
+<h4 id="3重新启动">3、重新启动</h4>
+<p>最后，重启 Apache。在 Fedora 和类似系统，还有 Arch Linux 是如下指令：</p>
+<pre><code>$ sudo systemctl restart httpd
+</code></pre>
+<p>在 Debian 和基于 Debian 的系统，还有 OpenSUSE 是如下指令：</p>
+<pre><code>$ sudo systemctl restart apache2
+</code></pre>
+<h3 id="设置本地邮箱">设置本地邮箱</h3>
+<p>这个示例中，电子邮件是其功能的一部分。如果你的服务器已经可以发送电子邮件了，你可以跳过这一条。此外，你可以使用本地邮箱（<code>myuser@localhost</code>）来测试它。要做到这一点，需安装 Sendmail。</p>
+<p>在 Fedora 和类似系统中是如下指令：</p>
+<pre><code>$ sudo dnf installsendmail
+$ sudo systemctl start sendmail
+</code></pre>
+<p>而在 Debian 和类似系统（如 Ubuntu）：</p>
+<pre><code>$ sudo apt installsendmail
+$ sudo systemctl start sendmail
+</code></pre>
+<p>当应用程序向本地用户发送电子邮件，比如说 <code>OS_user@localhost</code>，你就可以通过查看 <code>/var/mail/</code> 处（即所谓“邮件池”）来确认电子邮件是否被发送。</p>
+<h3 id="从浏览器访问应用服务器">从浏览器访问应用服务器</h3>
+<p>假设你在本地运行该应用，可以通过使用 <code>http://127.0.0.1/multitenant_SaaS?req=notes&amp;action=begin</code> 域名从你的网络服务器访问你的应用服务器。如果你在互联网上的在线服务器运行该程序，你可能就需要调整防火墙设置以允许 HTTP 通信。</p>
+<h3 id="源代码">源代码</h3>
+<p>该应用程序示例包含 7 个源文件。你可以自行回顾代码（记住，这些文件只有 310 行代码），下面是每个文件的概述。</p>
+<h4 id="sql-设置setupsql">SQL 设置（setup.sql）</h4>
+<p>创建的两个表：</p>
+<ul>
+<li><code>users</code>：每个用户的信息。在 <code>users</code> 表中，每个用户都有自己唯一的 ID （<code>userId</code> 列），以及其他信息，如电子邮件地址和该地址是否通过了验证。还有一个哈希密码。实际的密码永远不会存储在纯文本（或其他形式）中，单向哈希用于检查密码。</li>
+<li><code>notes</code>：用户输入的笔记。<code>notes</code> 表包含了所有的笔记，每个笔记都有一个 <code>userId</code> 列，表示哪个用户拥有它们。<code>userId</code> 列的值与 <code>users</code> 表中的同名列匹配。这样，每个笔记显然都属于单个用户。</li>
+</ul>
+<p>该文件内容如下：</p>
+<pre><code>create table if not exists notes (dateOf datetime, noteId bigint auto_increment primary key, userId bigint, note varchar(1000));
+create table if not exists users (userId bigint auto_increment primary key, email varchar(100), hashed_pwd varchar(100), verified smallint, verify_token varchar(30), session varchar(100));
+create unique index if not exists users1 on users (email);
+</code></pre>
+<h4 id="运行时数据loginh">运行时数据（login.h）</h4>
+<p>为了正确地显示登录、注册和注销链接，你需要一些在应用程序中任何地方都可以使用的标志。此外，应用程序使用 cookie 来维护会话，因此它需要在任何地方都可用，例如，验证会话是否有效。发送到应用程序的每个请求都以这种方式进行确认。只有带有可验证 cookie 的请求是允许的。</p>
+<p>所以要做到这种效果，你需要有一个 <code>global_request_data</code> 类型的 <code>reqdata</code>（请求数据），其中包含 <code>sess_userId</code>（用户的 ID）以及 <code>sess_id</code>（用户目前的会话 ID）。此外，还有一些不言自明的标志，可以帮助渲染页面：</p>
+<pre><code>#ifndef _VV_LOGIN
+#define _VV_LOGIN
+
+typedef struct s_reqdata {
+    bool displayed_logout; // true 则显示登出连接
+    bool is_logged_in; // true 则会话已验证登录
+    char *sess_userId; // 目前会话的用户 ID
+    char *sess_id; // 会话 ID
+} reqdata;
+
+void login_or_signup ();
+
+#endif
+</code></pre>
+<h4 id="会话检查和会话数据_beforevely">会话检查和会话数据（_before.vely）</h4>
+<p>Vely 里有一个 <ruby>请求前处理程序<rt>before_request handler</rt></ruby> 的概念。你写的代码会在其它处理请求的代码之前执行的。要达到这个目的，你只需要将这样的代码写在名为 <code>_before.vely</code> 的文件中，然后剩余的部分将会自动处理。</p>
+<p>SaaS 应用程序所作的任何事情，例如处理发送至应用程序的请求，必须验证其安全性。这样，应用程序就能知晓调用方是否有执行操作所需要的权限。</p>
+<p>在这里，通过请求前处理程序进行权限检查。这样，无论其他代码如何处理请求，都已经掌握了会话信息。</p>
+<p>为保持会话数据（比如会话 ID 和用户 ID）在你代码中的任何地方都可用，你可以使用 <code>global_request_data</code>。它只是一个指向内存的通用指针（<code>void*</code>），任何处理请求的代码都可以访问它。这非常适合处理会话，如下所示:</p>
+<pre><code>#include &quot;vely.h&quot;
+#include &quot;login.h&quot;
+
+// _before() 是一个请求前处理程序。
+// 它总是在处理请求的其他代码之前执行。
+// 对于任何类型的请求范围设置或数据初始化，它都是一个很好的位置。
+void _before() {
+    // 输出 HTTP 请求头
+    out-header default
+    reqdata *rd; // 这是全局请求数据，见 login.h
+    // 为全局请求数据分配内存，
+    // 将在请求结束时自动释放
+    new-mem rd size sizeof(reqdata)
+    // 初始化标志
+    rd-&gt;displayed_logout = false;
+    rd-&gt;is_logged_in = false;
+    // 将我们创建的数据设置为全局请求数据，
+    // 可以从任何处理请求的代码中访问
+    set-req data rd
+    // 检查会话是否存在（基于来自客户端的 cookie）
+    // 这在任何其他请求处理代码之前执行，
+    // 使其更容易准备好会话信息
+    _check_session ();
+}
+</code></pre>
+<h4 id="检查会话是否有效_check_sessionvely">检查会话是否有效（_check_session.vely）</h4>
+<p>多租户 SaaS 应用程序中最重要的任务之一就是通过检查用户是否登录来（尽快）检查会话是否有效。这是通过从客户端（例如网络浏览器）获取会话 ID 和用户 ID 的 cookie，并将它们与存储会话的数据库进行比较来实现的：</p>
+<pre><code>#include &quot;vely.h&quot;
+#include &quot;login.h&quot;
+
+
+// 检查会话是否有效
+void _check_session () {
+    // 获取全局请求数据
+    reqdata *rd;
+    get-req data to rd
+    // 自用户浏览器获取 cookies
+    get-cookie rd-&gt;sess_userId=&quot;sess_userId&quot;
+    get-cookie rd-&gt;sess_id=&quot;sess_id&quot;
+    if (rd-&gt;sess_id[0] != 0) {
+        // 检查给定用户 ID 下的会话 ID 是否正确
+        char *email;
+        run-query @db_multitenant_SaaS = &quot;select email from users where userId=&#39;%s&#39; and session=&#39;%s&#39;&quot; output email : rd-&gt;sess_userId, rd-&gt;sess_id row-count define rcount
+            query-result email to email
+        end-query
+        if (rcount == 1) {
+            // 如果正确，设置登录标志
+            rd-&gt;is_logged_in = true;
+            // 如果登出链接不显示，则显示它
+            if (rd-&gt;displayed_logout == false) {
+                @Hi &lt;&lt;p-out email&gt;&gt;! &lt;a href=&quot;https://opensource.com/?req=login&amp;action=logout&quot;&gt;Logout&lt;/a&gt;&lt;br/&gt;
+                rd-&gt;displayed_logout = true;
+            }
+        } else rd-&gt;is_logged_in = false;
+    }
+}
+</code></pre>
+<h4 id="注册登录登出loginvely">注册、登录、登出（login.vely）</h4>
+<p>任何多租户系统的基础便是具有用户注册\登录和登出的功能。通常情况下，注册包括验证电子邮件地址；不止于此，同一电子邮件地址会作为一个用户名。这里就是这种情况。</p>
+<p>这里实现了几个执行该功能所必须的子请求：</p>
+<ul>
+<li>注册新用户时，显示 HTML 表单以收集信息。它的 URL 请求签名是 <code>req=login&amp;action=newuser</code>。</li>
+<li>作为对注册表单的响应，创建一个新用户。URL 请求的签名是 <code>req=login&amp;action=createuser</code>。输入参数（<code>input-param</code>）信号获取 <code>email</code> 和 <code>pwd</code> 的 POST 表单字段。密码值是单向散列，电子邮件验证令牌是一个随机的 5 位数字。这些被插入到 <code>users</code> 表中，创建一个新用户。系统会发送一封验证邮件，并提示用户阅读邮件并输入代码。</li>
+<li>通过输入发送到该电子邮件的验证码来验证电子邮件。URL 请求的签名是 <code>req=login&amp;action=verify</code>。</li>
+<li>显示一个登录表单，让用户登录。URL 请求的签名是 <code>req=login</code>（例如，<code>action</code> 为空）。</li>
+<li>通过验证电子邮件地址（用户名）和密码登录。URL 请求的签名是 <code>req=login&amp;action=login</code>。</li>
+<li>应用户要求登出。URL 请求的签名是 <code>req=login&amp;action=logout</code>。</li>
+<li>应用程序的登录页。URL 请求的签名是 <code>req=login&amp;action=begin</code>。</li>
+<li>如果用户当前已登录，转到应用程序的登录页面。</li>
+</ul>
+<p>可以看看下面这些例子：</p>
+<pre><code>#include &quot;vely.h&quot;
+#include &quot;login.h&quot;
+
+// 处理云端多租户应用程序的会话维护、登录、注销、会话验证
+void login () {
+    // 获取 URL 的输入参数 `action`
+    input-param action
+
+    // 获取全局请求数据，我们在其中记录会话信息，所以它很方便
+    reqdata *rd;
+    get-req data to rd
+
+    // 如果会话已经建立，我们不会
+    // 继续到应用程序主页的唯一原因是我们正在登出
+    if (rd-&gt;is_logged_in) {
+        if (strcmp(action, &quot;logout&quot;)) {
+            _show_home();
+            exit-request
+        }
+    }
+
+    // 应用程序页面启动。显示登录或注册的链接，
+    // 并显示适当的主屏幕
+    if (!strcmp (action, &quot;begin&quot;)) {
+        _show_home();
+        exit-request
+
+    // 开始创建新用户。询问电子邮件和密码，
+    // 然后提交此表单时创建用户。
+    } else if (!strcmp (action, &quot;newuser&quot;)) {
+        @Create New User&lt;hr/&gt;
+        @&lt;form action=&quot;https://opensource.com/?req=login&quot; method=&quot;POST&quot;&gt;
+        @&lt;input name=&quot;action&quot; type=&quot;hidden&quot; value=&quot;createuser&quot;&gt;
+        @&lt;input name=&quot;email&quot; type=&quot;text&quot; value=&quot;&quot; size=&quot;50&quot; maxlength=&quot;50&quot; required autofocus placeholder=&quot;Email&quot;&gt;
+        @&lt;input name=&quot;pwd&quot; type=&quot;password&quot; value=&quot;&quot; size=&quot;50&quot; maxlength=&quot;50&quot; required placeholder=&quot;Password&quot;&gt;
+        @&lt;input type=&quot;submit&quot; value=&quot;Sign Up&quot;&gt;
+        @&lt;/form&gt;
+
+    // 验证用户发送到电子邮件的代码。代码必须匹配，从而验证电子邮件地址   
+    } else if (!strcmp (action, &quot;verify&quot;)) {
+        input-param code
+        input-param email
+        // 获取基于电子邮件的验证令牌
+        run-query @db_multitenant_SaaS = &quot;select verify_token from users where email=&#39;%s&#39;&quot; output db_verify : email
+            query-result db_verify to define db_verify
+            // 将数据库中记录的令牌与用户提供的令牌进行比较
+            if (!strcmp (code, db_verify)) {
+                @Your email has been verifed. Please &lt;a href=&quot;https://opensource.com/?req=login&quot;&gt;Login&lt;/a&gt;.
+                // 如果匹配，更新用户信息以表明已验证。
+                run-query @db_multitenant_SaaS no-loop = &quot;update users set verified=1 where email=&#39;%s&#39;&quot; : email
+                exit-request
+            }
+        end-query
+        @Could not verify the code. Please try &lt;a href=&quot;https://opensource.com/?req=login&quot;&gt;again&lt;/a&gt;.
+        exit-request
+
+    // 创建用户 —— 当用户使用电子邮件和密码提交表单以创建用户时运行    
+    } else if (!strcmp (action, &quot;createuser&quot;)) {
+        input-param email
+        input-param pwd
+        // 创建散列（单向）密码
+        hash-string pwd to define hashed_pwd
+        // 生成随机的 5 位数字字符串验证代码
+        random-string to define verify length 5 number
+        // 创建用户：插入电子邮件、哈希密码、验证令牌。当前验证状态为 0，或未验证
+        begin-transaction @db_multitenant_SaaS
+        run-query @db_multitenant_SaaS no-loop = &quot;insert into users (email, hashed_pwd, verified, verify_token, session) values (&#39;%s&#39;, &#39;%s&#39;, &#39;0&#39;, &#39;%s&#39;, &#39;&#39;)&quot; : email, hashed_pwd, verify affected-rows define arows error define err on-error-continue
+        if (strcmp (err, &quot;0&quot;) || arows != 1) {
+            // 如果不能添加用户，则可能该用户不存在。不管怎样，我们都无法继续。
+            login_or_signup();
+            @User with this email already exists.
+            rollback-transaction @db_multitenant_SaaS
+        } else {
+            // 创建带有验证码的电子邮件并将其发送给用户
+            write-string define msg
+                @From: vely@vely.dev
+                @To: &lt;&lt;p-out email&gt;&gt;
+                @Subject: verify your account
+                @
+                @Your verification code is: &lt;&lt;p-out verify&gt;&gt;
+            end-write-string
+            exec-program &quot;/usr/sbin/sendmail&quot; args &quot;-i&quot;, &quot;-t&quot; input msg status define st
+            if (st != 0) {
+                @Could not send email to &lt;&lt;p-out email&gt;&gt;, code is &lt;&lt;p-out verify&gt;&gt;
+                rollback-transaction @db_multitenant_SaaS
+                exit-request
+            }
+            commit-transaction @db_multitenant_SaaS
+            // 通知用户查看邮件并输入验证码
+            @Please check your email and enter verification code here:
+            @&lt;form action=&quot;https://opensource.com/?req=login&quot; method=&quot;POST&quot;&gt;
+            @&lt;input name=&quot;action&quot; type=&quot;hidden&quot; value=&quot;verify&quot; size=&quot;50&quot; maxlength=&quot;50&quot;&gt;
+            @&lt;input name=&quot;email&quot; type=&quot;hidden&quot; value=&quot;&lt;&lt;p-out email&gt;&gt;&quot;&gt;
+            @&lt;input name=&quot;code&quot; type=&quot;text&quot; value=&quot;&quot; size=&quot;50&quot; maxlength=&quot;50&quot; required autofocus placeholder=&quot;Verification code&quot;&gt;
+            @&lt;button type=&quot;submit&quot;&gt;Verify&lt;/button&gt;
+            @&lt;/form&gt;
+        }
+
+    // 这里在登录用户登出时运行    
+    } else if (!strcmp (action, &quot;logout&quot;)) {
+        // 更新用户表以清除会话，即没有该用户登录
+        if (rd-&gt;is_logged_in) {
+            run-query @db_multitenant_SaaS = &quot;update users set session=&#39;&#39; where userId=&#39;%s&#39;&quot; : rd-&gt;sess_userId no-loop affected-rows define arows
+            if (arows == 1) {
+                rd-&gt;is_logged_in = false; // 提示用户未登录
+                @You have been logged out.&lt;hr/&gt;
+            }
+        }
+        _show_home();
+
+    // 登录：当用户输入用户名和密码时运行
+    } else if (!strcmp (action, &quot;login&quot;)) {
+        input-param pwd
+        input-param email
+        // 创建单向散列，目的是与用户表进行比较 —— 密码**永远不会**被记录
+        hash-string pwd to define hashed_pwd
+        // 为会话 ID 创建一个随机的 30 位长的字符串
+        random-string to rd-&gt;sess_id length 30
+        // 检查用户名和哈希密码是否匹配
+        run-query @db_multitenant_SaaS = &quot;select userId from users where email=&#39;%s&#39; and hashed_pwd=&#39;%s&#39;&quot; output sess_userId : email, hashed_pwd
+            query-result sess_userId to rd-&gt;sess_userId
+            // 如果匹配，使用会话 ID 更新用户表
+            run-query @db_multitenant_SaaS no-loop = &quot;update users set session=&#39;%s&#39; where userId=&#39;%s&#39;&quot; : rd-&gt;sess_id, rd-&gt;sess_userId affected-rows define arows
+            if (arows != 1) {
+                @Could not create a session. Please try again. &lt;&lt;.login_or_signup();&gt;&gt; &lt;hr/&gt;
+                exit-request
+            }
+            // 设置“用户 ID”和“会话 ID”为 cookie。用户的浏览器将在每个请求中返回这些信息
+            set-cookie &quot;sess_userId&quot; = rd-&gt;sess_userId
+            set-cookie &quot;sess_id&quot; = rd-&gt;sess_id
+            // 显示主页，确保会话是正确的，并设置标志
+            _check_session();
+            _show_home();
+            exit-request
+        end-query
+        @Email or password are not correct. &lt;&lt;.login_or_signup();&gt;&gt;&lt;hr/&gt;
+
+    // 登录界面，要求用户输入用户名和密码  
+    } else if (!strcmp (action, &quot;&quot;)) {
+        login_or_signup();
+        @Please Login:&lt;hr/&gt;
+        @&lt;form action=&quot;https://opensource.com/?req=login&quot; method=&quot;POST&quot;&gt;
+        @&lt;input name=&quot;action&quot; type=&quot;hidden&quot; value=&quot;login&quot; size=&quot;50&quot; maxlength=&quot;50&quot;&gt;
+        @&lt;input name=&quot;email&quot; type=&quot;text&quot; value=&quot;&quot; size=&quot;50&quot; maxlength=&quot;50&quot; required autofocus placeholder=&quot;Email&quot;&gt;
+        @&lt;input name=&quot;pwd&quot; type=&quot;password&quot; value=&quot;&quot; size=&quot;50&quot; maxlength=&quot;50&quot; required placeholder=&quot;Password&quot;&gt;
+        @&lt;button type=&quot;submit&quot;&gt;Go&lt;/button&gt;
+        @&lt;/form&gt;
+    }
+}
+
+// 显示登录或注册链接
+void login_or_signup() {
+        @&lt;a href=&quot;https://opensource.com/?req=login&quot;&gt;Login&lt;/a&gt; &amp; &amp; &lt;a href=&quot;https://opensource.com/?req=login&amp;action=newuser&quot;&gt;Sign Up&lt;/a&gt;&lt;hr/&gt;
+}
+</code></pre>
+<h4 id="通用应用程序_show_homevely">通用应用程序（_show_home.vely）</h4>
+<p>借助本教程，你可以创建你想要的任何多租户 SaaS 应用程序。上面的多租户处理模块（<code>login.vely</code>）调用 <code>_show_home()</code> 函数，它可以容纳你的任何代码。这个示例代码展示了笔记应用程序，但它可以是任何内容。<code>_show_home()</code> 函数可以调用你想要的任何代码，它是一个通用的多租户应用程序插件：</p>
+<pre><code>#include &quot;vely.h&quot;
+
+void _show_home() {
+    notes();
+    exit-request
+}
+</code></pre>
+<h4 id="笔记应用程序notesvely">笔记应用程序（notes.vely）</h4>
+<p>该应用程序能够添加、列举以及删除任何给定的笔记：</p>
+<pre><code>#include &quot;vely.h&quot;
+#include &quot;login.h&quot;
+
+// 多租户云中的笔记应用程序
+void notes () {
+    // 获取全局请求数据
+    reqdata *rd;
+    get-req data to rd
+    // 如果会话有效，显示登录或注册
+    if (!rd-&gt;is_logged_in) {
+        login_or_signup();
+    }
+    // 问候用户
+    @&lt;h1&gt;Welcome to Notes!&lt;/h1&gt;&lt;hr/&gt;
+    // 如果没有登出，退出 —— 这里确保对用户身份的安全验证
+    if (!rd-&gt;is_logged_in) {
+        exit-request
+    }
+    // 获取 URL 参数，告诉笔记要做什么
+    input-param subreq
+    // 显示笔记能够做什么操作（添加或列举笔记）
+    @&lt;a href=&quot;https://opensource.com/?req=notes&amp;subreq=add&quot;&gt;Add Note&lt;/a&gt; &lt;a href=&quot;https://opensource.com/?req=notes&amp;subreq=list&quot;&gt;List Notes&lt;/a&gt;&lt;hr/&gt;
+
+    // 列举该用户的所有笔记
+    if (!strcmp (subreq, &quot;list&quot;)) {
+        // **只**选取该用户的笔记
+        run-query @db_multitenant_SaaS = &quot;select dateOf, note, noteId from notes where userId=&#39;%s&#39; order by dateOf desc&quot; : rd-&gt;sess_userId output dateOf, note, noteId
+            query-result dateOf to define dateOf
+            query-result note to define note
+            query-result noteId to define noteId
+            // 使用快速缓存正则表达式将新行更改为&lt;br/&gt;
+            match-regex &quot;\n&quot; in note replace-with &quot;&lt;br/&gt;\n&quot; result define with_breaks status define st cache
+            if (st == 0) with_breaks = note; // 什么都没有发现/替换，只用原来的
+            // 显示笔记
+            @Date: &lt;&lt;p-out dateOf&gt;&gt; (&lt;a href=&quot;https://opensource.com/?req=notes&amp;subreq=delete_note_ask&amp;note_id=%3C%3Cp-out%20noteId%3E%3E&quot;&gt;delete note&lt;/a&gt;)&lt;br/&gt;
+            @Note: &lt;&lt;p-out with_breaks&gt;&gt;&lt;br/&gt;
+            @&lt;hr/&gt;
+        end-query
+    }
+
+    // 要求删除笔记
+    else if (!strcmp (subreq, &quot;delete_note_ask&quot;)) {
+        input-param note_id
+        @Are you sure you want to delete a note? Use Back button to go back, or &lt;a href=&quot;https://opensource.com/?req=notes&amp;subreq=delete_note&amp;note_id=%3C%3Cp-out%20note_id%3E%3E&quot;&gt;delete note now&lt;/a&gt;.
+    }
+
+    // 删除笔记
+    else if (!strcmp (subreq, &quot;delete_note&quot;)) {
+        input-param note_id
+        // 删除笔记
+        run-query @db_multitenant_SaaS = &quot;delete from notes where noteId=&#39;%s&#39; and userId=&#39;%s&#39;&quot; : note_id, rd-&gt;sess_userId affected-rows define arows no-loop error define errnote
+        // 告知用户状态
+        if (arows == 1) {
+            @Note deleted
+        } else {
+            @Could not delete note (&lt;&lt;p-out errnote&gt;&gt;)
+        }
+    }
+
+    // 添加笔记
+    else if (!strcmp (subreq, &quot;add_note&quot;)) {
+        // 从 note 表单中获取 URL POST 数据
+        input-param note
+        // 在该用户的 ID 下插入笔记
+        run-query @db_multitenant_SaaS = &quot;insert into notes (dateOf, userId, note) values (now(), &#39;%s&#39;, &#39;%s&#39;)&quot; : rd-&gt;sess_userId, note affected-rows define arows no-loop error define errnote
+        // 告知用户状态
+        if (arows == 1) {
+            @Note added
+        } else {
+            @Could not add note (&lt;&lt;p-out errnote&gt;&gt;)
+        }
+    }
+
+    // 显示一个 HTML 表单来收集笔记，并将其发送回这里（使用 subreq=&quot;add_note&quot; URL 参数）
+    else if (!strcmp (subreq, &quot;add&quot;)) {
+        @Add New Note
+        @&lt;form action=&quot;https://opensource.com/?req=notes&quot; method=&quot;POST&quot;&gt;
+        @&lt;input name=&quot;subreq&quot; type=&quot;hidden&quot; value=&quot;add_note&quot;&gt;
+        @&lt;textarea name=&quot;note&quot; rows=&quot;5&quot; cols=&quot;50&quot; required autofocus placeholder=&quot;Enter Note&quot;&gt;&lt;/textarea&gt;
+        @&lt;button type=&quot;submit&quot;&gt;Create&lt;/button&gt;
+        @&lt;/form&gt;
+    }
+}
+</code></pre>
+<h3 id="具有-c-性能的-saas">具有 C 性能的 SaaS</h3>
+<p>Vely 语言使得 C 语言在你的网络应用程序中得到充分利用这件事成为可能。多租户 SaaS 应用程序便是从中受益的一个典型用例。</p>
+<p>看一看参考代码示例，写一写代码，然后试试 Vely。 </p>
+<p><em>（题图：DA/126624c8-1a47-481b-b149-92273e8e0f4f）</em></p>
+<hr>
+<p>via: <a href="https://opensource.com/article/22/11/build-your-own-saas-vely">https://opensource.com/article/22/11/build-your-own-saas-vely</a></p>
+<p>作者：<a href="https://opensource.com/users/vely">Sergio Mijatovic</a>
+选题：<a href="https://github.com/lkxed">lkxed</a>
+译者：<a href="https://github.com/Drwhooooo">Drwhooooo</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#利用-vely-构建-saas">利用 Vely 构建 SaaS</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建应用程序">创建应用程序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建数据库">创建数据库</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#将-vely-连接至数据库">将 Vely 连接至数据库</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#构建应用程序">构建应用程序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#启用应用服务器">启用应用服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建网络服务器">创建网络服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#设置本地邮箱">设置本地邮箱</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从浏览器访问应用服务器">从浏览器访问应用服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#源代码">源代码</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#具有-c-性能的-saas">具有 C 性能的 SaaS</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202312/20221107.2 ⭐️⭐️⭐️ Build your own SaaS on Linux with Vely","title":"利用 Vely 在 Linux 构建你自己的 SaaS"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

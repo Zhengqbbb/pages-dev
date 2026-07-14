@@ -1,0 +1,417 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>JVM 解释和编译指南 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="JVM 解释和编译指南 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="JVM 解释和编译指南 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202311/20220809 A guide to JVM interpretation and compilation#page","@type":"TechArticle","headline":"JVM 解释和编译指南","inLanguage":"en","name":"JVM 解释和编译指南","url":"https://zhengqbbb.github.io/pages-dev/202311/20220809 A guide to JVM interpretation and compilation","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202311/20220809 A guide to JVM interpretation and compilation"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#源代码字节码机器码">源代码、字节码、机器码</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#解释器jit-和-aot">解释器，JIT 和 AOT</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#解释和编译发生的时机">解释和编译发生的时机</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#aot-和-jit-之间的权衡">AOT 和 JIT 之间的权衡</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>JVM 解释和编译指南</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202311/06/093552kheiob71meqierhd.png" alt=""></p>
+<blockquote>
+<p>通过理解解释、即时编译和预先编译之间的区别，有效地使用它们。</p>
+</blockquote>
+<p>Java 是一种跨平台的编程语言。程序源代码会被编译为 <ruby>字节码<rt>bytecode</rt></ruby>，然后字节码在运行时被转换为 <ruby>机器码<rt>machine code</rt></ruby>。<ruby>解释器<rt>interpreter</rt></ruby> 在物理机器上模拟出的抽象计算机上执行字节码指令。<ruby>即时<rt>just-in-time</rt></ruby>（JIT）编译发生在运行期，而 <ruby>预先<rt>ahead-of-time</rt></ruby>（AOT）编译发生在构建期。</p>
+<p>本文将说明解释器、JIT 和 AOT 分别何时起作用，以及如何在 JIT 和 AOT 之间权衡。</p>
+<h3 id="源代码字节码机器码">源代码、字节码、机器码</h3>
+<p>应用程序通常是由 C、C++ 或 Java 等编程语言编写。用这些高级编程语言编写的指令集合称为源代码。源代码是人类可读的。要在目标机器上执行它，需要将源代码转换为机器可读的机器码。这个转换工作通常是由 <ruby>编译器<rt>compiler</rt></ruby> 来完成的。</p>
+<p>然而，在 Java 中，源代码首先被转换为一种中间形式，称为字节码。字节码是平台无关的，所以 Java 被称为平台无关编程语言。Java 编译器 <code>javac</code> 将源代码转换为字节码。然后解释器解释执行字节码。</p>
+<p>下面是一个简单的 Java 程序, <code>Hello.java</code>：</p>
+<pre><code>//Hello.java
+public class Hello {
+    public static void main(String[] args) {
+         System.out.println(&quot;Inside Hello World!&quot;);
+    }
+}
+</code></pre>
+<p>使用 <code>javac</code> 编译它，生成包含字节码的 <code>Hello.class</code> 文件。</p>
+<pre><code>$ javac Hello.java
+$ ls
+Hello.class  Hello.java
+</code></pre>
+<p>现在，使用 <code>javap</code> 来反汇编 <code>Hello.class</code> 文件的内容。使用 <code>javap</code> 时如果不指定任何选项，它将打印基本信息，包括编译这个 <code>.class</code> 文件的源文件、包名称、公共和受保护字段以及类的方法。</p>
+<pre><code>$ javap Hello.class
+Compiled from &quot;Hello.java&quot;
+public class Hello {
+    public Hello();
+    public static void main(java.lang.String[]);
+}
+</code></pre>
+<p>要查看 <code>.class</code> 文件中的字节码内容，使用 <code>-c</code> 选项：</p>
+<pre><code>$ javap -c Hello.class
+Compiled from &quot;Hello.java&quot;
+public class Hello {
+  public Hello();
+        Code:
+           0: aload_0
+           1: invokespecial #1                      // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+           4: return
+
+  public static void main(java.lang.String[]);
+        Code:
+           0: getstatic         #2                      // Field java/lang/System.out:Ljava/io/PrintStream;
+           3: ldc               #3                      // String Inside Hello World!
+           5: invokevirtual #4                      // Method    
+java/io/PrintStream.println:(Ljava/lang/String;)V
+           8: return
+}
+</code></pre>
+<p>要获取更详细的信息，使用 <code>-v</code> 选项：</p>
+<pre><code>$ javap -v Hello.class
+</code></pre>
+<h3 id="解释器jit-和-aot">解释器，JIT 和 AOT</h3>
+<p>解释器负责在物理机器上模拟出的抽象计算机上执行字节码指令。当使用 <code>javac</code> 编译源代码，然后使用 <code>java</code> 执行时，解释器在程序运行时运行并完成它的目标。</p>
+<pre><code>$ javac Hello.java
+$ java Hello
+Inside Hello World!
+</code></pre>
+<p>JIT 编译器也在运行期发挥作用。当解释器解释 Java 程序时，另一个称为运行时 <ruby>分析器<rt>profiler</rt></ruby> 的组件将静默地监视程序的执行，统计各部分代码被解释的次数。基于这些统计信息可以检测出程序的 <ruby>热点<rt>hotspot</rt></ruby>，即那些经常被解释的代码。一旦代码被解释次数超过设定的阈值，它们满足被 JIT 编译器直接转换为机器码的条件。所以 JIT 编译器也被称为分析优化的编译器。从字节码到机器码的转换是在程序运行过程中进行的，因此称为即时编译。JIT 减少了解释器将同一组指令模拟为机器码的负担。</p>
+<p>AOT 编译器在构建期编译代码。在构建时将需要频繁解释和 JIT 编译的代码直接编译为机器码可以缩短 <ruby>Java 虚拟机<rt>Java Virtual Machine</rt></ruby>（JVM） 的<ruby>预热<rt>warm-up</rt></ruby>时间。（LCTT 译注：Java 程序启动后首先字节码被解释执行，此时执行效率较低。等到程序运行了足够的时间后，代码热点被检测出来，JIT 开始发挥作用，程序运行效率提升。JIT 发挥作用之前的过程就是预热。）AOT 是在 Java 9 中引入的一个实验性特性。<code>jaotc</code> 使用 Graal 编译器（它本身也是用 Java 编写的）来实现 AOT 编译。</p>
+<p>以 <code>Hello.java</code> 为例：</p>
+<pre><code>//Hello.java
+public class Hello {
+    public static void main(String[] args) {
+        System.out.println(&quot;Inside Hello World!&quot;);
+    }
+}
+
+
+$ javac Hello.java
+$ jaotc --output libHello.so Hello.class
+$ java -XX:+UnlockExperimentalVMOptions -XX:AOTLibrary=./libHello.so Hello
+Inside Hello World!
+</code></pre>
+<h3 id="解释和编译发生的时机">解释和编译发生的时机</h3>
+<p>下面通过例子来展示 Java 在什么时候使用解释器，以及 JIT 和 AOT 何时参与进来。这里有一个简单的程序 <code>Demo.java</code> :</p>
+<pre><code>//Demo.java
+public class Demo {
+    public int square(int i) throws Exception {
+        return(i*i);
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        for (int i = 1; i &lt;= 10; i++) {
+            System.out.println(&quot;call &quot; + Integer.valueOf(i));
+            long a = System.nanoTime();
+            Int r = new Demo().square(i);
+            System.out.println(&quot;Square(i) = &quot; + r);
+            long b = System.nanoTime();
+            System.out.println(&quot;elapsed= &quot; + (b-a));
+            System.out.println(&quot;--------------------------------&quot;);
+        }
+    }
+}
+</code></pre>
+<p>在这个程序的 <code>main()</code> 方法中创建了一个 <code>Demo</code> 对象的实例，并调用该实例的 <code>square()</code>方法，然后显示 <code>for</code> 循环迭代变量的平方值。编译并运行它：</p>
+<pre><code>$ javac Demo.java
+$ java Demo
+1 iteration
+Square(i) = 1
+Time taken= 8432439
+--------------------------------
+2 iteration
+Square(i) = 4
+Time taken= 54631
+--------------------------------
+.
+.
+.
+--------------------------------
+10 iteration
+Square(i) = 100
+Time taken= 66498
+--------------------------------
+</code></pre>
+<p>上面的结果是由谁产生的呢？是解释器，JIT 还是 AOT？在目前的情况下，它完全是通过解释产生的。我是怎么得出这个结论的呢？只有代码被解释的次数必须超过某个阈值时，这些热点代码片段才会被加入 JIT 编译队列。只有这时，JIT 编译才会发挥作用。使用以下命令查看 JDK 11 中的该阈值：</p>
+<pre><code>$ java -XX:+PrintFlagsFinal -version | grep CompileThreshold
+ intx CompileThreshold     = 10000                                      {pd product} {default}
+[...]
+openjdk version &quot;11.0.13&quot; 2021-10-19
+OpenJDK Runtime Environment 18.9 (build 11.0.13+8)
+OpenJDK 64-Bit Server VM 18.9 (build 11.0.13+8, mixed mode, sharing)
+</code></pre>
+<p>上面的输出表明，一段代码被解释 10,000 次才符合 JIT 编译的条件。这个阈值是否可以手动调整呢？是否有 JVM 标志可以指示出方法是否被 JIT 编译了呢？答案是肯定的，而且有多种方式可以达到这个目的。</p>
+<p>使用 <code>-XX:+PrintCompilation</code> 选项可以查看一个方法是否被 JIT 编译。除此之外，使用 <code>-Xbatch</code> 标志可以提高输出的可读性。如果解释和 JIT 同时发生，<code>-Xbatch</code> 可以帮助区分两者的输出。使用这些标志如下：</p>
+<pre><code>$ java -Xbatch  -XX:+PrintCompilation  Demo
+         34        1        b  3           java.util.concurrent.ConcurrentHashMap::tabAt (22 bytes)
+         35        2         n 0           jdk.internal.misc.Unsafe::getObjectVolatile (native)   
+         35        3        b  3           java.lang.Object::&lt;init&gt; (1 bytes)
+[...]
+        210  269         n 0           java.lang.reflect.Array::newArray (native)   (static)
+        211  270        b  3           java.lang.String::substring (58 bytes)
+[...]
+--------------------------------
+10 iteration
+Square(i) = 100
+Time taken= 50150
+--------------------------------
+</code></pre>
+<p>注意，上面命令的实际输出太长了，这里我只是截取了一部分。输出很长的原因是除了 <code>Demo</code> 程序的代码外，JDK 内部类的函数也被编译了。由于我的重点是 <code>Demo.java</code> 代码，我希望排除内部包的函数来简化输出。通过选项 <code>-XX:CompileCommandFile</code> 可以禁用内部类的 JIT：</p>
+<pre><code>$ java -Xbatch -XX:+PrintCompilation -XX:CompileCommandFile=hotspot_compiler Demo
+</code></pre>
+<p>在选项 <code>-XX:CompileCommandFile</code> 指定的文件 <code>hotspot_compiler</code> 中包含了要排除的包：</p>
+<pre><code>$ cat hotspot_compiler
+quiet
+exclude java/* *
+exclude jdk/* *
+exclude sun/* *
+</code></pre>
+<p>第一行的 <code>quiet</code> 告诉 JVM 不要输出任何关于被排除类的内容。用 <code>-XX:CompileThreshold</code> 将 JIT 阈值设置为 5。这意味着在解释 5 次之后，就会进行 JIT 编译：</p>
+<pre><code>$ java -Xbatch -XX:+PrintCompilation -XX:CompileCommandFile=hotspot_compiler \
+-XX:CompileThreshold=5 Demo
+        47      1       n 0     java.lang.invoke.MethodHandle::linkToStatic(LLLLLL)L (native)   
+           (static)
+        47      2       n 0     java.lang.invoke.MethodHandle::invokeBasic(LLLLL)L (native)   
+        47      3       n 0     java.lang.invoke.MethodHandle::linkToSpecial(LLLLLLL)L (native)   
+           (static)
+        48      4       n 0     java.lang.invoke.MethodHandle::linkToStatic(L)I (native)   (static)
+        48      5       n 0     java.lang.invoke.MethodHandle::invokeBasic()I (native)   
+        48      6       n 0     java.lang.invoke.MethodHandle::linkToSpecial(LL)I (native)   
+           (static)
+[...]
+        1 iteration
+        69   40         n 0     java.lang.invoke.MethodHandle::linkToStatic(ILIIL)I (native)   
+           (static)
+[...]
+Square(i) = 1
+        78   48         n 0     java.lang.invoke.MethodHandle::linkToStatic(ILIJL)I (native)   
+(static)
+        79   49         n 0     java.lang.invoke.MethodHandle::invokeBasic(ILIJ)I (native)   
+[...]
+        86   54         n 0     java.lang.invoke.MethodHandle::invokeBasic(J)L (native)   
+        87   55         n 0     java.lang.invoke.MethodHandle::linkToSpecial(LJL)L (native)   
+(static)
+Time taken= 8962738
+--------------------------------
+2 iteration
+Square(i) = 4
+Time taken= 26759
+--------------------------------
+
+10 iteration
+Square(i) = 100
+Time taken= 26492
+--------------------------------
+</code></pre>
+<p>好像输出结果跟只用解释时并没有什么区别。根据 Oracle 的文档，这是因为只有禁用 <code>TieredCompilation</code> 时 <code>-XX:CompileThreshold</code> 才会生效：</p>
+<pre><code>$ java -Xbatch -XX:+PrintCompilation -XX:CompileCommandFile=hotspot_compiler \
+-XX:-TieredCompilation -XX:CompileThreshold=5 Demo
+124     1       n       java.lang.invoke.MethodHandle::linkToStatic(LLLLLL)L (native)   (static)
+127     2       n       java.lang.invoke.MethodHandle::invokeBasic(LLLLL)L (native)   
+[...]
+1 iteration
+        187   40        n       java.lang.invoke.MethodHandle::linkToStatic(ILIIL)I (native)   (static)
+[...]
+(native)   (static)
+        212   54        n       java.lang.invoke.MethodHandle::invokeBasic(J)L (native)   
+        212   55        n       java.lang.invoke.MethodHandle::linkToSpecial(LJL)L (native)   (static)
+Time taken= 12337415
+[...]
+--------------------------------
+4 iteration
+Square(i) = 16
+Time taken= 37183
+--------------------------------
+5 iteration
+        214   56        b       Demo::&lt;init&gt; (5 bytes)
+        215   57        b       Demo::square (16 bytes)
+Square(i) = 25
+Time taken= 983002
+--------------------------------
+6 iteration
+Square(i) = 36
+Time taken= 81589
+[...]
+10 iteration
+Square(i) = 100
+Time taken= 52393
+</code></pre>
+<p>可以看到在第五次迭代之后，代码片段被 JIT 编译了：</p>
+<pre><code>--------------------------------
+5 iteration
+        214   56        b       Demo::&lt;init&gt; (5 bytes)
+        215   57        b       Demo::square (16 bytes)
+Square(i) = 25
+Time taken= 983002
+--------------------------------
+</code></pre>
+<p>可以看到，与 <code>square()</code> 方法一起，构造方法也被 JIT 编译了。在 <code>for</code> 循环中调用 <code>square()</code> 之前要先构造 <code>Demo</code> 实例，所以构造方法的解释次数同样达到 JIT 编译阈值。这个例子说明了在解释发生之后何时 JIT 会介入。</p>
+<p>要查看编译后的代码，需要使用 <code>-XX:+PrintAssembly</code> 标志，该标志仅在库路径中有反汇编器时才起作用。对于 OpenJDK，使用 <code>hsdis</code> 作为反汇编器。下载合适版本的反汇编程序库，在本例中是 <code>hsdis-amd64.so</code>，并将其放在 <code>Java_HOME/lib/server</code> 目录下。使用时还需要在 <code>-XX:+PrintAssembly</code> 之前增加 <code>-XX:+UnlockDiagnosticVMOptions</code> 选项。否则，JVM 会给你一个警告。</p>
+<p>完整命令如下：</p>
+<pre><code>$ java -Xbatch -XX:+PrintCompilation -XX:CompileCommandFile=hotspot_compiler \ -XX:-TieredCompilation -XX:CompileThreshold=5 -XX:+UnlockDiagnosticVMOptions \ -XX:+PrintAssembly Demo
+[...]
+5 iteration
+        178   56        b       Demo::&lt;init&gt; (5 bytes)
+Compiled method (c2)    178   56                Demo::&lt;init&gt; (5 bytes)
+ total in heap  [0x00007fd4d08dad10,0x00007fd4d08dafe0] = 720
+ relocation     [0x00007fd4d08dae88,0x00007fd4d08daea0] = 24
+[...]
+ handler table  [0x00007fd4d08dafc8,0x00007fd4d08dafe0] = 24
+[...]
+ dependencies   [0x00007fd4d08db3c0,0x00007fd4d08db3c8] = 8
+ handler table  [0x00007fd4d08db3c8,0x00007fd4d08db3f8] = 48
+----------------------------------------------------------------------
+Demo.square(I)I  [0x00007fd4d08db1c0, 0x00007fd4d08db2b8]  248 bytes
+[Entry Point]
+[Constants]
+  # {method} {0x00007fd4b841f4b0} &#39;square&#39; &#39;(I)I&#39; in &#39;Demo&#39;
+  # this:       rsi:rsi   = &#39;Demo&#39;
+  # parm0:      rdx     = int
+  #             [sp+0x20]  (sp of caller)
+[...]
+[Stub Code]
+  0x00007fd4d08db280: movabs $0x0,%rbx          ;   {no_reloc}
+  0x00007fd4d08db28a: jmpq   0x00007fd4d08db28a  ;   {runtime_call}
+  0x00007fd4d08db28f: movabs $0x0,%rbx          ;   {static_stub}
+  0x00007fd4d08db299: jmpq   0x00007fd4d08db299  ;   {runtime_call}
+[Exception Handler]
+  0x00007fd4d08db29e: jmpq   0x00007fd4d08bb880  ;   {runtime_call ExceptionBlob}
+[Deopt Handler Code]
+  0x00007fd4d08db2a3: callq  0x00007fd4d08db2a8
+  0x00007fd4d08db2a8: subq   $0x5,(%rsp)
+  0x00007fd4d08db2ad: jmpq   0x00007fd4d08a01a0  ;   {runtime_call DeoptimizationBlob}
+  0x00007fd4d08db2b2: hlt    
+  0x00007fd4d08db2b3: hlt    
+  0x00007fd4d08db2b4: hlt    
+  0x00007fd4d08db2b5: hlt    
+  0x00007fd4d08db2b6: hlt    
+  0x00007fd4d08db2b7: hlt    
+ImmutableOopMap{rbp=NarrowOop }pc offsets: 96
+ImmutableOopMap{}pc offsets: 112
+ImmutableOopMap{rbp=Oop }pc offsets: 148 Square(i) = 25
+Time taken= 2567698
+--------------------------------
+6 iteration
+Square(i) = 36
+Time taken= 76752
+[...]
+--------------------------------
+10 iteration
+Square(i) = 100
+Time taken= 52888
+</code></pre>
+<p>我只截取了输出中与 <code>Demo.java</code> 相关的部分。</p>
+<p>现在再来看看 AOT 编译。它是在 JDK9 中引入的特性。AOT 是用于生成 <code>.so</code> 这样的库文件的静态编译器。用 AOT 可以将指定的类编译成 <code>.so</code> 库。这个库可以直接执行，而不用解释或 JIT 编译。如果 JVM 没有检测到 AOT 编译的代码，它会进行常规的解释和 JIT 编译。</p>
+<p>使用 AOT 编译的命令如下：</p>
+<pre><code>$ jaotc --output=libDemo.so Demo.class
+</code></pre>
+<p>用下面的命令来查看共享库的符号表：</p>
+<pre><code>$ nm libDemo.so
+</code></pre>
+<p>要使用生成的 <code>.so</code> 库，使用 <code>-XX:+UnlockExperimentalVMOptions</code> 和  <code>-XX:AOTLibrary</code>：</p>
+<pre><code>$ java -XX:+UnlockExperimentalVMOptions -XX:AOTLibrary=./libDemo.so Demo
+1 iteration
+Square(i) = 1
+Time taken= 7831139
+--------------------------------
+2 iteration
+Square(i) = 4
+Time taken= 36619
+[...]
+10 iteration
+Square(i) = 100
+Time taken= 42085
+</code></pre>
+<p>从输出上看，跟完全用解释的情况没有区别。为了确认 AOT 发挥了作用，使用 <code>-XX:+PrintAOT</code>：</p>
+<pre><code>$ java -XX:+UnlockExperimentalVMOptions -XX:AOTLibrary=./libDemo.so -XX:+PrintAOT Demo
+         28        1         loaded        ./libDemo.so  aot library
+         80        1         aot[ 1]   Demo.main([Ljava/lang/String;)V
+         80        2         aot[ 1]   Demo.square(I)I
+         80        3         aot[ 1]   Demo.&lt;init&gt;()V
+1 iteration
+Square(i) = 1
+Time taken= 7252921
+--------------------------------
+2 iteration
+Square(i) = 4
+Time taken= 57443
+[...]
+10 iteration
+Square(i) = 100
+Time taken= 53586
+</code></pre>
+<p>要确认没有发生 JIT 编译，用如下命令：</p>
+<pre><code>$ java -XX:+UnlockExperimentalVMOptions -Xbatch -XX:+PrintCompilation \ -XX:CompileCommandFile=hotspot_compiler -XX:-TieredCompilation \ -XX:CompileThreshold=3 -XX:AOTLibrary=./libDemo.so -XX:+PrintAOT Demo
+         19        1         loaded        ./libDemo.so  aot library
+         77        1         aot[ 1]   Demo.square(I)I
+         77        2         aot[ 1]   Demo.main([Ljava/lang/String;)V
+         77        3         aot[ 1]   Demo.&lt;init&gt;()V
+         77        2         aot[ 1]   Demo.main([Ljava/lang/String;)V   made not entrant
+[...]
+4 iteration
+Square(i) = 16
+Time taken= 43366
+[...]
+10 iteration
+Square(i) = 100
+Time taken= 59554
+</code></pre>
+<p>需要特别注意的是，修改被 AOT 编译了的源代码后，一定要重新生成 <code>.so</code> 库文件。否则，过时的的 AOT 编译库文件不会起作用。例如，修改 <code>square()</code> 方法，使其计算立方值：</p>
+<pre><code>//Demo.java
+public class Demo {
+
+    public int square(int i) throws Exception {
+        return(i*i*i);
+    }
+
+    public static void main(String[] args) throws Exception {
+        for (int i = 1; i &lt;= 10; i++) {
+          System.out.println(&quot;&quot; + Integer.valueOf(i)+&quot; iteration&quot;);
+          long start = System.nanoTime();
+          int r= new Demo().square(i);
+          System.out.println(&quot;Square(i) = &quot; + r);
+          long end = System.nanoTime();
+          System.out.println(&quot;Time taken= &quot; + (end-start));
+          System.out.println(&quot;--------------------------------&quot;);
+        }
+    }
+}
+</code></pre>
+<p>重新编译 <code>Demo.java</code>：</p>
+<pre><code>$ java Demo.java
+</code></pre>
+<p>但不重新生成 <code>libDemo.so</code>。使用下面命令运行 <code>Demo</code>：</p>
+<pre><code>$ java -XX:+UnlockExperimentalVMOptions -Xbatch -XX:+PrintCompilation -XX:CompileCommandFile=hotspot_compiler -XX:-TieredCompilation -XX:CompileThreshold=3 -XX:AOTLibrary=./libDemo.so -XX:+PrintAOT Demo
+         20        1         loaded        ./libDemo.so  aot library
+         74        1         n           java.lang.invoke.MethodHandle::linkToStatic(LLLLLL)L (native)   (static)
+2 iteration
+sqrt(i) = 8
+Time taken= 43838
+--------------------------------
+3 iteration
+        137   56        b            Demo::&lt;init&gt; (5 bytes)
+        138   57        b            Demo::square (6 bytes)
+sqrt(i) = 27
+Time taken= 534649
+--------------------------------
+4 iteration
+sqrt(i) = 64
+Time taken= 51916
+[...]
+10 iteration
+sqrt(i) = 1000
+Time taken= 47132
+</code></pre>
+<p>可以看到，虽然旧版本的 <code>libDemo.so</code> 被加载了，但 JVM 检测出它已经过时了。每次生成 <code>.class</code> 文件时，都会在类文件中添加一个指纹，并在 AOT 库中保存该指纹。修改源代码后类指纹与旧的 AOT 库中的指纹不匹配了，所以没有执行 AOT 编译生成的原生机器码。从输出可以看出，现在实际上是 JIT 在起作用（注意 <code>-XX:CompileThreshold</code> 被设置为了 3）。</p>
+<h3 id="aot-和-jit-之间的权衡">AOT 和 JIT 之间的权衡</h3>
+<p>如果你的目标是减少 JVM 的预热时间，请使用 AOT，这可以减少运行时负担。问题是 AOT 没有足够的数据来决定哪段代码需要预编译为原生代码。相比之下，JIT 在运行时起作用，却对预热时间有一定的影响。然而，它将有足够的分析数据来更高效地编译和反编译代码。</p>
+<p><em>（题图：MJ/ed3e6e15-56c7-4c1d-aff1-84a225faeeeb）</em></p>
+<hr>
+<p>via: <a href="https://opensource.com/article/22/8/interpret-compile-java">https://opensource.com/article/22/8/interpret-compile-java</a></p>
+<p>作者：<a href="https://opensource.com/users/jayashree-huttanagoudar">Jayashree Huttanagoudar</a>
+选题：<a href="https://github.com/lkxed">lkxed</a>
+译者：<a href="https://github.com/toknow-gh">toknow-gh</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#源代码字节码机器码">源代码、字节码、机器码</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#解释器jit-和-aot">解释器，JIT 和 AOT</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#解释和编译发生的时机">解释和编译发生的时机</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#aot-和-jit-之间的权衡">AOT 和 JIT 之间的权衡</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202311/20220809 A guide to JVM interpretation and compilation","title":"JVM 解释和编译指南"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

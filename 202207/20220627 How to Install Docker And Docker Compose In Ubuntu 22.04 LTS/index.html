@@ -1,0 +1,261 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 Ubuntu 22.04 LTS 中安装 Docker 和 Docker Compose - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 Ubuntu 22.04 LTS 中安装 Docker 和 Docker Compose - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 Ubuntu 22.04 LTS 中安装 Docker 和 Docker Compose - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202207/20220627 How to Install Docker And Docker Compose In Ubuntu 22.04 LTS#page","@type":"TechArticle","headline":"如何在 Ubuntu 22.04 LTS 中安装 Docker 和 Docker Compose","inLanguage":"en","name":"如何在 Ubuntu 22.04 LTS 中安装 Docker 和 Docker Compose","url":"https://zhengqbbb.github.io/pages-dev/202207/20220627 How to Install Docker And Docker Compose In Ubuntu 22.04 LTS","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202207/20220627 How to Install Docker And Docker Compose In Ubuntu 22.04 LTS"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-docker">什么是 Docker ？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#docker-依赖项">Docker 依赖项</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-ubuntu-2204-lts-中安装-docker">在 Ubuntu 22.04 LTS 中安装 Docker</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-ubuntu-中安装-docker-compose">在 Ubuntu 中安装 Docker Compose</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#资料">资料</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 Ubuntu 22.04 LTS 中安装 Docker 和 Docker Compose</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202207/28/142549iwrj25mw9turhc9o.jpg" alt=""></p>
+<blockquote>
+<p>在 Ubuntu 中使用 Docker Compose 安装 Docker 引擎的分步指导。</p>
+</blockquote>
+<p>在这篇文章中，我们将会明白 Docker 是什么，如何 <strong>在 Ubuntu 中安装 Docker 引擎</strong> 。此外，我们也将会明白如何 <strong>安装 Docker Compose</strong> ，它是一个定义并运行多容器的 Docker 应用。</p>
+<p>我们已经在 Ubuntu 22.04 LTS 中正式的测试了这份指南。然而，它也应该对旧版本如 20.04 LTS 和 18.04 LTS 有效。为了更好的安全性和稳定性，我推荐你使用最新的版本 —— Ubuntu 22.04 LTS 。</p>
+<h3 id="什么是-docker">什么是 Docker ？</h3>
+<p><strong>Docker</strong> 是一个快捷、轻便的系统级虚拟化技术，开发者和系统管理员可以使用它构建具备所有必要依赖项的应用程序，并将其作为一个包发布。</p>
+<p>Docker 与其他如 VMWare 、Xen 、以及 VirtualBox 等工具的虚拟化方式不同，每个虚拟机不需要单独的客户操作系统。</p>
+<p>所有的 Docker 容器有效地共享同一个主机系统内核。每个容器都在同一个操作系统中的隔离用户空间中运行。</p>
+<p>Docker 容器可以在任何 Linux 版本上运行。比如说你使用 Fedora ，我用 Ubuntu 。我们能相互开发、共享并分发 Docker 镜像。</p>
+<p>你无需担心操作系统、软件以及自定义设置，任何事都不用担心。只要我们的主机安装了 Docker ，就能持续开发。简言之，Docker 能够在任何地方运行！</p>
+<p>前文中你读到了两个词：<strong>Docker 镜像</strong> 和 <strong>Docker 容器</strong> ，或许你在想它们的区别。</p>
+<p>通俗地说，Docker 镜像是一个描述容器应该如何表现的文件，而 Docker 容器是 Docker 镜像的运行（或停止）状态。</p>
+<p>希望你能够理解 Docker 的基础概念。更多细节，你可以参考文章末尾的 Docker 官方指导手册。</p>
+<h3 id="docker-依赖项">Docker 依赖项</h3>
+<p>为了安装并配置 Docker ，你的系统必须满足下列最低要求：</p>
+<ol>
+<li>64 位 Linux 或 Windows 系统</li>
+<li>如果使用 Linux ，内核版本必须不低于 3.10</li>
+<li>能够使用 <code>sudo</code> 权限的用户</li>
+<li>在你系统 BIOS 上启用了 VT（虚拟化技术）支持 on your system BIOS（参考: <a href="https://ostechnix.com/how-to-find-if-a-cpu-supports-virtualization-technology-vt/">如何查看 CPU 支持 虚拟化技术（VT）</a>）</li>
+<li>你的系统应该联网</li>
+</ol>
+<p>在 Linux ，在终端上运行以下命令验证内核以及架构详细信息：</p>
+<pre><code>$ uname -a
+</code></pre>
+<p>输出样例：</p>
+<pre><code>Linux Ubuntu22CT 5.15.35-3-pve #1 SMP PVE 5.15.35-6 (Fri, 17 Jun 2022 13:42:35 +0200) x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+<p>正如上面你看到的那样，我的 Ubuntu 系统内核版本是 <strong>5.15.35-3-pve</strong> 并且系统架构是 <strong>64 位</strong>（<strong>x86_64 x86_64 x86_64 GNU/Linux</strong>）。</p>
+<blockquote>
+<p><strong>注意：</strong> 这里，我在 <a href="https://ostechnix.com/install-proxmox-ve/">Proxmox</a> 中使用 Ubuntu 22.04 容器。这是你看到上方内核版本中有 “pve” 字符的原因。如果你正在使用 Ubuntu 实体（或者虚拟）机，你将看到系统版本为 <strong>5.15.35-3-generic</strong> 。</p>
+</blockquote>
+<p>内核版本需要不低于最低要求的版本，并且是 64 位机器。这样不会有任何问题，我们能顺利安装并使用 Docker 。</p>
+<p>请注意你使用哪一个 Ubuntu 系统不重要。并且你使用 Ubuntu 桌面或服务器版本，亦或者其他 Ubuntu 变种如 Lubuntu 、Kubuntu 、Xubuntu ，都不重要。</p>
+<p>只要你的系统内核版本不低于 3.10 ，并且是 64 位系统，Docker 都会正常运行。</p>
+<h3 id="在-ubuntu-2204-lts-中安装-docker">在 Ubuntu 22.04 LTS 中安装 Docker</h3>
+<p>首先，更新你的 Ubuntu 系统。</p>
+<h4 id="1更新-ubuntu">1、更新 Ubuntu</h4>
+<p>打开终端，依次运行下列命令：</p>
+<pre><code>$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt full-upgrade
+</code></pre>
+<h4 id="2添加-docker-库">2、添加 Docker 库</h4>
+<p>首先，安装必要的证书并允许 apt 包管理器使用以下命令通过 HTTPS 使用存储库：</p>
+<pre><code>$ sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release
+</code></pre>
+<p>然后，运行下列命令添加 Docker 的官方 GPG 密钥：</p>
+<pre><code>$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+</code></pre>
+<p>添加 Docker 官方库：</p>
+<pre><code>$ echo &quot;deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable&quot; | sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre>
+<p>使用命令更新 Ubuntu 源列表：</p>
+<pre><code>$ sudo apt update
+</code></pre>
+<h4 id="3安装-docker">3、安装 Docker</h4>
+<p>最后，运行下列命令在 Ubuntu 22.04 LTS 服务器中安装最新 Docker CE：</p>
+<pre><code>$ sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+</code></pre>
+<p><img src="https://ostechnix.com/wp-content/uploads/2022/06/Install-Docker-In-Ubuntu.png" alt="Install Docker In Ubuntu"></p>
+<p>当然你也可以安装其他版本 Docker 。运行下列命令检查可以安装的 Docker 版本：</p>
+<pre><code>$ apt-cache madison docker-ce
+</code></pre>
+<p>输出样例：</p>
+<pre><code>docker-ce | 5:20.10.17~3-0~ubuntu-jammy | https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages
+docker-ce | 5:20.10.16~3-0~ubuntu-jammy | https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages
+docker-ce | 5:20.10.15~3-0~ubuntu-jammy | https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages
+docker-ce | 5:20.10.14~3-0~ubuntu-jammy | https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages
+docker-ce | 5:20.10.13~3-0~ubuntu-jammy | https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages
+</code></pre>
+<p>你可以挑选上面列表中的任何版本进行安装。例如，安装 <strong>5:20.10.16~ 3-0 ~ubuntu-jammy</strong> 这个版本，运行：</p>
+<pre><code>$ sudo apt install docker-ce=5:20.10.16~3-0~ubuntu-jammy docker-ce-cli=5:20.10.16~3-0~ubuntu-jammy containerd.io
+</code></pre>
+<p>安装完成后，运行如下命令验证 Docker 服务是否在运行：</p>
+<pre><code>$ systemctl status docker
+</code></pre>
+<p>你会看到类似下面的输出：</p>
+<pre><code>* docker.service - Docker Application Container Engine
+     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2022-06-27 13:07:43 UTC; 3min 4s ago
+TriggeredBy: * docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 2208 (dockerd)
+      Tasks: 8
+     Memory: 29.6M
+        CPU: 126ms
+     CGroup: /system.slice/docker.service
+             `-2208 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.071453522Z&quot; level=info msg=&quot;ccResolverWrapper: sending update to cc: {[{unix:&gt;
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.071459974Z&quot; level=info msg=&quot;ClientConn switching balancer to \&quot;pick_first\&quot;&quot; &gt;
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.130989294Z&quot; level=info msg=&quot;Loading containers: start.&quot;
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.187439756Z&quot; level=info msg=&quot;Default bridge (docker0) is assigned with an IP a&gt;
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.235966874Z&quot; level=info msg=&quot;Loading containers: done.&quot;
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.240149866Z&quot; level=warning msg=&quot;Not using native diff for overlay2, this may c&gt;
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.240281966Z&quot; level=info msg=&quot;Docker daemon&quot; commit=a89b842 graphdriver(s)=over&gt;
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.240386856Z&quot; level=info msg=&quot;Daemon has completed initialization&quot;
+Jun 27 13:07:43 Ubuntu22CT systemd[1]: Started Docker Application Container Engine.
+Jun 27 13:07:43 Ubuntu22CT dockerd[2208]: time=&quot;2022-06-27T13:07:43.276336600Z&quot; level=info msg=&quot;API listen on /run/docker.sock&quot;
+</code></pre>
+<p>好极了！Docker 服务已启动并运行！</p>
+<p>如果没有运行，运行以下命令运行 Docker 服务：</p>
+<pre><code>$ sudo systemctl start docker
+</code></pre>
+<p>使 Docker 服务在每次重启时自动启动：</p>
+<pre><code>$ sudo systemctl enable docker
+</code></pre>
+<p>可以使用以下命令查看已安装的 Docker 版本：</p>
+<pre><code>$ sudo docker version
+</code></pre>
+<p>输出样例：</p>
+<pre><code>Client: Docker Engine - Community
+  Version:           20.10.17
+  API version:       1.41
+  Go version:        go1.17.11
+  Git commit:        100c701
+  Built:             Mon Jun  6 23:02:46 2022
+  OS/Arch:           linux/amd64
+  Context:           default
+  Experimental:      true
+
+Server: Docker Engine - Community
+  Engine:
+    Version:          20.10.17
+    API version:      1.41 (minimum version 1.12)
+    Go version:       go1.17.11
+    Git commit:       a89b842
+  Built:            Mon Jun  6 23:00:51 2022
+    OS/Arch:          linux/amd64
+    Experimental:     false
+  containerd:
+    Version:          1.6.6
+    GitCommit:        10c12954828e7c7c9b6e0ea9b0c02b01407d3ae1
+  runc:
+    Version:          1.1.2
+    GitCommit:        v1.1.2-0-ga916309
+  docker-init:
+    Version:          0.19.0
+    GitCommit:        de40ad0
+</code></pre>
+<p><img src="https://ostechnix.com/wp-content/uploads/2022/06/Check-Docker-Version.png" alt="Check Docker Version"></p>
+<h4 id="4测试-docker">4、测试 Docker</h4>
+<p>让我们继续，测试 Docker 是否运行正常：</p>
+<p>运行：</p>
+<pre><code>$ sudo docker run hello-world
+</code></pre>
+<p>上述命令会下载一个 Docker 测试镜像，并在容器内执行一个 “hello_world” 样例程序。</p>
+<p>如果你看到类似下方的输出，那么祝贺你！Docker 正常运行在你的 Ubuntu 系统中了。</p>
+<pre><code>Unable to find image &#39;hello-world:latest&#39; locally
+latest: Pulling from library/hello-world
+2db29710123e: Pull complete 
+Digest: sha256:13e367d31ae85359f42d637adf6da428f76d75dc9afeb3c21faea0d976f5c651
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the &quot;hello-world&quot; image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+</code></pre>
+<p><img src="https://ostechnix.com/wp-content/uploads/2022/06/Run-Hello-World-Docker-Container.png" alt="Run Hello World Docker Container"></p>
+<p>很好！可以使用 Docker 了。</p>
+<h4 id="5作为非-root-用户运行-docker-选做">5、作为非 root 用户运行 Docker （选做）</h4>
+<p>默认情况下，Docker 守护进程绑定到 Unix 套接字而不是 TCP 端口。由于 <strong>Unix 套接字由 root 用户拥有</strong>，Docker 守护程序将仅以 root 用户身份运行。因此，普通用户无法执行大多数 Docker 命令。</p>
+<p>如果你想要在 Linux 中作为非 root 用户运行 Docker ，参考下方链接：</p>
+<ul>
+<li><a href="https://ostechnix.com/how-to-run-docker-as-non-root-user-in-linux/">如何在 Linux 中作为非 root 用户运行 Docker</a></li>
+</ul>
+<p>我个人不这样做也<strong>不推荐</strong>你这么做。如果你不会在互联网上暴露你的系统，那没问题。然而，不要在生产系统中以非 root 用户身份运行 Docker 。</p>
+<h3 id="在-ubuntu-中安装-docker-compose">在 Ubuntu 中安装 Docker Compose</h3>
+<p><strong>Docker Compose</strong> 是一个可用于定义和运行多容器 Docker 应用程序的工具。使用 Compose，你可以使用 Compose 文件来配置应用程序的服务。然后，使用单个命令，你可以从配置中创建和启动所有服务。</p>
+<p>下列任何方式都可以安装 Docker Compose 。</p>
+<h4 id="方式-1使用二进制文件安装-docker-compose">方式 1、使用二进制文件安装 Docker Compose</h4>
+<p>从 <a href="https://github.com/docker/compose/releases">这里</a> 下载最新 Docker Compose 。</p>
+<p>当我在写这篇文章时，最新版本是 <strong>2.6.1</strong> 。</p>
+<p>运行下列命令安装最新稳定的 Docker Compose 文件：</p>
+<pre><code>$ sudo curl -L &quot;https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
+</code></pre>
+<p>如果有更新版本，只需要将上述命令中的 <strong>v2.6.1</strong> 替换为最新的版本号即可。请不要忘记数字前的 <strong>&quot;v&quot;</strong> 。</p>
+<p>最后，使用下列命令赋予二进制文件可执行权限：</p>
+<pre><code>$ sudo chmod +x /usr/local/bin/docker-compose
+</code></pre>
+<p>运行下列命令检查安装的 Docker Compose 版本：</p>
+<pre><code>$ docker-compose version
+Docker Compose version v2.6.1
+</code></pre>
+<h4 id="方式-2使用-pip-安装-docker-compose">方式 2、使用 Pip 安装 Docker Compose</h4>
+<p>或许，我们可以使用 <strong>Pip</strong> 安装 Docker Compose 。Pip 是 Python 包管理器，用来安装使用 Python 编写的应用程序。</p>
+<p>参考下列链接安装 Pip 。</p>
+<ul>
+<li><a href="https://ostechnix.com/manage-python-packages-using-pip/">如何使用 Pip 管理 Python 包</a></li>
+</ul>
+<p>安装 Pip 后，运行以下命令安装 Docker Compose。下列命令对于所有 Linux 发行版都是相同的！</p>
+<pre><code>$ pip install docker-compose
+</code></pre>
+<p>安装 Docker Compose 后，使用下列命令检查版本：</p>
+<pre><code>$ docker-compose --version
+</code></pre>
+<p>你将会看到类似下方的输出：</p>
+<pre><code>docker-compose version 2.6.1, build 8a1c60f6
+</code></pre>
+<p>恭喜你！我们已经成功安装了 Docker 社区版和 Docker Compose 。</p>
+<p>安装了 Docker，然后呢？查看本系列的下一篇文章，了解 Docker 基础知识。</p>
+<ul>
+<li><a href="https://ostechnix.com/getting-started-with-docker/">开始使用 Docker</a></li>
+</ul>
+<p>要在基于 RPM 的系统（例如 RHEL、Fedora、CentOS、AlmaLinux、Rocky Linux 和 openSUSE）中安装 Docker，请参考以下链接。</p>
+<ul>
+<li><a href="https://ostechnix.com/install-docker-centos/">在 CentOS 中安装 Docker</a></li>
+</ul>
+<h3 id="总结">总结</h3>
+<p>在这篇教程中，我们讨论了 Docker 是什么，如何在 Ubuntu 22.04 LTS Jammy Jellyfish 中安装 Docker 。然后学习了如何通过运行 hello-world Docker 镜像测试 Docker 是否成功安装。最后，我们通过使用两种不同的方式安装 Docker Compose 作为本教程的结尾。</p>
+<h3 id="资料">资料</h3>
+<ul>
+<li><a href="https://www.docker.com/">Docker 主页</a></li>
+</ul>
+<hr>
+<p>via: <a href="https://ostechnix.com/install-docker-ubuntu/">https://ostechnix.com/install-docker-ubuntu/</a></p>
+<p>作者：<a href="https://ostechnix.com/author/sk/">sk</a>
+选题：<a href="https://github.com/lkxed">lkxed</a>
+译者：<a href="https://github.com/Donkey-Hao">Donkey</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-docker">什么是 Docker ？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#docker-依赖项">Docker 依赖项</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-ubuntu-2204-lts-中安装-docker">在 Ubuntu 22.04 LTS 中安装 Docker</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-ubuntu-中安装-docker-compose">在 Ubuntu 中安装 Docker Compose</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#资料">资料</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202207/20220627 How to Install Docker And Docker Compose In Ubuntu 22.04 LTS","title":"如何在 Ubuntu 22.04 LTS 中安装 Docker 和 Docker Compose"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>C++ 程序员 Protocol Buffers 基础指南 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="C++ 程序员 Protocol Buffers 基础指南 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="C++ 程序员 Protocol Buffers 基础指南 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201611/20160820 Protocol Buffer Basics C++#page","@type":"TechArticle","headline":"C++ 程序员 Protocol Buffers 基础指南","inLanguage":"en","name":"C++ 程序员 Protocol Buffers 基础指南","url":"https://zhengqbbb.github.io/pages-dev/201611/20160820 Protocol Buffer Basics C++","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201611/20160820 Protocol Buffer Basics C++"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#为什么使用-protocol-buffers">为什么使用 Protocol Buffers</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在哪可以找到示例代码">在哪可以找到示例代码</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#定义你的协议格式">定义你的协议格式</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#编译你的-protocol-buffers">编译你的 Protocol Buffers</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#protocol-buffer-api">Protocol Buffer API</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#写消息">写消息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#读取消息">读取消息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#扩展-protocol-buffer">扩展 Protocol Buffer</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#优化技巧">优化技巧</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#高级用法">高级用法</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>C++ 程序员 Protocol Buffers 基础指南</h1><p>这篇教程提供了一个面向 C++ 程序员关于 protocol buffers 的基础介绍。通过创建一个简单的示例应用程序，它将向我们展示：</p>
+<ul>
+<li>在 <code>.proto</code> 文件中定义消息格式</li>
+<li>使用 protocol buffer 编译器</li>
+<li>使用 C++ protocol buffer API 读写消息</li>
+</ul>
+<p>这不是一个关于在 C++ 中使用 protocol buffers 的全面指南。要获取更详细的信息，请参考 <a href="https://developers.google.com/protocol-buffers/docs/proto">Protocol Buffer Language Guide</a> 和 <a href="https://developers.google.com/protocol-buffers/docs/encoding">Encoding Reference</a>。</p>
+<h3 id="为什么使用-protocol-buffers">为什么使用 Protocol Buffers</h3>
+<p>我们接下来要使用的例子是一个非常简单的&quot;地址簿&quot;应用程序，它能从文件中读取联系人详细信息。地址簿中的每一个人都有一个名字、ID、邮件地址和联系电话。</p>
+<p>如何序列化和获取结构化的数据？这里有几种解决方案：</p>
+<ul>
+<li>以二进制形式发送/接收原生的内存数据结构。通常，这是一种脆弱的方法，因为接收/读取代码必须基于完全相同的内存布局、大小端等环境进行编译。同时，当文件增加时，原始格式数据会随着与该格式相关的软件而迅速扩散，这将导致很难扩展文件格式。</li>
+<li>你可以创造一种 ad-hoc 方法，将数据项编码为一个字符串——比如将 4 个整数编码为 <code>12:3:-23:67</code>。虽然它需要编写一次性的编码和解码代码且解码需要耗费一点运行时成本，但这是一种简单灵活的方法。这最适合编码非常简单的数据。</li>
+<li>序列化数据为 XML。这种方法是非常吸引人的，因为 XML 是一种适合人阅读的格式，并且有为许多语言开发的库。如果你想与其他程序和项目共享数据，这可能是一种不错的选择。然而，众所周知，XML 是空间密集型的，且在编码和解码时，它对程序会造成巨大的性能损失。同时，使用 XML DOM 树被认为比操作一个类的简单字段更加复杂。</li>
+</ul>
+<p>Protocol buffers 是针对这个问题的一种灵活、高效、自动化的解决方案。使用 Protocol buffers，你需要写一个 <code>.proto</code> 说明，用于描述你所希望存储的数据结构。利用 <code>.proto</code> 文件，protocol buffer 编译器可以创建一个类，用于实现对高效的二进制格式的 protocol buffer 数据的自动化编码和解码。产生的类提供了构造 protocol buffer 的字段的 getters 和 setters，并且作为一个单元来处理读写 protocol buffer 的细节。重要的是，protocol buffer 格式支持格式的扩展，代码仍然可以读取以旧格式编码的数据。</p>
+<h3 id="在哪可以找到示例代码">在哪可以找到示例代码</h3>
+<p>示例代码被包含于源代码包，位于“examples”文件夹。可在<a href="https://developers.google.com/protocol-buffers/docs/downloads.html">这里</a>下载代码。</p>
+<h3 id="定义你的协议格式">定义你的协议格式</h3>
+<p>为了创建自己的地址簿应用程序，你需要从 <code>.proto</code> 开始。<code>.proto</code> 文件中的定义很简单：为你所需要序列化的每个数据结构添加一个消息（message），然后为消息中的每一个字段指定一个名字和类型。这里是定义你消息的 <code>.proto</code> 文件 <code>addressbook.proto</code>。</p>
+<pre><code>package tutorial;
+
+message Person {
+  required string name = 1;
+  required int32 id = 2;
+  optional string email = 3;
+
+  enum PhoneType {
+    MOBILE = 0;
+    HOME = 1;
+    WORK = 2;
+  }
+
+  message PhoneNumber {
+    required string number = 1;
+    optional PhoneType type = 2 [default = HOME];
+  }
+
+  repeated PhoneNumber phone = 4;
+}
+
+message AddressBook {
+  repeated Person person = 1;
+}
+</code></pre>
+<p>如你所见，其语法类似于 C++ 或 Java。我们开始看看文件的每一部分内容做了什么。</p>
+<p><code>.proto</code> 文件以一个 package 声明开始，这可以避免不同项目的命名冲突。在 C++，你生成的类会被置于与 package 名字一样的命名空间。</p>
+<p>下一步，你需要定义消息（message）。消息只是一个包含一系列类型字段的集合。大多标准的简单数据类型是可以作为字段类型的，包括 <code>bool</code>、<code>int32</code>、<code>float</code>、<code>double</code> 和 <code>string</code>。你也可以通过使用其他消息类型作为字段类型，将更多的数据结构添加到你的消息中——在以上的示例，<code>Person</code> 消息包含了 <code>PhoneNumber</code> 消息，同时 <code>AddressBook</code> 消息包含 <code>Person</code> 消息。你甚至可以定义嵌套在其他消息内的消息类型——如你所见，<code>PhoneNumber</code> 类型定义于 <code>Person</code> 内部。如果你想要其中某一个字段的值是预定义值列表中的某个值，你也可以定义 <code>enum</code> 类型——这儿你可以指定一个电话号码是 <code>MOBILE</code>、<code>HOME</code> 或 <code>WORK</code> 中的某一个。</p>
+<p>每一个元素上的 <code>= 1</code>、<code>= 2</code> 标记确定了用于二进制编码的唯一“标签”（tag）。标签数字 1-15 的编码比更大的数字少需要一个字节，因此作为一种优化，你可以将这些标签用于经常使用的元素或 repeated 元素，剩下 16 以及更高的标签用于非经常使用的元素或 <code>optional</code> 元素。每一个 <code>repeated</code> 字段的元素需要重新编码标签数字，因此 <code>repeated</code> 字段适合于使用这种优化手段。</p>
+<p>每一个字段必须使用下面的修饰符加以标注：</p>
+<ul>
+<li><code>required</code>：必须提供该字段的值，否则消息会被认为是 “未初始化的”（uninitialized）。如果 <code>libprotobuf</code> 以调试模式编译，序列化未初始化的消息将引起一个断言失败。以优化形式构建，将会跳过检查，并且无论如何都会写入该消息。然而，解析未初始化的消息总是会失败（通过 parse 方法返回 <code>false</code>）。除此之外，一个 <code>required</code> 字段的表现与 <code>optional</code> 字段完全一样。</li>
+<li><code>optional</code>：字段可能会被设置，也可能不会。如果一个 <code>optional</code> 字段没被设置，它将使用默认值。对于简单类型，你可以指定你自己的默认值，正如例子中我们对电话号码的 <code>type</code> 一样，否则使用系统默认值：数字类型为 0、字符串为空字符串、布尔值为 false。对于嵌套消息，默认值总为消息的“默认实例”或“原型”，它的所有字段都没被设置。调用 accessor 来获取一个没有显式设置的 <code>optional</code>（或 <code>required</code>） 字段的值总是返回字段的默认值。</li>
+<li><code>repeated</code>：字段可以重复任意次数（包括 0 次）。<code>repeated</code> 值的顺序会被保存于 protocol buffer。可以将 repeated 字段想象为动态大小的数组。</li>
+</ul>
+<p>你可以查找关于编写 <code>.proto</code> 文件的完整指导——包括所有可能的字段类型——在 <a href="https://developers.google.com/protocol-buffers/docs/proto">Protocol Buffer Language Guide</a> 里面。不要在这里面查找与类继承相似的特性，因为 protocol buffers 不会做这些。</p>
+<blockquote>
+<p><strong><code>required</code> 是永久性的</strong></p>
+</blockquote>
+<blockquote>
+<p>在把一个字段标识为 <code>required</code> 的时候，你应该特别小心。如果在某些情况下你不想写入或者发送一个 <code>required</code> 的字段，那么将该字段更改为 <code>optional</code> 可能会遇到问题——旧版本的读者（LCTT 译注：即读取、解析旧版本 Protocol Buffer 消息的一方）会认为不含该字段的消息是不完整的，从而有可能会拒绝解析。在这种情况下，你应该考虑编写特别针对于应用程序的、自定义的消息校验函数。Google 的一些工程师得出了一个结论：使用 <code>required</code> 弊多于利；他们更愿意使用 <code>optional</code> 和 <code>repeated</code> 而不是 <code>required</code>。当然，这个观点并不具有普遍性。</p>
+</blockquote>
+<h3 id="编译你的-protocol-buffers">编译你的 Protocol Buffers</h3>
+<p>既然你有了一个 <code>.proto</code>，那你需要做的下一件事就是生成一个将用于读写 <code>AddressBook</code> 消息的类（从而包括 <code>Person</code> 和 <code>PhoneNumber</code>）。为了做到这样，你需要在你的 <code>.proto</code> 上运行 protocol buffer 编译器 <code>protoc</code>：</p>
+<ol>
+<li>如果你没有安装编译器，请<a href="https://developers.google.com/protocol-buffers/docs/downloads.html">下载这个包</a>，并按照 README 中的指令进行安装。</li>
+<li>现在运行编译器，指定源目录（你的应用程序源代码位于哪里——如果你没有提供任何值，将使用当前目录）、目标目录（你想要生成的代码放在哪里；常与 <code>$SRC_DIR</code> 相同），以及你的 <code>.proto</code> 路径。在此示例中：</li>
+</ol>
+<pre><code>protoc -I=$SRC_DIR --cpp_out=$DST_DIR $SRC_DIR/addressbook.proto
+</code></pre>
+<p>因为你想要 C++ 的类，所以你使用了 <code>--cpp_out</code> 选项——也为其他支持的语言提供了类似选项。</p>
+<p>在你指定的目标文件夹，将生成以下的文件：</p>
+<ul>
+<li><code>addressbook.pb.h</code>，声明你生成类的头文件。</li>
+<li><code>addressbook.pb.cc</code>，包含你的类的实现。</li>
+</ul>
+<h3 id="protocol-buffer-api">Protocol Buffer API</h3>
+<p>让我们看看生成的一些代码，了解一下编译器为你创建了什么类和函数。如果你查看 <code>addressbook.pb.h</code>，你可以看到有一个在 <code>addressbook.proto</code> 中指定所有消息的类。关注 <code>Person</code> 类，可以看到编译器为每个字段生成了读写函数（accessors）。例如，对于 <code>name</code>、<code>id</code>、<code>email</code> 和 <code>phone</code> 字段，有下面这些方法：（LCTT 译注：此处原文所指文件名有误，径该之。）</p>
+<pre><code class="language-c++">// name
+inline bool has_name() const;
+inline void clear_name();
+inline const ::std::string&amp; name() const;
+inline void set_name(const ::std::string&amp; value);
+inline void set_name(const char* value);
+inline ::std::string* mutable_name();
+
+// id
+inline bool has_id() const;
+inline void clear_id();
+inline int32_t id() const;
+inline void set_id(int32_t value);
+
+// email
+inline bool has_email() const;
+inline void clear_email();
+inline const ::std::string&amp; email() const;
+inline void set_email(const ::std::string&amp; value);
+inline void set_email(const char* value);
+inline ::std::string* mutable_email();
+
+// phone
+inline int phone_size() const;
+inline void clear_phone();
+inline const ::google::protobuf::RepeatedPtrField&lt; ::tutorial::Person_PhoneNumber &gt;&amp; phone() const;
+inline ::google::protobuf::RepeatedPtrField&lt; ::tutorial::Person_PhoneNumber &gt;* mutable_phone();
+inline const ::tutorial::Person_PhoneNumber&amp; phone(int index) const;
+inline ::tutorial::Person_PhoneNumber* mutable_phone(int index);
+inline ::tutorial::Person_PhoneNumber* add_phone();
+</code></pre>
+<p>正如你所见到，getters 的名字与字段的小写名字完全一样，并且 setter 方法以 set_ 开头。同时每个单一（singular）（<code>required</code> 或 <code>optional</code>）字段都有 <code>has_</code> 方法，该方法在字段被设置了值的情况下返回 true。最后，所有字段都有一个 <code>clear_</code> 方法，用以清除字段到空（empty）状态。</p>
+<p>数字型的 <code>id</code> 字段仅有上述的基本读写函数集合（accessors），而 <code>name</code> 和 <code>email</code> 字段有两个额外的方法，因为它们是字符串——一个是可以获得字符串直接指针的<code>mutable_</code> 的 getter ，另一个为额外的 setter。注意，尽管 <code>email</code> 还没被设置（set），你也可以调用 <code>mutable_email</code>；因为 <code>email</code> 会被自动地初始化为空字符串。在本例中，如果你有一个单一的（<code>required</code> 或 <code>optional</code>）消息字段，它会有一个 <code>mutable_</code> 方法，而没有 <code>set_</code> 方法。</p>
+<p><code>repeated</code> 字段也有一些特殊的方法——如果你看看 <code>repeated</code> 的 <code>phone</code> 字段的方法，你可以看到：</p>
+<ul>
+<li>检查 <code>repeated</code> 字段的 <code>_size</code>（也就是说，与 <code>Person</code> 相关的电话号码的个数）</li>
+<li>使用下标取得特定的电话号码</li>
+<li>更新特定下标的电话号码</li>
+<li>添加新的电话号码到消息中，之后你便可以编辑。（<code>repeated</code> 标量类型有一个 <code>add_</code> 方法，用于传入新的值）</li>
+</ul>
+<p>为了获取 protocol 编译器为所有字段定义生成的方法的信息，可以查看 <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp-generated">C++ generated code reference</a>。</p>
+<h4 id="枚举和嵌套类">枚举和嵌套类</h4>
+<p>与 <code>.proto</code> 的枚举相对应，生成的代码包含了一个 <code>PhoneType</code> 枚举。你可以通过 <code>Person::PhoneType</code> 引用这个类型，通过 <code>Person::MOBILE</code>、<code>Person::HOME</code> 和 <code>Person::WORK</code> 引用它的值。（实现细节有点复杂，但是你无须了解它们而可以直接使用）</p>
+<p>编译器也生成了一个 <code>Person::PhoneNumber</code> 的嵌套类。如果你查看代码，你可以发现真正的类型为 <code>Person_PhoneNumber</code>，但它通过在 <code>Person</code> 内部使用 <code>typedef</code> 定义，使你可以把 <code>Person_PhoneNumber</code> 当成嵌套类。唯一产生影响的一个例子是，如果你想要在其他文件前置声明该类——在 C++ 中你不能前置声明嵌套类，但是你可以前置声明 <code>Person_PhoneNumber</code>。</p>
+<h4 id="标准的消息方法">标准的消息方法</h4>
+<p>所有的消息方法都包含了许多别的方法，用于检查和操作整个消息，包括：</p>
+<ul>
+<li><code>bool IsInitialized() const;</code> ：检查是否所有 <code>required</code> 字段已经被设置。</li>
+<li><code>string DebugString() const;</code> ：返回人类可读的消息表示，对调试特别有用。</li>
+<li><code>void CopyFrom(const Person&amp; from);</code>：使用给定的值重写消息。</li>
+<li><code>void Clear();</code>：清除所有元素为空（empty）的状态。</li>
+</ul>
+<p>上面这些方法以及下一节要讲的 I/O 方法实现了被所有 C++ protocol buffer 类共享的消息（Message）接口。为了获取更多信息，请查看 <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.message.html#Message">complete API documentation for Message</a>。</p>
+<h4 id="解析和序列化">解析和序列化</h4>
+<p>最后，所有 protocol buffer 类都有读写你选定类型消息的方法，这些方法使用了特定的 protocol buffer <a href="https://developers.google.com/protocol-buffers/docs/encoding">二进制格式</a>。这些方法包括：</p>
+<ul>
+<li><code>bool SerializeToString(string* output) const;</code>：序列化消息并将消息字节数据存储在给定的字符串中。注意，字节数据是二进制格式的，而不是文本格式；我们只使用 <code>string</code> 类作为合适的容器。</li>
+<li><code>bool ParseFromString(const string&amp; data);</code>：从给定的字符创解析消息。</li>
+<li><code>bool SerializeToOstream(ostream* output) const;</code>：将消息写到给定的 C++ <code>ostream</code>。</li>
+<li><code>bool ParseFromIstream(istream* input);</code>：从给定的 C++ <code>istream</code> 解析消息。</li>
+</ul>
+<p>这些只是两个用于解析和序列化的选择。再次说明，可以查看 <code>Message API reference</code> 完整的列表。</p>
+<blockquote>
+<p><strong>Protocol Buffers 和面向对象设计</strong></p>
+</blockquote>
+<blockquote>
+<p>Protocol buffer 类通常只是纯粹的数据存储器（像 C++ 中的结构体）；它们在对象模型中并不是一等公民。如果你想向生成的 protocol buffer 类中添加更丰富的行为，最好的方法就是在应用程序中对它进行封装。如果你无权控制 <code>.proto</code> 文件的设计的话，封装 protocol buffers 也是一个好主意（例如，你从另一个项目中重用一个 <code>.proto</code> 文件）。在那种情况下，你可以用封装类来设计接口，以更好地适应你的应用程序的特定环境：隐藏一些数据和方法，暴露一些便于使用的函数，等等。**但是你绝对不要通过继承生成的类来添加行为。**这样做的话，会破坏其内部机制，并且不是一个好的面向对象的实践。</p>
+</blockquote>
+<h3 id="写消息">写消息</h3>
+<p>现在我们尝试使用 protocol buffer 类。你的地址簿程序想要做的第一件事是将个人详细信息写入到地址簿文件。为了做到这一点，你需要创建、填充 protocol buffer 类实例，并且将它们写入到一个输出流（output stream）。</p>
+<p>这里的程序可以从文件读取 <code>AddressBook</code>，根据用户输入，将新 <code>Person</code> 添加到 <code>AddressBook</code>，并且再次将新的 <code>AddressBook</code> 写回文件。这部分直接调用或引用 protocol buffer 类的代码会以“// pb”标出。</p>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+#include &quot;addressbook.pb.h&quot;	// pb
+using namespace std;
+
+// This function fills in a Person message based on user input.
+void PromptForAddress(tutorial::Person* person) {
+  cout &lt;&lt; &quot;Enter person ID number: &quot;;
+  int id;
+  cin &gt;&gt; id;
+  person-&gt;set_id(id);	// pb
+  cin.ignore(256, &#39;\n&#39;);
+
+  cout &lt;&lt; &quot;Enter name: &quot;;
+  getline(cin, *person-&gt;mutable_name());	// pb
+
+  cout &lt;&lt; &quot;Enter email address (blank for none): &quot;;
+  string email;
+  getline(cin, email);
+  if (!email.empty()) {	// pb
+    person-&gt;set_email(email);	// pb
+  }
+
+  while (true) {
+    cout &lt;&lt; &quot;Enter a phone number (or leave blank to finish): &quot;;
+    string number;
+    getline(cin, number);
+    if (number.empty()) {
+      break;
+    }
+
+    tutorial::Person::PhoneNumber* phone_number = person-&gt;add_phone();	//pb
+    phone_number-&gt;set_number(number);	// pb
+
+    cout &lt;&lt; &quot;Is this a mobile, home, or work phone? &quot;;
+    string type;
+    getline(cin, type);
+    if (type == &quot;mobile&quot;) {
+      phone_number-&gt;set_type(tutorial::Person::MOBILE);	// pb
+    } else if (type == &quot;home&quot;) {
+      phone_number-&gt;set_type(tutorial::Person::HOME);	// pb
+    } else if (type == &quot;work&quot;) {
+      phone_number-&gt;set_type(tutorial::Person::WORK);	// pb
+    } else {
+      cout &lt;&lt; &quot;Unknown phone type.  Using default.&quot; &lt;&lt; endl;
+    }
+  }
+}
+
+// Main function:  Reads the entire address book from a file,
+//   adds one person based on user input, then writes it back out to the same
+//   file.
+int main(int argc, char* argv[]) {
+  // Verify that the version of the library that we linked against is
+  // compatible with the version of the headers we compiled against.
+  GOOGLE_PROTOBUF_VERIFY_VERSION;	// pb
+
+  if (argc != 2) {
+    cerr &lt;&lt; &quot;Usage:  &quot; &lt;&lt; argv[0] &lt;&lt; &quot; ADDRESS_BOOK_FILE&quot; &lt;&lt; endl;
+    return -1;
+  }
+
+  tutorial::AddressBook address_book;	// pb
+
+  {
+    // Read the existing address book.
+    fstream input(argv[1], ios::in | ios::binary);
+    if (!input) {
+      cout &lt;&lt; argv[1] &lt;&lt; &quot;: File not found.  Creating a new file.&quot; &lt;&lt; endl;
+    } else if (!address_book.ParseFromIstream(&amp;input)) {	// pb
+      cerr &lt;&lt; &quot;Failed to parse address book.&quot; &lt;&lt; endl;
+      return -1;
+    }
+  }
+
+  // Add an address.
+  PromptForAddress(address_book.add_person());	// pb
+
+  {
+    // Write the new address book back to disk.
+    fstream output(argv[1], ios::out | ios::trunc | ios::binary);
+    if (!address_book.SerializeToOstream(&amp;output)) {	// pb
+      cerr &lt;&lt; &quot;Failed to write address book.&quot; &lt;&lt; endl;
+      return -1;
+    }
+  }
+
+  // Optional:  Delete all global objects allocated by libprotobuf.
+  google::protobuf::ShutdownProtobufLibrary();	// pb
+
+  return 0;
+}
+</code></pre>
+<p>注意 <code>GOOGLE_PROTOBUF_VERIFY_VERSION</code> 宏。它是一种好的实践——虽然不是严格必须的——在使用 C++ Protocol Buffer 库之前执行该宏。它可以保证避免不小心链接到一个与编译的头文件版本不兼容的库版本。如果被检查出来版本不匹配，程序将会终止。注意，每个 <code>.pb.cc</code> 文件在初始化时会自动调用这个宏。</p>
+<p>同时注意在程序最后调用 <code>ShutdownProtobufLibrary()</code>。它用于释放 Protocol Buffer 库申请的所有全局对象。对大部分程序，这不是必须的，因为虽然程序只是简单退出，但是 OS 会处理释放程序的所有内存。然而，如果你使用了内存泄漏检测工具，工具要求全部对象都要释放，或者你正在写一个 Protocol Buffer 库，该库可能会被一个进程多次加载和卸载，那么你可能需要强制 Protocol Buffer 清除所有东西。</p>
+<h3 id="读取消息">读取消息</h3>
+<p>当然，如果你无法从它获取任何信息，那么这个地址簿没多大用处！这个示例读取上面例子创建的文件，并打印文件里的所有内容。</p>
+<pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+#include &quot;addressbook.pb.h&quot;	// pb
+using namespace std;
+
+// Iterates though all people in the AddressBook and prints info about them.
+void ListPeople(const tutorial::AddressBook&amp; address_book) {	// pb
+  for (int i = 0; i &lt; address_book.person_size(); i++) {		// pb
+    const tutorial::Person&amp; person = address_book.person(i);	// pb
+
+    cout &lt;&lt; &quot;Person ID: &quot; &lt;&lt; person.id() &lt;&lt; endl;	// pb
+    cout &lt;&lt; &quot;  Name: &quot; &lt;&lt; person.name() &lt;&lt; endl;	// pb
+    if (person.has_email()) {	// pb
+      cout &lt;&lt; &quot;  E-mail address: &quot; &lt;&lt; person.email() &lt;&lt; endl;	// pb
+    }
+
+    for (int j = 0; j &lt; person.phone_size(); j++) {	// pb
+      const tutorial::Person::PhoneNumber&amp; phone_number = person.phone(j);	// pb
+
+      switch (phone_number.type()) {	// pb
+        case tutorial::Person::MOBILE:	// pb
+          cout &lt;&lt; &quot;  Mobile phone #: &quot;;
+          break;
+        case tutorial::Person::HOME:	// pb
+          cout &lt;&lt; &quot;  Home phone #: &quot;;
+          break;
+        case tutorial::Person::WORK:	// pb
+          cout &lt;&lt; &quot;  Work phone #: &quot;;
+          break;
+      }
+      cout &lt;&lt; phone_number.number() &lt;&lt; endl;	// ob
+    }
+  }
+}
+
+// Main function:  Reads the entire address book from a file and prints all
+//   the information inside.
+int main(int argc, char* argv[]) {
+  // Verify that the version of the library that we linked against is
+  // compatible with the version of the headers we compiled against.
+  GOOGLE_PROTOBUF_VERIFY_VERSION;	// pb
+
+  if (argc != 2) {
+    cerr &lt;&lt; &quot;Usage:  &quot; &lt;&lt; argv[0] &lt;&lt; &quot; ADDRESS_BOOK_FILE&quot; &lt;&lt; endl;
+    return -1;
+  }
+
+  tutorial::AddressBook address_book;	// pb
+
+  {
+    // Read the existing address book.
+    fstream input(argv[1], ios::in | ios::binary);
+    if (!address_book.ParseFromIstream(&amp;input)) {	// pb
+      cerr &lt;&lt; &quot;Failed to parse address book.&quot; &lt;&lt; endl;
+      return -1;
+    }
+  }
+
+  ListPeople(address_book);
+
+  // Optional:  Delete all global objects allocated by libprotobuf.
+  google::protobuf::ShutdownProtobufLibrary();	// pb
+
+  return 0;
+}
+</code></pre>
+<h3 id="扩展-protocol-buffer">扩展 Protocol Buffer</h3>
+<p>或早或晚在你发布了使用 protocol buffer 的代码之后，毫无疑问，你会想要 &quot;改善&quot;
+ protocol buffer 的定义。如果你想要新的 buffers 向后兼容，并且老的 buffers 向前兼容——几乎可以肯定你很渴望这个——这里有一些规则，你需要遵守。在新的 protocol buffer 版本：</p>
+<ul>
+<li>你绝不可以修改任何已存在字段的标签数字</li>
+<li>你绝不可以添加或删除任何 <code>required</code> 字段</li>
+<li>你可以删除 <code>optional</code> 或 <code>repeated</code> 字段</li>
+<li>你可以添加新的 <code>optional</code> 或 <code>repeated</code> 字段，但是你必须使用新的标签数字（也就是说，标签数字在 protocol buffer 中从未使用过，甚至不能是已删除字段的标签数字）。</li>
+</ul>
+<p>（对于上面规则有一些<a href="https://developers.google.com/protocol-buffers/docs/proto#updating">例外情况</a>，但它们很少用到。）</p>
+<p>如果你能遵守这些规则，旧代码则可以欢快地读取新的消息，并且简单地忽略所有新的字段。对于旧代码来说，被删除的 <code>optional</code> 字段将会简单地赋予默认值，被删除的 <code>repeated</code> 字段会为空。新代码显然可以读取旧消息。然而，请记住新的 <code>optional</code> 字段不会呈现在旧消息中，因此你需要显式地使用 <code>has_</code> 检查它们是否被设置或者在 <code>.proto</code> 文件在标签数字后使用 <code>[default = value]</code> 提供一个合理的默认值。如果一个 <code>optional</code> 元素没有指定默认值，它将会使用类型特定的默认值：对于字符串，默认值为空字符串；对于布尔值，默认值为 false；对于数字类型，默认类型为 0。注意，如果你添加一个新的 <code>repeated</code> 字段，新代码将无法辨别它被留空（left empty）（被新代码）或者从没被设置（被旧代码），因为 <code>repeated</code> 字段没有 <code>has_</code> 标志。</p>
+<h3 id="优化技巧">优化技巧</h3>
+<p>C++ Protocol Buffer 库已极度优化过了。但是，恰当的用法能够更多地提高性能。这里是一些技巧，可以帮你从库中挤压出最后一点速度：</p>
+<ul>
+<li>尽可能复用消息对象。即使它们被清除掉，消息也会尽量保存所有被分配来重用的内存。因此，如果我们正在处理许多相同类型或一系列相似结构的消息，一个好的办法是重用相同的消息对象，从而减少内存分配的负担。但是，随着时间的流逝，对象可能会膨胀变大，尤其是当你的消息尺寸（LCTT 译注：各消息内容不同，有些消息内容多一些，有些消息内容少一些）不同的时候，或者你偶尔创建了一个比平常大很多的消息的时候。你应该自己通过调用 <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.message.html#Message.SpaceUsed.details">SpaceUsed</a> 方法监测消息对象的大小，并在它太大的时候删除它。</li>
+<li>对于在多线程中分配大量小对象的情况，你的操作系统内存分配器可能优化得不够好。你可以尝试使用 google 的 <a href="http://code.google.com/p/google-perftools/">tcmalloc</a>。</li>
+</ul>
+<h3 id="高级用法">高级用法</h3>
+<p>Protocol Buffers 绝不仅用于简单的数据存取以及序列化。请阅读 <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/index.html">C++ API reference</a> 来看看你还能用它来做什么。</p>
+<p>protocol 消息类所提供的一个关键特性就是反射（reflection）。你不需要针对一个特殊的消息类型编写代码，就可以遍历一个消息的字段并操作它们的值。一个使用反射的有用方法是 protocol 消息与其他编码互相转换，比如 XML 或 JSON。反射的一个更高级的用法可能就是可以找出两个相同类型的消息之间的区别，或者开发某种“协议消息的正则表达式”，利用正则表达式，你可以对某种消息内容进行匹配。只要你发挥你的想像力，就有可能将 Protocol Buffers 应用到一个更广泛的、你可能一开始就期望解决的问题范围上。</p>
+<p>反射是由 <a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.message.html#Message.Reflection">Message::Reflection interface</a> 提供的。</p>
+<hr>
+<p>via: <a href="https://developers.google.com/protocol-buffers/docs/cpptutorial">https://developers.google.com/protocol-buffers/docs/cpptutorial</a></p>
+<p>作者：<a href="https://developers.google.com/protocol-buffers/docs/cpptutorial">Google</a>
+译者：<a href="https://github.com/cposture">cposture</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#为什么使用-protocol-buffers">为什么使用 Protocol Buffers</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在哪可以找到示例代码">在哪可以找到示例代码</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#定义你的协议格式">定义你的协议格式</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#编译你的-protocol-buffers">编译你的 Protocol Buffers</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#protocol-buffer-api">Protocol Buffer API</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#写消息">写消息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#读取消息">读取消息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#扩展-protocol-buffer">扩展 Protocol Buffer</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#优化技巧">优化技巧</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#高级用法">高级用法</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201611/20160820 Protocol Buffer Basics C++","title":"C++ 程序员 Protocol Buffers 基础指南"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

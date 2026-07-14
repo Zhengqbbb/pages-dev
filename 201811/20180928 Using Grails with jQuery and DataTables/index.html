@@ -1,0 +1,396 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>在 Grails 中使用 jQuery 和 DataTables - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="在 Grails 中使用 jQuery 和 DataTables - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="在 Grails 中使用 jQuery 和 DataTables - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201811/20180928 Using Grails with jQuery and DataTables#page","@type":"TechArticle","headline":"在 Grails 中使用 jQuery 和 DataTables","inLanguage":"en","name":"在 Grails 中使用 jQuery 和 DataTables","url":"https://zhengqbbb.github.io/pages-dev/201811/20180928 Using Grails with jQuery and DataTables","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201811/20180928 Using Grails with jQuery and DataTables"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取员工信息浏览器应用程序">获取员工信息浏览器应用程序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建员工信息浏览器视图和控制器的方法">创建员工信息浏览器视图和控制器的方法</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结语">结语</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>在 Grails 中使用 jQuery 和 DataTables</h1><blockquote>
+<p>本文介绍如何构建一个基于 Grails 的数据浏览器来可视化复杂的表格数据。</p>
+</blockquote>
+<p><img src="https://opensource.com/sites/default/files/styles/image-full-size/public/lead-images/data_container_block.png?itok=S8MbXEYw" alt=""></p>
+<p>我是 <a href="https://grails.org/">Grails</a> 的忠实粉丝。当然，我主要是热衷于利用命令行工具来探索和分析数据的数据从业人员。数据从业人员经常需要<em>查看</em>数据，这也意味着他们通常拥有优秀的数据浏览器。利用 Grails、<a href="https://jquery.com/">jQuery</a>，以及 <a href="https://datatables.net/">DataTables jQuery 插件</a>，我们可以制作出非常友好的表格数据浏览器。</p>
+<p><a href="https://datatables.net/">DataTables 网站</a>提供了许多“食谱式”的教程文档，展示了如何组合一些优秀的示例应用程序，这些程序包含了完成一些非常漂亮的东西所必要的 JavaScript、HTML，以及偶尔出现的 <a href="http://php.net/">PHP</a>。但对于那些宁愿使用 Grails 作为后端的人来说，有必要进行一些说明示教。此外，样本程序中使用的数据是一个虚构公司的员工的单个平面表格数据，因此处理这些复杂的表关系可以作为读者的一个练习项目。</p>
+<p>本文中，我们将创建具有略微复杂的数据结构和 DataTables 浏览器的 Grails 应用程序。我们将介绍 Grails 标准，它是 <a href="http://groovy-lang.org/">Groovy</a> 式的 Java Hibernate 标准。我已将代码托管在 <a href="https://github.com/monetschemist/grails-datatables">GitHub</a> 上方便大家访问，因此本文主要是对代码细节的解读。</p>
+<p>首先，你需要配置 Java、Groovy、Grails 的使用环境。对于 Grails，我倾向于使用终端窗口和 <a href="https://www.vim.org/">Vim</a>，本文也使用它们。为获得现代的 Java 环境，建议下载并安装 Linux 发行版提供的 <a href="http://openjdk.java.net/">Open Java Development Kit</a> （OpenJDK）（应该是 Java 8、9、10 或 11 之一，撰写本文时，我正在使用 Java 8）。从我的角度来看，获取最新的 Groovy 和 Grails 的最佳方法是使用 <a href="http://sdkman.io/">SDKMAN!</a>。</p>
+<p>从未尝试过 Grails 的读者可能需要做一些背景资料阅读。作为初学者，推荐文章 <a href="http://guides.grails.org/creating-your-first-grails-app/guide/index.html">创建你的第一个 Grails 应用程序</a>。</p>
+<h3 id="获取员工信息浏览器应用程序">获取员工信息浏览器应用程序</h3>
+<p>正如上文所提，我将本文中员工信息浏览器的源代码托管在 <a href="https://github.com/monetschemist/grails-datatables">GitHub</a>上。进一步讲，应用程序 <strong>embrow</strong> 是在 Linux 终端中用如下命令构建的：</p>
+<pre><code>cd Projects
+grails create-app com.nuevaconsulting.embrow
+</code></pre>
+<p>域类和单元测试创建如下：</p>
+<pre><code>grails create-domain-class com.nuevaconsulting.embrow.Position
+grails create-domain-class com.nuevaconsulting.embrow.Office
+grails create-domain-class com.nuevaconsulting.embrow.Employeecd embrowgrails createdomaincom.grails createdomaincom.grails createdomaincom.
+</code></pre>
+<p>这种方式构建的域类没有属性，因此必须按如下方式编辑它们：</p>
+<p><code>Position</code> 域类：</p>
+<pre><code>package com.nuevaconsulting.embrow
+ 
+class Position {
+
+    String name
+    int starting
+
+    static constraints = {
+        name nullable: false, blank: false
+        starting nullable: false
+    }
+}com.Stringint startingstatic constraintsnullableblankstarting nullable
+</code></pre>
+<p><code>Office</code> 域类：</p>
+<pre><code>package com.nuevaconsulting.embrow
+ 
+class Office {
+
+    String name
+    String address
+    String city
+    String country
+
+    static constraints = {
+        name nullable: false, blank: false
+        address nullable: false, blank: false
+        city nullable: false, blank: false
+        country nullable: false, blank: false
+    }
+}
+</code></pre>
+<p><code>Enployee</code> 域类：</p>
+<pre><code>package com.nuevaconsulting.embrow
+ 
+class Employee {
+
+    String surname
+    String givenNames
+    Position position
+    Office office
+    int extension
+    Date hired
+    int salary
+    static constraints = {
+        surname nullable: false, blank: false
+        givenNames nullable: false, blank: false
+        : false
+        office nullable: false
+        extension nullable: false
+        hired nullable: false
+        salary nullable: false
+    }
+}
+</code></pre>
+<p>请注意，虽然 <code>Position</code> 和 <code>Office</code> 域类使用了预定义的 Groovy 类型 <code>String</code> 以及 <code>int</code>，但 <code>Employee</code> 域类定义了 <code>Position</code> 和 <code>Office</code> 字段（以及预定义的 <code>Date</code>）。这会导致创建数据库表，其中存储的 <code>Employee</code> 实例中包含了指向存储 <code>Position</code> 和 <code>Office</code> 实例表的引用或者外键。</p>
+<p>现在你可以生成控制器，视图，以及其他各种测试组件：</p>
+<pre><code>-all com.nuevaconsulting.embrow.Position
+grails generate-all com.nuevaconsulting.embrow.Office
+grails generate-all com.nuevaconsulting.embrow.Employeegrails generateall com.grails generateall com.grails generateall com.
+</code></pre>
+<p>此时，你已经准备好了一个基本的增删改查（CRUD）应用程序。我在 <code>grails-app/init/com/nuevaconsulting/BootStrap.groovy</code> 中包含了一些基础数据来填充表格。</p>
+<p>如果你用如下命令来启动应用程序：</p>
+<pre><code>grails run-app
+</code></pre>
+<p>在浏览器输入 <code>http://localhost:8080/</code>，你将会看到如下界面：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/screen_1.png" alt="Embrow home screen"></p>
+<p><em>Embrow 应用程序主界面。</em></p>
+<p>单击 “OfficeController” 链接，会跳转到如下界面：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/screen_2.png" alt="Office list"></p>
+<p><em>Office 列表</em></p>
+<p>注意，此表由 <code>OfficeController</code> 的 <code>index</code> 方式生成，并由视图 <code>office/index.gsp</code> 显示。</p>
+<p>同样，单击 “EmployeeController” 链接 跳转到如下界面：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/screen3.png" alt="Employee controller"></p>
+<p><em>employee 控制器</em></p>
+<p>好吧，这很丑陋： Position 和 Office 链接是什么？</p>
+<p>上面的命令 <code>generate-all</code> 生成的视图创建了一个叫 <code>index.gsp</code> 的文件，它使用 Grails <code>&lt;f:table/&gt;</code> 标签，该标签默认会显示类名（<code>com.nuevaconsulting.embrow.Position</code>）和持久化示例标识符（<code>30</code>）。这个操作可以自定义用来产生更好看的东西，并且自动生成链接，自动生成分页以及自动生成可排序列的一些非常简洁直观的东西。</p>
+<p>但该员工信息浏览器功能也是有限的。例如，如果想查找 “position” 信息中包含 “dev” 的员工该怎么办？如果要组合排序，以姓氏为主排序关键字，“office” 为辅助排序关键字，该怎么办？或者，你需要将已排序的数据导出到电子表格或 PDF 文档以便通过电子邮件发送给无法访问浏览器的人，该怎么办？</p>
+<p>jQuery DataTables 插件提供了这些所需的功能。允许你创建一个完成的表格数据浏览器。</p>
+<h3 id="创建员工信息浏览器视图和控制器的方法">创建员工信息浏览器视图和控制器的方法</h3>
+<p>要基于 jQuery DataTables 创建员工信息浏览器，你必须先完成以下两个任务：</p>
+<ol>
+<li>创建 Grails 视图，其中包含启用 DataTable 所需的 HTML 和 JavaScript</li>
+<li>给 Grails 控制器增加一个方法来控制新视图。</li>
+</ol>
+<h4 id="员工信息浏览器视图">员工信息浏览器视图</h4>
+<p>在目录 <code>embrow/grails-app/views/employee</code> 中，首先复制 <code>index.gsp</code> 文件，重命名为 <code>browser.gsp</code>：</p>
+<pre><code>cd Projects
+cd embrow/grails-app/views/employee
+cp gsp browser.gsp
+</code></pre>
+<p>此刻，你自定义新的 <code>browser.gsp</code> 文件来添加相关的 jQuery DataTables 代码。</p>
+<p>通常，在可能的时候，我喜欢从内容提供商处获得 JavaScript 和 CSS；在下面这行后面：</p>
+<pre><code>&lt;title&gt;&lt;g:message code=&quot;default.list.label&quot; args=&quot;[entityName]&quot; /&gt;&lt;/title&gt;
+</code></pre>
+<p>插入如下代码：</p>
+<pre><code>&lt;script src=&quot;https://code.jquery.com/jquery-2.2.4.min.js&quot; integrity=&quot;sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css&quot;&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js&quot;&gt;&lt;/script&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://cdn.datatables.net/scroller/1.4.4/css/scroller.dataTables.min.css&quot;&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdn.datatables.net/scroller/1.4.4/js/dataTables.scroller.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; charset=&quot;utf8&quot; src=&quot;https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js &quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>然后删除 <code>index.gsp</code> 中提供数据分页的代码：</p>
+<pre><code>&lt;div id=&quot;list-employee&quot; class=&quot;content scaffold-list&quot; role=&quot;main&quot;&gt;
+&lt;h1&gt;&lt;g:message code=&quot;default.list.label&quot; args=&quot;[entityName]&quot; /&gt;&lt;/h1&gt;
+&lt;g:if test=&quot;${flash.message}&quot;&gt;
+&lt;div class=&quot;message&quot; role=&quot;status&quot;&gt;${flash.message}&lt;/div&gt;
+&lt;/g:if&gt;
+&lt;f:table collection=&quot;${employeeList}&quot; /&gt;
+
+&lt;div class=&quot;pagination&quot;&gt;
+&lt;g:paginate total=&quot;${employeeCount ?: 0}&quot; /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>并插入实现 jQuery DataTables 的代码。</p>
+<p>要插入的第一部分是 HTML，它将创建浏览器的基本表格结构。DataTables 与后端通信的应用程序来说，它们只提供表格页眉和页脚；DataTables JavaScript 则负责表中内容。</p>
+<pre><code>&lt;div id=&quot;employee-browser&quot; class=&quot;content&quot; role=&quot;main&quot;&gt;
+&lt;h1&gt;Employee Browser&lt;/h1&gt;
+&lt;table id=&quot;employee_dt&quot; class=&quot;display compact&quot; style=&quot;width:99%;&quot;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Surname&lt;/th&gt;
+&lt;th&gt;Given name(s)&lt;/th&gt;
+&lt;th&gt;Position&lt;/th&gt;
+&lt;th&gt;Office&lt;/th&gt;
+&lt;th&gt;Extension&lt;/th&gt;
+&lt;th&gt;Hired&lt;/th&gt;
+&lt;th&gt;Salary&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;
+&lt;th&gt;Surname&lt;/th&gt;
+&lt;th&gt;Given name(s)&lt;/th&gt;
+&lt;th&gt;Position&lt;/th&gt;
+&lt;th&gt;Office&lt;/th&gt;
+&lt;th&gt;Extension&lt;/th&gt;
+&lt;th&gt;Hired&lt;/th&gt;
+&lt;th&gt;Salary&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+</code></pre>
+<p>接下来，插入一个 JavaScript 块，它主要提供三个功能：它设置页脚中显示的文本框的大小，以进行列过滤，建立 DataTables 表模型，并创建一个处理程序来进行列过滤。</p>
+<pre><code>&lt;g:javascript&gt;
+$(&#39;#employee_dt tfoot th&#39;).each( function() {javascript
+</code></pre>
+<p>下面的代码处理表格列底部的过滤器框的大小：</p>
+<pre><code>var title = $(this).text();
+if (title == &#39;Extension&#39; || title == &#39;Hired&#39;)
+$(this).html(&#39;&lt;input type=&quot;text&quot; size=&quot;5&quot; placeholder=&quot;&#39; + title + &#39;?&quot; /&gt;&#39;);
+else
+$(this).html(&#39;&lt;input type=&quot;text&quot; size=&quot;15&quot; placeholder=&quot;&#39; + title + &#39;?&quot; /&gt;&#39;);
+});titletitletitletitletitle
+</code></pre>
+<p>接下来，定义表模型。这是提供所有表选项的地方，包括界面的滚动，而不是分页，根据 DOM 字符串提供的装饰，将数据导出为 CSV 和其他格式的能力，以及建立与服务器的 AJAX 连接。 请注意，使用 Groovy GString 调用 Grails <code>createLink()</code> 的方法创建 URL，在 <code>EmployeeController</code> 中指向 <code>browserLister</code> 操作。同样有趣的是表格列的定义。此信息将发送到后端，后端查询数据库并返回相应的记录。</p>
+<pre><code>var table = $(&#39;#employee_dt&#39;).DataTable( {
+&quot;scrollY&quot;: 500,
+&quot;deferRender&quot;: true,
+&quot;scroller&quot;: true,
+&quot;dom&quot;: &quot;Brtip&quot;,
+&quot;buttons&quot;: [ &#39;copy&#39;, &#39;csv&#39;, &#39;excel&#39;, &#39;pdf&#39;, &#39;print&#39; ],
+&quot;processing&quot;: true,
+&quot;serverSide&quot;: true,
+&quot;ajax&quot;: {
+&quot;url&quot;: &quot;${createLink(controller: &#39;employee&#39;, action: &#39;browserLister&#39;)}&quot;,
+&quot;type&quot;: &quot;POST&quot;,
+},
+&quot;columns&quot;: [
+{ &quot;data&quot;: &quot;surname&quot; },
+{ &quot;data&quot;: &quot;givenNames&quot; },
+{ &quot;data&quot;: &quot;position&quot; },
+{ &quot;data&quot;: &quot;office&quot; },
+{ &quot;data&quot;: &quot;extension&quot; },
+{ &quot;data&quot;: &quot;hired&quot; },
+{ &quot;data&quot;: &quot;salary&quot; }
+]
+});
+</code></pre>
+<p>最后，监视过滤器列以进行更改，并使用它们来应用过滤器。</p>
+<pre><code>table.columns().every(function() {
+var that = this;
+$(&#39;input&#39;, this.footer()).on(&#39;keyup change&#39;, function(e) {
+if (that.search() != this.value &amp;&amp; 8 &lt; e.keyCode &amp;&amp; e.keyCode &lt; 32)
+that.search(this.value).draw();
+});
+</code></pre>
+<p>这就是 JavaScript，这样就完成了对视图代码的更改。</p>
+<pre><code>});
+&lt;/g:javascript&gt;
+</code></pre>
+<p>以下是此视图创建的UI的屏幕截图：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/screen_4.png" alt=""></p>
+<p>这是另一个屏幕截图，显示了过滤和多列排序（寻找 “position” 包括字符 “dev” 的员工，先按 “office” 排序，然后按姓氏排序）：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/screen_5.png" alt=""></p>
+<p>这是另一个屏幕截图，显示单击 CSV 按钮时会发生什么：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/screen6.png" alt=""></p>
+<p>最后，这是一个截图，显示在 LibreOffice 中打开的 CSV 数据：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/screen7.png" alt=""></p>
+<p>好的，视图部分看起来非常简单；因此，控制器必须做所有繁重的工作，对吧？ 让我们来看看……</p>
+<h4 id="控制器-browserlister-操作">控制器 browserLister 操作</h4>
+<p>回想一下，我们看到过这个字符串：</p>
+<pre><code>&quot;${createLink(controller: &#39;employee&#39;, action: &#39;browserLister&#39;)}&quot;
+</code></pre>
+<p>对于从 DataTables 模型中调用 AJAX 的 URL，是在 Grails 服务器上动态创建 HTML 链接，其 Grails 标记背后通过调用 <a href="https://gsp.grails.org/latest/ref/Tags/createLink.html">createLink()</a> 的方法实现的。这会最终产生一个指向 <code>EmployeeController</code> 的链接，位于：</p>
+<pre><code>embrow/grails-app/controllers/com/nuevaconsulting/embrow/EmployeeController.groovy
+</code></pre>
+<p>特别是控制器方法 <code>browserLister()</code>。我在代码中留了一些 <code>print</code> 语句，以便在运行时能够在终端看到中间结果。</p>
+<pre><code>    def browserLister() {
+        // Applies filters and sorting to return a list of desired employees
+</code></pre>
+<p>首先，打印出传递给 <code>browserLister()</code> 的参数。我通常使用此代码开始构建控制器方法，以便我完全清楚我的控制器正在接收什么。</p>
+<pre><code>      println &quot;employee browserLister params $params&quot;
+        println()
+</code></pre>
+<p>接下来，处理这些参数以使它们更加有用。首先，jQuery DataTables 参数，一个名为 <code>jqdtParams</code> 的 Groovy 映射：</p>
+<pre><code>def jqdtParams = [:]
+params.each { key, value -&gt;
+    def keyFields = key.replace(&#39;]&#39;,&#39;&#39;).split(/\[/)
+    def table = jqdtParams
+    for (int f = 0; f &lt; keyFields.size() - 1; f++) {
+        def keyField = keyFields[f]
+        if (!table.containsKey(keyField))
+            table[keyField] = [:]
+        table = table[keyField]
+    }
+    table[keyFields[-1]] = value
+}
+println &quot;employee dataTableParams $jqdtParams&quot;
+println()
+</code></pre>
+<p>接下来，列数据，一个名为 <code>columnMap</code> 的 Groovy 映射：</p>
+<pre><code>def columnMap = jqdtParams.columns.collectEntries { k, v -&gt;
+    def whereTerm = null
+    switch (v.data) {
+    case &#39;extension&#39;:
+    case &#39;hired&#39;:
+    case &#39;salary&#39;:
+        if (v.search.value ==~ /\d+(,\d+)*/)
+            whereTerm = v.search.value.split(&#39;,&#39;).collect { it as Integer }
+        break
+    default:
+        if (v.search.value ==~ /[A-Za-z0-9 ]+/)
+            whereTerm = &quot;%${v.search.value}%&quot; as String
+        break
+    }
+    [(v.data): [where: whereTerm]]
+}
+println &quot;employee columnMap $columnMap&quot;
+println()
+</code></pre>
+<p>接下来，从 <code>columnMap</code> 中检索的所有列表，以及在视图中应如何排序这些列表，Groovy 列表分别称为 <code>allColumnList</code> 和 <code>orderList</code> ：</p>
+<pre><code>def allColumnList = columnMap.keySet() as List
+println &quot;employee allColumnList $allColumnList&quot;
+def orderList = jqdtParams.order.collect { k, v -&gt; [allColumnList[v.column as Integer], v.dir] }
+println &quot;employee orderList $orderList&quot;
+</code></pre>
+<p>我们将使用 Grails 的 Hibernate 标准实现来实际选择要显示的元素以及它们的排序和分页。标准要求过滤器关闭；在大多数示例中，这是作为标准实例本身的创建的一部分给出的，但是在这里我们预先定义过滤器闭包。请注意，在这种情况下，“date hired”  过滤器的相对复杂的解释被视为一年并应用于建立日期范围，并使用 <code>createAlias</code> 以允许我们进入相关类别 <code>Position</code> 和 <code>Office</code>：</p>
+<pre><code>def filterer = {
+    createAlias &#39;position&#39;,        &#39;p&#39;
+    createAlias &#39;office&#39;,          &#39;o&#39;
+
+    if (columnMap.surname.where)    ilike  &#39;surname&#39;,     columnMap.surname.where
+    if (columnMap.givenNames.where) ilike  &#39;givenNames&#39;,  columnMap.givenNames.where
+    if (columnMap.position.where)   ilike  &#39;p.name&#39;,      columnMap.position.where
+    if (columnMap.office.where)     ilike  &#39;o.name&#39;,      columnMap.office.where
+    if (columnMap.extension.where)  inList &#39;extension&#39;,   columnMap.extension.where
+    if (columnMap.salary.where)     inList &#39;salary&#39;,      columnMap.salary.where
+    if (columnMap.hired.where) {
+        if (columnMap.hired.where.size() &gt; 1) {
+            or {
+                columnMap.hired.where.each {
+                    between &#39;hired&#39;, Date.parse(&#39;yyyy/MM/dd&#39;,&quot;${it}/01/01&quot; as String),
+                        Date.parse(&#39;yyyy/MM/dd&#39;,&quot;${it}/12/31&quot; as String)
+                }
+            }
+        } else {
+            between &#39;hired&#39;, Date.parse(&#39;yyyy/MM/dd&#39;,&quot;${columnMap.hired.where[0]}/01/01&quot; as String),
+                Date.parse(&#39;yyyy/MM/dd&#39;,&quot;${columnMap.hired.where[0]}/12/31&quot; as String)
+        }
+    }
+}
+</code></pre>
+<p>是时候应用上述内容了。第一步是获取分页代码所需的所有 <code>Employee</code> 实例的总数：</p>
+<pre><code>        def recordsTotal = Employee.count()
+        println &quot;employee recordsTotal $recordsTotal&quot;
+</code></pre>
+<p>接下来，将过滤器应用于 <code>Employee</code> 实例以获取过滤结果的计数，该结果将始终小于或等于总数（同样，这是针对分页代码）：</p>
+<pre><code>        def c = Employee.createCriteria()
+        def recordsFiltered = c.count {
+            filterer.delegate = delegate
+            filterer()
+        }
+        println &quot;employee recordsFiltered $recordsFiltered&quot;
+</code></pre>
+<p>获得这两个计数后，你还可以使用分页和排序信息获取实际过滤的实例。</p>
+<pre><code>      def orderer = Employee.withCriteria {
+            filterer.delegate = delegate
+            filterer()
+            orderList.each { oi -&gt;
+                switch (oi[0]) {
+                case &#39;surname&#39;:    order &#39;surname&#39;,    oi[1]; break
+                case &#39;givenNames&#39;: order &#39;givenNames&#39;, oi[1]; break
+                case &#39;position&#39;:   order &#39;p.name&#39;,     oi[1]; break
+                case &#39;office&#39;:     order &#39;o.name&#39;,     oi[1]; break
+                case &#39;extension&#39;:  order &#39;extension&#39;,  oi[1]; break
+                case &#39;hired&#39;:      order &#39;hired&#39;,      oi[1]; break
+                case &#39;salary&#39;:     order &#39;salary&#39;,     oi[1]; break
+                }
+            }
+            maxResults (jqdtParams.length as Integer)
+            firstResult (jqdtParams.start as Integer)
+        }
+</code></pre>
+<p>要完全清楚，JTable 中的分页代码管理三个计数：数据集中的记录总数，应用过滤器后得到的数字，以及要在页面上显示的数字（显示是滚动还是分页）。 排序应用于所有过滤的记录，并且分页应用于那些过滤的记录的块以用于显示目的。</p>
+<p>接下来，处理命令返回的结果，在每行中创建指向 <code>Employee</code>、<code>Position</code> 和 <code>Office</code> 实例的链接，以便用户可以单击这些链接以获取相关实例的所有详细信息：</p>
+<pre><code>        def dollarFormatter = new DecimalFormat(&#39;$##,###.##&#39;)
+        def employees = orderer.collect { employee -&gt;
+            [&#39;surname&#39;: &quot;&lt;a href=&#39;${createLink(controller: &#39;employee&#39;, action: &#39;show&#39;, id: employee.id)}&#39;&gt;${employee.surname}&lt;/a&gt;&quot;,
+                &#39;givenNames&#39;: employee.givenNames,
+                &#39;position&#39;: &quot;&lt;a href=&#39;${createLink(controller: &#39;position&#39;, action: &#39;show&#39;, id: employee.position?.id)}&#39;&gt;${employee.position?.name}&lt;/a&gt;&quot;,
+                &#39;office&#39;: &quot;&lt;a href=&#39;${createLink(controller: &#39;office&#39;, action: &#39;show&#39;, id: employee.office?.id)}&#39;&gt;${employee.office?.name}&lt;/a&gt;&quot;,
+                &#39;extension&#39;: employee.extension,
+                &#39;hired&#39;: employee.hired.format(&#39;yyyy/MM/dd&#39;),
+                &#39;salary&#39;: dollarFormatter.format(employee.salary)]
+        }
+</code></pre>
+<p>最后，创建要返回的结果并将其作为 JSON 返回，这是 jQuery DataTables 所需要的。</p>
+<pre><code>        def result = [draw: jqdtParams.draw, recordsTotal: recordsTotal, recordsFiltered: recordsFiltered, data: employees]
+        render(result as JSON)
+    }
+</code></pre>
+<p>大功告成。</p>
+<p>如果你熟悉 Grails，这可能看起来比你原先想象的要多，但这里没有火箭式的一步到位方法，只是很多分散的操作步骤。但是，如果你没有太多接触 Grails（或 Groovy），那么需要了解很多新东西 - 闭包，代理和构建器等等。</p>
+<p>在那种情况下，从哪里开始？ 最好的地方是了解 Groovy 本身，尤其是 <a href="http://groovy-lang.org/closures.html">Groovy closures</a> 和 <a href="http://groovy-lang.org/dsls.html">Groovy delegates and builders</a>。然后再去阅读上面关于 Grails 和 Hibernate 条件查询的建议阅读文章。</p>
+<h3 id="结语">结语</h3>
+<p>jQuery DataTables 为 Grails 制作了很棒的表格数据浏览器。对视图进行编码并不是太棘手，但 DataTables 文档中提供的 PHP 示例提供的功能仅到此位置。特别是，它们不是用 Grails 程序员编写的，也不包含探索使用引用其他类（实质上是查找表）的元素的更精细的细节。</p>
+<p>我使用这种方法制作了几个数据浏览器，允许用户选择要查看和累积记录计数的列，或者只是浏览数据。即使在相对适度的 VPS 上的百万行表中，性能也很好。</p>
+<p>一个警告：我偶然发现了 Grails 中暴露的各种 Hibernate 标准机制的一些问题（请参阅我的其他 GitHub 代码库），因此需要谨慎和实验。如果所有其他方法都失败了，另一种方法是动态构建 SQL 字符串并执行它们。在撰写本文时，我更喜欢使用 Grails 标准，除非我遇到杂乱的子查询，但这可能只反映了我在 Hibernate 中对子查询的相对缺乏经验。</p>
+<p>我希望 Grails 程序员发现本文的有趣性。请随时在下面留下评论或建议。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/18/9/using-grails-jquery-and-datatables">https://opensource.com/article/18/9/using-grails-jquery-and-datatables</a></p>
+<p>作者：<a href="https://opensource.com/users/clhermansen">Chris Hermansen</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/jrglinux">jrg</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取员工信息浏览器应用程序">获取员工信息浏览器应用程序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建员工信息浏览器视图和控制器的方法">创建员工信息浏览器视图和控制器的方法</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结语">结语</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201811/20180928 Using Grails with jQuery and DataTables","title":"在 Grails 中使用 jQuery 和 DataTables"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

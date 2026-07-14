@@ -1,0 +1,366 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>inxi：一个功能强大的获取 Linux 系统信息的命令行工具 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="inxi：一个功能强大的获取 Linux 系统信息的命令行工具 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="inxi：一个功能强大的获取 Linux 系统信息的命令行工具 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201704/20170220 Inxi – A Powerful Feature-Rich Commandline System Information Tool for Linux#page","@type":"TechArticle","headline":"inxi：一个功能强大的获取 Linux 系统信息的命令行工具","inLanguage":"en","name":"inxi：一个功能强大的获取 Linux 系统信息的命令行工具","url":"https://zhengqbbb.github.io/pages-dev/201704/20170220 Inxi – A Powerful Feature-Rich Commandline System Information Tool for Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201704/20170220 Inxi – A Powerful Feature-Rich Commandline System Information Tool for Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-linux-系统上安装-inxi">在 Linux 系统上安装 Inxi</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#inxi-工具的基本用法">Inxi 工具的基本用法</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取电脑机型">获取电脑机型</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取-cpu-及主频信息">获取 CPU 及主频信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-inxi-工具监控-linux-系统">使用 Inxi 工具监控 Linux 系统</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>inxi：一个功能强大的获取 Linux 系统信息的命令行工具</h1><p>Inxi 最初是为控制台和 IRC（网络中继聊天）开发的一个强大且优秀的命令行系统信息脚本。可以使用它获取用户的硬件和系统信息，它也用于调试或者社区技术支持工具。</p>
+<p>使用 Inxi 可以很容易的获取所有的硬件信息：硬盘、声卡、显卡、网卡、CPU 和 RAM 等。同时也能够获取大量的操作系统信息，比如硬件驱动、Xorg 、桌面环境、内核、GCC 版本，进程，开机时间和内存等信息。 </p>
+<p>运行在命令行和 IRC 上的 Inxi 输出略有不同，IRC 上会有一些可供用户使用的默认过滤器和颜色选项。支持的 IRC 客户端有：BitchX、Gaim/Pidgin、ircII、Irssi、 Konversation、 Kopete、 KSirc、 KVIrc、 Weechat 和 Xchat 以及其它的一些客户端，它们具有展示内置或外部 Inxi 输出的能力。</p>
+<h3 id="在-linux-系统上安装-inxi">在 Linux 系统上安装 Inxi</h3>
+<p>大多数主流 Linux 发行版的仓库中都有 Inxi ，包括大多数 BSD 系统。</p>
+<pre><code>$ sudo apt-get install inxi   [On Debian/Ubuntu/Linux Mint]
+$ sudo yum install inxi       [On CentOs/RHEL/Fedora]
+$ sudo dnf install inxi       [On Fedora 22+]
+</code></pre>
+<p>在使用 Inxi 之前，用下面的命令查看 Inxi 所有依赖和推荐的应用，以及各种目录，并显示需要安装哪些包来支持给定的功能。</p>
+<pre><code>$ inxi --recommends 
+</code></pre>
+<p>Inxi 的输出：</p>
+<pre><code>inxi will now begin checking for the programs it needs to operate. First a check of the main languages and tools
+inxi uses. Python is only for debugging data collection.
+---------------------------------------------------------------------------
+Bash version: 4.3.42(1)-release
+Gawk version: 4.1.3,
+Sed version: 
+Sudo version: 1.8.16
+Python version: 2.7.12
+---------------------------------------------------------------------------
+Test One: Required System Directories (Linux Only).
+If one of these system directories is missing, inxi cannot operate:
+/proc....................................................................... Present
+/sys........................................................................ Present
+All the  directories are present.
+---------------------------------------------------------------------------
+Test Two: Required Core Applications.
+If one of these applications is missing, inxi cannot operate:
+df (info: partition data)................................................... /bin/df
+gawk (info: core tool)...................................................... /usr/bin/gawk
+grep (info: string search).................................................. /bin/grep
+lspci (info: hardware data)................................................. /usr/bin/lspci
+ps (info: process data)..................................................... /bin/ps
+readlink.................................................................... /bin/readlink
+sed (info: string replace).................................................. /bin/sed
+tr (info: character replace)................................................ /usr/bin/tr
+uname (info: kernel data)................................................... /bin/uname
+wc (info: word character count)............................................. /usr/bin/wc
+All the  applications are present.
+---------------------------------------------------------------------------
+Test Three: Script Recommends for Graphics Features.
+NOTE: If you do not use X these do not matter (like a headless server). Otherwise, if one of these applications
+is missing, inxi will have incomplete output:
+glxinfo (info: -G glx info)................................................. /usr/bin/glxinfo
+xdpyinfo (info: -G multi screen resolution)................................. /usr/bin/xdpyinfo
+xprop (info: -S desktop data)............................................... /usr/bin/xprop
+xrandr (info: -G single screen resolution).................................. /usr/bin/xrandr
+All the  applications are present.
+---------------------------------------------------------------------------
+Test Four: Script Recommends for Remaining Features.
+If one of these applications is missing, inxi will have incomplete output:
+dig (info: -i first wlan ip default test)................................... /usr/bin/dig
+dmidecode (info: -M if no sys machine data; -m memory)...................... /usr/sbin/dmidecode
+file (info: -o unmounted file system)....................................... /usr/bin/file
+hciconfig (info: -n -i bluetooth data)...................................... /bin/hciconfig
+hddtemp (info: -Dx show hdd temp)........................................... /usr/sbin/hddtemp
+ifconfig (info: -i ip lan-deprecated)....................................... /sbin/ifconfig
+ip (info: -i ip lan)........................................................ /sbin/ip
+sensors (info: -s sensors output)........................................... /usr/bin/sensors
+strings (info: -I sysvinit version)......................................... /usr/bin/strings
+lsusb (info: -A usb audio;-N usb networking)................................ /usr/bin/lsusb
+modinfo (info: -Ax,-Nx module version)...................................... /sbin/modinfo
+runlevel (info: -I runlevel)................................................ /sbin/runlevel
+sudo (info: -Dx hddtemp-user;-o file-user).................................. /usr/bin/sudo
+uptime (info: -I uptime (check which package owns Debian)).................. /usr/bin/uptime
+All the  applications are present.
+---------------------------------------------------------------------------
+Test Five: Script Recommends for Remaining Features.
+One of these downloaders needed for options -i/-w/-W (-U/-! [11-15], if supported):
+wget (info: -i wan ip;-w/-W;-U/-! [11-15] (if supported))................... /usr/bin/wget
+curl (info: -i wan ip;-w/-W;-U/-! [11-15] (if supported))................... /usr/bin/curl
+All the  applications are present.
+---------------------------------------------------------------------------
+Test Six: System Directories for Various Information.
+(Unless otherwise noted, these are for GNU/Linux systems)
+If one of these directories is missing, inxi may have incomplete output:
+/sys/class/dmi/id (info: -M system, motherboard, bios)...................... Present
+/dev (info: -l,-u,-o,-p,-P,-D disk partition data).......................... Present
+/dev/disk/by-label (info: -l,-o,-p,-P partition labels)..................... Present
+/dev/disk/by-uuid (info: -u,-o,-p,-P partition uuid)........................ Present
+All the  directories are present.
+---------------------------------------------------------------------------
+Test Seven: System Files for Various Information.
+(Unless otherwise noted, these are for GNU/Linux systems)
+If one of these files is missing, inxi may have incomplete output:
+/proc/asound/cards (info: -A sound card data)............................... Present
+/proc/asound/version (info: -A ALSA data)................................... Present
+/proc/cpuinfo (info: -C cpu data)........................................... Present
+/etc/lsb-release (info: -S distro version data [deprecated])................ Present
+/proc/mdstat (info: -R mdraid data)......................................... Present
+/proc/meminfo (info: -I memory data)........................................ Present
+/etc/os-release (info: -S distro version data).............................. Present
+/proc/partitions (info: -p,-P partitions data).............................. Present
+/proc/modules (info: -G module data)........................................ Present
+/proc/mounts (info: -P,-p partition advanced data).......................... Present
+/var/run/dmesg.boot (info: -D,-d disk data [BSD only])...................... Missing
+/proc/scsi/scsi (info: -D Advanced hard disk data [used rarely])............ Present
+/var/log/Xorg.0.log (info: -G graphics driver load status).................. Present
+The following files are missing from your system:
+File: /var/run/dmesg.boot
+---------------------------------------------------------------------------
+All tests completed.
+</code></pre>
+<h3 id="inxi-工具的基本用法">Inxi 工具的基本用法</h3>
+<p>用下面的基本用法获取系统和硬件的详细信息。</p>
+<h4 id="获取-linux-系统信息">获取 Linux 系统信息</h4>
+<p>Inix 不加任何选项就能输出下面的信息：CPU 、内核、开机时长、内存大小、硬盘大小、进程数、登录终端以及 Inxi 版本。</p>
+<pre><code>$ inxi
+CPU~Dual core Intel Core i5-4210U (-HT-MCP-) speed/max~2164/2700 MHz Kernel~4.4.0-21-generic x86_64 Up~3:15 Mem~3122.0/7879.9MB HDD~1000.2GB(20.0% used) Procs~234 Client~Shell inxi~2.2.35
+</code></pre>
+<h4 id="获取内核和发行版本信息">获取内核和发行版本信息</h4>
+<p>使用 Inxi 的 <code>-S</code> 选项查看本机系统信息（主机名、内核信息、桌面环境和发行版）：</p>
+<pre><code>$ inxi -S
+System: Host: TecMint Kernel: 4.4.0-21-generic x86_64 (64 bit) Desktop: Cinnamon 3.0.7
+Distro: Linux Mint 18 Sarah
+</code></pre>
+<h3 id="获取电脑机型">获取电脑机型</h3>
+<p>使用 <code>-M</code> 选项查看机型（笔记本/台式机）、产品 ID 、机器版本、主板、制造商和 BIOS 等信息：</p>
+<pre><code>$ inxi -M
+Machine:   System: LENOVO (portable) product: 20354 v: Lenovo Z50-70
+Mobo: LENOVO model: Lancer 5A5 v: 31900059WIN Bios: LENOVO v: 9BCN26WW date: 07/31/2014
+</code></pre>
+<h3 id="获取-cpu-及主频信息">获取 CPU 及主频信息</h3>
+<p>使用 <code>-C</code> 选项查看完整的 CPU 信息，包括每核 CPU 的频率及可用的最大主频。 </p>
+<pre><code>$ inxi -C
+CPU:       Dual core Intel Core i5-4210U (-HT-MCP-) cache: 3072 KB 
+clock speeds: max: 2700 MHz 1: 1942 MHz 2: 1968 MHz 3: 1734 MHz 4: 1710 MHz
+</code></pre>
+<h4 id="获取显卡信息">获取显卡信息</h4>
+<p>使用 <code>-G</code> 选项查看显卡信息，包括显卡类型、显示服务器、系统分辨率、GLX 渲染器和 GLX 版本等等（LCTT 译注： GLX 是一个 X 窗口系统的 OpenGL 扩展）。</p>
+<pre><code>$ inxi -G
+Graphics:  Card-1: Intel Haswell-ULT Integrated Graphics Controller
+Card-2: NVIDIA GM108M [GeForce 840M]
+Display Server: X.Org 1.18.4 drivers: intel (unloaded: fbdev,vesa) Resolution: 1920x1080@60.05hz
+GLX Renderer: Mesa DRI Intel Haswell Mobile GLX Version: 3.0 Mesa 11.2.0
+</code></pre>
+<h4 id="获取声卡信息">获取声卡信息</h4>
+<p>使用 <code>-A</code> 选项查看声卡信息：</p>
+<pre><code>$ inxi -A
+Audio:     Card-1 Intel 8 Series HD Audio Controller driver: snd_hda_intel Sound: ALSA v: k4.4.0-21-generic
+Card-2 Intel Haswell-ULT HD Audio Controller driver: snd_hda_intel
+</code></pre>
+<h4 id="获取网卡信息">获取网卡信息</h4>
+<p>使用 <code>-N</code> 选项查看网卡信息：</p>
+<pre><code>$ inxi -N
+Network:   Card-1: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller driver: r8169
+Card-2: Realtek RTL8723BE PCIe Wireless Network Adapter driver: rtl8723be
+</code></pre>
+<h4 id="获取硬盘信息">获取硬盘信息</h4>
+<p>使用 <code>-D</code> 选项查看硬盘信息（大小、ID、型号）：</p>
+<pre><code>$ inxi -D
+Drives:    HDD Total Size: 1000.2GB (20.0% used) ID-1: /dev/sda model: ST1000LM024_HN size: 1000.2GB
+</code></pre>
+<h4 id="获取简要的系统信息">获取简要的系统信息</h4>
+<p>使用 <code>-b</code> 选项显示上述信息的简要系统信息：</p>
+<pre><code>$ inxi -b 
+System:    Host: TecMint Kernel: 4.4.0-21-generic x86_64 (64 bit) Desktop: Cinnamon 3.0.7
+Distro: Linux Mint 18 Sarah
+Machine:   System: LENOVO (portable) product: 20354 v: Lenovo Z50-70
+Mobo: LENOVO model: Lancer 5A5 v: 31900059WIN Bios: LENOVO v: 9BCN26WW date: 07/31/2014
+CPU:       Dual core Intel Core i5-4210U (-HT-MCP-) speed/max: 2018/2700 MHz
+Graphics:  Card-1: Intel Haswell-ULT Integrated Graphics Controller
+Card-2: NVIDIA GM108M [GeForce 840M]
+Display Server: X.Org 1.18.4 drivers: intel (unloaded: fbdev,vesa) Resolution: 1920x1080@60.05hz
+GLX Renderer: Mesa DRI Intel Haswell Mobile GLX Version: 3.0 Mesa 11.2.0
+Network:   Card-1: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller driver: r8169
+Card-2: Realtek RTL8723BE PCIe Wireless Network Adapter driver: rtl8723be
+Drives:    HDD Total Size: 1000.2GB (20.0% used)
+Info:      Processes: 233 Uptime: 3:23 Memory: 3137.5/7879.9MB Client: Shell (bash) inxi: 2.2.35  
+</code></pre>
+<h4 id="获取硬盘分区信息">获取硬盘分区信息</h4>
+<p>使用 <code>-p</code> 选项输出完整的硬盘分区信息，包括每个分区的分区大小、已用空间、可用空间、文件系统以及文件系统类型。</p>
+<pre><code>$ inxi -p
+Partition: ID-1: / size: 324G used: 183G (60%) fs: ext4 dev: /dev/sda10
+ID-2: swap-1 size: 4.00GB used: 0.00GB (0%) fs: swap dev: /dev/sda9
+</code></pre>
+<h4 id="获取完整的-linux-系统信息">获取完整的 Linux 系统信息</h4>
+<p>使用 <code>-F</code> 选项查看可以完整的 Inxi 输出（安全起见比如网络 IP 地址信息没有显示，下面的示例只显示部分输出信息）：</p>
+<pre><code>$ inxi -F 
+System:    Host: TecMint Kernel: 4.4.0-21-generic x86_64 (64 bit) Desktop: Cinnamon 3.0.7
+Distro: Linux Mint 18 Sarah
+Machine:   System: LENOVO (portable) product: 20354 v: Lenovo Z50-70
+Mobo: LENOVO model: Lancer 5A5 v: 31900059WIN Bios: LENOVO v: 9BCN26WW date: 07/31/2014
+CPU:       Dual core Intel Core i5-4210U (-HT-MCP-) cache: 3072 KB 
+clock speeds: max: 2700 MHz 1: 1716 MHz 2: 1764 MHz 3: 1776 MHz 4: 1800 MHz
+Graphics:  Card-1: Intel Haswell-ULT Integrated Graphics Controller
+Card-2: NVIDIA GM108M [GeForce 840M]
+Display Server: X.Org 1.18.4 drivers: intel (unloaded: fbdev,vesa) Resolution: 1920x1080@60.05hz
+GLX Renderer: Mesa DRI Intel Haswell Mobile GLX Version: 3.0 Mesa 11.2.0
+Audio:     Card-1 Intel 8 Series HD Audio Controller driver: snd_hda_intel Sound: ALSA v: k4.4.0-21-generic
+Card-2 Intel Haswell-ULT HD Audio Controller driver: snd_hda_intel
+Network:   Card-1: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller driver: r8169
+IF: enp1s0 state: up speed: 100 Mbps duplex: full mac: 28:d2:44:eb:bd:98
+Card-2: Realtek RTL8723BE PCIe Wireless Network Adapter driver: rtl8723be
+IF: wlp2s0 state: down mac: 38:b1:db:7c:78:c7
+Drives:    HDD Total Size: 1000.2GB (20.0% used) ID-1: /dev/sda model: ST1000LM024_HN size: 1000.2GB
+Partition: ID-1: / size: 324G used: 183G (60%) fs: ext4 dev: /dev/sda10
+ID-2: swap-1 size: 4.00GB used: 0.00GB (0%) fs: swap dev: /dev/sda9
+RAID:      No RAID devices: /proc/mdstat, md_mod kernel module present
+Sensors:   System Temperatures: cpu: 56.0C mobo: N/A
+Fan Speeds (in rpm): cpu: N/A
+Info:      Processes: 234 Uptime: 3:26 Memory: 3188.9/7879.9MB Client: Shell (bash) inxi: 2.2.35 
+</code></pre>
+<h3 id="使用-inxi-工具监控-linux-系统">使用 Inxi 工具监控 Linux 系统</h3>
+<p>下面是监控 Linux 系统进程、开机时间和内存的几个选项的使用方法。</p>
+<h4 id="监控-linux-进程的内存使用">监控 Linux 进程的内存使用</h4>
+<p>使用下面的命令查看进程数、开机时间和内存使用情况：</p>
+<pre><code>$ inxi -I
+Info:      Processes: 232 Uptime: 3:35 Memory: 3256.3/7879.9MB Client: Shell (bash) inxi: 2.2.35 
+</code></pre>
+<h4 id="监控进程占用的-cpu-和内存资源">监控进程占用的 CPU 和内存资源</h4>
+<p>Inxi 默认显示 <a href="http://www.tecmint.com/find-processes-by-memory-usage-top-batch-mode/">前 5 个最消耗 CPU 和内存的进程</a>。 <code>-t</code> 选项和 <code>c</code> 选项一起使用查看前 5 个最消耗 CPU 资源的进程，查看最消耗内存的进程使用 <code>-t</code> 选项和 <code>m</code> 选项； <code>-t</code>选项 和 <code>cm</code> 选项一起使用显示前 5 个最消耗 CPU 和内存资源的进程。</p>
+<pre><code>----------------- Linux CPU Usage ----------------- 
+$ inxi -t c 
+Processes: CPU: % used - top 5 active
+1: cpu: 53.7% command: plugin-container pid: 3066
+2: cpu: 20.0% command: java pid: 1527
+3: cpu: 19.7% command: firefox pid: 3018
+4: cpu: 4.6% command: Xorg pid: 2114
+5: cpu: 3.0% command: cinnamon pid: 2835
+</code></pre>
+<pre><code>----------------- Linux Memoery Usage ----------------- 
+$ inxi -t m
+Processes: Memory: MB / % used - Used/Total: 3212.5/7879.9MB - top 5 active
+1: mem: 980.51MB (12.4%) command: plugin-container pid: 3066
+2: mem: 508.96MB (6.4%) command: java pid: 1527
+3: mem: 507.89MB (6.4%) command: firefox pid: 3018
+4: mem: 244.05MB (3.0%) command: chrome pid: 7405
+5: mem: 211.46MB (2.6%) command: chrome pid: 6146
+</code></pre>
+<pre><code>----------------- Linux CPU and Memory Usage ----------------- 
+$ inxi -t cm
+Processes: CPU: % used - top 5 active
+1: cpu: 53.7% command: plugin-container pid: 3066
+2: cpu: 20.0% command: java pid: 1527
+3: cpu: 19.7% command: firefox pid: 3018
+4: cpu: 4.6% command: Xorg pid: 2114
+5: cpu: 3.0% command: cinnamon pid: 2835
+Memory: MB / % used - Used/Total: 3223.6/7879.9MB - top 5 active
+1: mem: 991.93MB (12.5%) command: plugin-container pid: 3066
+2: mem: 508.96MB (6.4%) command: java pid: 1527
+3: mem: 507.86MB (6.4%) command: firefox pid: 3018
+4: mem: 244.45MB (3.1%) command: chrome pid: 7405
+5: mem: 211.68MB (2.6%) command: chrome pid: 6146
+</code></pre>
+<p>可以在选项 <code>cm</code> 后跟一个整数（在 1-20 之间）设置显示多少个进程，下面的命令显示了前 10 个最消耗 CPU 和内存的进程：</p>
+<pre><code>$ inxi -t cm10
+Processes: CPU: % used - top 10 active
+1: cpu: 53.4% command: plugin-container pid: 3066
+2: cpu: 19.8% command: java pid: 1527
+3: cpu: 19.5% command: firefox pid: 3018
+4: cpu: 4.5% command: Xorg pid: 2114
+5: cpu: 3.0% command: cinnamon pid: 2835
+6: cpu: 2.8% command: chrome pid: 7405
+7: cpu: 1.1% command: pulseaudio pid: 2733
+8: cpu: 1.0% command: soffice.bin pid: 7799
+9: cpu: 0.9% command: chrome pid: 5763
+10: cpu: 0.5% command: chrome pid: 6179
+Memory: MB / % used - Used/Total: 3163.1/7879.9MB - top 10 active
+1: mem: 976.82MB (12.3%) command: plugin-container pid: 3066
+2: mem: 511.70MB (6.4%) command: java pid: 1527
+3: mem: 466.01MB (5.9%) command: firefox pid: 3018
+4: mem: 244.40MB (3.1%) command: chrome pid: 7405
+5: mem: 203.71MB (2.5%) command: chrome pid: 6146
+6: mem: 199.74MB (2.5%) command: chrome pid: 5763
+7: mem: 168.30MB (2.1%) command: cinnamon pid: 2835
+8: mem: 165.51MB (2.1%) command: soffice.bin pid: 7799
+9: mem: 158.91MB (2.0%) command: chrome pid: 6179
+10: mem: 151.83MB (1.9%) command: mysqld pid: 1259
+</code></pre>
+<h4 id="监控网络设备">监控网络设备</h4>
+<p>下面的命令会列出网卡信息，包括接口信息、网络频率、mac 地址、网卡状态和网络 IP 等信息。</p>
+<pre><code>$ inxi -Nni
+Network:   Card-1: Realtek RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller driver: r8169
+IF: enp1s0 state: up speed: 100 Mbps duplex: full mac: 28:d2:44:eb:bd:98
+Card-2: Realtek RTL8723BE PCIe Wireless Network Adapter driver: rtl8723be
+IF: wlp2s0 state: down mac: 38:b1:db:7c:78:c7
+WAN IP: 111.91.115.195 IF: wlp2s0 ip-v4: N/A
+IF: enp1s0 ip-v4: 192.168.0.103
+</code></pre>
+<h4 id="监控-cpu-温度和电脑风扇转速">监控 CPU 温度和电脑风扇转速</h4>
+<p>可以使用 <code>-s</code> 选项监控 <a href="http://www.tecmint.com/install-htop-linux-process-monitoring-for-rhel-centos-fedora/">配置了传感器的机器</a> 获取温度和风扇转速：</p>
+<pre><code>$ inxi -s
+Sensors:   System Temperatures: cpu: 53.0C mobo: N/A
+Fan Speeds (in rpm): cpu: N/A
+</code></pre>
+<h4 id="用-linux-查看天气预报">用 Linux 查看天气预报</h4>
+<p>使用 <code>-w</code> 选项查看本地区的天气情况（虽然使用的 API 可能不是很可靠），使用 <code>-W  &lt;different_location&gt;</code> 设置另外的地区。</p>
+<pre><code>$ inxi -w
+Weather:   Conditions: 93 F (34 C) - smoke Time: February 20, 1:38 PM IST
+$ inxi -W Mumbai,India
+Weather:   Conditions: 93 F (34 C) - smoke Time: February 20, 1:38 PM IST
+$ inxi -W Nairobi,Kenya
+Weather:   Conditions: 70 F (21 C) - Mostly Cloudy Time: February 20, 11:08 AM EAT
+</code></pre>
+<h4 id="查看所有的-linux-仓库信息">查看所有的 Linux 仓库信息</h4>
+<p>另外，可以使用 <code>-r</code> 选项查看一个 Linux 发行版的仓库信息：</p>
+<pre><code>$ inxi -r 
+Repos:     Active apt sources in file: /etc/apt/sources.list.d/dawidd0811-neofetch-xenial.list
+deb http://ppa.launchpad.net/dawidd0811/neofetch/ubuntu xenial main
+deb-src http://ppa.launchpad.net/dawidd0811/neofetch/ubuntu xenial main
+Active apt sources in file: /etc/apt/sources.list.d/dhor-myway-xenial.list
+deb http://ppa.launchpad.net/dhor/myway/ubuntu xenial main
+deb-src http://ppa.launchpad.net/dhor/myway/ubuntu xenial main
+Active apt sources in file: /etc/apt/sources.list.d/official-package-repositories.list
+deb http://packages.linuxmint.com sarah main upstream import backport
+deb http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu xenial-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu xenial-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu/ xenial-security main restricted universe multiverse
+deb http://archive.canonical.com/ubuntu/ xenial partner
+Active apt sources in file: /etc/apt/sources.list.d/qbittorrent-team-qbittorrent-stable-xenial.list
+deb http://ppa.launchpad.net/qbittorrent-team/qbittorrent-stable/ubuntu xenial main
+deb-src http://ppa.launchpad.net/qbittorrent-team/qbittorrent-stable/ubuntu xenial main
+Active apt sources in file: /etc/apt/sources.list.d/slgobinath-safeeyes-xenial.list
+deb http://ppa.launchpad.net/slgobinath/safeeyes/ubuntu xenial main
+deb-src http://ppa.launchpad.net/slgobinath/safeeyes/ubuntu xenial main
+Active apt sources in file: /etc/apt/sources.list.d/snwh-pulp-xenial.list
+deb http://ppa.launchpad.net/snwh/pulp/ubuntu xenial main
+deb-src http://ppa.launchpad.net/snwh/pulp/ubuntu xenial main
+Active apt sources in file: /etc/apt/sources.list.d/twodopeshaggy-jarun-xenial.list
+deb http://ppa.launchpad.net/twodopeshaggy/jarun/ubuntu xenial main
+deb-src http://ppa.launchpad.net/twodopeshaggy/jarun/ubuntu xenial main
+Active apt sources in file: /etc/apt/sources.list.d/ubuntu-mozilla-security-ppa-xenial.list
+deb http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu xenial main
+deb-src http://ppa.launchpad.net/ubuntu-mozilla-security/ppa/ubuntu xenial main
+</code></pre>
+<p>下面是查看 Inxi 的安装版本、快速帮助和打开 man 主页的方法，以及更多的 Inxi 使用细节。</p>
+<pre><code>$ inxi -v   #显示版本信息
+$ inxi -h   #快速帮助
+$ man inxi  #打开 man 主页
+</code></pre>
+<p>浏览 Inxi 的官方 GitHub 主页 <a href="https://github.com/smxi/inxi">https://github.com/smxi/inxi</a> 查看更多的信息。</p>
+<p>Inxi 是一个功能强大的获取硬件和系统信息的命令行工具。这也是我使用过的最好的 <a href="http://www.tecmint.com/commands-to-collect-system-and-hardware-information-in-linux/">获取硬件和系统信息的命令行工具</a> 之一。</p>
+<p>写下你的评论。如果你知道其他的像 Inxi 这样的工具，我们很高兴和你一起讨论。</p>
+<hr>
+<p>作者简介：</p>
+<p>Aaron Kili 是一个 Linux 和 F.O.S.S 的狂热爱好者，即任的 Linux 系统管理员，web 开发者，TecMint 网站的专栏作者，他喜欢使用计算机工作，并且乐于分享计算机技术。</p>
+<hr>
+<p>via: <a href="http://www.tecmint.com/inxi-command-to-find-linux-system-information/">http://www.tecmint.com/inxi-command-to-find-linux-system-information/</a></p>
+<p>作者：<a href="http://www.tecmint.com/author/aaronkili/">Aaron Kili</a>
+译者：<a href="https://github.com/vim-kakali">vim-kakali</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-linux-系统上安装-inxi">在 Linux 系统上安装 Inxi</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#inxi-工具的基本用法">Inxi 工具的基本用法</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取电脑机型">获取电脑机型</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取-cpu-及主频信息">获取 CPU 及主频信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-inxi-工具监控-linux-系统">使用 Inxi 工具监控 Linux 系统</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201704/20170220 Inxi – A Powerful Feature-Rich Commandline System Information Tool for Linux","title":"inxi：一个功能强大的获取 Linux 系统信息的命令行工具"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

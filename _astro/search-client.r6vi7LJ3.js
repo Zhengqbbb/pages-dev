@@ -1,0 +1,1 @@
+var e=()=>()=>Promise.resolve({hits:[],sections:[]});export{e as createSearch};

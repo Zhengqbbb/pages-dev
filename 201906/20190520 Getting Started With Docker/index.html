@@ -1,0 +1,275 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Docker 入门指南 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Docker 入门指南 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Docker 入门指南 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201906/20190520 Getting Started With Docker#page","@type":"TechArticle","headline":"Docker 入门指南","inLanguage":"en","name":"Docker 入门指南","url":"https://zhengqbbb.github.io/pages-dev/201906/20190520 Getting Started With Docker","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201906/20190520 Getting Started With Docker"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#入门指南">入门指南</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Docker 入门指南</h1><p>[#]: collector:	&quot;lujun9972&quot;
+[#]: translator:	&quot;zhang5788&quot;
+[#]: reviewer: &quot;wxy&quot;
+[#]: publisher: &quot;wxy&quot;
+[#]: url: &quot;<a href="https://linux.cn/article-10940-1.html">https://linux.cn/article-10940-1.html</a>&quot;
+[#]: subject:	 &quot;Getting Started With Docker&quot;
+[#]: via:	&quot;<a href="https://www.ostechnix.com/getting-started-with-docker/">https://www.ostechnix.com/getting-started-with-docker/</a>&quot;
+[#]: author: &quot;sk <a href="https://www.ostechnix.com/author/sk/">https://www.ostechnix.com/author/sk/</a>&quot;</p>
+<p><img src="https://www.ostechnix.com/wp-content/uploads/2016/04/docker-basics-720x340.png" alt="Getting Started With Docker"></p>
+<p>在我们的上一个教程中，我们已经了解<a href="https://www.ostechnix.com/wp-content/uploads/2016/04/docker-basics-720x340.png">如何在 Ubuntu 上安装 Docker</a>，和如何在 <a href="http://www.ostechnix.com/install-docker-ubuntu/">CentOS 上安装 Docker</a>。今天，我们将会了解 Docker 的一些基础用法。该教程包含了如何创建一个新的 Docker 容器，如何运行该容器，如何从现有的 Docker 容器中创建自己的 Docker 镜像等 Docker 的一些基础知识、操作。所有步骤均在 Ubuntu 18.04 LTS server 版本下测试通过。</p>
+<h3 id="入门指南">入门指南</h3>
+<p>在开始指南之前，不要混淆 Docker 镜像和 Docker 容器这两个概念。在之前的教程中，我就解释过，Docker 镜像是决定 Docker 容器行为的一个文件，Docker 容器则是 Docker 镜像的运行态或停止态。（LCTT 译注：在 macOS 下使用 Docker 终端时，不需要加 <code>sudo</code>）</p>
+<h4 id="1搜索-docker-镜像">1、搜索 Docker 镜像</h4>
+<p>我们可以从 Docker 仓库中获取镜像，例如 <a href="https://www.ostechnix.com/install-docker-centos/">Docker hub</a>，或者自己创建镜像。这里解释一下，Docker hub 是一个云服务器，用来提供给 Docker 的用户们创建、测试，和保存他们的镜像。</p>
+<p>Docker hub 拥有成千上万个 Docker 镜像文件。你可以通过 <code>docker search</code>命令在这里搜索任何你想要的镜像。</p>
+<p>例如，搜索一个基于 Ubuntu 的镜像文件，只需要运行：</p>
+<pre><code class="language-shell">$ sudo docker search ubuntu
+</code></pre>
+<p>示例输出：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2016/04/Search-Docker-images.png" alt=""></p>
+<p>搜索基于 CentOS 的镜像，运行：</p>
+<pre><code class="language-shell">$ sudo docker search centos
+</code></pre>
+<p>搜索 AWS 的镜像，运行：</p>
+<pre><code class="language-shell">$ sudo docker search aws
+</code></pre>
+<p>搜索 WordPress 的镜像：</p>
+<pre><code class="language-shell">$ sudo docker search wordpress
+</code></pre>
+<p>Docker hub 拥有几乎所有种类的镜像，包含操作系统、程序和其他任意的类型，这些你都能在 Docker hub 上找到已经构建完的镜像。如果你在搜索时，无法找到你想要的镜像文件，你也可以自己构建一个，将其发布出去，或者仅供你自己使用。</p>
+<h4 id="2下载-docker-镜像">2、下载 Docker 镜像</h4>
+<p>下载 Ubuntu 的镜像，你需要在终端运行以下命令：</p>
+<pre><code class="language-shell">$ sudo docker pull ubuntu
+</code></pre>
+<p>这条命令将会从 Docker hub 下载最近一个版本的 Ubuntu 镜像文件。</p>
+<p>示例输出：</p>
+<pre><code>Using default tag: latest
+latest: Pulling from library/ubuntu
+6abc03819f3e: Pull complete 
+05731e63f211: Pull complete 
+0bd67c50d6be: Pull complete 
+Digest: sha256:f08638ec7ddc90065187e7eabdfac3c96e5ff0f6b2f1762cf31a4f49b53000a5
+Status: Downloaded newer image for ubuntu:latest
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2016/04/Download-docker-images.png" alt="下载 Docker 镜像"></p>
+<p>你也可以下载指定版本的 Ubuntu 镜像。运行以下命令：</p>
+<pre><code class="language-shell">$ docker pull ubuntu:18.04
+</code></pre>
+<p>Docker 允许在任意的宿主机操作系统下，下载任意的镜像文件，并运行。</p>
+<p>例如，下载 CentOS 镜像：</p>
+<pre><code class="language-shell">$ sudo docker pull centos
+</code></pre>
+<p>所有下载的镜像文件，都被保存在 <code>/var/lib/docker</code> 文件夹下。（LCTT 译注：不同操作系统存放的文件夹并不是一致的，具体存放位置请在官方查询）</p>
+<p>查看已经下载的镜像列表，可以使用以下命令：</p>
+<pre><code class="language-shell">$ sudo docker images
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="language-shell">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+ubuntu              latest              7698f282e524        14 hours ago        69.9MB
+centos              latest              9f38484d220f        2 months ago        202MB
+hello-world         latest              fce289e99eb9        4 months ago        1.84kB
+</code></pre>
+<p>正如你看到的那样，我已经下载了三个镜像文件：<code>ubuntu</code>、<code>centos</code> 和 <code>hello-world</code>。</p>
+<p>现在，让我们继续，来看一下如何运行我们刚刚下载的镜像。</p>
+<h4 id="3运行-docker-镜像">3、运行 Docker 镜像</h4>
+<p>运行一个容器有两种方法。我们可以使用标签或者是镜像 ID。标签指的是特定的镜像快照。镜像 ID 是指镜像的唯一标识。</p>
+<p>正如上面结果中显示，<code>latest</code> 是所有镜像的一个标签。<code>7698f282e524</code> 是 Ubuntu Docker 镜像的镜像 ID，<code>9f38484d220f</code>是 CentOS 镜像的镜像 ID，<code>fce289e99eb9</code> 是 hello_world 镜像的 镜像 ID。</p>
+<p>下载完 Docker 镜像之后，你可以通过下面的命令来使用其标签来启动：</p>
+<pre><code class="language-shell">$ sudo docker run -t -i ubuntu:latest /bin/bash
+</code></pre>
+<p>在这条语句中：</p>
+<ul>
+<li><code>-t</code>：在该容器中启动一个新的终端</li>
+<li><code>-i</code>：通过容器中的标准输入流建立交互式连接</li>
+<li><code>ubuntu:latest</code>：带有标签 <code>latest</code> 的 Ubuntu 容器</li>
+<li><code>/bin/bash</code>：在新的容器中启动 BASH Shell</li>
+</ul>
+<p>或者，你可以通过镜像 ID 来启动新的容器：</p>
+<pre><code class="language-shell">$ sudo docker run -t -i 7698f282e524 /bin/bash
+</code></pre>
+<p>在这条语句里：</p>
+<ul>
+<li><code>7698f282e524</code> — 镜像 ID</li>
+</ul>
+<p>在启动容器之后，将会自动进入容器的 shell 中（注意看命令行的提示符）。</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2016/04/Docker-containers-shell.png" alt=""></p>
+<p><em>Docker 容器的 Shell</em></p>
+<p>如果想要退回到宿主机的终端（在这个例子中，对我来说，就是退回到 18.04 LTS），并且不中断该容器的执行，你可以按下 <code>CTRL+P</code>，再按下 <code>CTRL+Q</code>。现在，你就安全的返回到了你的宿主机系统中。需要注意的是，Docker 容器仍然在后台运行，我们并没有中断它。</p>
+<p>可以通过下面的命令来查看正在运行的容器：</p>
+<pre><code class="language-shell">$ sudo docker ps
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="language-shell">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+32fc32ad0d54        ubuntu:latest       &quot;/bin/bash&quot;         7 minutes ago       Up 7 minutes                            modest_jones
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2016/04/List-running-containers.png" alt=""></p>
+<p><em>列出正在运行的容器</em></p>
+<p>可以看到：</p>
+<ul>
+<li><code>32fc32ad0d54</code> – 容器 ID</li>
+<li><code>ubuntu:latest</code> – Docker 镜像</li>
+</ul>
+<p>需要注意的是，容器 ID 和 Docker 的镜像 ID是不同的。</p>
+<p>可以通过以下命令查看所有正在运行和停止运行的容器：</p>
+<pre><code class="language-shell">$ sudo docker ps -a
+</code></pre>
+<p>在宿主机中断容器的执行：</p>
+<pre><code class="language-shell">$ sudo docker stop &lt;container-id&gt;
+</code></pre>
+<p>例如：</p>
+<pre><code class="language-shell">$ sudo docker stop 32fc32ad0d54
+</code></pre>
+<p>如果想要进入正在运行的容器中，你只需要运行：</p>
+<pre><code class="language-shell">$ sudo docker attach 32fc32ad0d54
+</code></pre>
+<p>正如你看到的，<code>32fc32ad0d54</code> 是一个容器的 ID。当你在容器中想要退出时，只需要在容器内的终端中输入命令：</p>
+<pre><code class="language-shell"># exit
+</code></pre>
+<p>你可以使用这个命令查看后台正在运行的容器：</p>
+<pre><code class="language-shell">$ sudo docker ps
+</code></pre>
+<h4 id="4构建自己的-docker-镜像">4、构建自己的 Docker 镜像</h4>
+<p>Docker 不仅仅可以下载运行在线的容器，你也可以创建你的自己的容器。</p>
+<p>想要创建自己的 Docker 镜像，你需要先运行一个你已经下载完的容器：</p>
+<pre><code class="language-shell">$ sudo docker run -t -i ubuntu:latest /bin/bash
+</code></pre>
+<p>现在，你运行了一个容器，并且进入了该容器。然后，在该容器安装任意一个软件或做任何你想做的事情。</p>
+<p>例如，我们在容器中安装一个 Apache web 服务器。</p>
+<p>当你完成所有的操作，安装完所有的软件之后，你可以执行以下的命令来构建你自己的 Docker 镜像：</p>
+<pre><code class="language-shell"># apt update
+# apt install apache2
+</code></pre>
+<p>同样的，在容器中安装和测试你想要安装的所有软件。</p>
+<p>当你安装完毕之后，返回的宿主机的终端。记住，不要关闭容器。想要返回到宿主机而不中断容器。请按下<code>CTRL+P</code>，再按下 <code>CTRL+Q</code>。</p>
+<p>从你的宿主机的终端中，运行以下命令如寻找容器的 ID：</p>
+<pre><code class="language-shell">$ sudo docker ps
+</code></pre>
+<p>最后，从一个正在运行的容器中创建 Docker 镜像：</p>
+<pre><code class="language-shell">$ sudo docker commit 3d24b3de0bfc ostechnix/ubuntu_apache
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="language-shell">sha256:ce5aa74a48f1e01ea312165887d30691a59caa0d99a2a4aa5116ae124f02f962
+</code></pre>
+<p>在这里：</p>
+<ul>
+<li><code>3d24b3de0bfc</code> — 指 Ubuntu 容器的 ID。</li>
+<li><code>ostechnix</code> — 我们创建的容器的用户名称</li>
+<li><code>ubuntu_apache</code> — 我们创建的镜像</li>
+</ul>
+<p>让我们检查一下我们新创建的 Docker 镜像：</p>
+<pre><code class="language-shell">$ sudo docker images
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="language-shell">REPOSITORY                TAG                 IMAGE ID            CREATED              SIZE
+ostechnix/ubuntu_apache   latest              ce5aa74a48f1        About a minute ago   191MB
+ubuntu                    latest              7698f282e524        15 hours ago         69.9MB
+centos                    latest              9f38484d220f        2 months ago         202MB
+hello-world               latest              fce289e99eb9        4 months ago         1.84kB
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2016/04/List-docker-images.png" alt=""></p>
+<p><em>列出所有的 Docker 镜像</em></p>
+<p>正如你看到的，这个新的镜像就是我们刚刚在本地系统上从运行的容器上创建的。</p>
+<p>现在，你可以从这个镜像创建一个新的容器。</p>
+<pre><code class="language-shell">$ sudo docker run -t -i ostechnix/ubuntu_apache /bin/bash
+</code></pre>
+<h4 id="5删除容器">5、删除容器</h4>
+<p>如果你在 Docker 上的工作已经全部完成，你就可以删除那些你不需要的容器。</p>
+<p>想要删除一个容器，首先，你需要停止该容器。</p>
+<p>我们先来看一下正在运行的容器有哪些</p>
+<pre><code class="language-shell">$ sudo docker ps
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="language-shell">CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+3d24b3de0bfc ubuntu:latest &quot;/bin/bash&quot; 28 minutes ago Up 28 minutes goofy_easley
+</code></pre>
+<p>使用容器 ID 来停止该容器：</p>
+<pre><code class="language-shell">$ sudo docker stop 3d24b3de0bfc
+</code></pre>
+<p>现在，就可以删除该容器了。</p>
+<pre><code class="language-shell">$ sudo docker rm 3d24b3de0bfc
+</code></pre>
+<p>你就可以按照这样的方法来删除那些你不需要的容器了。</p>
+<p>当需要删除的容器数量很多时，一个一个删除也是很麻烦的，我们可以直接删除所有的已经停止的容器。只需要运行：</p>
+<pre><code class="language-shell">$ sudo docker container prune
+</code></pre>
+<p>按下 <code>Y</code>，来确认你的操作：</p>
+<pre><code class="language-shell">WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+32fc32ad0d5445f2dfd0d46121251c7b5a2aea06bb22588fb2594ddbe46e6564
+5ec614e0302061469ece212f0dba303c8fe99889389749e6220fe891997f38d0
+
+Total reclaimed space: 5B
+</code></pre>
+<p>这个命令仅支持最新的 Docker。（LCTT 译注：仅支持 1.25 及以上版本的 Docker）</p>
+<h4 id="6删除-docker-镜像">6、删除 Docker 镜像</h4>
+<p>当你删除了不要的 Docker 容器后，你也可以删除你不需要的 Docker 镜像。</p>
+<p>列出已经下载的镜像：</p>
+<pre><code class="language-shell">$ sudo docker images
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="language-shell">REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
+ostechnix/ubuntu_apache   latest              ce5aa74a48f1        5 minutes ago       191MB
+ubuntu                    latest              7698f282e524        15 hours ago        69.9MB
+centos                    latest              9f38484d220f        2 months ago        202MB
+hello-world               latest              fce289e99eb9        4 months ago        1.84kB
+</code></pre>
+<p>由上面的命令可以知道，在本地的系统中存在三个镜像。</p>
+<p>使用镜像 ID 来删除镜像。</p>
+<pre><code class="language-shell">$ sudo docekr rmi ce5aa74a48f1
+</code></pre>
+<p>示例输出：</p>
+<pre><code class="language-shell">Untagged: ostechnix/ubuntu_apache:latest
+Deleted: sha256:ce5aa74a48f1e01ea312165887d30691a59caa0d99a2a4aa5116ae124f02f962
+Deleted: sha256:d21c926f11a64b811dc75391bbe0191b50b8fe142419f7616b3cee70229f14cd
+</code></pre>
+<h4 id="解决问题">解决问题</h4>
+<p>Docker 禁止我们删除一个还在被容器使用的镜像。</p>
+<p>例如，当我试图删除 Docker 镜像 <code>b72889fa879c</code> 时，我只能获得一个错误提示：</p>
+<pre><code class="language-shell">Error response from daemon: conflict: unable to delete b72889fa879c (must be forced) - image is being used by stopped container dde4dd285377
+</code></pre>
+<p>这是因为这个 Docker 镜像正在被一个容器使用。</p>
+<p>所以，我们来检查一个正在运行的容器：</p>
+<pre><code class="language-shell">$ sudo docker ps
+</code></pre>
+<p>示例输出：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2016/04/sk@sk-_005-1-1.jpg" alt=""></p>
+<p>注意，现在并没有正在运行的容器！！！</p>
+<p>查看一下所有的容器（包含所有的正在运行和已经停止的容器）：</p>
+<pre><code class="language-shell">$ sudo docker pa -a
+</code></pre>
+<p>示例输出：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2016/04/sk@sk-_006-1.jpg" alt=""></p>
+<p>可以看到，仍然有一些已经停止的容器在使用这些镜像。</p>
+<p>让我们把这些容器删除：</p>
+<pre><code class="language-shell">$ sudo docker rm 12e892156219
+</code></pre>
+<p>我们仍然使用容器 ID 来删除这些容器。</p>
+<p>当我们删除了所有使用该镜像的容器之后，我们就可以删除 Docker 的镜像了。</p>
+<p>例如：</p>
+<pre><code class="language-shell">$ sudo docekr rmi b72889fa879c
+</code></pre>
+<p>我们再来检查一下本机存在的镜像：</p>
+<pre><code class="language-shell">$ sudo docker images
+</code></pre>
+<p>想要知道更多的细节，请参阅本指南末尾给出的官方资源的链接或者在评论区进行留言。</p>
+<p>这就是全部的教程了，希望你可以了解 Docker 的一些基础用法。</p>
+<p>更多的教程马上就会到来，敬请关注。</p>
+<hr>
+<p>via: <a href="https://www.ostechnix.com/getting-started-with-docker/">https://www.ostechnix.com/getting-started-with-docker/</a></p>
+<p>作者：<a href="https://www.ostechnix.com/author/sk/">sk</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/zhang5788">zhang5788</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#入门指南">入门指南</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201906/20190520 Getting Started With Docker","title":"Docker 入门指南"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

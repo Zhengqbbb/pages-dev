@@ -1,0 +1,461 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>怎样用 Bash 编程：逻辑操作符和 shell 扩展 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="怎样用 Bash 编程：逻辑操作符和 shell 扩展 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="怎样用 Bash 编程：逻辑操作符和 shell 扩展 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201912/20191022 How to program with Bash- Logical operators and shell expansions#page","@type":"TechArticle","headline":"怎样用 Bash 编程：逻辑操作符和 shell 扩展","inLanguage":"en","name":"怎样用 Bash 编程：逻辑操作符和 shell 扩展","url":"https://zhengqbbb.github.io/pages-dev/201912/20191022 How to program with Bash- Logical operators and shell expansions","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201912/20191022 How to program with Bash- Logical operators and shell expansions"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#逻辑操作符">逻辑操作符</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#扩展">扩展</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>怎样用 Bash 编程：逻辑操作符和 shell 扩展</h1><blockquote>
+<p>学习逻辑操作符和 shell 扩展，本文是三篇 Bash 编程系列的第二篇。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/201912/17/173459pxhz0aiicimzd1m2.jpg" alt=""></p>
+<p>Bash 是一种强大的编程语言，完美契合命令行和 shell 脚本。本系列（三篇文章，基于我的 <a href="http://www.both.org/?page_id=1183">三集 Linux 自学课程</a>）讲解如何在 CLI 使用 Bash 编程。</p>
+<p><a href="https://linux.cn/article-11552-1.html">第一篇文章</a> 讲解了 Bash 的一些简单命令行操作，包括如何使用变量和控制操作符。第二篇文章探讨文件、字符串、数字等类型和各种各样在执行流中提供控制逻辑的的逻辑运算符，还有 Bash 中的各类 shell 扩展。本系列第三篇也是最后一篇文章，将会探索能重复执行操作的 <code>for</code> 、<code>while</code> 和 <code>until</code> 循环。</p>
+<p>逻辑操作符是程序中进行判断的根本要素，也是执行不同的语句组合的依据。有时这也被称为流控制。</p>
+<h3 id="逻辑操作符">逻辑操作符</h3>
+<p>Bash 中有大量的用于不同条件表达式的逻辑操作符。最基本的是 <code>if</code> 控制结构，它判断一个条件，如果条件为真，就执行一些程序语句。操作符共有三类：文件、数字和非数字操作符。如果条件为真，所有的操作符返回真值（<code>0</code>），如果条件为假，返回假值（<code>1</code>）。</p>
+<p>这些比较操作符的函数语法是，一个操作符加一个或两个参数放在中括号内，后面跟一系列程序语句，如果条件为真，程序语句执行，可能会有另一个程序语句列表，该列表在条件为假时执行：</p>
+<pre><code>if [ arg1 operator arg2 ] ; then list
+或
+if [ arg1 operator arg2 ] ; then list ; else list ; fi
+</code></pre>
+<p>像例子中那样，在比较表达式中，空格不能省略。中括号的每部分，<code>[</code> 和 <code>]</code>，是跟 <code>test</code> 命令一样的传统的 Bash 符号：</p>
+<pre><code>if test arg1 operator arg2 ; then list
+</code></pre>
+<p>还有一个更新的语法能提供一点点便利，一些系统管理员比较喜欢用。这种格式对于不同版本的 Bash 和一些 shell 如 ksh（Korn shell）兼容性稍差。格式如下：</p>
+<pre><code>if [[ arg1 operator arg2 ]] ; then list
+</code></pre>
+<h4 id="文件操作符">文件操作符</h4>
+<p>文件操作符是 Bash 中一系列强大的逻辑操作符。图表 1 列出了 20 多种不同的 Bash 处理文件的操作符。在我的脚本中使用频率很高。</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-a filename</code></td>
+<td>如果文件存在，返回真值；文件可以为空也可以有内容，但是只要它存在，就返回真值</td>
+</tr>
+<tr>
+<td><code>-b filename</code></td>
+<td>如果文件存在且是一个块设备，如 <code>/dev/sda</code> 或 <code>/dev/sda1</code>，则返回真值</td>
+</tr>
+<tr>
+<td><code>-c filename</code></td>
+<td>如果文件存在且是一个字符设备，如 <code>/dev/TTY1</code>，则返回真值</td>
+</tr>
+<tr>
+<td><code>-d filename</code></td>
+<td>如果文件存在且是一个目录，返回真值</td>
+</tr>
+<tr>
+<td><code>-e filename</code></td>
+<td>如果文件存在，返回真值；与上面的 <code>-a</code> 相同</td>
+</tr>
+<tr>
+<td><code>-f filename</code></td>
+<td>如果文件存在且是一个一般文件，不是目录、设备文件或链接等的其他的文件，则返回 真值</td>
+</tr>
+<tr>
+<td><code>-g filename</code></td>
+<td>如果文件存在且 <code>SETGID</code> 标记被设置在其上，返回真值</td>
+</tr>
+<tr>
+<td><code>-h filename</code></td>
+<td>如果文件存在且是一个符号链接，则返回真值</td>
+</tr>
+<tr>
+<td><code>-k filename</code></td>
+<td>如果文件存在且粘滞位已设置，则返回真值</td>
+</tr>
+<tr>
+<td><code>-p filename</code></td>
+<td>如果文件存在且是一个命名的管道（FIFO），返回真值</td>
+</tr>
+<tr>
+<td><code>-r filename</code></td>
+<td>如果文件存在且有可读权限（它的可读位被设置），返回真值</td>
+</tr>
+<tr>
+<td><code>-s filename</code></td>
+<td>如果文件存在且大小大于 0，返回真值；如果一个文件存在但大小为 0，则返回假值</td>
+</tr>
+<tr>
+<td><code>-t fd</code></td>
+<td>如果文件描述符 <code>fd</code> 被打开且被关联到一个终端设备上，返回真值</td>
+</tr>
+<tr>
+<td><code>-u filename</code></td>
+<td>如果文件存在且它的 <code>SETUID</code> 位被设置，返回真值</td>
+</tr>
+<tr>
+<td><code>-w filename</code></td>
+<td>如果文件存在且有可写权限，返回真值</td>
+</tr>
+<tr>
+<td><code>-x filename</code></td>
+<td>如果文件存在且有可执行权限，返回真值</td>
+</tr>
+<tr>
+<td><code>-G filename</code></td>
+<td>如果文件存在且文件的组 ID 与当前用户相同，返回真值</td>
+</tr>
+<tr>
+<td><code>-L filename</code></td>
+<td>如果文件存在且是一个符号链接，返回真值（同 <code>-h</code>）</td>
+</tr>
+<tr>
+<td><code>-N filename</code></td>
+<td>如果文件存在且从文件上一次被读取后文件被修改过，返回真值</td>
+</tr>
+<tr>
+<td><code>-O filename</code></td>
+<td>如果文件存在且你是文件的拥有者，返回真值</td>
+</tr>
+<tr>
+<td><code>-S filename</code></td>
+<td>如果文件存在且文件是套接字，返回真值</td>
+</tr>
+<tr>
+<td><code>file1 -ef file2</code></td>
+<td>如果文件 <code>file1</code> 和文件 <code>file2</code> 指向同一设备的同一 INODE 号，返回真值（即硬链接）</td>
+</tr>
+<tr>
+<td><code>file1 -nt file2</code></td>
+<td>如果文件 <code>file1</code> 比 <code>file2</code> 新（根据修改日期），或 <code>file1</code> 存在而 <code>file2</code> 不存在，返回真值</td>
+</tr>
+<tr>
+<td><code>file1 -ot file2</code></td>
+<td>如果文件 <code>file1</code> 比 <code>file2</code> 旧（根据修改日期），或 <code>file1</code> 不存在而 <code>file2</code> 存在</td>
+</tr>
+</tbody></table>
+<p><em>图表 1：Bash 文件操作符</em></p>
+<p>以测试一个文件存在与否来举例：</p>
+<pre><code>[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; if [ -e $File ] ; then echo &quot;The file $File exists.&quot; ; else echo &quot;The file $File does not exist.&quot; ; fi
+The file TestFile1 does not exist.
+[student@studentvm1 testdir]$
+</code></pre>
+<p>创建一个用来测试的文件，命名为 <code>TestFile1</code>。目前它不需要包含任何数据：</p>
+<pre><code>[student@studentvm1 testdir]$ touch TestFile1
+</code></pre>
+<p>在这个简短的 CLI 程序中，修改 <code>$File</code> 变量的值相比于在多个地方修改表示文件名的字符串的值要容易：</p>
+<pre><code>[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; if [ -e $File ] ; then echo &quot;The file $File exists.&quot; ; else echo &quot;The file $File does not exist.&quot; ; fi
+The file TestFile1 exists.
+[student@studentvm1 testdir]$
+</code></pre>
+<p>现在，运行一个测试来判断一个文件是否存在且长度不为 0（表示它包含数据）。假设你想判断三种情况：</p>
+<ol>
+<li>文件不存在；</li>
+<li>文件存在且为空；</li>
+<li>文件存在且包含数据。</li>
+</ol>
+<p>因此，你需要一组更复杂的测试代码 — 为了测试所有的情况，使用 <code>if-elif-else</code> 结构中的 <code>elif</code> 语句：</p>
+<pre><code>[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; if [ -s $File ] ; then echo &quot;$File exists and contains data.&quot; ; fi
+[student@studentvm1 testdir]$
+</code></pre>
+<p>在这个情况中，文件存在但不包含任何数据。向文件添加一些数据再运行一次：</p>
+<pre><code>[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; echo &quot;This is file $File&quot; &gt; $File ; if [ -s $File ] ; then echo &quot;$File exists and contains data.&quot; ; fi
+TestFile1 exists and contains data.
+[student@studentvm1 testdir]$
+</code></pre>
+<p>这组语句能返回正常的结果，但是仅仅是在我们已知三种可能的情况下测试某种确切的条件。添加一段 <code>else</code> 语句，这样你就可以更精确地测试。把文件删掉，你就可以完整地测试这段新代码：</p>
+<pre><code>[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; rm $File ; if [ -s $File ] ; then echo &quot;$File exists and contains data.&quot; ; else echo &quot;$File does not exist or is empty.&quot; ; fi
+TestFile1 does not exist or is empty.
+</code></pre>
+<p>现在创建一个空文件用来测试：</p>
+<pre><code>[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; touch $File ; if [ -s $File ] ; then echo &quot;$File exists and contains data.&quot; ; else echo &quot;$File does not exist or is empty.&quot; ; fi
+TestFile1 does not exist or is empty.
+</code></pre>
+<p>向文件添加一些内容，然后再测试一次：</p>
+<pre><code>[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; echo &quot;This is file $File&quot; &gt; $File ; if [ -s $File ] ; then echo &quot;$File exists and contains data.&quot; ; else echo &quot;$File does not exist or is empty.&quot; ; fi
+TestFile1 exists and contains data.
+</code></pre>
+<p>现在加入 <code>elif</code> 语句来辨别是文件不存在还是文件为空：</p>
+<pre><code>[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; touch $File ; if [ -s $File ] ; then echo &quot;$File exists and contains data.&quot; ; elif [ -e $File ] ; then echo &quot;$File exists and is empty.&quot; ; else echo &quot;$File does not exist.&quot; ; fi
+TestFile1 exists and is empty.
+[student@studentvm1 testdir]$ File=&quot;TestFile1&quot; ; echo &quot;This is $File&quot; &gt; $File ; if [ -s $File ] ; then echo &quot;$File exists and contains data.&quot; ; elif [ -e $File ] ; then echo &quot;$File exists and is empty.&quot; ; else echo &quot;$File does not exist.&quot; ; fi
+TestFile1 exists and contains data.
+[student@studentvm1 testdir]$
+</code></pre>
+<p>现在你有一个可以测试这三种情况的 Bash CLI 程序，但是可能的情况是无限的。</p>
+<p>如果你能像保存在文件中的脚本那样组织程序语句，那么即使对于更复杂的命令组合也会很容易看出它们的逻辑结构。图表 2 就是一个示例。 <code>if-elif-else</code> 结构中每一部分的程序语句的缩进让逻辑更变得清晰。</p>
+<pre><code>File=&quot;TestFile1&quot;
+echo &quot;This is $File&quot; &gt; $File
+if [ -s $File ]
+   then
+   echo &quot;$File exists and contains data.&quot;
+elif [ -e $File ]
+   then
+   echo &quot;$File exists and is empty.&quot;
+else
+   echo &quot;$File does not exist.&quot;
+fi
+</code></pre>
+<p><em>图表 2: 像在脚本里一样重写书写命令行程序</em></p>
+<p>对于大多数 CLI 程序来说，让这些复杂的命令变得有逻辑需要写很长的代码。虽然 CLI 可能是用 Linux 或 Bash 内置的命令，但是当 CLI 程序很长或很复杂时，创建一个保存在文件中的脚本将更有效，保存到文件中后，可以随时运行。</p>
+<h4 id="字符串比较操作符">字符串比较操作符</h4>
+<p>字符串比较操作符使我们可以对字符串中的字符按字母顺序进行比较。图表 3 列出了仅有的几个字符串比较操作符。</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-z string</code></td>
+<td>如果字符串的长度为 0 ，返回真值</td>
+</tr>
+<tr>
+<td><code>-n string</code></td>
+<td>如果字符串的长度不为 0 ，返回真值</td>
+</tr>
+<tr>
+<td><code>string1 == string2</code> 或 <code>string1 = string2</code></td>
+<td>如果两个字符串相等，返回真值。处于遵从 POSIX 一致性，在测试命令中应使用一个等号 <code>=</code>。与命令 <code>[[</code> 一起使用时，会进行如上描述的模式匹配（混合命令）。</td>
+</tr>
+<tr>
+<td><code>string1 != string2</code></td>
+<td>两个字符串不相等，返回真值</td>
+</tr>
+<tr>
+<td><code>string1 &lt; string2</code></td>
+<td>如果对 <code>string1</code> 和 <code>string2</code> 按字母顺序进行排序，<code>string1</code> 排在 <code>string2</code> 前面（即基于地区设定的对所有字母和特殊字符的排列顺序）</td>
+</tr>
+<tr>
+<td><code>string1 &gt; string2</code></td>
+<td>如果对 <code>string1</code> 和 <code>string2</code> 按字母顺序进行排序，<code>string1</code> 排在 <code>string2</code> 后面</td>
+</tr>
+</tbody></table>
+<p><em>图表 3: Bash 字符串逻辑操作符</em></p>
+<p>首先，检查字符串长度。比较表达式中 <code>$MyVar</code> 两边的双引号不能省略（你仍应该在目录 <code>~/testdir</code> 下 ）。</p>
+<pre><code>[student@studentvm1 testdir]$ MyVar=&quot;&quot; ; if [ -z &quot;&quot; ] ; then echo &quot;MyVar is zero length.&quot; ; else echo &quot;MyVar contains data&quot; ; fi
+MyVar is zero length.
+[student@studentvm1 testdir]$ MyVar=&quot;Random text&quot; ; if [ -z &quot;&quot; ] ; then echo &quot;MyVar is zero length.&quot; ; else echo &quot;MyVar contains data&quot; ; fi
+MyVar is zero length.
+</code></pre>
+<p>你也可以这样做：</p>
+<pre><code>[student@studentvm1 testdir]$ MyVar=&quot;Random text&quot; ; if [ -n &quot;$MyVar&quot; ] ; then echo &quot;MyVar contains data.&quot; ; else echo &quot;MyVar is zero length&quot; ; fi
+MyVar contains data.
+[student@studentvm1 testdir]$ MyVar=&quot;&quot; ; if [ -n &quot;$MyVar&quot; ] ; then echo &quot;MyVar contains data.&quot; ; else echo &quot;MyVar is zero length&quot; ; fi
+MyVar is zero length
+</code></pre>
+<p>有时候你需要知道一个字符串确切的长度。这虽然不是比较，但是也与比较相关。不幸的是，计算字符串的长度没有简单的方法。有很多种方法可以计算，但是我认为使用 <code>expr</code>（求值表达式）命令是相对最简单的一种。阅读 <code>expr</code> 的手册页可以了解更多相关知识。注意表达式中你检测的字符串或变量两边的引号不要省略。</p>
+<pre><code>[student@studentvm1 testdir]$ MyVar=&quot;&quot; ; expr length &quot;$MyVar&quot;
+0
+[student@studentvm1 testdir]$ MyVar=&quot;How long is this?&quot; ; expr length &quot;$MyVar&quot;
+17
+[student@studentvm1 testdir]$ expr length &quot;We can also find the length of a literal string as well as a variable.&quot;
+70
+</code></pre>
+<p>关于比较操作符，在我们的脚本中使用了大量的检测两个字符串是否相等（例如，两个字符串是否实际上是同一个字符串）的操作。我使用的是非 POSIX 版本的比较表达式：</p>
+<pre><code>[student@studentvm1 testdir]$ Var1=&quot;Hello World&quot; ; Var2=&quot;Hello World&quot; ; if [ &quot;$Var1&quot; == &quot;$Var2&quot; ] ; then echo &quot;Var1 matches Var2&quot; ; else echo &quot;Var1 and Var2 do not match.&quot; ; fi
+Var1 matches Var2
+[student@studentvm1 testdir]$ Var1=&quot;Hello World&quot; ; Var2=&quot;Hello world&quot; ; if [ &quot;$Var1&quot; == &quot;$Var2&quot; ] ; then echo &quot;Var1 matches Var2&quot; ; else echo &quot;Var1 and Var2 do not match.&quot; ; fi
+Var1 and Var2 do not match.
+</code></pre>
+<p>在你自己的脚本中去试一下这些操作符。</p>
+<h4 id="数字比较操作符">数字比较操作符</h4>
+<p>数字操作符用于两个数字参数之间的比较。像其他类操作符一样，大部分都很容易理解。</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>arg1 -eq arg2</code></td>
+<td>如果 <code>arg1</code> 等于 <code>arg2</code>，返回真值</td>
+</tr>
+<tr>
+<td><code>arg1 -ne arg2</code></td>
+<td>如果 <code>arg1</code> 不等于 <code>arg2</code>，返回真值</td>
+</tr>
+<tr>
+<td><code>arg1 -lt arg2</code></td>
+<td>如果 <code>arg1</code> 小于 <code>arg2</code>，返回真值</td>
+</tr>
+<tr>
+<td><code>arg1 -le arg2</code></td>
+<td>如果 <code>arg1</code> 小于或等于 <code>arg2</code>，返回真值</td>
+</tr>
+<tr>
+<td><code>arg1 -gt arg2</code></td>
+<td>如果 <code>arg1</code> 大于 <code>arg2</code>，返回真值</td>
+</tr>
+<tr>
+<td><code>arg1 -ge arg2</code></td>
+<td>如果 <code>arg1</code> 大于或等于 <code>arg2</code>，返回真值</td>
+</tr>
+</tbody></table>
+<p><em>图表 4: Bash 数字比较逻辑操作符</em></p>
+<p>来看几个简单的例子。第一个示例设置变量 <code>$X</code> 的值为 1，然后检测 <code>$X</code> 是否等于 1。第二个示例中，<code>$X</code> 被设置为 0，所以比较表达式返回结果不为真值。</p>
+<pre><code>[student@studentvm1 testdir]$ X=1 ; if [ $X -eq 1 ] ; then echo &quot;X equals 1&quot; ; else echo &quot;X does not equal 1&quot; ; fi
+X equals 1
+[student@studentvm1 testdir]$ X=0 ; if [ $X -eq 1 ] ; then echo &quot;X equals 1&quot; ; else echo &quot;X does not equal 1&quot; ; fi
+X does not equal 1
+[student@studentvm1 testdir]$
+</code></pre>
+<p>自己来多尝试一下其他的。</p>
+<h4 id="杂项操作符">杂项操作符</h4>
+<p>这些杂项操作符展示一个 shell 选项是否被设置，或一个 shell 变量是否有值，但是它不显示变量的值，只显示它是否有值。</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-o optname</code></td>
+<td>如果一个 shell 选项 <code>optname</code> 是启用的（查看内建在 Bash 手册页中的 set  <code>-o</code> 选项描述下面的选项列表），则返回真值</td>
+</tr>
+<tr>
+<td><code>-v varname</code></td>
+<td>如果 shell 变量 <code>varname</code> 被设置了值（被赋予了值），则返回真值</td>
+</tr>
+<tr>
+<td><code>-R varname</code></td>
+<td>如果一个 shell 变量 <code>varname</code> 被设置了值且是一个名字引用，则返回真值</td>
+</tr>
+</tbody></table>
+<p><em>图表 5: 杂项 Bash 逻辑操作符</em></p>
+<p>自己来使用这些操作符实践下。</p>
+<h3 id="扩展">扩展</h3>
+<p>Bash 支持非常有用的几种类型的扩展和命令替换。根据 Bash 手册页，Bash 有七种扩展格式。本文只介绍其中五种：<code>~</code> 扩展、算术扩展、路径名称扩展、大括号扩展和命令替换。</p>
+<h4 id="大括号扩展">大括号扩展</h4>
+<p>大括号扩展是生成任意字符串的一种方法。（下面的例子是用特定模式的字符创建大量的文件。）大括号扩展可以用于产生任意字符串的列表，并把它们插入一个用静态字符串包围的特定位置或静态字符串的两端。这可能不太好想象，所以还是来实践一下。</p>
+<p>首先，看一下大括号扩展的作用：</p>
+<pre><code>[student@studentvm1 testdir]$ echo {string1,string2,string3}
+string1 string2 string3
+</code></pre>
+<p>看起来不是很有用，对吧？但是用其他方式使用它，再来看看：</p>
+<pre><code>[student@studentvm1 testdir]$ echo &quot;Hello &quot;{David,Jen,Rikki,Jason}.
+Hello David. Hello Jen. Hello Rikki. Hello Jason.
+</code></pre>
+<p>这看起来貌似有点用了 — 我们可以少打很多字。现在试一下这个：</p>
+<pre><code>[student@studentvm1 testdir]$ echo b{ed,olt,ar}s
+beds bolts bars
+</code></pre>
+<p>我可以继续举例，但是你应该已经理解了它的用处。</p>
+<h4 id="扩展">~ 扩展</h4>
+<p>资料显示，使用最多的扩展是波浪字符（<code>~</code>）扩展。当你在命令中使用它（如  <code>cd ~/Documents</code>）时，Bash shell 把这个快捷方式展开成用户的完整的家目录。</p>
+<p>使用这个 Bash 程序观察 <code>~</code> 扩展的作用：</p>
+<pre><code>[student@studentvm1 testdir]$ echo ~
+/home/student
+[student@studentvm1 testdir]$ echo ~/Documents
+/home/student/Documents
+[student@studentvm1 testdir]$ Var1=~/Documents ; echo $Var1 ; cd $Var1
+/home/student/Documents
+[student@studentvm1 Documents]$
+</code></pre>
+<h4 id="路径名称扩展">路径名称扩展</h4>
+<p>路径名称扩展是展开文件通配模式为匹配该模式的完整路径名称的另一种说法，匹配字符使用 <code>?</code> 和 <code>*</code>。文件通配指的是在大量操作中匹配文件名、路径和其他字符串时用特定的模式字符产生极大的灵活性。这些特定的模式字符允许匹配字符串中的一个、多个或特定字符。</p>
+<ul>
+<li><code>?</code> — 匹配字符串中特定位置的一个任意字符</li>
+<li><code>*</code> — 匹配字符串中特定位置的 0 个或多个任意字符</li>
+</ul>
+<p>这个扩展用于匹配路径名称。为了弄清它的用法，请确保 <code>testdir</code> 是当前工作目录（<code>PWD</code>），先执行基本的列出清单命令 <code>ls</code>（我家目录下的内容跟你的不一样）。</p>
+<pre><code>[student@studentvm1 testdir]$ ls
+chapter6  cpuHog.dos    dmesg1.txt  Documents  Music       softlink1  testdir6    Videos
+chapter7  cpuHog.Linux  dmesg2.txt  Downloads  Pictures    Templates  testdir
+testdir  cpuHog.mac    dmesg3.txt  file005    Public      testdir    tmp
+cpuHog     Desktop       dmesg.txt   link3      random.txt  testdir1   umask.test
+[student@studentvm1 testdir]$
+</code></pre>
+<p>现在列出以 <code>Do</code>、<code>testdir/Documents</code> 和 <code>testdir/Downloads</code> 开头的目录：</p>
+<pre><code>Documents:
+Directory01  file07  file15        test02  test10  test20      testfile13  TextFiles
+Directory02  file08  file16        test03  test11  testfile01  testfile14
+file01       file09  file17        test04  test12  testfile04  testfile15
+file02       file10  file18        test05  test13  testfile05  testfile16
+file03       file11  file19        test06  test14  testfile09  testfile17
+file04       file12  file20        test07  test15  testfile10  testfile18
+file05       file13  Student1.txt  test08  test16  testfile11  testfile19
+file06       file14  test01        test09  test18  testfile12  testfile20
+
+Downloads:
+[student@studentvm1 testdir]$
+</code></pre>
+<p>然而，并没有得到你期望的结果。它列出了以 <code>Do</code> 开头的目录下的内容。使用 <code>-d</code> 选项，仅列出目录而不列出它们的内容。</p>
+<pre><code>[student@studentvm1 testdir]$ ls -d Do*
+Documents  Downloads
+[student@studentvm1 testdir]$
+</code></pre>
+<p>在两个例子中，Bash shell 都把 <code>Do*</code> 模式展开成了匹配该模式的目录名称。但是如果有文件也匹配这个模式，会发生什么？</p>
+<pre><code>[student@studentvm1 testdir]$ touch Downtown ; ls -d Do*
+Documents  Downloads  Downtown
+[student@studentvm1 testdir]$
+</code></pre>
+<p>因此所有匹配这个模式的文件也被展开成了完整名字。</p>
+<h4 id="命令替换">命令替换</h4>
+<p>命令替换是让一个命令的标准输出数据流被当做参数传给另一个命令的扩展形式，例如，在一个循环中作为一系列被处理的项目。Bash 手册页显示：“命令替换可以让你用一个命令的输出替换为命令的名字。”这可能不太好理解。</p>
+<p>命令替换有两种格式：`command` 和 <code>$(command)</code>。在更早的格式中使用反引号（`），在命令中使用反斜杠（<code>\</code>）来保持它转义之前的文本含义。然而，当用在新版本的括号格式中时，反斜杠被当做一个特殊字符处理。也请注意带括号的格式打开个关闭命令语句都是用一个括号。</p>
+<p>我经常在命令行程序和脚本中使用这种能力，一个命令的结果能被用作另一个命令的参数。</p>
+<p>来看一个非常简单的示例，这个示例使用了这个扩展的两种格式（再一次提醒，确保 <code>testdir</code> 是当前工作目录）：</p>
+<pre><code>[student@studentvm1 testdir]$ echo &quot;Todays date is `date`&quot;
+Todays date is Sun Apr  7 14:42:46 EDT 2019
+[student@studentvm1 testdir]$ echo &quot;Todays date is $(date)&quot;
+Todays date is Sun Apr  7 14:42:59 EDT 2019
+[student@studentvm1 testdir]$
+</code></pre>
+<p><code>-seq</code> 工具用于一个数字序列：</p>
+<pre><code>[student@studentvm1 testdir]$ seq 5
+1
+2
+3
+4
+5
+[student@studentvm1 testdir]$ echo `seq 5`
+1 2 3 4 5
+[student@studentvm1 testdir]$
+</code></pre>
+<p>现在你可以做一些更有用处的操作，比如创建大量用于测试的空文件。</p>
+<pre><code>[student@studentvm1 testdir]$ for I in $(seq -w 5000) ; do touch file-$I ; done
+</code></pre>
+<p><code>seq</code> 工具加上 <code>-w</code> 选项后，在生成的数字前面会用 0 补全，这样所有的结果都等宽，例如，忽略数字的值，它们的位数一样。这样在对它们按数字顺序进行排列时很容易。</p>
+<p><code>seq -w 5000</code> 语句生成了 1 到 5000 的数字序列。通过把命令替换用于 <code>for</code> 语句，<code>for</code> 语句就可以使用该数字序列来生成文件名的数字部分。</p>
+<h4 id="算术扩展">算术扩展</h4>
+<p>Bash 可以进行整型的数学计算，但是比较繁琐（你一会儿将看到）。数字扩展的语法是 <code>$((arithmetic-expression))</code> ，分别用两个括号来打开和关闭表达式。算术扩展在 shell 程序或脚本中类似命令替换；表达式结算后的结果替换了表达式，用于 shell 后续的计算。</p>
+<p>我们再用一个简单的用法来开始：</p>
+<pre><code>[student@studentvm1 testdir]$ echo $((1+1))
+2
+[student@studentvm1 testdir]$ Var1=5 ; Var2=7 ; Var3=$((Var1*Var2)) ; echo &quot;Var 3 = $Var3&quot;
+Var 3 = 35
+</code></pre>
+<p>下面的除法结果是 0，因为表达式的结果是一个小于 1 的整型数字：</p>
+<pre><code>[student@studentvm1 testdir]$ Var1=5 ; Var2=7 ; Var3=$((Var1/Var2)) ; echo &quot;Var 3 = $Var3&quot;
+Var 3 = 0
+</code></pre>
+<p>这是一个我经常在脚本或 CLI 程序中使用的一个简单的计算，用来查看在 Linux 主机中使用了多少虚拟内存。 <code>free</code> 不提供我需要的数据：</p>
+<pre><code>[student@studentvm1 testdir]$ RAM=`free | grep ^Mem | awk &#39;{print $2}&#39;` ; Swap=`free | grep ^Swap | awk &#39;{print $2}&#39;` ; echo &quot;RAM = $RAM and Swap = $Swap&quot; ; echo &quot;Total Virtual memory is $((RAM+Swap))&quot; ;
+RAM = 4037080 and Swap = 6291452
+Total Virtual memory is 10328532
+</code></pre>
+<p>我使用 ` 字符来划定用作命令替换的界限。</p>
+<p>我用 Bash 算术扩展的场景主要是用脚本检查系统资源用量后基于返回的结果选择一个程序运行的路径。</p>
+<h3 id="总结">总结</h3>
+<p>本文是 Bash 编程语言系列的第二篇，探讨了 Bash 中文件、字符串、数字和各种提供流程控制逻辑的逻辑操作符还有不同种类的 shell 扩展。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/19/10/programming-bash-logical-operators-shell-expansions">https://opensource.com/article/19/10/programming-bash-logical-operators-shell-expansions</a></p>
+<p>作者：<a href="https://opensource.com/users/dboth">David Both</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/lxbwolf">lxbwolf</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#逻辑操作符">逻辑操作符</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#扩展">扩展</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201912/20191022 How to program with Bash- Logical operators and shell expansions","title":"怎样用 Bash 编程：逻辑操作符和 shell 扩展"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

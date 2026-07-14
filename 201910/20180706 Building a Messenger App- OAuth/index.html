@@ -1,0 +1,396 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>构建一个即时消息应用（二）：OAuth - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="构建一个即时消息应用（二）：OAuth - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="构建一个即时消息应用（二）：OAuth - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201910/20180706 Building a Messenger App- OAuth#page","@type":"TechArticle","headline":"构建一个即时消息应用（二）：OAuth","inLanguage":"en","name":"构建一个即时消息应用（二）：OAuth","url":"https://zhengqbbb.github.io/pages-dev/201910/20180706 Building a Messenger App- OAuth","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201910/20180706 Building a Messenger App- OAuth"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#oauth-开始">OAuth 开始</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#oauth-回调">OAuth 回调</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#guard-中间件">Guard 中间件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取认证用户">获取认证用户</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>构建一个即时消息应用（二）：OAuth</h1><p><a href="https://linux.cn/article-11396-1.html">上一篇：模式</a>。</p>
+<p>在这篇帖子中，我们将会通过为应用添加社交登录功能进入后端开发。</p>
+<p>社交登录的工作方式十分简单：用户点击链接，然后重定向到 GitHub 授权页面。当用户授予我们对他的个人信息的访问权限之后，就会重定向回登录页面。下一次尝试登录时，系统将不会再次请求授权，也就是说，我们的应用已经记住了这个用户。这使得整个登录流程看起来就和你用鼠标单击一样快。</p>
+<p>如果进一步考虑其内部实现的话，过程就会变得复杂起来。首先，我们需要注册一个新的 <a href="https://github.com/settings/applications/new">GitHub OAuth 应用</a>。</p>
+<p>这一步中，比较重要的是回调 URL。我们将它设置为 <code>http://localhost:3000/api/oauth/github/callback</code>。这是因为，在开发过程中，我们总是在本地主机上工作。一旦你要将应用交付生产，请使用正确的回调 URL 注册一个新的应用。</p>
+<p>注册以后，你将会收到“客户端 id”和“安全密钥”。安全起见，请不要与任何人分享他们 👀</p>
+<p>顺便让我们开始写一些代码吧。现在，创建一个 <code>main.go</code> 文件：</p>
+<pre><code>package main
+
+import (
+	&quot;database/sql&quot;
+	&quot;fmt&quot;
+	&quot;log&quot;
+	&quot;net/http&quot;
+	&quot;net/url&quot;
+	&quot;os&quot;
+	&quot;strconv&quot;
+
+	&quot;github.com/gorilla/securecookie&quot;
+	&quot;github.com/joho/godotenv&quot;
+	&quot;github.com/knq/jwt&quot;
+	_ &quot;github.com/lib/pq&quot;
+	&quot;github.com/matryer/way&quot;
+	&quot;golang.org/x/oauth2&quot;
+	&quot;golang.org/x/oauth2/github&quot;
+)
+
+var origin *url.URL
+var db *sql.DB
+var githubOAuthConfig *oauth2.Config
+var cookieSigner *securecookie.SecureCookie
+var jwtSigner jwt.Signer
+
+func main() {
+	godotenv.Load()
+
+	port := intEnv(&quot;PORT&quot;, 3000)
+	originString := env(&quot;ORIGIN&quot;, fmt.Sprintf(&quot;http://localhost:%d/&quot;, port))
+	databaseURL := env(&quot;DATABASE_URL&quot;, &quot;postgresql://root@127.0.0.1:26257/messenger?sslmode=disable&quot;)
+	githubClientID := os.Getenv(&quot;GITHUB_CLIENT_ID&quot;)
+	githubClientSecret := os.Getenv(&quot;GITHUB_CLIENT_SECRET&quot;)
+	hashKey := env(&quot;HASH_KEY&quot;, &quot;secret&quot;)
+	jwtKey := env(&quot;JWT_KEY&quot;, &quot;secret&quot;)
+
+	var err error
+	if origin, err = url.Parse(originString); err != nil || !origin.IsAbs() {
+		log.Fatal(&quot;invalid origin&quot;)
+		return
+	}
+
+	if i, err := strconv.Atoi(origin.Port()); err == nil {
+		port = i
+	}
+
+	if githubClientID == &quot;&quot; || githubClientSecret == &quot;&quot; {
+		log.Fatalf(&quot;remember to set both $GITHUB_CLIENT_ID and $GITHUB_CLIENT_SECRET&quot;)
+		return
+	}
+
+	if db, err = sql.Open(&quot;postgres&quot;, databaseURL); err != nil {
+		log.Fatalf(&quot;could not open database connection: %v\n&quot;, err)
+		return
+	}
+	defer db.Close()
+	if err = db.Ping(); err != nil {
+		log.Fatalf(&quot;could not ping to db: %v\n&quot;, err)
+		return
+	}
+
+	githubRedirectURL := *origin
+	githubRedirectURL.Path = &quot;/api/oauth/github/callback&quot;
+	githubOAuthConfig = &amp;oauth2.Config{
+		ClientID:     githubClientID,
+		ClientSecret: githubClientSecret,
+		Endpoint:     github.Endpoint,
+		RedirectURL:  githubRedirectURL.String(),
+		Scopes:       []string{&quot;read:user&quot;},
+	}
+
+	cookieSigner = securecookie.New([]byte(hashKey), nil).MaxAge(0)
+
+	jwtSigner, err = jwt.HS256.New([]byte(jwtKey))
+	if err != nil {
+		log.Fatalf(&quot;could not create JWT signer: %v\n&quot;, err)
+		return
+	}
+
+	router := way.NewRouter()
+	router.HandleFunc(&quot;GET&quot;, &quot;/api/oauth/github&quot;, githubOAuthStart)
+	router.HandleFunc(&quot;GET&quot;, &quot;/api/oauth/github/callback&quot;, githubOAuthCallback)
+	router.HandleFunc(&quot;GET&quot;, &quot;/api/auth_user&quot;, guard(getAuthUser))
+
+	log.Printf(&quot;accepting connections on port %d\n&quot;, port)
+	log.Printf(&quot;starting server at %s\n&quot;, origin.String())
+	addr := fmt.Sprintf(&quot;:%d&quot;, port)
+	if err = http.ListenAndServe(addr, router); err != nil {
+		log.Fatalf(&quot;could not start server: %v\n&quot;, err)
+	}
+}
+
+func env(key, fallbackValue string) string {
+	v, ok := os.LookupEnv(key)
+	if !ok {
+		return fallbackValue
+	}
+	return v
+}
+
+func intEnv(key string, fallbackValue int) int {
+	v, ok := os.LookupEnv(key)
+	if !ok {
+		return fallbackValue
+	}
+	i, err := strconv.Atoi(v)
+	if err != nil {
+		return fallbackValue
+	}
+	return i
+}
+</code></pre>
+<p>安装依赖项：</p>
+<pre><code>go get -u github.com/gorilla/securecookie
+go get -u github.com/joho/godotenv
+go get -u github.com/knq/jwt
+go get -u github.com/lib/pq
+ge get -u github.com/matoous/go-nanoid
+go get -u github.com/matryer/way
+go get -u golang.org/x/oauth2
+</code></pre>
+<p>我们将会使用 <code>.env</code> 文件来保存密钥和其他配置。请创建这个文件，并保证里面至少包含以下内容：</p>
+<pre><code>GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+</code></pre>
+<p>我们还要用到的其他环境变量有：</p>
+<ul>
+<li><code>PORT</code>：服务器运行的端口，默认值是 <code>3000</code>。</li>
+<li><code>ORIGIN</code>：你的域名，默认值是 <code>http://localhost:3000/</code>。我们也可以在这里指定端口。</li>
+<li><code>DATABASE_URL</code>：Cockroach 数据库的地址。默认值是 <code>postgresql://root@127.0.0.1:26257/messenger?sslmode=disable</code>。</li>
+<li><code>HASH_KEY</code>：用于为 cookie 签名的密钥。没错，我们会使用已签名的 cookie 来确保安全。</li>
+<li><code>JWT_KEY</code>：用于签署 JSON <ruby>网络令牌<rt>Web Token</rt></ruby>的密钥。</li>
+</ul>
+<p>因为代码中已经设定了默认值，所以你也不用把它们写到 <code>.env</code> 文件中。</p>
+<p>在读取配置并连接到数据库之后，我们会创建一个 OAuth 配置。我们会使用 <code>ORIGIN</code> 信息来构建回调 URL（就和我们在 GitHub 页面上注册的一样）。我们的数据范围设置为 “read:user”。这会允许我们读取公开的用户信息，这里我们只需要他的用户名和头像就够了。然后我们会初始化 cookie 和 JWT 签名器。定义一些端点并启动服务器。</p>
+<p>在实现 HTTP 处理程序之前，让我们编写一些函数来发送 HTTP 响应。</p>
+<pre><code>func respond(w http.ResponseWriter, v interface{}, statusCode int) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not marshal response: %v&quot;, err))
+		return
+	}
+	w.Header().Set(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;)
+	w.WriteHeader(statusCode)
+	w.Write(b)
+}
+
+func respondError(w http.ResponseWriter, err error) {
+	log.Println(err)
+	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+}
+</code></pre>
+<p>第一个函数用来发送 JSON，而第二个将错误记录到控制台并返回一个 <code>500 Internal Server Error</code> 错误信息。</p>
+<h3 id="oauth-开始">OAuth 开始</h3>
+<p>所以，用户点击写着 “Access with GitHub” 的链接。该链接指向 <code>/api/oauth/github</code>，这将会把用户重定向到 github。</p>
+<pre><code>func githubOAuthStart(w http.ResponseWriter, r *http.Request) {
+	state, err := gonanoid.Nanoid()
+	if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not generte state: %v&quot;, err))
+		return
+	}
+
+	stateCookieValue, err := cookieSigner.Encode(&quot;state&quot;, state)
+	if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not encode state cookie: %v&quot;, err))
+		return
+	}
+
+	http.SetCookie(w, &amp;http.Cookie{
+		Name:     &quot;state&quot;,
+		Value:    stateCookieValue,
+		Path:     &quot;/api/oauth/github&quot;,
+		HttpOnly: true,
+	})
+	http.Redirect(w, r, githubOAuthConfig.AuthCodeURL(state), http.StatusTemporaryRedirect)
+}
+</code></pre>
+<p>OAuth2 使用一种机制来防止 CSRF 攻击，因此它需要一个“状态”（<code>state</code>）。我们使用 <code>Nanoid()</code> 来创建一个随机字符串，并用这个字符串作为状态。我们也把它保存为一个 cookie。</p>
+<h3 id="oauth-回调">OAuth 回调</h3>
+<p>一旦用户授权我们访问他的个人信息，他将会被重定向到这个端点。这个 URL 的查询字符串上将会包含状态（<code>state</code>）和授权码（<code>code</code>）： <code>/api/oauth/github/callback?state=&amp;code=</code>。</p>
+<pre><code>const jwtLifetime = time.Hour * 24 * 14
+
+type GithubUser struct {
+	ID        int     `json:&quot;id&quot;`
+	Login     string  `json:&quot;login&quot;`
+	AvatarURL *string `json:&quot;avatar_url,omitempty&quot;`
+}
+
+type User struct {
+	ID        string  `json:&quot;id&quot;`
+	Username  string  `json:&quot;username&quot;`
+	AvatarURL *string `json:&quot;avatarUrl&quot;`
+}
+
+func githubOAuthCallback(w http.ResponseWriter, r *http.Request) {
+	stateCookie, err := r.Cookie(&quot;state&quot;)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusTeapot), http.StatusTeapot)
+		return
+	}
+
+	http.SetCookie(w, &amp;http.Cookie{
+		Name:     &quot;state&quot;,
+		Value:    &quot;&quot;,
+		MaxAge:   -1,
+		HttpOnly: true,
+	})
+
+	var state string
+	if err = cookieSigner.Decode(&quot;state&quot;, stateCookie.Value, &amp;state); err != nil {
+		http.Error(w, http.StatusText(http.StatusTeapot), http.StatusTeapot)
+		return
+	}
+
+	q := r.URL.Query()
+
+	if state != q.Get(&quot;state&quot;) {
+		http.Error(w, http.StatusText(http.StatusTeapot), http.StatusTeapot)
+		return
+	}
+
+	ctx := r.Context()
+
+	t, err := githubOAuthConfig.Exchange(ctx, q.Get(&quot;code&quot;))
+	if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not fetch github token: %v&quot;, err))
+		return
+	}
+
+	client := githubOAuthConfig.Client(ctx, t)
+	resp, err := client.Get(&quot;https://api.github.com/user&quot;)
+	if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not fetch github user: %v&quot;, err))
+		return
+	}
+
+	var githubUser GithubUser
+	if err = json.NewDecoder(resp.Body).Decode(&amp;githubUser); err != nil {
+		respondError(w, fmt.Errorf(&quot;could not decode github user: %v&quot;, err))
+		return
+	}
+	defer resp.Body.Close()
+
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not begin tx: %v&quot;, err))
+		return
+	}
+
+	var user User
+	if err = tx.QueryRowContext(ctx, `
+		SELECT id, username, avatar_url FROM users WHERE github_id = $1
+	`, githubUser.ID).Scan(&amp;user.ID, &amp;user.Username, &amp;user.AvatarURL); err == sql.ErrNoRows {
+		if err = tx.QueryRowContext(ctx, `
+			INSERT INTO users (username, avatar_url, github_id) VALUES ($1, $2, $3)
+			RETURNING id
+		`, githubUser.Login, githubUser.AvatarURL, githubUser.ID).Scan(&amp;user.ID); err != nil {
+			respondError(w, fmt.Errorf(&quot;could not insert user: %v&quot;, err))
+			return
+		}
+		user.Username = githubUser.Login
+		user.AvatarURL = githubUser.AvatarURL
+	} else if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not query user by github ID: %v&quot;, err))
+		return
+	}
+
+	if err = tx.Commit(); err != nil {
+		respondError(w, fmt.Errorf(&quot;could not commit to finish github oauth: %v&quot;, err))
+		return
+	}
+
+	exp := time.Now().Add(jwtLifetime)
+	token, err := jwtSigner.Encode(jwt.Claims{
+		Subject:    user.ID,
+		Expiration: json.Number(strconv.FormatInt(exp.Unix(), 10)),
+	})
+	if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not create token: %v&quot;, err))
+		return
+	}
+
+	expiresAt, _ := exp.MarshalText()
+
+	data := make(url.Values)
+	data.Set(&quot;token&quot;, string(token))
+	data.Set(&quot;expires_at&quot;, string(expiresAt))
+
+	http.Redirect(w, r, &quot;/callback?&quot;+data.Encode(), http.StatusTemporaryRedirect)
+}
+</code></pre>
+<p>首先，我们会尝试使用之前保存的状态对 cookie 进行解码。并将其与查询字符串中的状态进行比较。如果它们不匹配，我们会返回一个 <code>418 I&#39;m teapot</code>（未知来源）错误。</p>
+<p>接着，我们使用授权码生成一个令牌。这个令牌被用于创建 HTTP 客户端来向 GitHub API 发出请求。所以最终我们会向 <code>https://api.github.com/user</code> 发送一个 GET 请求。这个端点将会以 JSON 格式向我们提供当前经过身份验证的用户信息。我们将会解码这些内容，一并获取用户的 ID、登录名（用户名）和头像 URL。</p>
+<p>然后我们将会尝试在数据库上找到具有该 GitHub ID 的用户。如果没有找到，就使用该数据创建一个新的。</p>
+<p>之后，对于新创建的用户，我们会发出一个将用户 ID 作为主题（<code>Subject</code>）的 JSON 网络令牌，并使用该令牌重定向到前端，查询字符串中一并包含该令牌的到期日（<code>Expiration</code>）。</p>
+<p>这一 Web 应用也会被用在其他帖子，但是重定向的链接会是 <code>/callback?token=&amp;expires_at=</code>。在那里，我们将会利用 JavaScript 从 URL 中获取令牌和到期日，并通过 <code>Authorization</code> 标头中的令牌以 <code>Bearer token_here</code> 的形式对 <code>/api/auth_user</code> 进行 GET 请求，来获取已认证的身份用户并将其保存到 localStorage。</p>
+<h3 id="guard-中间件">Guard 中间件</h3>
+<p>为了获取当前已经过身份验证的用户，我们设计了 Guard 中间件。这是因为在接下来的文章中，我们会有很多需要进行身份认证的端点，而中间件将会允许我们共享这一功能。</p>
+<pre><code>type ContextKey struct {
+	Name string
+}
+
+var keyAuthUserID = ContextKey{&quot;auth_user_id&quot;}
+
+func guard(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var token string
+		if a := r.Header.Get(&quot;Authorization&quot;); strings.HasPrefix(a, &quot;Bearer &quot;) {
+			token = a[7:]
+		} else if t := r.URL.Query().Get(&quot;token&quot;); t != &quot;&quot; {
+			token = t
+		} else {
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
+		}
+
+		var claims jwt.Claims
+		if err := jwtSigner.Decode([]byte(token), &amp;claims); err != nil {
+			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+			return
+		}
+
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, keyAuthUserID, claims.Subject)
+
+		handler(w, r.WithContext(ctx))
+	}
+}
+</code></pre>
+<p>首先，我们尝试从 <code>Authorization</code> 标头或者是 URL 查询字符串中的 <code>token</code> 字段中读取令牌。如果没有找到，我们需要返回 <code>401 Unauthorized</code>（未授权）错误。然后我们将会对令牌中的申明进行解码，并使用该主题作为当前已经过身份验证的用户 ID。</p>
+<p>现在，我们可以用这一中间件来封装任何需要授权的 <code>http.handlerFunc</code>，并且在处理函数的上下文中保有已经过身份验证的用户 ID。</p>
+<pre><code>var guarded = guard(func(w http.ResponseWriter, r *http.Request) {
+    authUserID := r.Context().Value(keyAuthUserID).(string)
+})
+</code></pre>
+<h3 id="获取认证用户">获取认证用户</h3>
+<pre><code>func getAuthUser(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	authUserID := ctx.Value(keyAuthUserID).(string)
+
+	var user User
+	if err := db.QueryRowContext(ctx, `
+		SELECT username, avatar_url FROM users WHERE id = $1
+	`, authUserID).Scan(&amp;user.Username, &amp;user.AvatarURL); err == sql.ErrNoRows {
+		http.Error(w, http.StatusText(http.StatusTeapot), http.StatusTeapot)
+		return
+	} else if err != nil {
+		respondError(w, fmt.Errorf(&quot;could not query auth user: %v&quot;, err))
+		return
+	}
+
+	user.ID = authUserID
+
+	respond(w, user, http.StatusOK)
+}
+</code></pre>
+<p>我们使用 Guard 中间件来获取当前经过身份认证的用户 ID 并查询数据库。</p>
+<p>这一部分涵盖了后端的 OAuth 流程。在下一篇帖子中，我们将会看到如何开始与其他用户的对话。</p>
+<ul>
+<li><a href="https://github.com/nicolasparada/go-messenger-demo">源代码</a></li>
+</ul>
+<hr>
+<p>via: <a href="https://nicolasparada.netlify.com/posts/go-messenger-oauth/">https://nicolasparada.netlify.com/posts/go-messenger-oauth/</a></p>
+<p>作者：<a href="https://nicolasparada.netlify.com/">Nicolás Parada</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/PsiACE">PsiACE</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#oauth-开始">OAuth 开始</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#oauth-回调">OAuth 回调</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#guard-中间件">Guard 中间件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取认证用户">获取认证用户</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201910/20180706 Building a Messenger App- OAuth","title":"构建一个即时消息应用（二）：OAuth"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

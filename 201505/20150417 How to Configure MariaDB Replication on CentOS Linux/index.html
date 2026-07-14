@@ -1,0 +1,304 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 CentOS Linux 中配置 MariaDB 复制 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 CentOS Linux 中配置 MariaDB 复制 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 CentOS Linux 中配置 MariaDB 复制 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201505/20150417 How to Configure MariaDB Replication on CentOS Linux#page","@type":"TechArticle","headline":"如何在 CentOS Linux 中配置 MariaDB 复制","inLanguage":"en","name":"如何在 CentOS Linux 中配置 MariaDB 复制","url":"https://zhengqbbb.github.io/pages-dev/201505/20150417 How to Configure MariaDB Replication on CentOS Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201505/20150417 How to Configure MariaDB Replication on CentOS Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#mariadb-复制概念">Mariadb 复制概念</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#复制的简单图解示范">复制的简单图解示范</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#主服务器配置">主服务器配置</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#配置-mariadb-复制">配置 MariaDB 复制</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从节点配置">从节点配置</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#测试复制">测试复制</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 CentOS Linux 中配置 MariaDB 复制</h1><p>这是一个创建数据库重复版本的过程。复制过程不仅仅是复制一个数据库，同时也包括从主节点到一个从节点的更改同步。但这并不意味着从数据库就是和主数据库完全相同的副本，因为复制可以配置为只复制表结构、行或者列，这叫做局部复制。复制保证了特定的配置对象在不同的数据库之间保持一致。</p>
+<h3 id="mariadb-复制概念">Mariadb 复制概念</h3>
+<p><strong>备份</strong> ：复制可以用来进行数据库备份。例如，当你做了主-&gt;从复制。如果主节点数据丢失(比如硬盘损坏)，你可以从从节点中恢复你的数据库。</p>
+<p><strong>扩展</strong> ：你可以使用主-&gt;从复制作为扩展解决方案。例如，如果你有一些大的数据库以及SQL查询，使用复制你可以将这些查询分离到每个复制节点。写入操作的SQL应该只在主节点进行，而只读查询可以在从节点上进行。</p>
+<p><strong>分发解决方案</strong> ：你可以用复制来进行分发。例如，你可以将不同的销售数据分发到不同的数据库。</p>
+<p><strong>故障解决方案</strong> : 假如你建立有主节点-&gt;从节点1-&gt;从节点2-&gt;从节点3的复制结构。你可以为主节点写脚本监控，如果主节点出故障了，脚本可以快速的将从节点1切换为新的主节点，这样复制结构变成了主节点-&gt;从节点1-&gt;从节点2，你的应用可以继续工作而不会停机。</p>
+<h3 id="复制的简单图解示范">复制的简单图解示范</h3>
+<p><img src="http://blog.linoxide.com/wp-content/uploads/2015/04/mysql-replication-principle.png" alt="mysql 复制原理"></p>
+<p>开始之前，你应该知道什么是<strong>二进制日志文件</strong>以及 Ibdata1。</p>
+<p>二进制日志文件中包括关于数据库，数据和结构的所有更改的记录，以及每条语句的执行了多长时间。二进制日志文件包括一系列日志文件和一个索引文件。这意味着主要的SQL语句，例如CREATE, ALTER, INSERT, UPDATE 和 DELETE 会放到这个日志文件中；而例如SELECT这样的语句就不会被记录，它们可以被记录到普通的query.log文件中。</p>
+<p>而 <strong>Ibdata1</strong> 简单的说据是一个包括所有表和所有数据库信息的文件。</p>
+<h3 id="主服务器配置">主服务器配置</h3>
+<p>首先升级服务器</p>
+<pre><code>sudo yum install update -y &amp;&amp; sudo yum install upgrade -y
+</code></pre>
+<p>我们工作在centos7 服务器上</p>
+<pre><code>sudo cat /etc/redhat-release
+
+CentOS Linux release 7.0.1406 (Core)
+</code></pre>
+<p>安装 MariaDB</p>
+<pre><code>sudo yum install mariadb-server -y
+</code></pre>
+<p>启动 MariaDB 并启用随服务器启动</p>
+<pre><code>sudo systemctl start mariadb.service
+sudo systemctl enable mariadb.service
+</code></pre>
+<p>输出如下:</p>
+<pre><code>ln -s &#39;/usr/lib/systemd/system/mariadb.service&#39; &#39;/etc/systemd/system/multi-user.target.wants/mariadb.service&#39;
+</code></pre>
+<p>检查 MariaDB 状态</p>
+<pre><code>sudo service mariadb status
+</code></pre>
+<p>或者使用</p>
+<pre><code>sudo systemctl is-active mariadb.service
+</code></pre>
+<p>输出如下:</p>
+<pre><code>Redirecting to /bin/systemctl status  mariadb.service
+mariadb.service - MariaDB database server
+Loaded: loaded (/usr/lib/systemd/system/mariadb.service; enabled)
+</code></pre>
+<p>设置 MariaDB 密码</p>
+<pre><code>mysql -u root
+mysql&gt; use mysql;
+mysql&gt; update user set password=PASSWORD(&quot;SOME_ROOT_PASSWORD&quot;) where User=&#39;root&#39;;
+mysql&gt; flush privileges;
+mysql&gt; exit
+</code></pre>
+<p>这里 SOME_ROOT_PASSWORD 是你的 root 密码。 例如我用&quot;q&quot;作为密码，然后尝试登录：</p>
+<pre><code>sudo mysql -u root -pSOME_ROOT_PASSWORD
+</code></pre>
+<p>输出如下:</p>
+<pre><code>Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 5
+Server version: 5.5.41-MariaDB MariaDB Server
+Copyright (c) 2000, 2014, Oracle, MariaDB Corporation Ab and others.
+</code></pre>
+<p>输入 &#39;help;&#39; 或 &#39;\h&#39; 查看帮助信息。 输入 &#39;\c&#39; 清空当前输入语句。</p>
+<p>让我们创建包括一些数据的表的数据库</p>
+<p>创建数据库/模式</p>
+<pre><code>sudo mysql -u root -pSOME_ROOT_PASSWORD
+mysql&gt; create database test_repl;
+</code></pre>
+<p>其中:</p>
+<pre><code>test_repl - 将要被复制的模式的名字
+</code></pre>
+<p>输出:如下</p>
+<pre><code>Query OK, 1 row affected (0.00 sec)
+</code></pre>
+<p>创建 Persons 表</p>
+<pre><code>mysql&gt; use test_repl;
+
+CREATE TABLE Persons (
+PersonID int,
+LastName varchar(255),
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255)
+);
+</code></pre>
+<p>输出如下:</p>
+<pre><code>mysql&gt; MariaDB [test_repl]&gt; CREATE TABLE Persons (
+-&gt; PersonID int,
+-&gt; LastName varchar(255),
+-&gt; FirstName varchar(255),
+-&gt; Address varchar(255),
+-&gt; City varchar(255)
+-&gt; );
+Query OK, 0 rows affected (0.01 sec)
+</code></pre>
+<p>插入一些数据</p>
+<pre><code>mysql&gt; INSERT INTO Persons VALUES (1, &quot;LastName1&quot;, &quot;FirstName1&quot;, &quot;Address1&quot;, &quot;City1&quot;);
+mysql&gt; INSERT INTO Persons VALUES (2, &quot;LastName2&quot;, &quot;FirstName2&quot;, &quot;Address2&quot;, &quot;City2&quot;);
+mysql&gt; INSERT INTO Persons VALUES (3, &quot;LastName3&quot;, &quot;FirstName3&quot;, &quot;Address3&quot;, &quot;City3&quot;);
+mysql&gt; INSERT INTO Persons VALUES (4, &quot;LastName4&quot;, &quot;FirstName4&quot;, &quot;Address4&quot;, &quot;City4&quot;);
+mysql&gt; INSERT INTO Persons VALUES (5, &quot;LastName5&quot;, &quot;FirstName5&quot;, &quot;Address5&quot;, &quot;City5&quot;);
+</code></pre>
+<p>输出如下:</p>
+<pre><code>Query OK, 5 row affected (0.00 sec)
+</code></pre>
+<p>检查数据</p>
+<pre><code>mysql&gt; select * from Persons;
+</code></pre>
+<p>输出如下:</p>
+<pre><code>+----------+-----------+------------+----------+-------+
+| PersonID | LastName  | FirstName  | Address  | City  |
++----------+-----------+------------+----------+-------+
+|        1 | LastName1 | FirstName1 | Address1 | City1 |
+|        1 | LastName1 | FirstName1 | Address1 | City1 |
+|        2 | LastName2 | FirstName2 | Address2 | City2 |
+|        3 | LastName3 | FirstName3 | Address3 | City3 |
+|        4 | LastName4 | FirstName4 | Address4 | City4 |
+|        5 | LastName5 | FirstName5 | Address5 | City5 |
++----------+-----------+------------+----------+-------+
+</code></pre>
+<h3 id="配置-mariadb-复制">配置 MariaDB 复制</h3>
+<p>你需要在主节点服务器上编辑 my.cnf文件来启用二进制日志以及设置服务器id。我会使用vi文本编辑器，但你可以使用任何你喜欢的，例如nano，joe。</p>
+<pre><code>sudo vi /etc/my.cnf 
+</code></pre>
+<p>将下面的一些行写到[mysqld]部分。</p>
+<pre><code>log-basename=master
+log-bin
+binlog-format=row
+server_id=1
+</code></pre>
+<p>输出如下:</p>
+<p><img src="http://blog.linoxide.com/wp-content/uploads/2015/04/mariadb-config.png" alt="mariadb 配置主节点"></p>
+<p>然后重启 MariaDB:</p>
+<pre><code>sudo service mariadb restart
+</code></pre>
+<p>登录到 MariaDB 并查看二进制日志文件:</p>
+<p>sudo mysql -u root -pq test_repl</p>
+<p>mysql&gt; SHOW MASTER STATUS;</p>
+<p>输出如下:</p>
+<pre><code>+--------------------+----------+--------------+------------------+
+| File               | Position | Binlog_Do_DB | Binlog_Ignore_DB |
++--------------------+----------+--------------+------------------+
+| mariadb-bin.000002 |     3913 |              |                  |
++--------------------+----------+--------------+------------------+
+</code></pre>
+<p><strong>记住</strong> : &quot;File&quot; 和 &quot;Position&quot; 的值。在从节点中你需要使用这些值</p>
+<p>创建用来复制的用户</p>
+<pre><code>mysql&gt; GRANT REPLICATION SLAVE ON *.* TO replication_user IDENTIFIED BY &#39;bigs3cret&#39; WITH GRANT OPTION;
+mysql&gt; flush privileges;
+</code></pre>
+<p>输出如下:</p>
+<pre><code>Query OK, 0 rows affected (0.00 sec)
+Query OK, 0 rows affected (0.00 sec)
+</code></pre>
+<p>在数据库中检查用户</p>
+<pre><code>mysql&gt; select * from mysql.user WHERE user=&quot;replication_user&quot;\G;
+</code></pre>
+<p>输出如下:</p>
+<pre><code>mysql&gt; select * from mysql.user WHERE user=&quot;replication_user&quot;\G;
+*************************** 1. row ***************************
+Host: %
+User: replication_user
+Password: *2AF30E7AEE9BF3AF584FB19653881D2D072FA49C
+Select_priv: N
+.....
+</code></pre>
+<p>从主节点创建 DB dump (将要被复制的所有数据的快照)</p>
+<pre><code>mysqldump -uroot -pSOME_ROOT_PASSWORD  test_repl &gt; full-dump.sql
+</code></pre>
+<p>其中:</p>
+<pre><code>SOME_ROOT_PASSWORD - 你设置的root用户的密码
+test_repl - 将要复制的数据库的名称;
+</code></pre>
+<p>你需要在从节点中恢复 mysql dump (full-dump.sql)。重复需要这个。</p>
+<h3 id="从节点配置">从节点配置</h3>
+<p>所有这些命令需要在从节点中进行。</p>
+<p>假设我们已经更新/升级了包括有最新的MariaDB服务器的 CentOS 7.x，而且你可以用root账号登陆到MariaDB服务器(这在这篇文章的第一部分已经介绍过) </p>
+<p>登录到Maria 数据库控制台并创建数据库</p>
+<pre><code>mysql -u root -pSOME_ROOT_PASSWORD;
+mysql&gt; create database test_repl;
+mysql&gt; exit;
+</code></pre>
+<p>在从节点恢复主节点的数据</p>
+<pre><code>mysql -u root -pSOME_ROOT_PASSWORD test_repl &lt; full-dump.sql
+</code></pre>
+<p>其中:</p>
+<p>full-dump.sql - 你在测试服务器中创建的DB Dump。</p>
+<p>登录到Maria 数据库并启用复制</p>
+<pre><code>mysql&gt;     CHANGE MASTER TO
+MASTER_HOST=&#39;82.196.5.39&#39;,
+MASTER_USER=&#39;replication_user&#39;,
+MASTER_PASSWORD=&#39;bigs3cret&#39;,
+MASTER_PORT=3306,
+MASTER_LOG_FILE=&#39;mariadb-bin.000002&#39;,
+MASTER_LOG_POS=3913,
+MASTER_CONNECT_RETRY=10;
+</code></pre>
+<p><img src="http://blog.linoxide.com/wp-content/uploads/2015/04/setup-replication.png" alt="mariadb 启用复制"></p>
+<p>其中:</p>
+<pre><code>MASTER_HOST - 主节点服务器的IP
+MASTER_USER - 主节点服务器中的复制用户
+MASTER_PASSWORD - 复制用户密码
+MASTER_PORT - 主节点中的mysql端口
+MASTER_LOG_FILE - 主节点中的二进制日志文件名称
+MASTER_LOG_POS - 主节点中的二进制日志文件位置
+</code></pre>
+<p>开启从节点模式</p>
+<pre><code>mysql&gt; slave start;
+</code></pre>
+<p>输出如下:</p>
+<pre><code>Query OK, 0 rows affected (0.00 sec)
+</code></pre>
+<p>检查从节点状态</p>
+<pre><code>mysql&gt; show slave status\G;
+</code></pre>
+<p>输出如下:</p>
+<pre><code>*************************** 1. row ***************************
+Slave_IO_State: Waiting for master to send event
+Master_Host: 82.196.5.39
+Master_User: replication_user
+Master_Port: 3306
+Connect_Retry: 10
+Master_Log_File: mariadb-bin.000002
+Read_Master_Log_Pos: 4175
+Relay_Log_File: mariadb-relay-bin.000002
+Relay_Log_Pos: 793
+Relay_Master_Log_File: mariadb-bin.000002
+Slave_IO_Running: Yes
+Slave_SQL_Running: Yes
+Replicate_Do_DB:
+Replicate_Ignore_DB:
+Replicate_Do_Table:
+Replicate_Ignore_Table:
+Replicate_Wild_Do_Table:
+Replicate_Wild_Ignore_Table:
+Last_Errno: 0
+Last_Error:
+Skip_Counter: 0
+Exec_Master_Log_Pos: 4175
+Relay_Log_Space: 1089
+Until_Condition: None
+Until_Log_File:
+Until_Log_Pos: 0
+Master_SSL_Allowed: No
+Master_SSL_CA_File:
+Master_SSL_CA_Path:
+Master_SSL_Cert:
+Master_SSL_Cipher:
+Master_SSL_Key:
+Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+Last_IO_Errno: 0
+Last_IO_Error:
+Last_SQL_Errno: 0
+Last_SQL_Error:
+Replicate_Ignore_Server_Ids:
+Master_Server_Id: 1
+1 row in set (0.00 sec)
+</code></pre>
+<p>到这里所有步骤都应该没问题，也不应该出现错误。</p>
+<h3 id="测试复制">测试复制</h3>
+<p>在主节点服务器中添加一些条目到数据库</p>
+<pre><code>mysql -u root -pSOME_ROOT_PASSWORD test_repl
+
+mysql&gt; INSERT INTO Persons VALUES (6, &quot;LastName6&quot;, &quot;FirstName6&quot;, &quot;Address6&quot;, &quot;City6&quot;);
+mysql&gt; INSERT INTO Persons VALUES (7, &quot;LastName7&quot;, &quot;FirstName7&quot;, &quot;Address7&quot;, &quot;City7&quot;);
+mysql&gt; INSERT INTO Persons VALUES (8, &quot;LastName8&quot;, &quot;FirstName8&quot;, &quot;Address8&quot;, &quot;City8&quot;);
+</code></pre>
+<p>到从节点服务器中查看复制数据</p>
+<pre><code>mysql -u root -pSOME_ROOT_PASSWORD test_repl
+
+mysql&gt; select * from Persons;
+
++----------+-----------+------------+----------+-------+
+| PersonID | LastName  | FirstName  | Address  | City  |
++----------+-----------+------------+----------+-------+
+...................
+|        6 | LastName6 | FirstName6 | Address6 | City6 |
+|        7 | LastName7 | FirstName7 | Address7 | City7 |
+|        8 | LastName8 | FirstName8 | Address8 | City8 |
++----------+-----------+------------+----------+-------+
+</code></pre>
+<p>你可以看到数据已经被复制到从节点。这意味着复制能正常工作。希望你能喜欢这篇文章。如果你有任何问题请告诉我们。</p>
+<hr>
+<p>via: <a href="http://linoxide.com/how-tos/configure-mariadb-replication-centos-linux/">http://linoxide.com/how-tos/configure-mariadb-replication-centos-linux/</a></p>
+<p>作者：<a href="http://linoxide.com/author/bobbin/">Bobbin Zachariah</a>
+译者：<a href="https://github.com/ictlyh">ictlyh</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="http://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#mariadb-复制概念">Mariadb 复制概念</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#复制的简单图解示范">复制的简单图解示范</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#主服务器配置">主服务器配置</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#配置-mariadb-复制">配置 MariaDB 复制</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从节点配置">从节点配置</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#测试复制">测试复制</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201505/20150417 How to Configure MariaDB Replication on CentOS Linux","title":"如何在 CentOS Linux 中配置 MariaDB 复制"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

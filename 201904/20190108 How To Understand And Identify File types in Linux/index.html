@@ -1,0 +1,281 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>怎样理解和识别 Linux 中的文件类型 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="怎样理解和识别 Linux 中的文件类型 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="怎样理解和识别 Linux 中的文件类型 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201904/20190108 How To Understand And Identify File types in Linux#page","@type":"TechArticle","headline":"怎样理解和识别 Linux 中的文件类型","inLanguage":"en","name":"怎样理解和识别 Linux 中的文件类型","url":"https://zhengqbbb.github.io/pages-dev/201904/20190108 How To Understand And Identify File types in Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201904/20190108 How To Understand And Identify File types in Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-linux-中有多少种可用类型">在 Linux 中有多少种可用类型？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#方法手动识别-linux-中的文件类型">方法１：手动识别 Linux 中的文件类型</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#方法在-linux-中如何使用-file-命令识别文件类型">方法２：在 Linux 中如何使用 file 命令识别文件类型</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#方法-3在-linux-中如何使用-stat-命令识别文件类型">方法 3：在 Linux 中如何使用 stat 命令识别文件类型？</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>怎样理解和识别 Linux 中的文件类型</h1><p>众所周知，在 Linux 中一切皆为文件，包括硬盘和显卡等。在 Linux 中导航时，大部分的文件都是普通文件和目录文件。但是也有其他的类型，对应于 5 类不同的作用。因此，理解 Linux 中的文件类型在许多方面都是非常重要的。</p>
+<p>如果你不相信，那只需要浏览全文，就会发现它有多重要。如果你不能理解文件类型，就不能够毫无畏惧的做任意的修改。</p>
+<p>如果你做了一些错误的修改，会毁坏你的文件系统，那么当你操作的时候请小心一点。在 Linux 系统中文件是非常重要的，因为所有的设备和守护进程都被存储为文件。</p>
+<h3 id="在-linux-中有多少种可用类型">在 Linux 中有多少种可用类型？</h3>
+<p>据我所知，在 Linux 中总共有 7 种类型的文件，分为 3 大类。具体如下。</p>
+<ul>
+<li>普通文件</li>
+<li>目录文件</li>
+<li>特殊文件（该类有 5 个文件类型）<ul>
+<li>链接文件</li>
+<li>字符设备文件</li>
+<li>Socket 文件</li>
+<li>命名管道文件</li>
+<li>块文件</li>
+</ul>
+</li>
+</ul>
+<p>参考下面的表可以更好地理解 Linux 中的文件类型。  </p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>–</code></td>
+<td>普通文件。长列表中以下划线 <code>_</code> 开头。</td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>目录文件。长列表中以英文字母 <code>d</code> 开头。</td>
+</tr>
+<tr>
+<td><code>l</code></td>
+<td>链接文件。长列表中以英文字母 <code>l</code> 开头。</td>
+</tr>
+<tr>
+<td><code>c</code></td>
+<td>字符设备文件。长列表中以英文字母 <code>c</code> 开头。</td>
+</tr>
+<tr>
+<td><code>s</code></td>
+<td>Socket 文件。长列表中以英文字母 <code>s</code> 开头。</td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>命名管道文件。长列表中以英文字母 <code>p</code> 开头。</td>
+</tr>
+<tr>
+<td><code>b</code></td>
+<td>块文件。长列表中以英文字母 <code>b</code> 开头。</td>
+</tr>
+</tbody></table>
+<h3 id="方法手动识别-linux-中的文件类型">方法１：手动识别 Linux 中的文件类型</h3>
+<p>如果你很了解 Linux，那么你可以借助上表很容易地识别文件类型。</p>
+<h4 id="在-linux-中如何查看普通文件">在 Linux 中如何查看普通文件？</h4>
+<p>在 Linux 中使用下面的命令去查看普通文件。在 Linux 文件系统中普通文件可以出现在任何地方。
+普通文件的颜色是“白色”。</p>
+<pre><code># ls -la | grep ^-
+-rw-------.  1 mageshm mageshm      1394 Jan 18 15:59 .bash_history
+-rw-r--r--.  1 mageshm mageshm        18 May 11  2012 .bash_logout
+-rw-r--r--.  1 mageshm mageshm       176 May 11  2012 .bash_profile
+-rw-r--r--.  1 mageshm mageshm       124 May 11  2012 .bashrc
+-rw-r--r--.  1 root    root           26 Dec 27 17:55 liks
+-rw-r--r--.  1 root    root    104857600 Jan 31  2006 test100.dat
+-rw-r--r--.  1 root    root    104874307 Dec 30  2012 test100.zip
+-rw-r--r--.  1 root    root     11536384 Dec 30  2012 test10.zip
+-rw-r--r--.  1 root    root           61 Dec 27 19:05 test2-bzip2.txt
+-rw-r--r--.  1 root    root           61 Dec 31 14:24 test3-bzip2.txt
+-rw-r--r--.  1 root    root           60 Dec 27 19:01 test-bzip2.txt
+</code></pre>
+<h4 id="在-linux-中如何查看目录文件">在 Linux 中如何查看目录文件？</h4>
+<p>在 Linux 中使用下面的命令去查看目录文件。在 Linux 文件系统中目录文件可以出现在任何地方。目录文件的颜色是“蓝色”。</p>
+<pre><code># ls -la | grep ^d
+drwxr-xr-x.  3 mageshm mageshm      4096 Dec 31 14:24 links/
+drwxrwxr-x.  2 mageshm mageshm      4096 Nov 16 15:44 perl5/
+drwxr-xr-x.  2 mageshm mageshm      4096 Nov 16 15:37 public_ftp/
+drwxr-xr-x.  3 mageshm mageshm      4096 Nov 16 15:37 public_html/
+</code></pre>
+<h4 id="在-linux-中如何查看链接文件">在 Linux 中如何查看链接文件？</h4>
+<p>在 Linux 中使用下面的命令去查看链接文件。在 Linux 文件系统中链接文件可以出现在任何地方。
+链接文件有两种可用类型，软连接和硬链接。链接文件的颜色是“浅绿宝石色”。</p>
+<pre><code># ls -la | grep ^l
+lrwxrwxrwx.  1 root    root           31 Dec  7 15:11 s-link-file -&gt; /links/soft-link/test-soft-link
+lrwxrwxrwx.  1 root    root           38 Dec  7 15:12 s-link-folder -&gt; /links/soft-link/test-soft-link-folder
+</code></pre>
+<h4 id="在-linux-中如何查看字符设备文件">在 Linux 中如何查看字符设备文件？</h4>
+<p>在 Linux 中使用下面的命令查看字符设备文件。字符设备文件仅出现在特定位置。它出现在目录 <code>/dev</code> 下。字符设备文件的颜色是“黄色”。</p>
+<pre><code># ls -la | grep ^c
+# ls -la | grep ^c
+crw-------.  1 root root      5,   1 Jan 28 14:05 console
+crw-rw----.  1 root root     10,  61 Jan 28 14:05 cpu_dma_latency
+crw-rw----.  1 root root     10,  62 Jan 28 14:05 crash
+crw-rw----.  1 root root     29,   0 Jan 28 14:05 fb0
+crw-rw-rw-.  1 root root      1,   7 Jan 28 14:05 full
+crw-rw-rw-.  1 root root     10, 229 Jan 28 14:05 fuse
+</code></pre>
+<h4 id="在-linux-中如何查看块文件">在 Linux 中如何查看块文件？</h4>
+<p>在 Linux 中使用下面的命令查看块文件。块文件仅出现在特定位置。它出现在目录 <code>/dev</code> 下。块文件的颜色是“黄色”。</p>
+<pre><code># ls -la | grep ^b
+brw-rw----.  1 root disk      7,   0 Jan 28 14:05 loop0
+brw-rw----.  1 root disk      7,   1 Jan 28 14:05 loop1
+brw-rw----.  1 root disk      7,   2 Jan 28 14:05 loop2
+brw-rw----.  1 root disk      7,   3 Jan 28 14:05 loop3
+brw-rw----.  1 root disk      7,   4 Jan 28 14:05 loop4
+</code></pre>
+<h4 id="在-linux-中如何查看-socket-文件">在 Linux 中如何查看 Socket 文件？</h4>
+<p>在 Linux 中使用下面的命令查看 Socket 文件。Socket 文件可以出现在任何地方。Scoket 文件的颜色是“粉色”。（LCTT 译注：此处及下面关于 Socket 文件、命名管道文件可出现的位置原文描述有误，已修改。）</p>
+<pre><code># ls -la | grep ^s
+srw-rw-rw- 1 root root 0 Jan  5 16:36 system_bus_socket
+</code></pre>
+<h4 id="在-linux-中如何查看命名管道文件">在 Linux 中如何查看命名管道文件？</h4>
+<p>在 Linux 中使用下面的命令查看命名管道文件。命名管道文件可以出现在任何地方。命名管道文件的颜色是“黄色”。</p>
+<pre><code># ls -la | grep ^p
+prw-------.  1 root    root        0 Jan 28 14:06 replication-notify-fifo|
+prw-------.  1 root    root        0 Jan 28 14:06 stats-mail|
+</code></pre>
+<h3 id="方法在-linux-中如何使用-file-命令识别文件类型">方法２：在 Linux 中如何使用 file 命令识别文件类型</h3>
+<p>在 Linux 中 <code>file</code> 命令允许我们去确定不同的文件类型。这里有三个测试集，按此顺序进行三组测试：文件系统测试、魔术字节测试和用于识别文件类型的语言测试。</p>
+<h4 id="在-linux-中如何使用-file-命令查看普通文件">在 Linux 中如何使用 file 命令查看普通文件</h4>
+<p>在你的终端简单地输入 <code>file</code> 命令跟着普通文件。<code>file</code> 命令将会读取提供的文件内容并且准确地显示文件的类型。</p>
+<p>这就是我们看到对于每个普通文件有不同结果的原因。参考下面普通文件的不同结果。</p>
+<pre><code># file 2daygeek_access.log 
+2daygeek_access.log: ASCII text, with very long lines
+
+# file powertop.html 
+powertop.html: HTML document, ASCII text, with very long lines
+
+# file 2g-test
+2g-test: JSON data
+
+# file powertop.txt
+powertop.txt: HTML document, UTF-8 Unicode text, with very long lines
+
+# file 2g-test-05-01-2019.tar.gz
+2g-test-05-01-2019.tar.gz: gzip compressed data, last modified: Sat Jan  5 18:22:20 2019, from Unix, original size 450560
+</code></pre>
+<h4 id="在-linux-中如何使用-file-命令查看目录文件">在 Linux 中如何使用 file 命令查看目录文件？</h4>
+<p>在你的终端简单地输入 <code>file</code> 命令跟着目录。参阅下面的结果。</p>
+<pre><code># file Pictures/
+Pictures/: directory
+</code></pre>
+<h4 id="在-linux-中如何使用-file-命令查看链接文件">在 Linux 中如何使用 file 命令查看链接文件？</h4>
+<p>在你的终端简单地输入 <code>file</code> 命令跟着链接文件。参阅下面的结果。</p>
+<pre><code># file log
+log: symbolic link to /run/systemd/journal/dev-log
+</code></pre>
+<h4 id="在-linux-中如何使用-file-命令查看字符设备文件">在 Linux 中如何使用 file 命令查看字符设备文件？</h4>
+<p>在你的终端简单地输入 <code>file</code> 命令跟着字符设备文件。参阅下面的结果。</p>
+<pre><code># file vcsu
+vcsu: character special (7/64)
+</code></pre>
+<h4 id="在-linux-中如何使用-file-命令查看块文件">在 Linux 中如何使用 file 命令查看块文件？</h4>
+<p>在你的终端简单地输入 <code>file</code> 命令跟着块文件。参阅下面的结果。</p>
+<pre><code># file sda1
+sda1: block special (8/1)
+</code></pre>
+<h4 id="在-linux-中如何使用-file-命令查看-socket-文件">在 Linux 中如何使用 file 命令查看 Socket 文件？</h4>
+<p>在你的终端简单地输入 <code>file</code> 命令跟着 Socket 文件。参阅下面的结果。</p>
+<pre><code># file system_bus_socket
+system_bus_socket: socket
+</code></pre>
+<h4 id="在-linux-中如何使用-file-命令查看命名管道文件">在 Linux 中如何使用 file 命令查看命名管道文件？</h4>
+<p>在你的终端简单地输入 <code>file</code> 命令跟着命名管道文件。参阅下面的结果。</p>
+<pre><code># file pipe-test
+pipe-test: fifo (named pipe)
+</code></pre>
+<h3 id="方法-3在-linux-中如何使用-stat-命令识别文件类型">方法 3：在 Linux 中如何使用 stat 命令识别文件类型？</h3>
+<p><code>stat</code> 命令允许我们去查看文件类型或文件系统状态。该实用程序比 <code>file</code> 命令提供更多的信息。它显示文件的大量信息，例如大小、块大小、IO 块大小、Inode 值、链接、文件权限、UID、GID、文件的访问/更新和修改的时间等详细信息。</p>
+<h4 id="在-linux-中如何使用-stat-命令查看普通文件">在 Linux 中如何使用 stat 命令查看普通文件？</h4>
+<p>在你的终端简单地输入 <code>stat</code> 命令跟着普通文件。参阅下面的结果。</p>
+<pre><code># stat 2daygeek_access.log
+  File: 2daygeek_access.log
+  Size: 14406929  	Blocks: 28144      IO Block: 4096   regular file
+Device: 10301h/66305d	Inode: 1727555     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/ daygeek)   Gid: ( 1000/ daygeek)
+Access: 2019-01-03 14:05:26.430328867 +0530
+Modify: 2019-01-03 14:05:26.460328868 +0530
+Change: 2019-01-03 14:05:26.460328868 +0530
+ Birth: -
+</code></pre>
+<h4 id="在-linux-中如何使用-stat-命令查看目录文件">在 Linux 中如何使用 stat 命令查看目录文件？</h4>
+<p>在你的终端简单地输入 <code>stat</code> 命令跟着目录文件。参阅下面的结果。</p>
+<pre><code># stat Pictures/
+  File: Pictures/
+  Size: 4096      	Blocks: 8          IO Block: 4096   directory
+Device: 10301h/66305d	Inode: 1703982     Links: 3
+Access: (0755/drwxr-xr-x)  Uid: ( 1000/ daygeek)   Gid: ( 1000/ daygeek)
+Access: 2018-11-24 03:22:11.090000828 +0530
+Modify: 2019-01-05 18:27:01.546958817 +0530
+Change: 2019-01-05 18:27:01.546958817 +0530
+ Birth: -
+</code></pre>
+<h4 id="在-linux-中如何使用-stat-命令查看链接文件">在 Linux 中如何使用 stat 命令查看链接文件？</h4>
+<p>在你的终端简单地输入 <code>stat</code> 命令跟着链接文件。参阅下面的结果。</p>
+<pre><code># stat /dev/log
+  File: /dev/log -&gt; /run/systemd/journal/dev-log
+  Size: 28        	Blocks: 0          IO Block: 4096   symbolic link
+Device: 6h/6d	Inode: 278         Links: 1
+Access: (0777/lrwxrwxrwx)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2019-01-05 16:36:31.033333447 +0530
+Modify: 2019-01-05 16:36:30.766666768 +0530
+Change: 2019-01-05 16:36:30.766666768 +0530
+ Birth: -
+</code></pre>
+<h4 id="在-linux-中如何使用-stat-命令查看字符设备文件">在 Linux 中如何使用 stat 命令查看字符设备文件？</h4>
+<p>在你的终端简单地输入 <code>stat</code> 命令跟着字符设备文件。参阅下面的结果。</p>
+<pre><code># stat /dev/vcsu
+  File: /dev/vcsu
+  Size: 0         	Blocks: 0          IO Block: 4096   character special file
+Device: 6h/6d	Inode: 16          Links: 1     Device type: 7,40
+Access: (0660/crw-rw----)  Uid: (    0/    root)   Gid: (    5/     tty)
+Access: 2019-01-05 16:36:31.056666781 +0530
+Modify: 2019-01-05 16:36:31.056666781 +0530
+Change: 2019-01-05 16:36:31.056666781 +0530
+ Birth: -
+</code></pre>
+<h4 id="在-linux-中如何使用-stat-命令查看块文件">在 Linux 中如何使用 stat 命令查看块文件？</h4>
+<p>在你的终端简单地输入 <code>stat</code> 命令跟着块文件。参阅下面的结果。</p>
+<pre><code># stat /dev/sda1
+  File: /dev/sda1
+  Size: 0         	Blocks: 0          IO Block: 4096   block special file
+Device: 6h/6d	Inode: 250         Links: 1     Device type: 8,1
+Access: (0660/brw-rw----)  Uid: (    0/    root)   Gid: (  994/    disk)
+Access: 2019-01-05 16:36:31.596666806 +0530
+Modify: 2019-01-05 16:36:31.596666806 +0530
+Change: 2019-01-05 16:36:31.596666806 +0530
+ Birth: -
+</code></pre>
+<h4 id="在-linux-中如何使用-stat-命令查看-socket-文件">在 Linux 中如何使用 stat 命令查看 Socket 文件？</h4>
+<p>在你的终端简单地输入 <code>stat</code> 命令跟着 Socket 文件。参阅下面的结果。</p>
+<pre><code># stat /var/run/dbus/system_bus_socket 
+  File: /var/run/dbus/system_bus_socket
+  Size: 0         	Blocks: 0          IO Block: 4096   socket
+Device: 15h/21d	Inode: 576         Links: 1
+Access: (0666/srw-rw-rw-)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2019-01-05 16:36:31.823333482 +0530
+Modify: 2019-01-05 16:36:31.810000149 +0530
+Change: 2019-01-05 16:36:31.810000149 +0530
+ Birth: -
+</code></pre>
+<h4 id="在-linux-中如何使用-stat-命令查看命名管道文件">在 Linux 中如何使用 stat 命令查看命名管道文件？</h4>
+<p>在你的终端简单地输入 <code>stat</code> 命令跟着命名管道文件。参阅下面的结果。</p>
+<pre><code># stat pipe-test 
+  File: pipe-test
+  Size: 0         	Blocks: 0          IO Block: 4096   fifo
+Device: 10301h/66305d	Inode: 1705583     Links: 1
+Access: (0644/prw-r--r--)  Uid: ( 1000/ daygeek)   Gid: ( 1000/ daygeek)
+Access: 2019-01-06 02:00:03.040394731 +0530
+Modify: 2019-01-06 02:00:03.040394731 +0530
+Change: 2019-01-06 02:00:03.040394731 +0530
+ Birth: -
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/how-to-understand-and-identify-file-types-in-linux/">https://www.2daygeek.com/how-to-understand-and-identify-file-types-in-linux/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/magesh/">Magesh Maruthamuthu</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/liujing97">liujing97</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-linux-中有多少种可用类型">在 Linux 中有多少种可用类型？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#方法手动识别-linux-中的文件类型">方法１：手动识别 Linux 中的文件类型</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#方法在-linux-中如何使用-file-命令识别文件类型">方法２：在 Linux 中如何使用 file 命令识别文件类型</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#方法-3在-linux-中如何使用-stat-命令识别文件类型">方法 3：在 Linux 中如何使用 stat 命令识别文件类型？</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201904/20190108 How To Understand And Identify File types in Linux","title":"怎样理解和识别 Linux 中的文件类型"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

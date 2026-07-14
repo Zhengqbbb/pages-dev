@@ -1,0 +1,486 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用 systemd 定时器代替 cron 作业 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用 systemd 定时器代替 cron 作业 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用 systemd 定时器代替 cron 作业 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202104/20200707 Use systemd timers instead of cronjobs#page","@type":"TechArticle","headline":"使用 systemd 定时器代替 cron 作业","inLanguage":"en","name":"使用 systemd 定时器代替 cron 作业","url":"https://zhengqbbb.github.io/pages-dev/202104/20200707 Use systemd timers instead of cronjobs","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202104/20200707 Use systemd timers instead of cronjobs"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#操作系统维护的计时器">操作系统维护的计时器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建一个定时器">创建一个定时器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#定时器类型">定时器类型</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#日历事件格式">日历事件格式</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#测试日历格式">测试日历格式</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#参考资料">参考资料</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用 systemd 定时器代替 cron 作业</h1><blockquote>
+<p>定时器提供了比 cron 作业更为细粒度的事件控制。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202104/18/104406dgszkj3eeibkea55.jpg" alt=""></p>
+<p>我正在致力于将我的 <a href="https://opensource.com/article/17/11/how-use-cron-linux">cron</a> 作业迁移到 systemd 定时器上。我已经使用定时器多年了，但通常来说，我的学识只足以支撑我当前的工作。但在我研究 <a href="https://opensource.com/users/dboth">systemd 系列</a> 的过程中，我发现 systemd 定时器有一些非常有意思的能力。</p>
+<p>与 cron 作业类似，systemd 定时器可以在特定的时间间隔触发事件（shell 脚本和程序），例如每天一次或在一个月中的特定某一天（或许只有在周一生效），或在从上午 8 点到下午 6 点的工作时间内每隔 15 分钟一次。定时器也可以做到 cron 作业无法做到的一些事情。举个例子，定时器可以在特定事件发生后的一段时间后触发一段脚本或者程序去执行，例如开机、启动、上个任务完成，甚至于定时器调用的上个服务单元的完成的时刻。</p>
+<h3 id="操作系统维护的计时器">操作系统维护的计时器</h3>
+<p>当在一个新系统上安装 Fedora 或者是任意一个基于 systemd 的发行版时，作为系统维护过程的一部分，它会在 Linux 宿主机的后台中创建多个定时器。这些定时器会触发事件来执行必要的日常维护任务，比如更新系统数据库、清理临时目录、轮换日志文件，以及更多其他事件。</p>
+<p>作为示例，我会查看一些我的主要工作站上的定时器，通过执行 <code>systemctl status *timer</code> 命令来展示主机上的所有定时器。星号的作用与文件通配相同，所以这个命令会列出所有的 systemd 定时器单元。</p>
+<pre><code>[root@testvm1 ~]# systemctl status *timer
+● mlocate-updatedb.timer - Updates mlocate database every day
+     Loaded: loaded (/usr/lib/systemd/system/mlocate-updatedb.timer; enabled; vendor preset: enabled)
+     Active: active (waiting) since Tue 2020-06-02 08:02:33 EDT; 2 days ago
+    Trigger: Fri 2020-06-05 00:00:00 EDT; 15h left
+   Triggers: ● mlocate-updatedb.service
+
+Jun 02 08:02:33 testvm1.both.org systemd[1]: Started Updates mlocate database every day.
+
+● logrotate.timer - Daily rotation of log files
+     Loaded: loaded (/usr/lib/systemd/system/logrotate.timer; enabled; vendor preset: enabled)
+     Active: active (waiting) since Tue 2020-06-02 08:02:33 EDT; 2 days ago
+    Trigger: Fri 2020-06-05 00:00:00 EDT; 15h left
+   Triggers: ● logrotate.service
+       Docs: man:logrotate(8)
+             man:logrotate.conf(5)
+
+Jun 02 08:02:33 testvm1.both.org systemd[1]: Started Daily rotation of log files.
+
+● sysstat-summary.timer - Generate summary of yesterday&#39;s process accounting
+     Loaded: loaded (/usr/lib/systemd/system/sysstat-summary.timer; enabled; vendor preset: enabled)
+     Active: active (waiting) since Tue 2020-06-02 08:02:33 EDT; 2 days ago
+    Trigger: Fri 2020-06-05 00:07:00 EDT; 15h left
+   Triggers: ● sysstat-summary.service
+
+Jun 02 08:02:33 testvm1.both.org systemd[1]: Started Generate summary of yesterday&#39;s process accounting.
+
+● fstrim.timer - Discard unused blocks once a week
+     Loaded: loaded (/usr/lib/systemd/system/fstrim.timer; enabled; vendor preset: enabled)
+     Active: active (waiting) since Tue 2020-06-02 08:02:33 EDT; 2 days ago
+    Trigger: Mon 2020-06-08 00:00:00 EDT; 3 days left
+   Triggers: ● fstrim.service
+       Docs: man:fstrim
+
+Jun 02 08:02:33 testvm1.both.org systemd[1]: Started Discard unused blocks once a week.
+
+● sysstat-collect.timer - Run system activity accounting tool every 10 minutes
+     Loaded: loaded (/usr/lib/systemd/system/sysstat-collect.timer; enabled; vendor preset: enabled)
+     Active: active (waiting) since Tue 2020-06-02 08:02:33 EDT; 2 days ago
+    Trigger: Thu 2020-06-04 08:50:00 EDT; 41s left
+   Triggers: ● sysstat-collect.service
+
+Jun 02 08:02:33 testvm1.both.org systemd[1]: Started Run system activity accounting tool every 10 minutes.
+
+● dnf-makecache.timer - dnf makecache --timer
+     Loaded: loaded (/usr/lib/systemd/system/dnf-makecache.timer; enabled; vendor preset: enabled)
+     Active: active (waiting) since Tue 2020-06-02 08:02:33 EDT; 2 days ago
+    Trigger: Thu 2020-06-04 08:51:00 EDT; 1min 41s left
+   Triggers: ● dnf-makecache.service
+
+Jun 02 08:02:33 testvm1.both.org systemd[1]: Started dnf makecache –timer.
+
+● systemd-tmpfiles-clean.timer - Daily Cleanup of Temporary Directories
+     Loaded: loaded (/usr/lib/systemd/system/systemd-tmpfiles-clean.timer; static; vendor preset: disabled)
+     Active: active (waiting) since Tue 2020-06-02 08:02:33 EDT; 2 days ago
+    Trigger: Fri 2020-06-05 08:19:00 EDT; 23h left
+   Triggers: ● systemd-tmpfiles-clean.service
+       Docs: man:tmpfiles.d(5)
+             man:systemd-tmpfiles(8)
+
+Jun 02 08:02:33 testvm1.both.org systemd[1]: Started Daily Cleanup of Temporary Directories.
+</code></pre>
+<p>每个定时器至少有六行相关信息：</p>
+<ul>
+<li>定时器的第一行有定时器名字和定时器目的的简短介绍</li>
+<li>第二行展示了定时器的状态，是否已加载，定时器单元文件的完整路径以及预设信息。</li>
+<li>第三行指明了其活动状态，包括该定时器激活的日期和时间。</li>
+<li>第四行包括了该定时器下次被触发的日期和时间和距离触发的大概时间。</li>
+<li>第五行展示了被定时器触发的事件或服务名称。</li>
+<li>部分（不是全部）systemd 单元文件有相关文档的指引。我虚拟机上输出中有三个定时器有文档指引。这是一个很好（但非必要）的信息。</li>
+<li>最后一行是计时器最近触发的服务实例的日志条目。</li>
+</ul>
+<p>你也许有一些不一样的定时器，取决于你的主机。</p>
+<h3 id="创建一个定时器">创建一个定时器</h3>
+<p>尽管我们可以解构一个或多个现有的计时器来了解其工作原理，但让我们创建我们自己的 <a href="https://opensource.com/article/20/5/manage-startup-systemd">服务单元</a> 和一个定时器去触发它。为了保持简单，我们将使用一个相当简单的例子。当我们完成这个实验之后，就能更容易理解其他定时器的工作原理以及发现它们正在做什么。</p>
+<p>首先，创建一个运行基础东西的简单的服务，例如 <code>free</code> 命令。举个例子，你可能想定时监控空余内存。在 <code>/etc/systemd/system</code> 目录下创建如下的 <code>myMonitor.server</code> 单元文件。它不需要是可执行文件：</p>
+<pre><code># This service unit is for testing timer units
+# By David Both
+# Licensed under GPL V2
+#
+
+[Unit]
+Description=Logs system statistics to the systemd journal
+Wants=myMonitor.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/free
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>这大概是你能创建的最简单的服务单元了。现在我们查看一下服务状态同时测试一下服务单元确保它和我们预期一样可用。</p>
+<pre><code>[root@testvm1 system]# systemctl status myMonitor.service
+● myMonitor.service - Logs system statistics to the systemd journal
+     Loaded: loaded (/etc/systemd/system/myMonitor.service; disabled; vendor preset: disabled)
+     Active: inactive (dead)
+[root@testvm1 system]# systemctl start myMonitor.service
+[root@testvm1 system]#
+</code></pre>
+<p>输出在哪里呢？默认情况下，systemd 服务单元执行程序的标准输出（<code>STDOUT</code>）会被发送到系统日志中，它保留了记录供现在或者之后（直到某个时间点）查看。（在本系列的后续文章中，我将介绍系统日志的记录和保留策略）。专门查看你的服务单元的日志，而且只针对今天。<code>-S</code> 选项，即 <code>--since</code> 的缩写，允许你指定 <code>journalctl</code> 工具搜索条目的时间段。这并不代表你不关心过往结果 —— 在这个案例中，不会有过往记录 —— 如果你的机器以及运行了很长时间且堆积了大量的日志，它可以缩短搜索时间。</p>
+<pre><code>[root@testvm1 system]# journalctl -S today -u myMonitor.service
+-- Logs begin at Mon 2020-06-08 07:47:20 EDT, end at Thu 2020-06-11 09:40:47 EDT. --
+Jun 11 09:12:09 testvm1.both.org systemd[1]: Starting Logs system statistics to the systemd journal...
+Jun 11 09:12:09 testvm1.both.org free[377966]:               total        used        free      shared  buff/cache   available
+Jun 11 09:12:09 testvm1.both.org free[377966]: Mem:       12635740      522868    11032860        8016     1080012    11821508
+Jun 11 09:12:09 testvm1.both.org free[377966]: Swap:       8388604           0     8388604
+Jun 11 09:12:09 testvm1.both.org systemd[1]: myMonitor.service: Succeeded.
+[root@testvm1 system]#
+</code></pre>
+<p>由服务触发的任务可以是单个程序、一组程序或者是一个脚本语言写的脚本。通过在 <code>myMonitor.service</code> 单元文件里的 <code>[Service]</code> 块末尾中添加如下行可以为服务添加另一个任务：</p>
+<pre><code>ExecStart=/usr/bin/lsblk
+</code></pre>
+<p>再次启动服务，查看日志检查结果，结果应该看上去像这样。你应该在日志中看到两条命令的结果输出：</p>
+<pre><code>Jun 11 15:42:18 testvm1.both.org systemd[1]: Starting Logs system statistics to the systemd journal...
+Jun 11 15:42:18 testvm1.both.org free[379961]:               total        used        free      shared  buff/cache   available
+Jun 11 15:42:18 testvm1.both.org free[379961]: Mem:       12635740      531788    11019540        8024     1084412    11812272
+Jun 11 15:42:18 testvm1.both.org free[379961]: Swap:       8388604           0     8388604
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]: NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]: sda             8:0    0  120G  0 disk
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]: ├─sda1          8:1    0    4G  0 part /boot
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]: └─sda2          8:2    0  116G  0 part
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]:   ├─VG01-root 253:0    0    5G  0 lvm  /
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]:   ├─VG01-swap 253:1    0    8G  0 lvm  [SWAP]
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]:   ├─VG01-usr  253:2    0   30G  0 lvm  /usr
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]:   ├─VG01-tmp  253:3    0   10G  0 lvm  /tmp
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]:   ├─VG01-var  253:4    0   20G  0 lvm  /var
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]:   └─VG01-home 253:5    0   10G  0 lvm  /home
+Jun 11 15:42:18 testvm1.both.org lsblk[379962]: sr0            11:0    1 1024M  0 rom
+Jun 11 15:42:18 testvm1.both.org systemd[1]: myMonitor.service: Succeeded.
+Jun 11 15:42:18 testvm1.both.org systemd[1]: Finished Logs system statistics to the systemd journal.
+</code></pre>
+<p>现在你知道了你的服务可以按预期工作了，在 <code>/etc/systemd/system</code> 目录下创建 <code>myMonitor.timer</code> 定时器单元文件，添加如下代码：</p>
+<pre><code># This timer unit is for testing
+# By David Both
+# Licensed under GPL V2
+#
+
+[Unit]
+Description=Logs some system statistics to the systemd journal
+Requires=myMonitor.service
+
+[Timer]
+Unit=myMonitor.service
+OnCalendar=*-*-* *:*:00
+
+[Install]
+WantedBy=timers.target
+</code></pre>
+<p>在 <code>myMonitor.timer</code> 文件中的 <code>OnCalendar</code> 时间格式，<code>*-*-* *:*:00</code>，应该会每分钟触发一次定时器去执行 <code>myMonitor.service</code> 单元。我会在文章的后面进一步探索 <code>OnCalendar</code> 设置。</p>
+<p>到目前为止，在服务被计时器触发运行时观察与之有关的日志记录。你也可以跟踪计时器，跟踪服务可以让你接近实时的看到结果。执行 <code>journalctl</code> 时带上 <code>-f</code> 选项：</p>
+<pre><code>[root@testvm1 system]# journalctl -S today -f -u myMonitor.service
+-- Logs begin at Mon 2020-06-08 07:47:20 EDT. --
+</code></pre>
+<p>执行但是不启用该定时器，看看它运行一段时间后发生了什么：</p>
+<pre><code>[root@testvm1 ~]# systemctl start myMonitor.service
+[root@testvm1 ~]#
+</code></pre>
+<p>一条结果立即就显示出来了，下一条大概在一分钟后出来。观察几分钟日志，看看你有没有跟我发现同样的事情：</p>
+<pre><code>[root@testvm1 system]# journalctl -S today -f -u myMonitor.service
+-- Logs begin at Mon 2020-06-08 07:47:20 EDT. --
+Jun 13 08:39:18 testvm1.both.org systemd[1]: Starting Logs system statistics to the systemd journal...
+Jun 13 08:39:18 testvm1.both.org systemd[1]: myMonitor.service: Succeeded.
+Jun 13 08:39:19 testvm1.both.org free[630566]:               total        used        free      shared  buff/cache   available
+Jun 13 08:39:19 testvm1.both.org free[630566]: Mem:       12635740      556604    10965516        8036     1113620    11785628
+Jun 13 08:39:19 testvm1.both.org free[630566]: Swap:       8388604           0     8388604
+Jun 13 08:39:18 testvm1.both.org systemd[1]: Finished Logs system statistics to the systemd journal.
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]: NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]: sda             8:0    0  120G  0 disk
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]: ├─sda1          8:1    0    4G  0 part /boot
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]: └─sda2          8:2    0  116G  0 part
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]:   ├─VG01-root 253:0    0    5G  0 lvm  /
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]:   ├─VG01-swap 253:1    0    8G  0 lvm  [SWAP]
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]:   ├─VG01-usr  253:2    0   30G  0 lvm  /usr
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]:   ├─VG01-tmp  253:3    0   10G  0 lvm  /tmp
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]:   ├─VG01-var  253:4    0   20G  0 lvm  /var
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]:   └─VG01-home 253:5    0   10G  0 lvm  /home
+Jun 13 08:39:19 testvm1.both.org lsblk[630567]: sr0            11:0    1 1024M  0 rom
+Jun 13 08:40:46 testvm1.both.org systemd[1]: Starting Logs system statistics to the systemd journal...
+Jun 13 08:40:46 testvm1.both.org free[630572]:               total        used        free      shared  buff/cache   available
+Jun 13 08:40:46 testvm1.both.org free[630572]: Mem:       12635740      555228    10966836        8036     1113676    11786996
+Jun 13 08:40:46 testvm1.both.org free[630572]: Swap:       8388604           0     8388604
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]: NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]: sda             8:0    0  120G  0 disk
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]: ├─sda1          8:1    0    4G  0 part /boot
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]: └─sda2          8:2    0  116G  0 part
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]:   ├─VG01-root 253:0    0    5G  0 lvm  /
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]:   ├─VG01-swap 253:1    0    8G  0 lvm  [SWAP]
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]:   ├─VG01-usr  253:2    0   30G  0 lvm  /usr
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]:   ├─VG01-tmp  253:3    0   10G  0 lvm  /tmp
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]:   ├─VG01-var  253:4    0   20G  0 lvm  /var
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]:   └─VG01-home 253:5    0   10G  0 lvm  /home
+Jun 13 08:40:46 testvm1.both.org lsblk[630574]: sr0            11:0    1 1024M  0 rom
+Jun 13 08:40:46 testvm1.both.org systemd[1]: myMonitor.service: Succeeded.
+Jun 13 08:40:46 testvm1.both.org systemd[1]: Finished Logs system statistics to the systemd journal.
+Jun 13 08:41:46 testvm1.both.org systemd[1]: Starting Logs system statistics to the systemd journal...
+Jun 13 08:41:46 testvm1.both.org free[630580]:               total        used        free      shared  buff/cache   available
+Jun 13 08:41:46 testvm1.both.org free[630580]: Mem:       12635740      553488    10968564        8036     1113688    11788744
+Jun 13 08:41:46 testvm1.both.org free[630580]: Swap:       8388604           0     8388604
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]: NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]: sda             8:0    0  120G  0 disk
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]: ├─sda1          8:1    0    4G  0 part /boot
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]: └─sda2          8:2    0  116G  0 part
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]:   ├─VG01-root 253:0    0    5G  0 lvm  /
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]:   ├─VG01-swap 253:1    0    8G  0 lvm  [SWAP]
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]:   ├─VG01-usr  253:2    0   30G  0 lvm  /usr
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]:   ├─VG01-tmp  253:3    0   10G  0 lvm  /tmp
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]:   ├─VG01-var  253:4    0   20G  0 lvm  /var
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]:   └─VG01-home 253:5    0   10G  0 lvm  /home
+Jun 13 08:41:47 testvm1.both.org lsblk[630581]: sr0            11:0    1 1024M  0 rom
+Jun 13 08:41:47 testvm1.both.org systemd[1]: myMonitor.service: Succeeded.
+Jun 13 08:41:47 testvm1.both.org systemd[1]: Finished Logs system statistics to the systemd journal.
+</code></pre>
+<p>别忘了检查下计时器和服务的状态。</p>
+<p>你在日志里大概至少注意到两件事。第一，你不需要特地做什么来让 <code>myMonitor.service</code> 单元中 <code>ExecStart</code> 触发器产生的 <code>STDOUT</code> 存储到日志里。这都是用 systemd 来运行服务的一部分功能。然而，它确实意味着你需要小心对待服务单元里面执行的脚本和它们能产生多少 <code>STDOUT</code>。</p>
+<p>第二，定时器并不是精确在每分钟的 :00 秒执行的，甚至每次执行的时间间隔都不是刚好一分钟。这是特意的设计，但是有必要的话可以改变这种行为（如果只是它挑战了你的系统管理员的敏感神经）。</p>
+<p>这样设计的初衷是为了防止多个服务在完全相同的时刻被触发。举个例子，你可以用例如 Weekly，Daily 等时间格式。这些快捷写法都被定义为在某一天的 00:00:00 执行。当多个定时器都这样定义的话，有很大可能它们会同时执行。</p>
+<p>systemd 定时器被故意设计成在规定时间附近随机波动的时间点触发，以避免同一时间触发。它们在一个时间窗口内半随机触发，时间窗口开始于预设的触发时间，结束于预设时间后一分钟。根据 <code>systemd.timer</code> 的手册页，这个触发时间相对于其他已经定义的定时器单元保持在稳定的位置。你可以在日志条目中看到，定时器在启动后立即触发，然后在每分钟后的 46 或 47 秒触发。</p>
+<p>大部分情况下，这种概率抖动的定时器是没事的。当调度类似执行备份的任务，只需要它们在下班时间运行，这样是没问题的。系统管理员可以选择确定的开始时间来确保不和其他任务冲突，例如 01:05:00 这样典型的 cron 作业时间，但是有很大范围的时间值可以满足这一点。在开始时间上的一个分钟级别的随机往往是无关紧要的。</p>
+<p>然而，对某些任务来说，精确的触发时间是个硬性要求。对于这类任务，你可以向单元文件的 <code>Timer</code> 块中添加如下声明来指定更高的触发时间跨度精确度（精确到微秒以内）：</p>
+<pre><code>AccuracySec=1us
+</code></pre>
+<p>时间跨度可用于指定所需的精度，以及定义重复事件或一次性事件的时间跨度。它能识别以下单位：</p>
+<ul>
+<li><code>usec</code>、<code>us</code>、<code>µs</code></li>
+<li><code>msec</code>、<code>ms</code></li>
+<li><code>seconds</code>、<code>second</code>、<code>sec</code>、<code>s</code></li>
+<li><code>minutes</code>、<code>minute</code>、<code>min</code>、<code>m</code></li>
+<li><code>hours</code>、<code>hour</code>、<code>hr</code>、<code>h</code></li>
+<li><code>days</code>、<code>day</code>、<code>d</code></li>
+<li><code>weeks</code>、<code>week</code>、<code>w</code></li>
+<li><code>months</code>、<code>month</code>、<code>M</code>（定义为 30.44 天）</li>
+<li><code>years</code>、<code>year</code>、<code>y</code>（定义为 365.25 天）</li>
+</ul>
+<p>所有 <code>/usr/lib/systemd/system</code> 中的定时器都指定了一个更宽松的时间精度，因为精准时间没那么重要。看看这些系统创建的定时器的时间格式：</p>
+<pre><code>[root@testvm1 system]# grep Accur /usr/lib/systemd/system/*timer
+/usr/lib/systemd/system/fstrim.timer:AccuracySec=1h
+/usr/lib/systemd/system/logrotate.timer:AccuracySec=1h
+/usr/lib/systemd/system/logwatch.timer:AccuracySec=12h
+/usr/lib/systemd/system/mlocate-updatedb.timer:AccuracySec=24h
+/usr/lib/systemd/system/raid-check.timer:AccuracySec=24h
+/usr/lib/systemd/system/unbound-anchor.timer:AccuracySec=24h
+[root@testvm1 system]#
+</code></pre>
+<p>看下 <code>/usr/lib/systemd/system</code> 目录下部分定时器单元文件的完整内容，看看它们是如何构建的。</p>
+<p>在本实验中不必让这个定时器在启动时激活，但下面这个命令可以设置开机自启：</p>
+<pre><code>[root@testvm1 system]# systemctl enable myMonitor.timer
+</code></pre>
+<p>你创建的单元文件不需要是可执行的。你同样不需要启用服务，因为它是被定时器触发的。如果你需要的话，你仍然可以在命令行里手动触发该服务单元。尝试一下，然后观察日志。</p>
+<p>关于定时器精度、事件时间规格和触发事件的详细信息，请参见 systemd.timer 和 systemd.time 的手册页。</p>
+<h3 id="定时器类型">定时器类型</h3>
+<p>systemd 定时器还有一些在 cron 中找不到的功能，cron 只在确定的、重复的、具体的日期和时间触发。systemd 定时器可以被配置成根据其他 systemd 单元状态发生改变时触发。举个例子，定时器可以配置成在系统开机、启动后，或是某个确定的服务单元激活之后的一段时间被触发。这些被称为单调计时器。“单调”指的是一个持续增长的计数器或序列。这些定时器不是持久的，因为它们在每次启动后都会重置。</p>
+<p>表格 1 列出了一些单调定时器以及每个定时器的简短定义，同时有 <code>OnCalendar</code> 定时器，这些不是单调的，它们被用于指定未来有可能重复的某个确定时间。这个信息来自于 <code>systemd.timer</code> 的手册页，有一些不重要的修改。</p>
+<table>
+<thead>
+<tr>
+<th>定时器</th>
+<th>单调性</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>OnActiveSec=</code></td>
+<td>X</td>
+<td>定义了一个与定时器被激活的那一刻相关的定时器。</td>
+</tr>
+<tr>
+<td><code>OnBootSec=</code></td>
+<td>X</td>
+<td>定义了一个与机器启动时间相关的计时器。</td>
+</tr>
+<tr>
+<td><code>OnStartupSec=</code></td>
+<td>X</td>
+<td>定义了一个与服务管理器首次启动相关的计时器。对于系统定时器来说，这个定时器与 <code>OnBootSec=</code> 类似，因为系统服务管理器在机器启动后很短的时间后就会启动。当以在每个用户服务管理器中运行的单元进行配置时，它尤其有用，因为用户的服务管理器通常在首次登录后启动，而不是机器启动后。</td>
+</tr>
+<tr>
+<td><code>OnUnitActiveSec=</code></td>
+<td>X</td>
+<td>定义了一个与将要激活的定时器上次激活时间相关的定时器。</td>
+</tr>
+<tr>
+<td><code>OnUnitInactiveSec=</code></td>
+<td>X</td>
+<td>定义了一个与将要激活的定时器上次停用时间相关的定时器。</td>
+</tr>
+<tr>
+<td><code>OnCalendar=</code></td>
+<td></td>
+<td>定义了一个有日期事件表达式语法的实时（即时钟）定时器。查看 <code>systemd.time(7)</code> 的手册页获取更多与日历事件表达式相关的语法信息。除此以外，它的语义和 <code>OnActiveSec=</code> 类似。</td>
+</tr>
+</tbody></table>
+<p><em>Table 1: systemd 定时器定义</em></p>
+<p>单调计时器可使用同样的简写名作为它们的时间跨度，即我们之前提到的 <code>AccuracySec</code> 表达式，但是 systemd 将这些名字统一转换成了秒。举个例子，比如你想规定某个定时器在系统启动后五天触发一次事件；它可能看起来像 <code>OnBootSec=5d</code>。如果机器启动于 <code>2020-06-15 09:45:27</code>，这个定时器会在 <code>2020-06-20 09:45:27</code> 或在这之后的一分钟内触发。</p>
+<h3 id="日历事件格式">日历事件格式</h3>
+<p>日历事件格式是定时器在所需的重复时间触发的关键。我们开始看下一些 <code>OnCalendar</code> 设置一起使用的格式。</p>
+<p>与 crontab 中的格式相比，systemd 及其计时器使用的时间和日历格式风格不同。它比 crontab 更为灵活，而且可以使用类似 <code>at</code> 命令的方式允许模糊的日期和时间。它还应该足够熟悉使其易于理解。</p>
+<p>systemd 定时器使用 <code>OnCalendar=</code> 的基础格式是 <code>DOW YYYY-MM-DD HH:MM:SS</code>。DOW（星期几）是选填的，其他字段可以用一个星号（<code>*</code>）来匹配此位置的任意值。所有的日历时间格式会被转换成标准格式。如果时间没有指定，它会被设置为 <code>00:00:00</code>。如果日期没有指定但是时间指定了，那么下次匹配的时间可能是今天或者明天，取决于当前的时间。月份和星期可以使用名称或数字。每个单元都可以使用逗号分隔的列表。单元范围可以在开始值和结束值之间用 <code>..</code> 指定。</p>
+<p>指定日期有一些有趣的选项，波浪号（<code>~</code>）可以指定月份的最后一天或者最后一天之前的某几天。<code>/</code> 可以用来指定星期几作为修饰符。</p>
+<p>这里有几个在 <code>OnCalendar</code> 表达式中使用的典型时间格式例子。</p>
+<table>
+<thead>
+<tr>
+<th>日期事件格式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DOW YYYY-MM-DD HH:MM:SS</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>*-*-* 00:15:30</code></td>
+<td>每年每月每天的 0 点 15 分 30 秒</td>
+</tr>
+<tr>
+<td><code>Weekly</code></td>
+<td>每个周一的 00:00:00</td>
+</tr>
+<tr>
+<td><code>Mon *-*-* 00:00:00</code></td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>Mon</code></td>
+<td>同上</td>
+</tr>
+<tr>
+<td><code>Wed 2020-*-*</code></td>
+<td>2020 年每个周三的 00:00:00</td>
+</tr>
+<tr>
+<td><code>Mon..Fri 2021-*-*</code></td>
+<td>2021 年的每个工作日（周一到周五）的 00:00:00</td>
+</tr>
+<tr>
+<td><code>2022-6,7,8-1,15 01:15:00</code></td>
+<td>2022 年 6、7、8 月的 1 到 15 号的 01:15:00</td>
+</tr>
+<tr>
+<td><code>Mon *-05~03</code></td>
+<td>每年五月份的下个周一同时也是月末的倒数第三天</td>
+</tr>
+<tr>
+<td><code>Mon..Fri *-08~04</code></td>
+<td>任何年份 8 月末的倒数第四天，同时也须是工作日</td>
+</tr>
+<tr>
+<td><code>*-05~03/2</code></td>
+<td>五月末的倒数第三天，然后 2 天后再来一次。每年重复一次。注意这个表达式使用了波浪号（<code>~</code>）。</td>
+</tr>
+<tr>
+<td><code>*-05-03/2</code></td>
+<td>五月的第三天，然后每两天重复一次直到 5 月底。注意这个表达式使用了破折号（<code>-</code>）。</td>
+</tr>
+</tbody></table>
+<p><em>Table 2: <code>OnCalendar</code> 事件时间格式例子</em></p>
+<h3 id="测试日历格式">测试日历格式</h3>
+<p>systemd 提供了一个绝佳的工具用于检测和测试定时器中日历时间事件的格式。<code>systemd-analyze calendar</code> 工具解析一个时间事件格式，提供标准格式和其他有趣的信息，例如下次“经过”（即匹配）的日期和时间，以及距离下次触发之前大概时间。</p>
+<p>首先，看看未来没有时间的日（注意 <code>Next elapse</code> 和 <code>UTC</code> 的时间会根据你当地时区改变）:</p>
+<pre><code>[student@studentvm1 ~]$ systemd-analyze calendar 2030-06-17
+  Original form: 2030-06-17                
+Normalized form: 2030-06-17 00:00:00        
+    Next elapse: Mon 2030-06-17 00:00:00 EDT
+       (in UTC): Mon 2030-06-17 04:00:00 UTC
+       From now: 10 years 0 months left    
+[root@testvm1 system]#
+</code></pre>
+<p>现在添加一个时间，在这个例子中，日期和时间是当作无关的部分分开解析的：</p>
+<pre><code>[root@testvm1 system]# systemd-analyze calendar 2030-06-17 15:21:16
+  Original form: 2030-06-17                
+Normalized form: 2030-06-17 00:00:00        
+    Next elapse: Mon 2030-06-17 00:00:00 EDT
+       (in UTC): Mon 2030-06-17 04:00:00 UTC
+       From now: 10 years 0 months left    
+
+  Original form: 15:21:16                  
+Normalized form: *-*-* 15:21:16            
+    Next elapse: Mon 2020-06-15 15:21:16 EDT
+       (in UTC): Mon 2020-06-15 19:21:16 UTC
+       From now: 3h 55min left              
+[root@testvm1 system]#
+</code></pre>
+<p>为了把日期和时间当作一个单元来分析，可以把它们包在引号里。你在定时器单元里 <code>OnCalendar=</code> 时间格式中使用的时候记得把引号去掉，否则会报错：</p>
+<pre><code>[root@testvm1 system]# systemd-analyze calendar &quot;2030-06-17 15:21:16&quot;
+Normalized form: 2030-06-17 15:21:16        
+    Next elapse: Mon 2030-06-17 15:21:16 EDT
+       (in UTC): Mon 2030-06-17 19:21:16 UTC
+       From now: 10 years 0 months left    
+[root@testvm1 system]#
+</code></pre>
+<p>现在我们测试下 Table2 里的例子。我尤其喜欢最后一个：</p>
+<pre><code>[root@testvm1 system]# systemd-analyze calendar &quot;2022-6,7,8-1,15 01:15:00&quot;
+  Original form: 2022-6,7,8-1,15 01:15:00
+Normalized form: 2022-06,07,08-01,15 01:15:00
+    Next elapse: Wed 2022-06-01 01:15:00 EDT
+       (in UTC): Wed 2022-06-01 05:15:00 UTC
+       From now: 1 years 11 months left
+[root@testvm1 system]#
+</code></pre>
+<p>让我们看一个例子，这个例子里我们列出了时间表达式的五个经过时间。</p>
+<pre><code>[root@testvm1 ~]# systemd-analyze calendar --iterations=5 &quot;Mon *-05~3&quot;
+  Original form: Mon *-05~3                
+Normalized form: Mon *-05~03 00:00:00      
+    Next elapse: Mon 2023-05-29 00:00:00 EDT
+       (in UTC): Mon 2023-05-29 04:00:00 UTC
+       From now: 2 years 11 months left    
+       Iter. #2: Mon 2028-05-29 00:00:00 EDT
+       (in UTC): Mon 2028-05-29 04:00:00 UTC
+       From now: 7 years 11 months left    
+       Iter. #3: Mon 2034-05-29 00:00:00 EDT
+       (in UTC): Mon 2034-05-29 04:00:00 UTC
+       From now: 13 years 11 months left    
+       Iter. #4: Mon 2045-05-29 00:00:00 EDT
+       (in UTC): Mon 2045-05-29 04:00:00 UTC
+       From now: 24 years 11 months left    
+       Iter. #5: Mon 2051-05-29 00:00:00 EDT
+       (in UTC): Mon 2051-05-29 04:00:00 UTC
+       From now: 30 years 11 months left    
+[root@testvm1 ~]#
+</code></pre>
+<p>这些应该为你提供了足够的信息去开始测试你的 <code>OnCalendar</code> 时间格式。<code>systemd-analyze</code> 工具可用于其他有趣的分析，我会在这个系列的下一篇文章来探索这些。</p>
+<h3 id="总结">总结</h3>
+<p>systemd 定时器可以用于执行和 cron 工具相同的任务，但是通过按照日历和单调时间格式去触发事件的方法提供了更多的灵活性。</p>
+<p>虽然你为此次实验创建的服务单元通常是由定时器调用的，你也可以随时使用 <code>systemctl start myMonitor.service</code> 命令去触发它。可以在一个定时器中编写多个维护任务的脚本；它们可以是 Bash 脚本或者其他 Linux 程序。你可以通过触发定时器来运行所有的脚本来运行服务，也可以按照需要执行单独的脚本。</p>
+<p>我会在下篇文章中更加深入的探索 systemd 时间格式的用处。</p>
+<p>我还没有看到任何迹象表明 cron 和 at 将被废弃。我希望这种情况不会发生，因为至少 <code>at</code> 在执行一次性调度任务的时候要比 systemd 定时器容易的多。</p>
+<h3 id="参考资料">参考资料</h3>
+<p>网上有大量的关于 systemd 的参考资料，但是大部分都有点简略、晦涩甚至有误导性。除了本文中提到的资料，下列的网页提供了跟多可靠且详细的 systemd 入门信息。</p>
+<ul>
+<li>Fedora 项目有一篇切实好用的 <a href="https://docs.fedoraproject.org/en-US/quick-docs/understanding-and-administering-systemd/index.html">systemd 入门</a>，它囊括了几乎所有你需要知道的关于如何使用 systemd 配置、管理和维护 Fedora 计算机的信息。</li>
+<li>Fedora 项目也有一个不错的 <a href="https://fedoraproject.org/wiki/SysVinit_to_Systemd_Cheatsheet">备忘录</a>，交叉引用了过去 SystemV 命令和 systemd 命令做对比。</li>
+<li>关于 systemd 的技术细节和创建这个项目的原因，请查看 <a href="http://Freedesktop.org">Freedesktop.org</a> 上的 <a href="http://www.freedesktop.org/wiki/Software/systemd">systemd 描述</a>。</li>
+<li><a href="http://Linux.com">Linux.com</a> 的“更多 systemd 的乐趣”栏目提供了更多高级的 systemd <a href="https://www.linux.com/training-tutorials/more-systemd-fun-blame-game-and-stopping-services-prejudice/">信息和技巧</a>。</li>
+</ul>
+<p>此外，还有一系列深度的技术文章，是由 systemd 的设计者和主要实现者 Lennart Poettering 为 Linux 系统管理员撰写的。这些文章写于 2010 年 4 月至 2011 年 9 月间，但它们现在和当时一样具有现实意义。关于 systemd 及其生态的许多其他好文章都是基于这些文章：</p>
+<ul>
+<li><a href="http://0pointer.de/blog/projects/systemd.html">Rethinking PID 1</a></li>
+<li><a href="http://0pointer.de/blog/projects/systemd-for-admins-1.html">systemd for Administrators，Part I</a></li>
+<li><a href="http://0pointer.de/blog/projects/systemd-for-admins-2.html">systemd for Administrators，Part II</a></li>
+<li><a href="http://0pointer.de/blog/projects/systemd-for-admins-3.html">systemd for Administrators，Part III</a></li>
+<li><a href="http://0pointer.de/blog/projects/systemd-for-admins-4.html">systemd for Administrators，Part IV</a></li>
+<li><a href="http://0pointer.de/blog/projects/three-levels-of-off.html">systemd for Administrators，Part V</a></li>
+<li><a href="http://0pointer.de/blog/projects/changing-roots">systemd for Administrators，Part VI</a></li>
+<li><a href="http://0pointer.de/blog/projects/blame-game.html">systemd for Administrators，Part VII</a></li>
+<li><a href="http://0pointer.de/blog/projects/the-new-configuration-files.html">systemd for Administrators，Part VIII</a></li>
+<li><a href="http://0pointer.de/blog/projects/on-etc-sysinit.html">systemd for Administrators，Part IX</a></li>
+<li><a href="http://0pointer.de/blog/projects/instances.html">systemd for Administrators，Part X</a></li>
+<li><a href="http://0pointer.de/blog/projects/inetd.html">systemd for Administrators，Part XI</a></li>
+</ul>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/7/systemd-timers">https://opensource.com/article/20/7/systemd-timers</a></p>
+<p>作者：<a href="https://opensource.com/users/dboth">David Both</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/tt67wq">tt67wq</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#操作系统维护的计时器">操作系统维护的计时器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建一个定时器">创建一个定时器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#定时器类型">定时器类型</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#日历事件格式">日历事件格式</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#测试日历格式">测试日历格式</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#参考资料">参考资料</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202104/20200707 Use systemd timers instead of cronjobs","title":"使用 systemd 定时器代替 cron 作业"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

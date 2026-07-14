@@ -1,0 +1,371 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 CentOS 中添加、启用和禁用一个仓库 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 CentOS 中添加、启用和禁用一个仓库 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 CentOS 中添加、启用和禁用一个仓库 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201811/20180530 How To Add, Enable And Disable A Repository In Linux#page","@type":"TechArticle","headline":"如何在 CentOS 中添加、启用和禁用一个仓库","inLanguage":"en","name":"如何在 CentOS 中添加、启用和禁用一个仓库","url":"https://zhengqbbb.github.io/pages-dev/201811/20180530 How To Add, Enable And Disable A Repository In Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201811/20180530 How To Add, Enable And Disable A Repository In Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何列出启用的仓库">如何列出启用的仓库</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在系统中添加一个新仓库">如何在系统中添加一个新仓库</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在系统中启用一个仓库">如何在系统中启用一个仓库</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在系统中禁用一个仓库">如何在系统中禁用一个仓库</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 CentOS 中添加、启用和禁用一个仓库</h1><p>在基于 RPM 的系统上，例如 RHEL、CentOS 等，我们中的许多人使用 yum 包管理器来管理软件的安装、删除、更新、搜索等。</p>
+<p>Linux 发行版的大部分软件都来自发行版官方仓库。官方仓库包含大量免费和开源的应用和软件。它很容易安装和使用。</p>
+<p>由于一些限制和专有问题，基于 RPM 的发行版在其官方仓库中没有提供某些包。另外，出于稳定性考虑，它不会提供最新版本的核心包。</p>
+<p>为了克服这种情况，我们需要安装或启用需要的第三方仓库。对于基于 RPM 的系统，有许多第三方仓库可用，但所建议使用的仓库很少，因为这些不会替换大量的基础包。</p>
+<p>建议阅读：</p>
+<ul>
+<li><a href="https://www.2daygeek.com/yum-command-examples-manage-packages-rhel-centos-systems/">在 RHEL/CentOS 系统中使用 YUM 命令管理包</a></li>
+<li><a href="https://www.2daygeek.com/dnf-command-examples-manage-packages-fedora-system/">在 Fedora 系统中使用 DNF (YUM 的分支) 命令来管理包</a></li>
+<li><a href="https://www.2daygeek.com/list-of-command-line-package-manager-for-linux/">命令行包管理器和用法列表</a></li>
+<li><a href="https://www.2daygeek.com/list-of-graphical-frontend-tool-for-linux-package-manager/">Linux 包管理器的图形化工具</a></li>
+</ul>
+<p>这可以在基于 RPM 的系统上完成，比如 RHEL, CentOS, OEL, Fedora 等。</p>
+<ul>
+<li>Fedora 系统使用 <code>dnf config-manager [options] [section …]</code></li>
+<li>其它基于 RPM 的系统使用 <code>yum-config-manager [options] [section …]</code></li>
+</ul>
+<h3 id="如何列出启用的仓库">如何列出启用的仓库</h3>
+<p>只需运行以下命令即可检查系统上启用的仓库列表。</p>
+<p>对于 CentOS/RHEL/OLE 系统：</p>
+<pre><code># yum repolist
+Loaded plugins: fastestmirror, security
+Loading mirror speeds from cached hostfile
+repo id                                                       repo name                                                                 status
+base                                                          CentOS-6 - Base                                                           6,706
+extras                                                        CentOS-6 - Extras                                                            53
+updates                                                       CentOS-6 - Updates                                                        1,255
+repolist: 8,014
+</code></pre>
+<p>对于 Fedora 系统：</p>
+<pre><code># dnf repolist
+</code></pre>
+<h3 id="如何在系统中添加一个新仓库">如何在系统中添加一个新仓库</h3>
+<p>每个仓库通常都提供自己的 <code>.repo</code> 文件。要将此类仓库添加到系统中，使用 root 用户运行以下命令。在我们的例子中将添加 EPEL 仓库 和 IUS 社区仓库，见下文。</p>
+<p>但是没有 <code>.repo</code> 文件可用于这些仓库。因此，我们使用以下方法进行安装。</p>
+<p>对于 EPEL 仓库，因为它可以从 CentOS 额外仓库获得，所以运行以下命令来安装它。</p>
+<pre><code># yum install epel-release -y
+</code></pre>
+<p>对于 IUS 社区仓库，运行以下 bash 脚本来安装。</p>
+<pre><code># curl &#39;https://setup.ius.io/&#39; -o setup-ius.sh
+# sh setup-ius.sh
+</code></pre>
+<p>如果你有 <code>.repo</code> 文件，在 RHEL/CentOS/OEL 中，只需运行以下命令来添加一个仓库。</p>
+<pre><code># yum-config-manager --add-repo http://www.example.com/example.repo
+
+Loaded plugins: product-id, refresh-packagekit, subscription-manager
+adding repo from: http://www.example.com/example.repo
+grabbing file http://www.example.com/example.repo to /etc/yum.repos.d/example.repo
+example.repo                                             |  413 B     00:00
+repo saved to /etc/yum.repos.d/example.repo
+</code></pre>
+<p>对于 Fedora 系统，运行以下命令来添加一个仓库：</p>
+<pre><code># dnf config-manager --add-repo http://www.example.com/example.repo
+adding repo from: http://www.example.com/example.repo
+</code></pre>
+<p>如果在添加这些仓库之后运行 <code>yum repolist</code> 命令，你就可以看到新添加的仓库了。Yes，我看到了。</p>
+<p>注意：每当运行 <code>yum repolist</code> 命令时，该命令会自动从相应的仓库获取更新，并将缓存保存在本地系统中。</p>
+<pre><code># yum repolist
+
+Loaded plugins: fastestmirror, security
+Loading mirror speeds from cached hostfile
+epel/metalink                                                                                                          | 6.1 kB     00:00
+* epel: epel.mirror.constant.com
+* ius: ius.mirror.constant.com
+ius                                                                                                                    | 2.3 kB     00:00
+repo id                                     repo name                                                                                   status
+base                                        CentOS-6 - Base                                                                              6,706
+epel                                        Extra Packages for Enterprise Linux 6 - x86_64                                              12,505
+extras                                      CentOS-6 - Extras                                                                               53
+ius                                         IUS Community Packages for Enterprise Linux 6 - x86_64                                         390
+updates                                     CentOS-6 - Updates                                                                           1,255
+repolist: 20,909
+</code></pre>
+<p>每个仓库都有多个渠道，比如测试（Testing）、开发（Dev）和存档（Archive）等。通过导航到仓库文件位置，你可以更好地理解这一点。</p>
+<pre><code># ls -lh /etc/yum.repos.d
+total 64K
+-rw-r--r-- 1 root root 2.0K Apr 12 02:44 CentOS-Base.repo
+-rw-r--r-- 1 root root 647 Apr 12 02:44 CentOS-Debuginfo.repo
+-rw-r--r-- 1 root root 289 Apr 12 02:44 CentOS-fasttrack.repo
+-rw-r--r-- 1 root root 630 Apr 12 02:44 CentOS-Media.repo
+-rw-r--r-- 1 root root 916 May 18 11:07 CentOS-SCLo-scl.repo
+-rw-r--r-- 1 root root 892 May 18 10:36 CentOS-SCLo-scl-rh.repo
+-rw-r--r-- 1 root root 6.2K Apr 12 02:44 CentOS-Vault.repo
+-rw-r--r-- 1 root root 7.9K Apr 12 02:44 CentOS-Vault.repo.rpmnew
+-rw-r--r-- 1 root root 957 May 18 10:41 epel.repo
+-rw-r--r-- 1 root root 1.1K Nov 4 2012 epel-testing.repo
+-rw-r--r-- 1 root root 1.2K Feb 23 2017 ius-archive.repo
+-rw-r--r-- 1 root root 1.2K Feb 23 2017 ius-dev.repo
+-rw-r--r-- 1 root root 1.1K May 18 10:41 ius.repo
+-rw-r--r-- 1 root root 1.2K Feb 23 2017 ius-testing.repo
+</code></pre>
+<h3 id="如何在系统中启用一个仓库">如何在系统中启用一个仓库</h3>
+<p>当你在默认情况下添加一个新仓库时，它将启用它们的稳定仓库，这就是为什么我们在运行 <code>yum repolist</code> 命令时获取了仓库信息。在某些情况下，如果你希望启用它们的测试、开发或存档仓库，使用以下命令。另外，我们还可以使用此命令启用任何禁用的仓库。</p>
+<p>为了验证这一点，我们将启用 <code>epel-testing.repo</code>，运行下面的命令：</p>
+<pre><code># yum-config-manager --enable epel-testing
+
+Loaded plugins: fastestmirror
+==================================================================================== repo: epel-testing =====================================================================================
+[epel-testing]
+bandwidth = 0
+base_persistdir = /var/lib/yum/repos/x86_64/6
+baseurl =
+cache = 0
+cachedir = /var/cache/yum/x86_64/6/epel-testing
+cost = 1000
+enabled = 1
+enablegroups = True
+exclude =
+failovermethod = priority
+ftp_disable_epsv = False
+gpgcadir = /var/lib/yum/repos/x86_64/6/epel-testing/gpgcadir
+gpgcakey =
+gpgcheck = True
+gpgdir = /var/lib/yum/repos/x86_64/6/epel-testing/gpgdir
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+hdrdir = /var/cache/yum/x86_64/6/epel-testing/headers
+http_caching = all
+includepkgs =
+keepalive = True
+mdpolicy = group:primary
+mediaid =
+metadata_expire = 21600
+metalink =
+mirrorlist = https://mirrors.fedoraproject.org/metalink?repo=testing-epel6&amp;arch=x86_64
+mirrorlist_expire = 86400
+name = Extra Packages for Enterprise Linux 6 - Testing - x86_64
+old_base_cache_dir =
+password =
+persistdir = /var/lib/yum/repos/x86_64/6/epel-testing
+pkgdir = /var/cache/yum/x86_64/6/epel-testing/packages
+proxy = False
+proxy_dict =
+proxy_password =
+proxy_username =
+repo_gpgcheck = False
+retries = 10
+skip_if_unavailable = False
+ssl_check_cert_permissions = True
+sslcacert =
+sslclientcert =
+sslclientkey =
+sslverify = True
+throttle = 0
+timeout = 30.0
+username =
+</code></pre>
+<p>运行 <code>yum repolist</code> 命令来检查是否启用了 “epel-testing”。它被启用了，我可以从列表中看到它。</p>
+<pre><code># yum repolist
+Loaded plugins: fastestmirror, security
+Determining fastest mirrors
+epel/metalink                                                                                                                                                         |  18 kB     00:00
+epel-testing/metalink                                                                                                                                                 |  17 kB     00:00
+ * epel: mirror.us.leaseweb.net
+ * epel-testing: mirror.us.leaseweb.net
+ * ius: mirror.team-cymru.com
+base                                                                                                                                                                  | 3.7 kB     00:00
+centos-sclo-sclo                                                                                                                                                      | 2.9 kB     00:00
+epel                                                                                                                                                                  | 4.7 kB     00:00
+epel/primary_db                                                                                                                                                       | 6.0 MB     00:00
+epel-testing                                                                                                                                                          | 4.7 kB     00:00
+epel-testing/primary_db                                                                                                                                               | 368 kB     00:00
+extras                                                                                                                                                                | 3.4 kB     00:00
+ius                                                                                                                                                                   | 2.3 kB     00:00
+ius/primary_db                                                                                                                                                        | 216 kB     00:00
+updates                                                                                                                                                               | 3.4 kB     00:00
+updates/primary_db                                                                                                                                                    | 8.1 MB     00:00 ...
+repo id                                                                repo name                                                                                                       status
+base                                                                   CentOS-6 - Base                                                                                                  6,706
+centos-sclo-sclo                                                       CentOS-6 - SCLo sclo                                                                                               495
+epel                                                                   Extra Packages for Enterprise Linux 6 - x86_64                                                                  12,509
+epel-testing                                                           Extra Packages for Enterprise Linux 6 - Testing - x86_64                                                           809
+extras                                                                 CentOS-6 - Extras                                                                                                   53
+ius                                                                    IUS Community Packages for Enterprise Linux 6 - x86_64                                                             390
+updates                                                                CentOS-6 - Updates                                                                                               1,288
+repolist: 22,250
+</code></pre>
+<p>如果你想同时启用多个仓库，使用以下格式。这个命令将启用 epel、epel-testing 和 ius 仓库：</p>
+<pre><code># yum-config-manager --enable epel epel-testing ius
+</code></pre>
+<p>对于 Fedora 系统，运行下面的命令来启用仓库：</p>
+<pre><code># dnf config-manager --set-enabled epel-testing
+</code></pre>
+<h3 id="如何在系统中禁用一个仓库">如何在系统中禁用一个仓库</h3>
+<p>无论何时你在默认情况下添加一个新的仓库，它都会启用它们的稳定仓库，这就是为什么我们在运行 <code>yum repolist</code> 命令时获取了仓库信息。如果你不想使用仓库，那么可以通过下面的命令来禁用它。</p>
+<p>为了验证这点，我们将要禁用 <code>epel-testing.repo</code> 和 <code>ius.repo</code>，运行以下命令：</p>
+<pre><code># yum-config-manager --disable epel-testing ius
+
+Loaded plugins: fastestmirror
+==================================================================================== repo: epel-testing =====================================================================================
+[epel-testing]
+bandwidth = 0
+base_persistdir = /var/lib/yum/repos/x86_64/6
+baseurl =
+cache = 0
+cachedir = /var/cache/yum/x86_64/6/epel-testing
+cost = 1000
+enabled = 0
+enablegroups = True
+exclude =
+failovermethod = priority
+ftp_disable_epsv = False
+gpgcadir = /var/lib/yum/repos/x86_64/6/epel-testing/gpgcadir
+gpgcakey =
+gpgcheck = True
+gpgdir = /var/lib/yum/repos/x86_64/6/epel-testing/gpgdir
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+hdrdir = /var/cache/yum/x86_64/6/epel-testing/headers
+http_caching = all
+includepkgs =
+keepalive = True
+mdpolicy = group:primary
+mediaid =
+metadata_expire = 21600
+metalink =
+mirrorlist = https://mirrors.fedoraproject.org/metalink?repo=testing-epel6&amp;arch=x86_64
+mirrorlist_expire = 86400
+name = Extra Packages for Enterprise Linux 6 - Testing - x86_64
+old_base_cache_dir =
+password =
+persistdir = /var/lib/yum/repos/x86_64/6/epel-testing
+pkgdir = /var/cache/yum/x86_64/6/epel-testing/packages
+proxy = False
+proxy_dict =
+proxy_password =
+proxy_username =
+repo_gpgcheck = False
+retries = 10
+skip_if_unavailable = False
+ssl_check_cert_permissions = True
+sslcacert =
+sslclientcert =
+sslclientkey =
+sslverify = True
+throttle = 0
+timeout = 30.0
+username =
+
+========================================================================================= repo: ius =========================================================================================
+[ius]
+bandwidth = 0
+base_persistdir = /var/lib/yum/repos/x86_64/6
+baseurl =
+cache = 0
+cachedir = /var/cache/yum/x86_64/6/ius
+cost = 1000
+enabled = 0
+enablegroups = True
+exclude =
+failovermethod = priority
+ftp_disable_epsv = False
+gpgcadir = /var/lib/yum/repos/x86_64/6/ius/gpgcadir
+gpgcakey =
+gpgcheck = True
+gpgdir = /var/lib/yum/repos/x86_64/6/ius/gpgdir
+gpgkey = file:///etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY
+hdrdir = /var/cache/yum/x86_64/6/ius/headers
+http_caching = all
+includepkgs =
+keepalive = True
+mdpolicy = group:primary
+mediaid =
+metadata_expire = 21600
+metalink =
+mirrorlist = https://mirrors.iuscommunity.org/mirrorlist?repo=ius-centos6&amp;arch=x86_64&amp;protocol=http
+mirrorlist_expire = 86400
+name = IUS Community Packages for Enterprise Linux 6 - x86_64
+old_base_cache_dir =
+password =
+persistdir = /var/lib/yum/repos/x86_64/6/ius
+pkgdir = /var/cache/yum/x86_64/6/ius/packages
+proxy = False
+proxy_dict =
+proxy_password =
+proxy_username =
+repo_gpgcheck = False
+retries = 10
+skip_if_unavailable = False
+ssl_check_cert_permissions = True
+sslcacert =
+sslclientcert =
+sslclientkey =
+sslverify = True
+throttle = 0
+timeout = 30.0
+username =
+</code></pre>
+<p>运行 <code>yum repolist</code> 命令检查 “epel-testing” 和 “ius” 仓库是否被禁用。它被禁用了，我不能看到那些仓库，除了 “epel”。</p>
+<pre><code># yum repolist
+Loaded plugins: fastestmirror, security
+Loading mirror speeds from cached hostfile
+ * epel: mirror.us.leaseweb.net
+repo id                                                                     repo name                                                                                                  status
+base                                                                        CentOS-6 - Base                                                                                             6,706
+centos-sclo-sclo                                                            CentOS-6 - SCLo sclo                                                                                          495
+epel                                        Extra Packages for Enterprise Linux 6 - x86_64                                              12,505
+extras                                                                      CentOS-6 - Extras                                                                                              53
+updates                                                                     CentOS-6 - Updates                                                                                          1,288
+repolist: 21,051
+</code></pre>
+<p>或者，我们可以运行以下命令查看详细信息：</p>
+<pre><code># yum repolist all | grep &quot;epel*\|ius*&quot;
+ * epel: mirror.steadfast.net
+epel                       Extra Packages for Enterprise Linux 6 enabled: 12,509
+epel-debuginfo             Extra Packages for Enterprise Linux 6 disabled
+epel-source                Extra Packages for Enterprise Linux 6 disabled
+epel-testing               Extra Packages for Enterprise Linux 6 disabled
+epel-testing-debuginfo     Extra Packages for Enterprise Linux 6 disabled
+epel-testing-source        Extra Packages for Enterprise Linux 6 disabled
+ius                        IUS Community Packages for Enterprise disabled
+ius-archive                IUS Community Packages for Enterprise disabled
+ius-archive-debuginfo      IUS Community Packages for Enterprise disabled
+ius-archive-source         IUS Community Packages for Enterprise disabled
+ius-debuginfo              IUS Community Packages for Enterprise disabled
+ius-dev                    IUS Community Packages for Enterprise disabled
+ius-dev-debuginfo          IUS Community Packages for Enterprise disabled
+ius-dev-source             IUS Community Packages for Enterprise disabled
+ius-source                 IUS Community Packages for Enterprise disabled
+ius-testing                IUS Community Packages for Enterprise disabled
+ius-testing-debuginfo      IUS Community Packages for Enterprise disabled
+ius-testing-source         IUS Community Packages for Enterprise disabled
+</code></pre>
+<p>对于 Fedora 系统，运行以下命令来启用一个仓库：</p>
+<pre><code># dnf config-manager --set-disabled epel-testing
+</code></pre>
+<p>或者，可以通过手动编辑适当的 repo 文件来完成。为此，打开相应的 repo 文件并将值从 <code>enabled=0</code> 改为 <code>enabled=1</code>（启用仓库）或从 <code>enabled=1</code> 变为 <code>enabled=0</code>（禁用仓库）。</p>
+<p>即从：</p>
+<pre><code>[epel]
+name=Extra Packages for Enterprise Linux 6 - $basearch
+#baseurl=http://download.fedoraproject.org/pub/epel/6/$basearch
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&amp;arch=$basearch
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+</code></pre>
+<p>改为：</p>
+<pre><code>[epel]
+name=Extra Packages for Enterprise Linux 6 - $basearch
+#baseurl=http://download.fedoraproject.org/pub/epel/6/$basearch
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&amp;arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/how-to-add-enable-disable-a-repository-dnf-yum-config-manager-on-linux/">https://www.2daygeek.com/how-to-add-enable-disable-a-repository-dnf-yum-config-manager-on-linux/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/prakash/">Prakash Subramanian</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/MjSeven">MjSeven</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何列出启用的仓库">如何列出启用的仓库</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在系统中添加一个新仓库">如何在系统中添加一个新仓库</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在系统中启用一个仓库">如何在系统中启用一个仓库</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在系统中禁用一个仓库">如何在系统中禁用一个仓库</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201811/20180530 How To Add, Enable And Disable A Repository In Linux","title":"如何在 CentOS 中添加、启用和禁用一个仓库"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

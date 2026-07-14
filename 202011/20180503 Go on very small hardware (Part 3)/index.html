@@ -1,0 +1,310 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Go 语言在极小硬件上的运用（三） - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Go 语言在极小硬件上的运用（三） - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Go 语言在极小硬件上的运用（三） - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202011/20180503 Go on very small hardware (Part 3)#page","@type":"TechArticle","headline":"Go 语言在极小硬件上的运用（三）","inLanguage":"en","name":"Go 语言在极小硬件上的运用（三）","url":"https://zhengqbbb.github.io/pages-dev/202011/20180503 Go on very small hardware (Part 3)","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202011/20180503 Go on very small hardware (Part 3)"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ws281x-led">WS281x LED</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#led-环">LED 环</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#让我们做些有用的事情">让我们做些有用的事情...</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Go 语言在极小硬件上的运用（三）</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202010/24/090026to9c9sweyrw9ww37.png" alt=""></p>
+<p>在本系列的 <a href="https://linux.cn/article-11383-1.html">第一</a> 和 <a href="https://linux.cn/article-12747-1.html">第二</a> 部分中讨论的大多数示例都是以某种方式闪烁的 LED。起初它可能很有趣，但是一段时间后变得有些无聊。让我们做些更有趣的事情……</p>
+<p>…让我们点亮更多的 LED！</p>
+<p><img src="https://ziutek.github.io/images/mcu/f030-demo-board/board.jpg" alt="STM32F030F4P6"></p>
+<h3 id="ws281x-led">WS281x LED</h3>
+<p><a href="http://www.world-semi.com/solution/list-4-1.html">WS281x</a> RGB LED（及其克隆品）非常受欢迎。你可以以单个元素购买、链成长条或组装成矩阵、环或其他形状。</p>
+<p><img src="https://ziutek.github.io/images/led/ws2812b.jpg" alt="WS2812B"></p>
+<p>它们可以串联连接，基于这个事实，你可以只用 MCU 的单个引脚就可以控制一个很长的 LED 灯条。不幸的是，它们的内部控制器使用的物理协议不能直接适用于你在 MCU 中可以找到的任何外围设备。你必须使用 <ruby>位脉冲<rt>bit-banging</rt></ruby>或以特殊方式使用可用的外设。</p>
+<p>哪种可用的解决方案最有效取决于同时控制的 LED 灯条数量。如果你必须驱动 4 到 16 个灯条，那么最有效的方法是 <a href="http://www.martinhubacek.cz/arm/improved-stm32-ws2812b-library">使用定时器和 DMA</a>（请不要忽略这篇文章末尾的链接）。</p>
+<p>如果只需要控制一个或两个灯条，请使用可用的 SPI 或 UART 外设。对于 SPI，你只能在发送的一个字节中编码两个 WS281x 位。由于巧妙地使用了起始位和停止位，UART 允许更密集的编码：每发送一个字节 3 位。</p>
+<p>我在 <a href="http://mikrokontrolery.blogspot.com/2011/03/Diody-WS2812B-sterowanie-XMega-cz-2.html">此站点</a> 上找到了有关 UART 协议如何适用于 WS281x 协议的最佳解释。如果你不懂波兰语，这里是 <a href="https://translate.google.pl/translate?sl=pl&tl=en&u=http://mikrokontrolery.blogspot.com/2011/03/Diody-WS2812B-sterowanie-XMega-cz-2.html">英文翻译</a>。</p>
+<p>基于 WS281x 的 LED 仍然是最受欢迎的，但市场上也有 SPI 控制的 LED：<a href="http://neon-world.com/en/product.php">APA102</a>、<a href="http://www.normandled.com/index.php/Product/view/id/800.html">SK9822</a>。关于它们的三篇有趣的文章在这里：<a href="https://cpldcpu.wordpress.com/2014/08/27/apa102/">1</a>、<a href="https://cpldcpu.wordpress.com/2014/11/30/understanding-the-apa102-superled/">2</a>、<a href="https://cpldcpu.wordpress.com/2016/12/13/sk9822-a-clone-of-the-apa102/">3</a>。</p>
+<h3 id="led-环">LED 环</h3>
+<p>市场上有许多基于 WS2812 的环。我有一个这样的：</p>
+<p><img src="https://ziutek.github.io/images/led/rgbring.jpg" alt="WS2812B"></p>
+<p>它具有 24 个可单独寻址的 RGB LED（WS2812B），并暴露出四个端子：GND、5V、DI 和 DO。通过将 DI（数据输入）端子连接到上一个的 DO（数据输出）端子，可以链接更多的环或其他基于 WS2812 的东西。</p>
+<p>让我们将这个环连接到我们的 STM32F030 板上。我们将使用基于 UART 的驱动程序，因此 DI 应连接到 UART 接头连接器上的 TXD 引脚。 WS2812B LED 需要至少 3.5V 的电源。 24 个 LED 会消耗大量电流，因此在编程/调试期间，最好将环上的 GND 和 5V 端子直接连接到 ST-LINK 编程器上可用的 GND 和 5V 引脚：</p>
+<p><img src="https://ziutek.github.io/images/led/ring-stlink-f030.jpg" alt="WS2812B"></p>
+<p>我们的 STM32F030F4P6 MCU 和整个 STM32 F0、F3、F7、L4 系列具有 F1、F4、L1 MCU 不具备的一项重要功能：它可以反转 UART 信号，因此我们可以将环直接连接到 UART TXD 引脚。如果你不知道我们需要这种反转，那么你可能没有读过我上面提到的 <a href="https://translate.google.pl/translate?sl=pl&tl=en&u=http://mikrokontrolery.blogspot.com/2011/03/Diody-WS2812B-sterowanie-XMega-cz-2.html">文章</a>。</p>
+<p>因此，你不能以这种方式使用流行的 <a href="https://jeelabs.org/article/1649a/">Blue Pill</a> 或 <a href="http://www.st.com/en/evaluation-tools/stm32f4discovery.html">STM32F4-DISCOVERY</a>。使用其 SPI 外设或外部反相器。有关使用 SPI 的 NUCLEO-F411RE，请参见 <a href="https://github.com/ziutek/emgo/tree/master/egpath/src/stm32/examples/minidev/treelights">圣诞树灯</a> 项目作为 UART + 逆变器的示例或 <a href="https://github.com/ziutek/emgo/tree/master/egpath/src/stm32/examples/nucleo-f411re/ws2812">WS2812示例</a>。</p>
+<p>顺便说一下，大多数 DISCOVERY 板可能还有一个问题：它们在 VDD = 3V 而不是 3.3V 的情况下工作。 对于高 DI，WS281x 至少要求电源电压 * 0.7。如果是 5V 电源，则为 3.5V；如果是 4.7V 电源，则为 3.3V；可在 DISCOVERY 的 5V 引脚上找到。如你所见，即使在我们的情况下，第一个 LED 的工作电压也低于规格 0.2V。对于 DISCOVERY 板，如果供电 4.7V，它将工作在低于规格的 0.3V 下；如果供电 5V，它将工作在低于规格 0.5V 下。</p>
+<p>让我们结束这段冗长的介绍并转到代码：</p>
+<pre><code>package main
+
+import (
+    &quot;delay&quot;
+    &quot;math/rand&quot;
+    &quot;rtos&quot;
+
+    &quot;led&quot;
+    &quot;led/ws281x/wsuart&quot;
+
+    &quot;stm32/hal/dma&quot;
+    &quot;stm32/hal/gpio&quot;
+    &quot;stm32/hal/irq&quot;
+    &quot;stm32/hal/system&quot;
+    &quot;stm32/hal/system/timer/systick&quot;
+    &quot;stm32/hal/usart&quot;
+)
+
+var tts *usart.Driver
+
+func init() {
+    system.SetupPLL(8, 1, 48/8)
+    systick.Setup(2e6)
+
+    gpio.A.EnableClock(true)
+    tx := gpio.A.Pin(9)
+
+    tx.Setup(&amp;gpio.Config{Mode: gpio.Alt})
+    tx.SetAltFunc(gpio.USART1_AF1)
+
+    d := dma.DMA1
+    d.EnableClock(true)
+
+    tts = usart.NewDriver(usart.USART1, d.Channel(2, 0), nil, nil)
+    tts.Periph().EnableClock(true)
+    tts.Periph().SetBaudRate(3000000000 / 1390)
+    tts.Periph().SetConf2(usart.TxInv)
+    tts.Periph().Enable()
+    tts.EnableTx()
+
+    rtos.IRQ(irq.USART1).Enable()
+    rtos.IRQ(irq.DMA1_Channel2_3).Enable()
+}
+
+func main() {
+    var rnd rand.XorShift64
+    rnd.Seed(1)
+    rgb := wsuart.GRB
+    strip := wsuart.Make(24)
+    black := rgb.Pixel(0)
+    for {
+        c := led.Color(rnd.Uint32()).Scale(127)
+        pixel := rgb.Pixel(c)
+        for i := range strip {
+            strip[i] = pixel
+            tts.Write(strip.Bytes())
+            delay.Millisec(40)
+        }
+        for i := range strip {
+            strip[i] = black
+            tts.Write(strip.Bytes())
+            delay.Millisec(20)
+        }
+    }
+}
+
+func ttsISR() {
+    tts.ISR()
+}
+
+func ttsDMAISR() {
+    tts.TxDMAISR()
+}
+
+//c:__attribute__((section(&quot;.ISRs&quot;)))
+var ISRs = [...]func(){
+    irq.USART1:          ttsISR,
+    irq.DMA1_Channel2_3: ttsDMAISR,
+}
+</code></pre>
+<h4 id="导入部分">导入部分</h4>
+<p>与前面的示例相比，导入部分中的新内容是 <code>rand/math</code> 包和带有 <code>led/ws281x</code> 子树的 <code>led</code> 包。 <code>led</code> 包本身包含 <code>Color</code> 类型的定义。 <code>led/ws281x/wsuart</code> 定义了 <code>ColorOrder</code>、<code>Pixel</code> 和 <code>Strip</code> 类型。</p>
+<p>我想知道如何使用 <code>image/color</code> 中的 <code>Color</code> 或 <code>RGBA</code> 类型，以及如何以它将实现 <code>image.Image</code> 接口的方式定义 <code>Strip</code>。 但是由于使用了 <a href="https://en.wikipedia.org/wiki/Gamma_correction">gamma 校正</a> 和 大开销的 <code>color/draw</code> 包，我以简单的方式结束：</p>
+<pre><code>type Color uint32
+type Strip []Pixel
+</code></pre>
+<p>使用一些有用的方法。然而，这种情况在未来可能会改变。</p>
+<h4 id="init-函数">init 函数</h4>
+<p><code>init</code> 函数没有太多新颖之处。 UART 波特率从 115200 更改为 3000000000/1390 ≈ 2158273，相当于每个 WS2812 位 1390 纳秒。 CR2 寄存器中的 TxInv 位设置为反转 TXD 信号。</p>
+<h4 id="main-函数">main 函数</h4>
+<p><code>XorShift64</code> 伪随机数生成器用于生成随机颜色。 <a href="https://en.wikipedia.org/wiki/Xorshift">XORSHIFT</a> 是目前由 <code>math/rand</code> 包实现的唯一算法。你必须使用带有非零参数的 <code>Seed</code> 方法显式初始化它。</p>
+<p><code>rgb</code> 变量的类型为 <code>wsuart.ColorOrder</code>，并设置为 WS2812 使用的 GRB 颜色顺序（WS2811 使用 RGB 顺序）。然后用于将颜色转换为像素。</p>
+<p><code>wsuart.Make(24)</code> 创建 24 像素的初始化条带。它等效于：</p>
+<pre><code>strip := make(wsuart.Strip, 24)
+strip.Clear()
+</code></pre>
+<p>其余代码使用随机颜色绘制类似于 “Please Wait…” 微调器的内容。</p>
+<p><code>strip</code> 切片充当帧缓冲区。 <code>tts.Write(strip.Bytes())</code> 将帧缓冲区的内容发送到环。</p>
+<h4 id="中断">中断</h4>
+<p>该程序由处理中断的代码组成，与先前的 <a href="https://ziutek.github.io/2018/04/14/go_on_very_small_hardware2.html#uart">UART 示例</a> 中的代码相同。</p>
+<p>让我们编译并运行：</p>
+<pre><code>$ egc
+$ arm-none-eabi-size cortexm0.elf
+   text    data     bss     dec     hex filename
+  14088     240     204   14532    38c4 cortexm0.elf
+$ openocd -d0 -f interface/stlink.cfg -f target/stm32f0x.cfg -c &#39;init; program cortexm0.elf; reset run; exit&#39;
+</code></pre>
+<p>我跳过了 <code>openocd</code> 的输出。下面的视频显示了该程序的工作原理：</p>
+<p><img src="https://ziutek.github.io/videos/rgbspinner.mp4" alt="video"></p>
+<h3 id="让我们做些有用的事情">让我们做些有用的事情...</h3>
+<p>在 <a href="https://linux.cn/article-11383-1.html">第一部分</a> 的开头，我曾问过：“Go 能深入到多低层，而还能做一些有用的事情？”。 我们的 MCU 实际上是一种低端设备（8 比特的人可能会不同意我的看法），但到目前为止，我们还没有做任何有用的事情。</p>
+<p>所以... 让我们做些有用的事情... 让我们做个时钟！</p>
+<p>在互联网上有许多由 RGB LED 构成的时钟示例。让我们用我们的小板子和 RGB 环制作自己的时钟。我们按照下面的描述更改先前的代码。</p>
+<h4 id="导入部分">导入部分</h4>
+<p>删除 <code>math/rand</code> 包，然后添加 <code>stm32/hal/exti</code>。</p>
+<h4 id="全局变量">全局变量</h4>
+<p>添加两个新的全局变量：<code>btn</code> 和 <code>btnev</code>：</p>
+<pre><code>var (
+    tts   *usart.Driver
+    btn   gpio.Pin
+    btnev rtos.EventFlag
+)
+</code></pre>
+<p>它们将用来处理那些用于设置时钟的 “按钮”。我们的板子除了重置之外没有其他按钮，但是如果没有它，我们仍然可以通过某种方式进行管理。</p>
+<h4 id="init-函数">init 函数</h4>
+<p>将这段代码添加到 <code>init</code> 函数：</p>
+<pre><code>btn = gpio.A.Pin(4)
+
+btn.Setup(&amp;gpio.Config{Mode: gpio.In, Pull: gpio.PullUp})
+ei := exti.Lines(btn.Mask())
+ei.Connect(btn.Port())
+ei.EnableFallTrig()
+ei.EnableRiseTrig()
+ei.EnableIRQ()
+
+rtos.IRQ(irq.EXTI4_15).Enable()
+</code></pre>
+<p>在内部<ruby>上拉电阻<rt>pull-up resistor</rt></ruby>启用的情况下，将 PA4 引脚配置为输入。它已连接至板载 LED，但这不会妨碍任何事情。更重要的是它位于 GND 引脚旁边，所以我们可以使用任何金属物体来模拟按钮并设置时钟。作为奖励，我们还有来自板载 LED 的其他反馈。</p>
+<p>我们使用 EXTI 外设来跟踪 PA4 状态。它被配置为在发生任何更改时都会产生中断。</p>
+<h4 id="btnwait-函数">btnWait 函数</h4>
+<p>定义一个新的辅助函数：</p>
+<pre><code>func btnWait(state int, deadline int64) bool {
+    for btn.Load() != state {
+        if !btnev.Wait(1, deadline) {
+            return false // timeout
+        }
+        btnev.Reset(0)
+    }
+    delay.Millisec(50) // debouncing
+    return true
+}
+</code></pre>
+<p>它等待 “按钮” 引脚上的指定状态，但只等到最后期限出现。这是稍微改进的轮询代码：</p>
+<pre><code>for btn.Load() != state {
+    if rtos.Nanosec() &gt;= deadline {
+        // timeout
+    }
+}
+</code></pre>
+<p>我们的 <code>btnWait</code> 函数不是忙于等待 <code>state</code> 或 <code>deadline</code>，而是使用 <code>rtos.EventFlag</code> 类型的 <code>btnev</code> 变量休眠，直到有事情发生。你当然可以使用通道而不是 <code>rtos.EventFlag</code>，但是后者便宜得多。</p>
+<h4 id="main-函数">main 函数</h4>
+<p>我们需要全新的 <code>main</code> 函数：</p>
+<pre><code>func main() {
+    rgb := wsuart.GRB
+    strip := wsuart.Make(24)
+    ds := 4 * 60 / len(strip) // Interval between LEDs (quarter-seconds).
+    adjust := 0
+    adjspeed := ds
+    for {
+        qs := int(rtos.Nanosec() / 25e7) // Quarter-seconds since reset.
+        qa := qs + adjust
+
+        qa %= 12 * 3600 * 4 // Quarter-seconds since 0:00 or 12:00.
+        hi := len(strip) * qa / (12 * 3600 * 4)
+
+        qa %= 3600 * 4 // Quarter-seconds in the current hour.
+        mi := len(strip) * qa / (3600 * 4)
+
+        qa %= 60 * 4 // Quarter-seconds in the current minute.
+        si := len(strip) * qa / (60 * 4)
+
+        hc := led.Color(0x550000)
+        mc := led.Color(0x005500)
+        sc := led.Color(0x000055)
+
+        // Blend the colors if the hands of the clock overlap.
+        if hi == mi {
+            hc |= mc
+            mc = hc
+        }
+        if mi == si {
+            mc |= sc
+            sc = mc
+        }
+        if si == hi {
+            sc |= hc
+            hc = sc
+        }
+
+        // Draw the clock and write to the ring.
+        strip.Clear()
+        strip[hi] = rgb.Pixel(hc)
+        strip[mi] = rgb.Pixel(mc)
+        strip[si] = rgb.Pixel(sc)
+        tts.Write(strip.Bytes())
+
+        // Sleep until the button pressed or the second hand should be moved.
+        if btnWait(0, int64(qs+ds)*25e7) {
+            adjust += adjspeed
+            // Sleep until the button is released or timeout.
+            if !btnWait(1, rtos.Nanosec()+100e6) {
+                if adjspeed &lt; 5*60*4 {
+                    adjspeed += 2 * ds
+                }
+                continue
+            }
+            adjspeed = ds
+        }
+    }
+}
+</code></pre>
+<p>我们使用 <code>rtos.Nanosec</code> 函数代替 <code>time.Now</code> 来获取当前时间。这样可以节省大量的闪存，但也使我们的时钟变成了不知道日、月、年的老式设备，最糟糕的是它无法处理夏令时的变化。</p>
+<p>我们的环有 24 个 LED，因此秒针的显示精度可以达到 2.5 秒。为了不牺牲这种精度并获得流畅的运行效果，我们使用 1/4 秒作为基准间隔。半秒就足够了，但四分之一秒更准确，而且与 16 和 48 个 LED 配合使用也很好。</p>
+<p>红色、绿色和蓝色分别用于时针、分针和秒针。这允许我们使用简单的“逻辑或操作”进行颜色混合。我们 <code>Color.Blend</code> 方法可以混合任意颜色，但是我们闪存不多，所以我们选择最简单的解决方案。</p>
+<p>我们只有在秒针移动时才重画时钟。</p>
+<pre><code>btnWait(0, int64(qs+ds)*25e7)
+</code></pre>
+<p>上面的这行代码等待的正是那一刻，或者是按钮的按下。</p>
+<p>每按一下按钮就会把时钟向前调一调。按住按钮一段时间会加速调整。</p>
+<h4 id="中断">中断</h4>
+<p>定义新的中断处理程序：</p>
+<pre><code>func exti4_15ISR() {
+    pending := exti.Pending() &amp; 0xFFF0
+    pending.ClearPending()
+    if pending&amp;exti.Lines(btn.Mask()) != 0 {
+        btnev.Signal(1)
+    }
+}
+</code></pre>
+<p>并将 <code>irq.EXTI4_15: exti4_15ISR</code> 条目添加到 ISR 数组。</p>
+<p>该处理程序（或中断服务程序）处理 EXTI4_15 IRQ。 Cortex-M0 CPU 支持的 IRQ 明显少于其较大的同类兄弟处理器，因此你经常可以看到一个 IRQ 被多个中断源共享。在我们的例子中，一个 IRQ 由 12 个 EXTI 线共享。</p>
+<p>exti4_15ISR 读取所有挂起的位，并从中选择 12 个更高的有效位。接下来，它清除 EXTI 中选中的位并开始处理它们。在我们的例子中，仅检查第 4 位。 <code>btnev.Signal(1)</code> 引发 <code>btnev.Wait(1, deadline)</code> 唤醒并返回 <code>true</code>。</p>
+<p>你可以在 <a href="https://github.com/ziutek/emgo/tree/master/egpath/src/stm32/examples/f030-demo-board/ws2812-clock">Github</a> 上找到完整的代码。让我们来编译它：</p>
+<pre><code>$ egc
+$ arm-none-eabi-size cortexm0.elf
+   text    data     bss     dec     hex filename
+  15960     240     216   16416    4020 cortexm0.elf
+</code></pre>
+<p>这里所有的改进只得到 184 个字节。让我们再次重新构建所有内容，但这次在 typeinfo 中不使用任何类型和字段名：</p>
+<pre><code>$ cd $HOME/emgo
+$ ./clean.sh
+$ cd $HOME/firstemgo
+$ egc -nf -nt
+$ arm-none-eabi-size cortexm0.elf
+   text    data     bss     dec     hex filename
+  15120     240     216   15576    3cd8 cortexm0.elf
+</code></pre>
+<p>现在，有了千字节的空闲空间，你可以改进一些东西。让我们看看它是如何工作的：</p>
+<p><img src="https://ziutek.github.io/videos/rgbclock.mp4" alt="video"></p>
+<p>我不知道我是怎么精确打到 3:00 的！？</p>
+<p>以上就是所有内容！在第 4 部分（本系列的结束）中，我们将尝试在 LCD 上显示一些内容。（LCTT 译注：然而烂尾了，第三篇写于 2018 年，整个博客当年就停更了。）</p>
+<hr>
+<p>via: <a href="https://ziutek.github.io/2018/05/03/go_on_very_small_hardware3.html">https://ziutek.github.io/2018/05/03/go_on_very_small_hardware3.html</a></p>
+<p>作者：<a href="https://ziutek.github.io">Michał Derkacz</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/gxlct008">gxlct008</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ws281x-led">WS281x LED</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#led-环">LED 环</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#让我们做些有用的事情">让我们做些有用的事情...</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202011/20180503 Go on very small hardware (Part 3)","title":"Go 语言在极小硬件上的运用（三）"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

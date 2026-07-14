@@ -1,0 +1,295 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>利用 ONLYOFFICE 将在线文档编辑器集成到 Python Web 应用程序中 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="利用 ONLYOFFICE 将在线文档编辑器集成到 Python Web 应用程序中 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="利用 ONLYOFFICE 将在线文档编辑器集成到 Python Web 应用程序中 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202101/20190924 Integrate online documents editors, into a Python web app using ONLYOFFICE#page","@type":"TechArticle","headline":"利用 ONLYOFFICE 将在线文档编辑器集成到 Python Web 应用程序中","inLanguage":"en","name":"利用 ONLYOFFICE 将在线文档编辑器集成到 Python Web 应用程序中","url":"https://zhengqbbb.github.io/pages-dev/202101/20190924 Integrate online documents editors, into a Python web app using ONLYOFFICE","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202101/20190924 Integrate online documents editors, into a Python web app using ONLYOFFICE"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1前置需求">1、前置需求</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2查看文档">2、查看文档</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3编辑文档">3、编辑文档</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4如何在-python-应用中利用-onlyoffice-协同编辑文档">4、如何在 Python 应用中利用 ONLYOFFICE 协同编辑文档</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5如何在-python-应用中利用-onlyoffice-保存文档">5、如何在 Python 应用中利用 ONLYOFFICE 保存文档</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6管理用户">6、管理用户</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>利用 ONLYOFFICE 将在线文档编辑器集成到 Python Web 应用程序中</h1><p><img src="https://i1.wp.com/opensourceforu.com/wp-content/uploads/2016/09/Typist-composing-text-in-laptop.jpg?resize=696%2C420&ssl=1" alt="" title="Typist composing text in laptop"></p>
+<p><a href="https://www.onlyoffice.com/en/">ONLYOFFICE</a> 是根据 GNU AGPL v.3 许可证条款分发的开源协作办公套件。它包含三个用于文本文档、电子表格和演示文稿的编辑器，并具有以下功能:</p>
+<ul>
+<li>查看，编辑和协同编辑 <code>.docx</code>、<code>.xlsx</code>、<code>.pptx</code> 文件。OOXML 作为一种核心格式，可确保与 Microsoft Word、Excel 和 PowerPoint 文件的高度兼容性。</li>
+<li>通过内部转换为 OOXML，编辑其他流行格式（<code>.odt</code>、<code>.rtf</code>、<code>.txt</code>、<code>.html</code>、<code>.ods</code>、<code>.csv</code>、<code>.odp</code>）。</li>
+<li>熟悉的选项卡式界面。</li>
+<li>协作工具：两种协同编辑模式（快速和严谨），跟踪更改，评论和集成聊天。</li>
+<li>灵活的访问权限管理：完全访问权限、只读、审阅、表单填写和评论。</li>
+<li>使用 API 构建附加组件。</li>
+<li>250 种可用语言和象形字母表。</li>
+</ul>
+<p>通过 API，开发人员可以将 ONLYOFFICE 编辑器集成到网站和利用程序设计语言编写的应用程序中，并能配置和管理编辑器。</p>
+<p>要集成 ONLYOFFICE 编辑器，我们需要一个集成应用程序来连接编辑器（ONLYOFFICE 文档服务器）和服务。 要在你的界面中使用编辑器，因该授予 ONLYOFFICE 以下权限：</p>
+<ul>
+<li>添加并执行自定义代码。</li>
+<li>用于下载和保存文件的匿名访问权限。这意味着编辑器仅与服务器端的服务通信，而不包括客户端的任何用户授权数据（浏览器 cookies）。</li>
+<li>在用户界面添加新按钮（例如，“在 ONLYOFFICE 中打开”、“在 ONLYOFFICE 中编辑”）。</li>
+<li>开启一个新页面，ONLYOFFICE 可以在其中执行脚本以添加编辑器。</li>
+<li>能够指定文档服务器连接设置。</li>
+</ul>
+<p>流行的协作解决方案的成功集成案例有很多，如 Nextcloud、ownCloud、Alfresco、Confluence 和 SharePoint，都是通过 ONLYOFFICE 提供的官方即用型连接器实现的。</p>
+<p>实际的集成案例之一是 ONLYOFFICE 编辑器与以 C＃ 编写的开源协作平台的集成。该平台具有文档和项目管理、CRM、电子邮件聚合器、日历、用户数据库、博客、论坛、调查、Wiki 和即时通讯程序的功能。</p>
+<p>将在线编辑器与 CRM 和项目模块集成，你可以：</p>
+<ul>
+<li>文档关联到 CRM 时机和容器、项目任务和讨论，甚至创建一个单独的文件夹，其中包含与项目相关的文档、电子表格和演示文稿。</li>
+<li>直接在 CRM 或项目模块中创建新的文档、工作表和演示文稿。</li>
+<li>打开和编辑关联的文档，或者下载和删除。</li>
+<li>将联系人从 CSV 文件批量导入到 CRM 中，并将客户数据库导出为 CSV 文件。</li>
+</ul>
+<p>在“邮件”模块中，你可以关联存储在“文档模块”中的文件，或者将指向所需文档的链接插入到邮件正文中。 当 ONLYOFFICE 用户收到带有附件的文档的消息时，他们可以：下载附件、在浏览器中查看文件、打开文件进行编辑或将其保存到“文档模块”。 如上所述，如果格式不同于 OOXML ，则文件将自动转换为 <code>.docx</code>、<code>.xlsx</code>、<code>.pptx</code>，并且其副本也将以原始格式保存。</p>
+<p>在本文中，你将看到 ONLYOFFICE 与最流行的编程语言之一的 Python 编写的文档管理系统的集成过程。 以下步骤将向你展示如何创建所有必要的部分，以使在 DMS（<ruby>文档管理系统<rt>Document Management System</rt></ruby>）界面内的文档中可以进行协同工作成为可能：查看、编辑、协同编辑、保存文件和用户访问管理，并可以作为服务的示例集成到 Python 应用程序中。</p>
+<h3 id="1前置需求">1、前置需求</h3>
+<p>首先，创建集成过程的关键组件：<a href="https://www.onlyoffice.com/en/developer-edition.aspx">ONLYOFFICE 文档服务器</a> 和用 Python 编写的文件管理系统。</p>
+<h4 id="11onlyoffice-文档服务器">1.1、ONLYOFFICE 文档服务器</h4>
+<p>要安装 ONLYOFFICE 文档服务器，你可以从多个安装选项中进行选择：编译 GitHub 上可用的源代码，使用 <code>.deb</code> 或 <code>.rpm</code> 软件包亦或 Docker 镜像。</p>
+<p>我们推荐使用下面这条命令利用 Docker 映像安装文档服务器和所有必需的依赖。请注意，选择此方法，你需要安装最新的 Docker 版本。</p>
+<pre><code>docker run -itd -p 80:80 onlyoffice/documentserver-de
+</code></pre>
+<h4 id="12利用-python-开发-dms">1.2、利用 Python 开发 DMS</h4>
+<p>如果已经拥有一个，请检查它是否满足以下条件：</p>
+<ul>
+<li>包含需要打开以查看/编辑的保留文件</li>
+<li>允许下载文件</li>
+</ul>
+<p>对于该应用程序，我们将使用 Bottle 框架。我们将使用以下命令将其安装在工作目录中：</p>
+<pre><code>pip install bottle
+</code></pre>
+<p>然后我们创建应用程序代码 <code>main.py</code> 和模板 <code>index.tpl</code>。</p>
+<p>我们将以下代码添加到 <code>main.py</code> 文件中：</p>
+<pre><code>from bottle import route, run, template, get, static_file # connecting the framework and the necessary components
+@route(&#39;/&#39;) # setting up routing for requests for /
+def index():
+    return template(&#39;index.tpl&#39;) # showing template in response to request
+
+run(host=&quot;localhost&quot;, port=8080) # running the application on port 8080
+</code></pre>
+<p>一旦我们运行该应用程序，点击 <a href="http://localhost:8080">http://localhost:8080</a> 就会在浏览器上呈现一个空白页面 。
+为了使文档服务器能够创建新文档，添加默认文件并在模板中生成其名称列表，我们应该创建一个文件夹 <code>files</code> 并将3种类型文件（<code>.docx</code>、<code>.xlsx</code> 和 <code>.pptx</code>）放入其中。</p>
+<p>要读取这些文件的名称，我们使用 <code>listdir</code> 组件（模块）：</p>
+<pre><code>from os import listdir
+</code></pre>
+<p>现在让我们为文件夹中的所有文件名创建一个变量：</p>
+<pre><code>sample_files = [f for f in listdir(&#39;files&#39;)]
+</code></pre>
+<p>要在模板中使用此变量，我们需要通过 <code>template</code> 方法传递它：</p>
+<pre><code>def index():
+    return template(&#39;index.tpl&#39;, sample_files=sample_files)
+</code></pre>
+<p>这是模板中的这个变量：</p>
+<pre><code>% for file in sample_files:
+  &lt;div&gt;
+    &lt;span&gt;{{file}}&lt;/span&gt;
+  &lt;/div&gt;
+% end
+</code></pre>
+<p>我们重新启动应用程序以查看页面上的文件名列表。</p>
+<p>使这些文件可用于所有应用程序用户的方法如下：</p>
+<pre><code>@get(&quot;/files/&lt;filepath:re:.*\.*&gt;&quot;)
+def show_sample_files(filepath):
+    return static_file(filepath, root=&quot;files&quot;)
+</code></pre>
+<h3 id="2查看文档">2、查看文档</h3>
+<p>所有组件准备就绪后，让我们添加函数以使编辑者可以利用应用接口操作。</p>
+<p>第一个选项使用户可以打开和查看文档。连接模板中的文档编辑器 API ：</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;editor_url/web-apps/apps/api/documents/api.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p><code>editor_url</code> 是文档编辑器的链接接口。</p>
+<p>打开每个文件以供查看的按钮：</p>
+<pre><code>&lt;button onclick=&quot;view(&#39;files/{{file}}&#39;)&quot;&gt;view&lt;/button&gt;
+</code></pre>
+<p>现在我们需要添加带有 <code>id</code> 的 <code>div</code> 标签，打开文档编辑器：</p>
+<pre><code>&lt;div id=&quot;editor&quot;&gt;&lt;/div&gt;
+</code></pre>
+<p>要打开编辑器，必须调用调用一个函数：</p>
+<pre><code>&lt;script&gt;
+function view(filename) {
+    if (/docx$/.exec(filename)) {
+        filetype = &quot;text&quot;
+    }
+    if (/xlsx$/.exec(filename)) {
+        filetype = &quot;spreadsheet&quot;
+    }
+    if (/pptx$/.exec(filename)) {
+        filetype = &quot;presentation&quot;,
+        title: filename
+    }
+​
+    new DocsAPI.DocEditor(&quot;editor&quot;,
+        {
+            documentType: filetype,
+            document: {
+                url: &quot;host_url&quot; + &#39;/&#39; + filename,
+                title: filename
+            },
+            editorConfig: {mode: &#39;view&#39;}
+        });
+  }
+&lt;/script&gt;
+</code></pre>
+<p>DocEditor 函数有两个参数：将在其中打开编辑器的元素 <code>id</code> 和带有编辑器设置的 <code>JSON</code>。
+在此示例中，使用了以下必需参数：</p>
+<ul>
+<li><code>documentType</code> 由其格式标识（<code>.docx</code>、<code>.xlsx</code>、<code>.pptx</code> 用于相应的文本、电子表格和演示文稿）</li>
+<li><code>document.url</code> 是你要打开的文件链接。</li>
+<li><code>editorConfig.mode</code>。</li>
+</ul>
+<p>我们还可以添加将在编辑器中显示的 <code>title</code>。</p>
+<p>接下来，我们可以在 Python 应用程序中查看文档。</p>
+<h3 id="3编辑文档">3、编辑文档</h3>
+<p>首先，添加 “Edit”（编辑）按钮：</p>
+<pre><code>&lt;button onclick=&quot;edit(&#39;files/{{file}}&#39;)&quot;&gt;edit&lt;/button&gt;
+</code></pre>
+<p>然后创建一个新功能，打开文件进行编辑。类似于查看功能。</p>
+<p>现在创建 3 个函数：</p>
+<pre><code>&lt;script&gt;
+    var editor;
+    function view(filename) {
+        if (editor) {
+            editor.destroyEditor()
+        }
+        editor = new DocsAPI.DocEditor(&quot;editor&quot;,
+            {
+                documentType: get_file_type(filename),
+                document: {
+                    url: &quot;host_url&quot; + &#39;/&#39; + filename,
+                    title: filename
+                },
+                editorConfig: {mode: &#39;view&#39;}
+            });
+    }
+
+    function edit(filename) {
+        if (editor) {
+            editor.destroyEditor()
+        }
+        editor = new DocsAPI.DocEditor(&quot;editor&quot;,
+            {
+                documentType: get_file_type(filename),
+                document: {
+                    url: &quot;host_url&quot; + &#39;/&#39; + filename,
+                    title: filename
+                }
+            });
+    }
+
+    function get_file_type(filename) {
+        if (/docx$/.exec(filename)) {
+            return &quot;text&quot;
+        }
+        if (/xlsx$/.exec(filename)) {
+            return &quot;spreadsheet&quot;
+        }
+        if (/pptx$/.exec(filename)) {
+            return &quot;presentation&quot;
+        }
+    }
+&lt;/script&gt;
+</code></pre>
+<p><code>destroyEditor</code> 被调用以关闭一个打开的编辑器。</p>
+<p>你可能会注意到，<code>edit()</code> 函数中缺少 <code>editorConfig</code> 参数，因为默认情况下它的值是：<code>{&quot;mode&quot;:&quot;edit&quot;}</code>。</p>
+<p>现在，我们拥有了打开文档以在 Python 应用程序中进行协同编辑的所有功能。</p>
+<h3 id="4如何在-python-应用中利用-onlyoffice-协同编辑文档">4、如何在 Python 应用中利用 ONLYOFFICE 协同编辑文档</h3>
+<p>通过在编辑器中设置对同一文档使用相同的 <code>document.key</code> 来实现协同编辑。 如果没有此键值，则每次打开文件时，编辑器都会创建编辑会话。</p>
+<p>为每个文档设置唯一键，以使用户连接到同一编辑会话时进行协同编辑。 密钥格式应为以下格式：<code>filename +&quot;_key&quot;</code>。下一步是将其添加到当前文档的所有配置中。</p>
+<pre><code>document: {
+    url: &quot;host_url&quot; + &#39;/&#39; + filepath,
+    title: filename,
+    key: filename + &#39;_key&#39;
+},
+</code></pre>
+<h3 id="5如何在-python-应用中利用-onlyoffice-保存文档">5、如何在 Python 应用中利用 ONLYOFFICE 保存文档</h3>
+<p>每次我们更改并保存文件时，ONLYOFFICE 都会存储其所有版本。 让我们仔细看看它是如何工作的。 关闭编辑器后，文档服务器将构建要保存的文件版本并将请求发送到 <code>callbackUrl</code> 地址。 该请求包含 <code>document.key</code>和指向刚刚构建的文件的链接。</p>
+<p><code>document.key</code> 用于查找文件的旧版本并将其替换为新版本。 由于这里没有任何数据库，因此仅使用 <code>callbackUrl</code> 发送文件名。</p>
+<p>在 <code>editorConfig.callbackUrl</code> 的设置中指定 <code>callbackUrl</code> 参数并将其添加到 <code>edit()</code> 方法中：</p>
+<pre><code> function edit(filename) {
+        const filepath = &#39;files/&#39; + filename;
+        if (editor) {
+            editor.destroyEditor()
+        }
+        editor = new DocsAPI.DocEditor(&quot;editor&quot;,
+            {
+                documentType: get_file_type(filepath),
+                document: {
+                    url: &quot;host_url&quot; + &#39;/&#39; + filepath,
+                    title: filename, 
+                    key: filename + &#39;_key&#39;
+                }
+                ,
+                editorConfig: {
+                    mode: &#39;edit&#39;,
+                    callbackUrl: &quot;host_url&quot; + &#39;/callback&#39; + &#39;&amp;amp;filename=&#39; + filename  // add file name as a request parameter
+                }
+            });
+    }
+</code></pre>
+<p>编写一种方法，在获取到 POST 请求发送到 <code>/callback</code> 地址后将保存文件：</p>
+<pre><code>@post(&quot;/callback&quot;) # processing post requests for /callback
+def callback():
+    if request.json[&#39;status&#39;] == 2:
+        file = requests.get(request.json[&#39;url&#39;]).content
+        with open(&#39;files/&#39; + request.query[&#39;filename&#39;], &#39;wb&#39;) as f:
+            f.write(file)
+    return &quot;{\&quot;error\&quot;:0}&quot;
+​
+</code></pre>
+<p><code># status 2</code> 是已生成的文件，当我们关闭编辑器时，新版本的文件将保存到存储器中。</p>
+<h3 id="6管理用户">6、管理用户</h3>
+<p>如果应用中有用户，并且你需要查看谁在编辑文档，请在编辑器的配置中输入其标识符（<code>id</code>和<code>name</code>）。</p>
+<p>在界面中添加选择用户的功能：</p>
+<pre><code>&lt;select id=&quot;user_selector&quot; onchange=&quot;pick_user()&quot;&gt;
+    &lt;option value=&quot;1&quot; selected=&quot;selected&quot;&gt;JD&lt;/option&gt;
+    &lt;option value=&quot;2&quot;&gt;Turk&lt;/option&gt;
+    &lt;option value=&quot;3&quot;&gt;Elliot&lt;/option&gt;
+    &lt;option value=&quot;4&quot;&gt;Carla&lt;/option&gt;
+&lt;/select&gt;
+</code></pre>
+<p>如果在标记 <code>&lt;script&gt;</code> 的开头添加对函数 <code>pick_user()</code> 的调用，负责初始化函数自身 <code>id</code> 和 <code>name</code> 变量。</p>
+<pre><code>function pick_user() {
+    const user_selector = document.getElementById(&quot;user_selector&quot;);
+    this.current_user_name = user_selector.options[user_selector.selectedIndex].text;
+    this.current_user_id = user_selector.options[user_selector.selectedIndex].value;
+}
+</code></pre>
+<p>使用 <code>editorConfig.user.id</code> 和 <code>editorConfig.user.name</code> 来配置用户设置。将这些参数添加到文件编辑函数中的编辑器配置中。</p>
+<pre><code>function edit(filename) {
+    const filepath = &#39;files/&#39; + filename;
+    if (editor) {
+        editor.destroyEditor()
+    }
+    editor = new DocsAPI.DocEditor(&quot;editor&quot;,
+        {
+            documentType: get_file_type(filepath),
+            document: {
+                url: &quot;host_url&quot; + &#39;/&#39; + filepath,
+                title: filename
+            },
+            editorConfig: {
+                mode: &#39;edit&#39;,
+                callbackUrl: &quot;host_url&quot; + &#39;/callback&#39; + &#39;?filename=&#39; + filename,
+                user: {
+                    id: this.current_user_id,
+                    name: this.current_user_name
+                }
+            }
+        });
+}
+</code></pre>
+<p>使用这种方法，你可以将 ONLYOFFICE 编辑器集成到用 Python 编写的应用程序中，并获得用于在文档上进行协同工作的所有必要工具。有关更多集成示例（Java、Node.js、PHP、Ruby），请参考官方的 <a href="https://api.onlyoffice.com/editors/basic">API 文档</a>。</p>
+<hr>
+<p>via: <a href="https://opensourceforu.com/2019/09/integrate-online-documents-editors-into-a-python-web-app-using-onlyoffice/">https://opensourceforu.com/2019/09/integrate-online-documents-editors-into-a-python-web-app-using-onlyoffice/</a></p>
+<p>作者：<a href="https://opensourceforu.com/author/aashima-sharma/">Aashima Sharma</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/stevenzdg988">stevenzdg988</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1前置需求">1、前置需求</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2查看文档">2、查看文档</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3编辑文档">3、编辑文档</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4如何在-python-应用中利用-onlyoffice-协同编辑文档">4、如何在 Python 应用中利用 ONLYOFFICE 协同编辑文档</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5如何在-python-应用中利用-onlyoffice-保存文档">5、如何在 Python 应用中利用 ONLYOFFICE 保存文档</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6管理用户">6、管理用户</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202101/20190924 Integrate online documents editors, into a Python web app using ONLYOFFICE","title":"利用 ONLYOFFICE 将在线文档编辑器集成到 Python Web 应用程序中"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

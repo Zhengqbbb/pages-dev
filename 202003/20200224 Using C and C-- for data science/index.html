@@ -1,0 +1,317 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>在数据科学中使用 C 和 C++ - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="在数据科学中使用 C 和 C++ - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="在数据科学中使用 C 和 C++ - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202003/20200224 Using C and C-- for data science#page","@type":"TechArticle","headline":"在数据科学中使用 C 和 C++","inLanguage":"en","name":"在数据科学中使用 C 和 C++","url":"https://zhengqbbb.github.io/pages-dev/202003/20200224 Using C and C-- for data science","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202003/20200224 Using C and C-- for data science"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#编程任务">编程任务</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#c-语言的方式">C 语言的方式</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#c11-方式">C++11 方式</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>在数据科学中使用 C 和 C++</h1><blockquote>
+<p>让我们使用 C99 和 C++11 完成常见的数据科学任务。</p>
+</blockquote>
+<p><img src="https://opensource.com/sites/default/files/styles/image-full-size/public/lead-images/metrics_data_dashboard_system_computer_analytics.png?itok=oxAeIEI-" alt="metrics and data shown on a computer screen" title="metrics and data shown on a computer screen"></p>
+<p>虽然 <a href="https://opensource.com/article/18/9/top-3-python-libraries-data-science">Python</a> 和 <a href="https://opensource.com/article/19/5/learn-python-r-data-science">R</a> 之类的语言在数据科学中越来越受欢迎，但是 C 和 C++ 对于高效的数据科学来说是一个不错的选择。在本文中，我们将使用 <a href="https://en.wikipedia.org/wiki/C99">C99</a> 和 <a href="https://en.wikipedia.org/wiki/C%2B%2B11">C++11</a> 编写一个程序，该程序使用 <a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe 的四重奏</a>数据集，下面将对其进行解释。</p>
+<p>我在一篇涉及 <a href="https://linux.cn/article-11943-1.html">Python 和 GNU Octave</a> 的文章中写了我不断学习编程语言的动机，值得大家回顾。这里所有的程序都需要在<a href="https://en.wikipedia.org/wiki/Command-line_interface">命令行</a>上运行，而不是在<a href="https://en.wikipedia.org/wiki/Graphical_user_interface">图形用户界面（GUI）</a>上运行。完整的示例可在 <a href="https://gitlab.com/cristiano.fontana/polyglot_fit">polyglot_fit 存储库</a>中找到。</p>
+<h3 id="编程任务">编程任务</h3>
+<p>你将在本系列中编写的程序：</p>
+<ul>
+<li>从 <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV 文件</a>中读取数据</li>
+<li>用直线插值数据（即 <code>f(x)=m ⋅ x + q</code>）</li>
+<li>将结果绘制到图像文件</li>
+</ul>
+<p>这是许多数据科学家遇到的普遍情况。示例数据是 <a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe 的四重奏</a>的第一组，如下表所示。这是一组人工构建的数据，当拟合直线时可以提供相同的结果，但是它们的曲线非常不同。数据文件是一个文本文件，其中的制表符用作列分隔符，前几行作为标题。该任务将仅使用第一组（即前两列）。</p>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202002/29/122805h3yrs1dkrgysssxk.png" alt=""></p>
+<h3 id="c-语言的方式">C 语言的方式</h3>
+<p><a href="https://en.wikipedia.org/wiki/C_%28programming_language%29">C</a> 语言是通用编程语言，是当今使用最广泛的语言之一（依据 <a href="https://www.tiobe.com/tiobe-index/">TIOBE 指数</a>、<a href="https://redmonk.com/sogrady/2019/07/18/language-rankings-6-19/">RedMonk 编程语言排名</a>、<a href="http://pypl.github.io/PYPL.html">编程语言流行度指数</a>和 <a href="https://octoverse.github.com/">GitHub Octoverse 状态</a> 得来）。这是一种相当古老的语言（大约诞生在 1973 年），并且用它编写了许多成功的程序（例如 Linux 内核和 Git 仅是其中的两个例子）。它也是最接近计算机内部运行机制的语言之一，因为它直接用于操作内存。它是一种<a href="https://en.wikipedia.org/wiki/Compiled_language">编译语言</a>；因此，源代码必须由<a href="https://en.wikipedia.org/wiki/Compiler">编译器</a>转换为<a href="https://en.wikipedia.org/wiki/Machine_code">机器代码</a>。它的<a href="https://en.wikipedia.org/wiki/C_standard_library">标准库</a>很小，功能也不多，因此人们开发了其它库来提供缺少的功能。</p>
+<p>我最常在<a href="https://en.wiktionary.org/wiki/number-crunching">数字运算</a>中使用该语言，主要是因为其性能。我觉得使用起来很繁琐，因为它需要很多<a href="https://en.wikipedia.org/wiki/Boilerplate_code">样板代码</a>，但是它在各种环境中都得到了很好的支持。C99 标准是最新版本，增加了一些漂亮的功能，并且得到了编译器的良好支持。</p>
+<p>我将一路介绍 C 和 C++ 编程的必要背景，以便初学者和高级用户都可以继续学习。</p>
+<h4 id="安装">安装</h4>
+<p>要使用 C99 进行开发，你需要一个编译器。我通常使用 <a href="https://clang.llvm.org/">Clang</a>，不过 <a href="https://gcc.gnu.org/">GCC</a> 是另一个有效的开源编译器。对于线性拟合，我选择使用 <a href="https://www.gnu.org/software/gsl/">GNU 科学库</a>。对于绘图，我找不到任何明智的库，因此该程序依赖于外部程序：<a href="http://www.gnuplot.info/">Gnuplot</a>。该示例还使用动态数据结构来存储数据，该结构在<a href="https://en.wikipedia.org/wiki/Berkeley_Software_Distribution">伯克利软件分发版（BSD）</a>中定义。</p>
+<p>在 <a href="https://getfedora.org/">Fedora</a> 中安装很容易：</p>
+<pre><code>sudo dnf install clang gnuplot gsl gsl-devel
+</code></pre>
+<h4 id="代码注释">代码注释</h4>
+<p>在 C99 中，<a href="https://en.wikipedia.org/wiki/Comment_(computer_programming)">注释</a>的格式是在行的开头放置 <code>//</code>，行的其它部分将被解释器丢弃。另外，<code>/*</code> 和 <code>*/</code> 之间的任何内容也将被丢弃。</p>
+<pre><code>// 这是一个注释，会被解释器忽略
+/* 这也被忽略 */
+</code></pre>
+<h4 id="必要的库">必要的库</h4>
+<p>库由两部分组成：</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Include_directive">头文件</a>，其中包含函数说明</li>
+<li>包含函数定义的源文件</li>
+</ul>
+<p>头文件包含在源文件中，而库文件的源文件则<a href="https://en.wikipedia.org/wiki/Linker_%28computing%29">链接</a>到可执行文件。因此，此示例所需的头文件是：</p>
+<pre><code>// 输入/输出功能
+#include &lt;stdio.h&gt;
+// 标准库
+#include &lt;stdlib.h&gt;
+// 字符串操作功能
+#include &lt;string.h&gt;
+// BSD 队列
+#include &lt;sys/queue.h&gt;
+// GSL 科学功能
+#include &lt;gsl/gsl_fit.h&gt;
+#include &lt;gsl/gsl_statistics_double.h&gt;
+</code></pre>
+<h4 id="主函数">主函数</h4>
+<p>在 C 语言中，程序必须位于称为主函数 <a href="https://en.wikipedia.org/wiki/Entry_point#C_and_C++">main()</a> 的特殊函数内：</p>
+<pre><code>int main(void) {
+    ...
+}
+</code></pre>
+<p>这与上一教程中介绍的 Python 不同，后者将运行在源文件中找到的所有代码。</p>
+<h4 id="定义变量">定义变量</h4>
+<p>在 C 语言中，变量必须在使用前声明，并且必须与类型关联。每当你要使用变量时，都必须决定要在其中存储哪种数据。你也可以指定是否打算将变量用作常量值，这不是必需的，但是编译器可以从此信息中受益。 以下来自存储库中的 <a href="https://gitlab.com/cristiano.fontana/polyglot_fit/-/blob/master/fitting_C99.c">fitting_C99.c 程序</a>：</p>
+<pre><code>const char *input_file_name = &quot;anscombe.csv&quot;;
+const char *delimiter = &quot;\t&quot;;
+const unsigned int skip_header = 3;
+const unsigned int column_x = 0;
+const unsigned int column_y = 1;
+const char *output_file_name = &quot;fit_C99.csv&quot;;
+const unsigned int N = 100;
+</code></pre>
+<p>C 语言中的数组不是动态的，从某种意义上说，数组的长度必须事先确定（即，在编译之前）：</p>
+<pre><code>int data_array[1024];
+</code></pre>
+<p>由于你通常不知道文件中有多少个数据点，因此请使用<a href="https://en.wikipedia.org/wiki/Linked_list#Singly_linked_list">单链列表</a>。这是一个动态数据结构，可以无限增长。幸运的是，BSD <a href="http://man7.org/linux/man-pages/man3/queue.3.html">提供了链表</a>。这是一个示例定义：</p>
+<pre><code>struct data_point {
+    double x;
+    double y;
+
+    SLIST_ENTRY(data_point) entries;
+};
+
+SLIST_HEAD(data_list, data_point) head = SLIST_HEAD_INITIALIZER(head);
+SLIST_INIT(&amp;head);
+</code></pre>
+<p>该示例定义了一个由结构化值组成的 <code>data_point</code> 列表，该结构化值同时包含 <code>x</code> 值和 <code>y</code> 值。语法相当复杂，但是很直观，详细描述它就会太冗长了。</p>
+<h4 id="打印输出">打印输出</h4>
+<p>要在终端上打印，可以使用 <a href="https://en.wikipedia.org/wiki/Printf_format_string">printf()</a> 函数，其功能类似于 Octave 的 <code>printf()</code> 函数（在第一篇文章中介绍）：</p>
+<pre><code>printf(&quot;#### Anscombe&#39;s first set with C99 ####\n&quot;);
+</code></pre>
+<p><code>printf()</code> 函数不会在打印字符串的末尾自动添加换行符，因此你必须添加换行符。第一个参数是一个字符串，可以包含传递给函数的其他参数的格式信息，例如：</p>
+<pre><code>printf(&quot;Slope: %f\n&quot;, slope);
+</code></pre>
+<h4 id="读取数据">读取数据</h4>
+<p>现在来到了困难的部分……有一些用 C 语言解析 CSV 文件的库，但是似乎没有一个库足够稳定或流行到可以放入到 Fedora 软件包存储库中。我没有为本教程添加依赖项，而是决定自己编写此部分。同样，讨论这些细节太啰嗦了，所以我只会解释大致的思路。为了简洁起见，将忽略源代码中的某些行，但是你可以在存储库中找到完整的示例代码。</p>
+<p>首先，打开输入文件：</p>
+<pre><code>FILE* input_file = fopen(input_file_name, &quot;r&quot;);
+</code></pre>
+<p>然后逐行读取文件，直到出现错误或文件结束：</p>
+<pre><code>while (!ferror(input_file) &amp;&amp; !feof(input_file)) {
+    size_t buffer_size = 0;
+    char *buffer = NULL;
+   
+    getline(&amp;buffer, &amp;buffer_size, input_file);
+
+    ...
+}
+</code></pre>
+<p><a href="http://man7.org/linux/man-pages/man3/getline.3.html">getline()</a> 函数是 <a href="https://en.wikipedia.org/wiki/POSIX">POSIX.1-2008 标准</a>新增的一个不错的函数。它可以读取文件中的整行，并负责分配必要的内存。然后使用 <a href="http://man7.org/linux/man-pages/man3/strtok.3.html">strtok()</a> 函数将每一行分成<ruby><a href="https://en.wikipedia.org/wiki/Lexical_analysis#Token">字元</a><rt>token</rt></ruby>。遍历字元，选择所需的列：</p>
+<pre><code>char *token = strtok(buffer, delimiter);
+
+while (token != NULL)
+{
+    double value;
+    sscanf(token, &quot;%lf&quot;, &amp;value);
+
+    if (column == column_x) {
+        x = value;
+    } else if (column == column_y) {
+        y = value;
+    }
+
+    column += 1;
+    token = strtok(NULL, delimiter);
+}
+</code></pre>
+<p>最后，当选择了 <code>x</code> 和 <code>y</code> 值时，将新数据点插入链表中：</p>
+<pre><code>struct data_point *datum = malloc(sizeof(struct data_point));
+datum-&gt;x = x;
+datum-&gt;y = y;
+
+SLIST_INSERT_HEAD(&amp;head, datum, entries);
+</code></pre>
+<p><a href="http://man7.org/linux/man-pages/man3/malloc.3.html">malloc()</a> 函数为新数据点动态分配（保留）一些持久性内存。</p>
+<h4 id="拟合数据">拟合数据</h4>
+<p>GSL 线性拟合函数 <a href="https://www.gnu.org/software/gsl/doc/html/lls.html">gsl_fit_linear()</a> 期望其输入为简单数组。因此，由于你将不知道要创建的数组的大小，因此必须手动分配它们的内存：</p>
+<pre><code>const size_t entries_number = row - skip_header - 1;
+
+double *x = malloc(sizeof(double) * entries_number);
+double *y = malloc(sizeof(double) * entries_number);
+</code></pre>
+<p>然后，遍历链表以将相关数据保存到数组：</p>
+<pre><code>SLIST_FOREACH(datum, &amp;head, entries) {
+    const double current_x = datum-&gt;x;
+    const double current_y = datum-&gt;y;
+
+    x[i] = current_x;
+    y[i] = current_y;
+
+    i += 1;
+}
+</code></pre>
+<p>现在你已经处理完了链表，请清理它。要<strong>总是</strong>释放已手动分配的内存，以防止<a href="https://en.wikipedia.org/wiki/Memory_leak">内存泄漏</a>。内存泄漏是糟糕的、糟糕的、糟糕的（重要的话说三遍）。每次内存没有释放时，花园侏儒都会找不到自己的头：</p>
+<pre><code>while (!SLIST_EMPTY(&amp;head)) {
+    struct data_point *datum = SLIST_FIRST(&amp;head);
+
+    SLIST_REMOVE_HEAD(&amp;head, entries);
+
+    free(datum);
+}
+</code></pre>
+<p>终于，终于！你可以拟合你的数据了：</p>
+<pre><code>gsl_fit_linear(x, 1, y, 1, entries_number,
+               &amp;intercept, &amp;slope,
+               &amp;cov00, &amp;cov01, &amp;cov11, &amp;chi_squared);
+const double r_value = gsl_stats_correlation(x, 1, y, 1, entries_number);
+
+printf(&quot;Slope: %f\n&quot;, slope);
+printf(&quot;Intercept: %f\n&quot;, intercept);
+printf(&quot;Correlation coefficient: %f\n&quot;, r_value);
+</code></pre>
+<h4 id="绘图">绘图</h4>
+<p>你必须使用外部程序进行绘图。因此，将拟合数据保存到外部文件：</p>
+<pre><code>const double step_x = ((max_x + 1) - (min_x - 1)) / N;
+
+for (unsigned int i = 0; i &lt; N; i += 1) {
+    const double current_x = (min_x - 1) + step_x * i;
+    const double current_y = intercept + slope * current_x;
+
+    fprintf(output_file, &quot;%f\t%f\n&quot;, current_x, current_y);
+}
+</code></pre>
+<p>用于绘制两个文件的 Gnuplot 命令是：</p>
+<pre><code>plot &#39;fit_C99.csv&#39; using 1:2 with lines title &#39;Fit&#39;, &#39;anscombe.csv&#39; using 1:2 with points pointtype 7 title &#39;Data&#39;
+</code></pre>
+<h4 id="结果">结果</h4>
+<p>在运行程序之前，你必须编译它：</p>
+<pre><code>clang -std=c99 -I/usr/include/ fitting_C99.c -L/usr/lib/ -L/usr/lib64/ -lgsl -lgslcblas -o fitting_C99
+</code></pre>
+<p>这个命令告诉编译器使用 C99 标准、读取 <code>fitting_C99.c</code> 文件、加载 <code>gsl</code> 和 <code>gslcblas</code> 库、并将结果保存到 <code>fitting_C99</code>。命令行上的结果输出为：</p>
+<pre><code>#### Anscombe&#39;s first set with C99 ####
+Slope: 0.500091
+Intercept: 3.000091
+Correlation coefficient: 0.816421
+</code></pre>
+<p>这是用 Gnuplot 生成的结果图像：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/fit_c99.png" alt="Plot and fit of the dataset obtained with C99" title="Plot and fit of the dataset obtained with C99"></p>
+<h3 id="c11-方式">C++11 方式</h3>
+<p><a href="https://en.wikipedia.org/wiki/C%2B%2B">C++</a> 语言是一种通用编程语言，也是当今使用的最受欢迎的语言之一。它是作为 <a href="http://www.cplusplus.com/info/history/">C 的继承人</a>创建的（诞生于 1983 年），重点是<a href="https://en.wikipedia.org/wiki/Object-oriented_programming">面向对象程序设计（OOP）</a>。C++ 通常被视为 C 的超集，因此 C 程序应该能够使用 C++ 编译器进行编译。这并非完全正确，因为在某些极端情况下它们的行为有所不同。 根据我的经验，C++ 与 C 相比需要更少的样板代码，但是如果要进行面向对象开发，语法会更困难。C++11 标准是最新版本，增加了一些漂亮的功能，并且基本上得到了编译器的支持。</p>
+<p>由于 C++ 在很大程度上与 C 兼容，因此我将仅强调两者之间的区别。我在本部分中没有涵盖的任何部分，则意味着它与 C 中的相同。</p>
+<h4 id="安装">安装</h4>
+<p>这个 C++ 示例的依赖项与 C 示例相同。 在 Fedora 上，运行：</p>
+<pre><code>sudo dnf install clang gnuplot gsl gsl-devel
+</code></pre>
+<h4 id="必要的库">必要的库</h4>
+<p>库的工作方式与 C 语言相同，但是 <code>include</code> 指令略有不同：</p>
+<pre><code>#include &lt;cstdlib&gt;
+#include &lt;cstring&gt;
+#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+extern &quot;C&quot; {
+#include &lt;gsl/gsl_fit.h&gt;
+#include &lt;gsl/gsl_statistics_double.h&gt;
+}
+</code></pre>
+<p>由于 GSL 库是用 C 编写的，因此你必须将这个特殊情况告知编译器。</p>
+<h4 id="定义变量">定义变量</h4>
+<p>与 C 语言相比，C++ 支持更多的数据类型（类），例如，与其 C 语言版本相比，<code>string</code> 类型具有更多的功能。相应地更新变量的定义：</p>
+<pre><code>const std::string input_file_name(&quot;anscombe.csv&quot;);
+</code></pre>
+<p>对于字符串之类的结构化对象，你可以定义变量而无需使用 <code>=</code> 符号。</p>
+<h4 id="打印输出">打印输出</h4>
+<p>你可以使用 <code>printf()</code> 函数，但是 <code>cout</code> 对象更惯用。使用运算符 <code>&lt;&lt;</code> 来指示要使用 <code>cout</code> 打印的字符串（或对象）：</p>
+<pre><code>std::cout &lt;&lt; &quot;#### Anscombe&#39;s first set with C++11 ####&quot; &lt;&lt; std::endl;
+
+...
+
+std::cout &lt;&lt; &quot;Slope: &quot; &lt;&lt; slope &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;Intercept: &quot; &lt;&lt; intercept &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;Correlation coefficient: &quot; &lt;&lt; r_value &lt;&lt; std::endl;
+</code></pre>
+<h4 id="读取数据">读取数据</h4>
+<p>该方案与以前相同。将打开文件并逐行读取文件，但语法不同：</p>
+<pre><code>std::ifstream input_file(input_file_name);
+
+while (input_file.good()) {
+    std::string line;
+
+    getline(input_file, line);
+
+    ...
+}
+</code></pre>
+<p>使用与 C99 示例相同的功能提取行字元。代替使用标准的 C 数组，而是使用两个<a href="https://en.wikipedia.org/wiki/Sequence_container_%28C%2B%2B%29#Vector">向量</a>。向量是 <a href="https://en.wikipedia.org/wiki/C%2B%2B_Standard_Library">C++ 标准库</a>中对 C 数组的扩展，它允许动态管理内存而无需显式调用 <code>malloc()</code>：</p>
+<pre><code>std::vector&lt;double&gt; x;
+std::vector&lt;double&gt; y;
+
+// Adding an element to x and y:
+x.emplace_back(value);
+y.emplace_back(value);
+</code></pre>
+<h4 id="拟合数据">拟合数据</h4>
+<p>要在 C++ 中拟合，你不必遍历列表，因为向量可以保证具有连续的内存。你可以将向量缓冲区的指针直接传递给拟合函数：</p>
+<pre><code>gsl_fit_linear(x.data(), 1, y.data(), 1, entries_number,
+               &amp;intercept, &amp;slope,
+               &amp;cov00, &amp;cov01, &amp;cov11, &amp;chi_squared);
+const double r_value = gsl_stats_correlation(x.data(), 1, y.data(), 1, entries_number);
+
+std::cout &lt;&lt; &quot;Slope: &quot; &lt;&lt; slope &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;Intercept: &quot; &lt;&lt; intercept &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;Correlation coefficient: &quot; &lt;&lt; r_value &lt;&lt; std::endl;
+</code></pre>
+<h4 id="绘图">绘图</h4>
+<p>使用与以前相同的方法进行绘图。 写入文件：</p>
+<pre><code>const double step_x = ((max_x + 1) - (min_x - 1)) / N;
+
+for (unsigned int i = 0; i &lt; N; i += 1) {
+    const double current_x = (min_x - 1) + step_x * i;
+    const double current_y = intercept + slope * current_x;
+
+    output_file &lt;&lt; current_x &lt;&lt; &quot;\t&quot; &lt;&lt; current_y &lt;&lt; std::endl;
+}
+
+output_file.close();
+</code></pre>
+<p>然后使用 Gnuplot 进行绘图。</p>
+<h4 id="结果">结果</h4>
+<p>在运行程序之前，必须使用类似的命令对其进行编译：</p>
+<pre><code>clang++ -std=c++11 -I/usr/include/ fitting_Cpp11.cpp -L/usr/lib/ -L/usr/lib64/ -lgsl -lgslcblas -o fitting_Cpp11
+</code></pre>
+<p>命令行上的结果输出为：</p>
+<pre><code>#### Anscombe&#39;s first set with C++11 ####
+Slope: 0.500091
+Intercept: 3.00009
+Correlation coefficient: 0.816421
+</code></pre>
+<p>这就是用 Gnuplot 生成的结果图像：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/fit_cpp11.png" alt="Plot and fit of the dataset obtained with C++11" title="Plot and fit of the dataset obtained with C++11"></p>
+<h3 id="结论">结论</h3>
+<p>本文提供了用 C99 和 C++11 编写的数据拟合和绘图任务的示例。由于 C++ 在很大程度上与 C 兼容，因此本文利用了它们的相似性来编写了第二个示例。在某些方面，C++ 更易于使用，因为它部分减轻了显式管理内存的负担。但是其语法更加复杂，因为它引入了为 OOP 编写类的可能性。但是，仍然可以用 C 使用 OOP 方法编写软件。由于 OOP 是一种编程风格，因此可以在任何语言中使用。在 C 中有一些很好的 OOP 示例，例如 <a href="https://en.wikipedia.org/wiki/GObject">GObject</a> 和 <a href="http://www.digip.org/jansson/">Jansson</a>库。</p>
+<p>对于数字运算，我更喜欢在 C99 中进行，因为它的语法更简单并且得到了广泛的支持。直到最近，C++11 还没有得到广泛的支持，我倾向于避免使用先前版本中的粗糙不足之处。对于更复杂的软件，C++ 可能是一个不错的选择。</p>
+<p>你是否也将 C 或 C++ 用于数据科学？在评论中分享你的经验。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/2/c-data-science">https://opensource.com/article/20/2/c-data-science</a></p>
+<p>作者：<a href="https://opensource.com/users/cristianofontana">Cristiano L. Fontana</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#编程任务">编程任务</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#c-语言的方式">C 语言的方式</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#c11-方式">C++11 方式</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202003/20200224 Using C and C-- for data science","title":"在数据科学中使用 C 和 C++"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

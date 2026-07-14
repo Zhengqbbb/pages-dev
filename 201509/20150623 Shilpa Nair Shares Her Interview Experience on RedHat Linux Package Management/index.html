@@ -1,0 +1,286 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Shilpa Nair 分享的 RedHat Linux 包管理方面的面试经验 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Shilpa Nair 分享的 RedHat Linux 包管理方面的面试经验 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Shilpa Nair 分享的 RedHat Linux 包管理方面的面试经验 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201509/20150623 Shilpa Nair Shares Her Interview Experience on RedHat Linux Package Management#page","@type":"TechArticle","headline":"Shilpa Nair 分享的 RedHat Linux 包管理方面的面试经验","inLanguage":"en","name":"Shilpa Nair 分享的 RedHat Linux 包管理方面的面试经验","url":"https://zhengqbbb.github.io/pages-dev/201509/20150623 Shilpa Nair Shares Her Interview Experience on RedHat Linux Package Management","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201509/20150623 Shilpa Nair Shares Her Interview Experience on RedHat Linux Package Management"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1linux-里如何查找一个包安装与否假设你需要确认-nano-有没有安装你怎么做">1，Linux 里如何查找一个包安装与否？假设你需要确认 ‘nano’ 有没有安装，你怎么做？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-你如何使用-rpm-命令安装-xyz-软件包">2. 你如何使用 rpm 命令安装 XYZ 软件包？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-你已经安装了一个软件包假设是-httpd现在你想看看软件包创建并安装的所有文件和目录你会怎么做">3. 你已经安装了一个软件包（假设是 httpd），现在你想看看软件包创建并安装的所有文件和目录，你会怎么做？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-假如你要移除一个软件包叫-postfix你会怎么做">4. 假如你要移除一个软件包，叫 postfix。你会怎么做？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-获得一个已安装包的具体信息如版本发行号安装日期大小总结和一个简短的描述">5. 获得一个已安装包的具体信息，如版本，发行号，安装日期，大小，总结和一个简短的描述。</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6-假如你不确定一个指定包的配置文件在哪比如-httpd你如何找到所有-httpd-提供的配置文件列表和位置">6. 假如你不确定一个指定包的配置文件在哪，比如 httpd。你如何找到所有 httpd 提供的配置文件列表和位置。</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7-你找到了一个配置文件位于usrsharealsacardsaaciconf现在你不确定该文件属于哪个包你如何查找出包的名字">7. 你找到了一个配置文件，位于‘/usr/share/alsa/cards/AACI.conf’，现在你不确定该文件属于哪个包。你如何查找出包的名字？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#8-你如何使用-rpm-查找最近安装的软件列表">8. 你如何使用 rpm 查找最近安装的软件列表？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#9-安装一个包之前你如果要检查其依赖你会怎么做">9. 安装一个包之前，你如果要检查其依赖。你会怎么做？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#10-rpm-是不是一个前端的包管理工具呢">10. rpm 是不是一个前端的包管理工具呢？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#11-你如何列出一个系统上面所有可用的仓库列表">11. 你如何列出一个系统上面所有可用的仓库列表。</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#12-你如何列出一个系统上所有可用并且安装了的包">12. 你如何列出一个系统上所有可用并且安装了的包？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#13-你会怎么在一个系统上面使用-yum-或-dnf-分别安装和升级一个包与一组包">13. 你会怎么在一个系统上面使用 YUM 或 DNF 分别安装和升级一个包与一组包？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#14-你会如何同步一个系统上面的所有安装软件到稳定发行版">14. 你会如何同步一个系统上面的所有安装软件到稳定发行版？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#15-你对-yum-本地仓库熟悉吗你尝试过建立一个本地-yum-仓库吗让我们简单看看你会怎么建立一个本地-yum-仓库">15. 你对 YUM 本地仓库熟悉吗？你尝试过建立一个本地 YUM 仓库吗？让我们简单看看你会怎么建立一个本地 YUM 仓库。</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Shilpa Nair 分享的 RedHat Linux 包管理方面的面试经验</h1><p><strong>Shilpa Nair 刚于2015年毕业。她之后去了一家位于 Noida，Delhi 的国家新闻电视台，应聘实习生的岗位。在她去年毕业季的时候，常逛 Tecmint 寻求作业上的帮助。从那时开始，她就常去 Tecmint。</strong></p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/06/Linux-Interview-Questions-on-RPM.jpeg" alt="Linux Interview Questions on RPM"></p>
+<p><em>有关 RPM 方面的 Linux 面试题</em></p>
+<p>所有的问题和回答都是 Shilpa Nair 根据回忆重写的。</p>
+<blockquote>
+<p>“大家好！我是来自 Delhi 的Shilpa Nair。我不久前才顺利毕业，正寻找一个实习的机会。在大学早期的时候，我就对 UNIX 十分喜爱，所以我也希望这个机会能适合我，满足我的兴趣。我被提问了很多问题，大部分都是关于 RedHat 包管理的基础问题。”</p>
+</blockquote>
+<p>下面就是我被问到的问题，和对应的回答。我仅贴出了与 RedHat GNU/Linux 包管理相关的，也是主要被提问的。</p>
+<h3 id="1linux-里如何查找一个包安装与否假设你需要确认-nano-有没有安装你怎么做">1，Linux 里如何查找一个包安装与否？假设你需要确认 ‘nano’ 有没有安装，你怎么做？</h3>
+<p><strong>回答</strong>：为了确认 nano 软件包有没有安装，我们可以使用 rpm 命令，配合 -q 和 -a 选项来查询所有已安装的包</p>
+<pre><code># rpm -qa nano
+或
+# rpm -qa | grep -i nano
+
+nano-2.3.1-10.el7.x86_64
+</code></pre>
+<p>同时包的名字必须是完整的，不完整的包名会返回到提示符，不打印任何东西，就是说这包（包名字不全）未安装。下面的例子会更好理解些：</p>
+<p>我们通常使用 vim 替代 vi 命令。当时如果我们查找安装包 vi/vim 的时候，我们就会看到标准输出上没有任何结果。</p>
+<pre><code># vi
+# vim
+</code></pre>
+<p>尽管如此，我们仍然可以像上面一样运行 vi/vim 命令来清楚地知道包有没有安装。只是因为我们不知道它的完整包名才不能找到的。如果我们不确切知道完整的文件名，我们可以使用通配符：</p>
+<pre><code># rpm -qa vim*
+
+vim-minimal-7.4.160-1.el7.x86_64
+</code></pre>
+<p>通过这种方式，我们可以获得任何软件包的信息，安装与否。</p>
+<h3 id="2-你如何使用-rpm-命令安装-xyz-软件包">2. 你如何使用 rpm 命令安装 XYZ 软件包？</h3>
+<p><strong>回答</strong>：我们可以使用 rpm 命令安装任何的软件包（*.rpm），像下面这样，选项 -i（安装），-v（冗余或者显示额外的信息）和 -h（在安装过程中，打印#号显示进度）。</p>
+<pre><code># rpm -ivh peazip-1.11-1.el6.rf.x86_64.rpm
+
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:peazip-1.11-1.el6.rf             ################################# [100%]
+</code></pre>
+<p>如果要升级一个早期版本的包，应加上 -U 选项，选项 -v 和 -h 可以确保我们得到用 # 号表示的冗余输出，这增加了可读性。</p>
+<h3 id="3-你已经安装了一个软件包假设是-httpd现在你想看看软件包创建并安装的所有文件和目录你会怎么做">3. 你已经安装了一个软件包（假设是 httpd），现在你想看看软件包创建并安装的所有文件和目录，你会怎么做？</h3>
+<p><strong>回答</strong>：使用选项 -l（列出所有文件）和 -q（查询）列出 httpd 软件包安装的所有文件（Linux 哲学：所有的都是文件，包括目录）。</p>
+<pre><code># rpm -ql httpd
+
+/etc/httpd
+/etc/httpd/conf
+/etc/httpd/conf.d
+...
+</code></pre>
+<h3 id="4-假如你要移除一个软件包叫-postfix你会怎么做">4. 假如你要移除一个软件包，叫 postfix。你会怎么做？</h3>
+<p><strong>回答</strong>：首先我们需要知道什么包安装了 postfix。查找安装 postfix 的包名后，使用 -e（擦除/卸载软件包）和 -v（冗余输出）两个选项来实现。</p>
+<pre><code># rpm -qa postfix*
+
+postfix-2.10.1-6.el7.x86_64
+</code></pre>
+<p>然后移除 postfix，如下:</p>
+<pre><code># rpm -ev postfix-2.10.1-6.el7.x86_64
+
+Preparing packages...
+postfix-2:3.0.1-2.fc22.x86_64
+</code></pre>
+<h3 id="5-获得一个已安装包的具体信息如版本发行号安装日期大小总结和一个简短的描述">5. 获得一个已安装包的具体信息，如版本，发行号，安装日期，大小，总结和一个简短的描述。</h3>
+<p><strong>回答</strong>：我们通过使用 rpm 的选项 -qi，后面接包名，可以获得关于一个已安装包的具体信息。</p>
+<p>举个例子，为了获得 openssh 包的具体信息，我需要做的就是：</p>
+<pre><code># rpm -qi openssh
+
+[root@tecmint tecmint]# rpm -qi openssh
+Name        : openssh
+Version     : 6.8p1
+Release     : 5.fc22
+Architecture: x86_64
+Install Date: Thursday 28 May 2015 12:34:50 PM IST
+Group       : Applications/Internet
+Size        : 1542057
+License     : BSD
+....
+</code></pre>
+<h3 id="6-假如你不确定一个指定包的配置文件在哪比如-httpd你如何找到所有-httpd-提供的配置文件列表和位置">6. 假如你不确定一个指定包的配置文件在哪，比如 httpd。你如何找到所有 httpd 提供的配置文件列表和位置。</h3>
+<p><strong>回答</strong>： 我们需要用选项 -c 接包名，这会列出所有配置文件的名字和他们的位置。</p>
+<pre><code># rpm -qc httpd
+
+/etc/httpd/conf.d/autoindex.conf
+/etc/httpd/conf.d/userdir.conf
+/etc/httpd/conf.d/welcome.conf
+/etc/httpd/conf.modules.d/00-base.conf
+/etc/httpd/conf/httpd.conf
+/etc/sysconfig/httpd
+</code></pre>
+<p>相似地，我们可以列出所有相关的文档文件，如下： </p>
+<pre><code># rpm -qd httpd
+
+/usr/share/doc/httpd/ABOUT_APACHE
+/usr/share/doc/httpd/CHANGES
+/usr/share/doc/httpd/LICENSE
+...
+</code></pre>
+<p>我们也可以列出所有相关的证书文件，如下：</p>
+<pre><code># rpm -qL openssh
+
+/usr/share/licenses/openssh/LICENCE
+</code></pre>
+<p>忘了说明上面的选项 -d 和 -L 分别表示 “文档” 和 “证书”，抱歉。</p>
+<h3 id="7-你找到了一个配置文件位于usrsharealsacardsaaciconf现在你不确定该文件属于哪个包你如何查找出包的名字">7. 你找到了一个配置文件，位于‘/usr/share/alsa/cards/AACI.conf’，现在你不确定该文件属于哪个包。你如何查找出包的名字？</h3>
+<p><strong>回答</strong>：当一个包被安装后，相关的信息就存储在了数据库里。所以使用选项 -qf（-f 查询包拥有的文件）很容易追踪谁提供了上述的包。</p>
+<pre><code># rpm -qf /usr/share/alsa/cards/AACI.conf
+alsa-lib-1.0.28-2.el7.x86_64
+</code></pre>
+<p>类似地，我们可以查找（谁提供的）关于任何子包，文档和证书文件的信息。</p>
+<h3 id="8-你如何使用-rpm-查找最近安装的软件列表">8. 你如何使用 rpm 查找最近安装的软件列表？</h3>
+<p><strong>回答</strong>：如刚刚说的，每一样被安装的文件都记录在了数据库里。所以这并不难，通过查询 rpm 的数据库，找到最近安装软件的列表。</p>
+<p>我们通过运行下面的命令，使用选项 -last（打印出最近安装的软件）达到目的。</p>
+<pre><code># rpm -qa --last
+</code></pre>
+<p>上面的命令会打印出所有安装的软件，最近安装的软件在列表的顶部。</p>
+<p>如果我们关心的是找出特定的包，我们可以使用 grep 命令从列表中匹配包（假设是 sqlite ），简单如下：</p>
+<pre><code># rpm -qa --last | grep -i sqlite
+
+sqlite-3.8.10.2-1.fc22.x86_64                 Thursday 18 June 2015 05:05:43 PM IST
+</code></pre>
+<p>我们也可以获得10个最近安装的软件列表，简单如下：</p>
+<pre><code># rpm -qa --last | head
+</code></pre>
+<p>我们可以重定义一下，输出想要的结果，简单如下：</p>
+<pre><code># rpm -qa --last | head -n 2
+</code></pre>
+<p>上面的命令中，-n 代表数目，后面接一个常数值。该命令是打印2个最近安装的软件的列表。</p>
+<h3 id="9-安装一个包之前你如果要检查其依赖你会怎么做">9. 安装一个包之前，你如果要检查其依赖。你会怎么做？</h3>
+<p><strong>回答</strong>：检查一个 rpm 包（XYZ.rpm）的依赖，我们可以使用选项 -q（查询包），-p（指定包名）和 -R（查询/列出该包依赖的包，嗯，就是依赖）。</p>
+<pre><code># rpm -qpR gedit-3.16.1-1.fc22.i686.rpm 
+
+/bin/sh
+/usr/bin/env
+glib2(x86-32) &gt;= 2.40.0
+gsettings-desktop-schemas
+gtk3(x86-32) &gt;= 3.16
+gtksourceview3(x86-32) &gt;= 3.16
+gvfs
+libX11.so.6
+...
+</code></pre>
+<h3 id="10-rpm-是不是一个前端的包管理工具呢">10. rpm 是不是一个前端的包管理工具呢？</h3>
+<p><strong>回答</strong>：**不是！**rpm 是一个后端管理工具，适用于基于 Linux 发行版的 RPM （此处指 Redhat Package Management）。</p>
+<p><a href="http://www.tecmint.com/20-linux-yum-yellowdog-updater-modified-commands-for-package-mangement/">YUM</a>，全称 Yellowdog Updater Modified，是一个 RPM 的前端工具。YUM 命令自动完成所有工作，包括解决依赖和其他一切事务。</p>
+<p>最近，<a href="https://linux.cn/article-5718-1.html">DNF</a>（YUM命令升级版）在Fedora 22发行版中取代了 YUM。尽管 YUM 仍然可以在 RHEL 和 CentOS 平台使用，我们也可以安装 dnf，与 YUM 命令共存使用。据说 DNF 较于 YUM 有很多提高。</p>
+<p>知道更多总是好的，保持自我更新。现在我们移步到前端部分来谈谈。</p>
+<h3 id="11-你如何列出一个系统上面所有可用的仓库列表">11. 你如何列出一个系统上面所有可用的仓库列表。</h3>
+<p><strong>回答</strong>：简单地使用下面的命令，我们就可以列出一个系统上所有可用的仓库列表。</p>
+<pre><code># yum repolist
+或
+# dnf repolist
+
+Last metadata expiration check performed 0:30:03 ago on Mon Jun 22 16:50:00 2015.
+repo id       repo name                      status
+*fedora       Fedora 22 - x86_64             44,762
+ozonos        Repository for Ozon OS         61
+*updates      Fedora 22 - x86_64 - Updates   
+</code></pre>
+<p>上面的命令仅会列出可用的仓库。如果你需要列出所有的仓库，不管可用与否，可以这样做。</p>
+<pre><code># yum repolist all
+或
+# dnf repolist all
+
+Last metadata expiration check performed 0:29:45 ago on Mon Jun 22 16:50:00 2015.
+repo id           repo name                       status
+*fedora           Fedora 22 - x86_64              enabled: 44,762
+fedora-debuginfo  Fedora 22 - x86_64 - Debug      disabled
+fedora-source     Fedora 22 - Source              disabled
+ozonos            Repository for Ozon OS          enabled:     61
+*updates          Fedora 22 - x86_64 - Updates    enabled:  5,018
+updates-debuginfo Fedora 22 - x86_64 - Updates - Debug
+</code></pre>
+<h3 id="12-你如何列出一个系统上所有可用并且安装了的包">12. 你如何列出一个系统上所有可用并且安装了的包？</h3>
+<p><strong>回答</strong>：列出一个系统上所有可用的包，我们可以这样做：</p>
+<pre><code># yum list available
+或
+# dnf list available
+
+ast metadata expiration check performed 0:34:09 ago on Mon Jun 22 16:50:00 2015.
+Available Packages
+0ad.x86_64                 0.0.18-1.fc22                   fedora 
+0ad-data.noarch            0.0.18-1.fc22                   fedora 
+0install.x86_64            2.6.1-2.fc21                    fedora 
+0xFFFF.x86_64              0.3.9-11.fc22                   fedora 
+2048-cli.x86_64            0.9-4.git20141214.723738c.fc22  fedora 
+2048-cli-nocurses.x86_64   0.9-4.git20141214.723738c.fc22  fedora 
+....
+</code></pre>
+<p>而列出一个系统上所有已安装的包，我们可以这样做。</p>
+<pre><code># yum list installed
+或
+# dnf list installed
+
+Last metadata expiration check performed 0:34:30 ago on Mon Jun 22 16:50:00 2015.
+Installed Packages
+GeoIP.x86_64                    1.6.5-1.fc22       @System
+GeoIP-GeoLite-data.noarch       2015.05-1.fc22     @System
+NetworkManager.x86_64           1:1.0.2-1.fc22     @System
+NetworkManager-libnm.x86_64     1:1.0.2-1.fc22     @System
+aajohan-comfortaa-fonts.noarch  2.004-4.fc22       @System
+....
+</code></pre>
+<p>而要同时满足两个要求的时候，我们可以这样做。</p>
+<pre><code># yum list
+或
+# dnf list
+
+Last metadata expiration check performed 0:32:56 ago on Mon Jun 22 16:50:00 2015.
+Installed Packages
+GeoIP.x86_64                    1.6.5-1.fc22       @System
+GeoIP-GeoLite-data.noarch       2015.05-1.fc22     @System
+NetworkManager.x86_64           1:1.0.2-1.fc22     @System
+NetworkManager-libnm.x86_64     1:1.0.2-1.fc22     @System
+aajohan-comfortaa-fonts.noarch  2.004-4.fc22       @System
+acl.x86_64                      2.2.52-7.fc22      @System
+....
+</code></pre>
+<h3 id="13-你会怎么在一个系统上面使用-yum-或-dnf-分别安装和升级一个包与一组包">13. 你会怎么在一个系统上面使用 YUM 或 DNF 分别安装和升级一个包与一组包？</h3>
+<p><strong>回答</strong>：安装一个包（假设是 nano），我们可以这样做，</p>
+<pre><code>  # yum install nano
+</code></pre>
+<p>而安装一组包（假设是 Haskell），我们可以这样做，</p>
+<pre><code>  # yum groupinstall &#39;haskell&#39;
+</code></pre>
+<p>升级一个包（还是 nano），我们可以这样做，</p>
+<pre><code>  # yum update nano
+</code></pre>
+<p>而为了升级一组包（还是 haskell），我们可以这样做，</p>
+<pre><code>	  # yum groupupdate &#39;haskell&#39;
+</code></pre>
+<h3 id="14-你会如何同步一个系统上面的所有安装软件到稳定发行版">14. 你会如何同步一个系统上面的所有安装软件到稳定发行版？</h3>
+<p><strong>回答</strong>：我们可以一个系统上（假设是 CentOS 或者 Fedora）的所有包到稳定发行版，如下，</p>
+<pre><code> # yum distro-sync		[在 CentOS/ RHEL]
+ 或
+ # dnf distro-sync		[在 Fedora 20之后版本]
+</code></pre>
+<p>似乎来面试之前你做了相当不多的功课，很好！在进一步交谈前，我还想问一两个问题。</p>
+<h3 id="15-你对-yum-本地仓库熟悉吗你尝试过建立一个本地-yum-仓库吗让我们简单看看你会怎么建立一个本地-yum-仓库">15. 你对 YUM 本地仓库熟悉吗？你尝试过建立一个本地 YUM 仓库吗？让我们简单看看你会怎么建立一个本地 YUM 仓库。</h3>
+<p><strong>回答</strong>：首先，感谢你的夸奖。回到问题，我必须承认我对本地 YUM 仓库十分熟悉，并且在我的本地主机上也部署过，作为测试用。</p>
+<p>1、 为了建立本地 YUM 仓库，我们需要安装下面三个包：</p>
+<pre><code># yum install deltarpm  python-deltarpm  createrepo
+</code></pre>
+<p>2、 新建一个目录(假设 /home/$USER/rpm)，然后复制 RedHat/CentOS DVD 上的 RPM 包到这个文件夹下</p>
+<pre><code># mkdir /home/$USER/rpm
+# cp /path/to/rpm/on/DVD/*.rpm /home/$USER/rpm
+</code></pre>
+<p>3、 新建基本的库头文件如下。</p>
+<pre><code># createrepo -v /home/$USER/rpm
+</code></pre>
+<p>4、 在路径 /etc/yum.repo.d 下创建一个 .repo 文件（如 abc.repo):</p>
+<pre><code>cd /etc/yum.repos.d &amp;&amp; cat &lt;&lt; EOF abc.repo
+[local-installation]name=yum-local
+baseurl=file:///home/$USER/rpm
+enabled=1
+gpgcheck=0
+EOF
+</code></pre>
+<p><strong>重要</strong>：用你的用户名替换掉 $USER。</p>
+<p>以上就是创建一个本地 YUM 仓库所要做的全部工作。我们现在可以从这里安装软件了，相对快一些，安全一些，并且最重要的是不需要 Internet 连接。</p>
+<p>好了！面试过程很愉快。我已经问完了。我会将你推荐给 HR。你是一个年轻且十分聪明的候选者，我们很愿意你加入进来。如果你有任何问题，你可以问我。</p>
+<p><strong>我</strong>：谢谢，这确实是一次愉快的面试，我感到今天非常幸运，可以搞定这次面试...</p>
+<p>显然，不会在这里结束。我问了很多问题，比如他们正在做的项目。我会担任什么角色，负责什么，，，balabalabala</p>
+<p>小伙伴们，这之后的 3 天会经过 HR 轮，到时候所有问题到时候也会被写成文档。希望我当时表现不错。感谢你们所有的祝福。</p>
+<p>谢谢伙伴们和 Tecmint，花时间来编辑我的面试经历。我相信 Tecmint 好伙伴们做了很大的努力，必要要赞一个。当我们与他人分享我们的经历的时候，其他人从我们这里知道了更多，而我们自己则发现了自己的不足。</p>
+<p>这增加了我们的信心。如果你最近也有任何类似的面试经历，别自己蔵着。分享出来！让我们所有人都知道。你可以使用如下的表单来与我们分享你的经历。</p>
+<hr>
+<p>via: <a href="http://www.tecmint.com/linux-rpm-package-management-interview-questions/">http://www.tecmint.com/linux-rpm-package-management-interview-questions/</a></p>
+<p>作者：<a href="http://www.tecmint.com/author/avishek/">Avishek Kumar</a>
+译者：<a href="https://github.com/wi-cuckoo">wi-cuckoo</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1linux-里如何查找一个包安装与否假设你需要确认-nano-有没有安装你怎么做">1，Linux 里如何查找一个包安装与否？假设你需要确认 ‘nano’ 有没有安装，你怎么做？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-你如何使用-rpm-命令安装-xyz-软件包">2. 你如何使用 rpm 命令安装 XYZ 软件包？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-你已经安装了一个软件包假设是-httpd现在你想看看软件包创建并安装的所有文件和目录你会怎么做">3. 你已经安装了一个软件包（假设是 httpd），现在你想看看软件包创建并安装的所有文件和目录，你会怎么做？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-假如你要移除一个软件包叫-postfix你会怎么做">4. 假如你要移除一个软件包，叫 postfix。你会怎么做？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-获得一个已安装包的具体信息如版本发行号安装日期大小总结和一个简短的描述">5. 获得一个已安装包的具体信息，如版本，发行号，安装日期，大小，总结和一个简短的描述。</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6-假如你不确定一个指定包的配置文件在哪比如-httpd你如何找到所有-httpd-提供的配置文件列表和位置">6. 假如你不确定一个指定包的配置文件在哪，比如 httpd。你如何找到所有 httpd 提供的配置文件列表和位置。</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7-你找到了一个配置文件位于usrsharealsacardsaaciconf现在你不确定该文件属于哪个包你如何查找出包的名字">7. 你找到了一个配置文件，位于‘/usr/share/alsa/cards/AACI.conf’，现在你不确定该文件属于哪个包。你如何查找出包的名字？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#8-你如何使用-rpm-查找最近安装的软件列表">8. 你如何使用 rpm 查找最近安装的软件列表？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#9-安装一个包之前你如果要检查其依赖你会怎么做">9. 安装一个包之前，你如果要检查其依赖。你会怎么做？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#10-rpm-是不是一个前端的包管理工具呢">10. rpm 是不是一个前端的包管理工具呢？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#11-你如何列出一个系统上面所有可用的仓库列表">11. 你如何列出一个系统上面所有可用的仓库列表。</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#12-你如何列出一个系统上所有可用并且安装了的包">12. 你如何列出一个系统上所有可用并且安装了的包？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#13-你会怎么在一个系统上面使用-yum-或-dnf-分别安装和升级一个包与一组包">13. 你会怎么在一个系统上面使用 YUM 或 DNF 分别安装和升级一个包与一组包？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#14-你会如何同步一个系统上面的所有安装软件到稳定发行版">14. 你会如何同步一个系统上面的所有安装软件到稳定发行版？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#15-你对-yum-本地仓库熟悉吗你尝试过建立一个本地-yum-仓库吗让我们简单看看你会怎么建立一个本地-yum-仓库">15. 你对 YUM 本地仓库熟悉吗？你尝试过建立一个本地 YUM 仓库吗？让我们简单看看你会怎么建立一个本地 YUM 仓库。</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201509/20150623 Shilpa Nair Shares Her Interview Experience on RedHat Linux Package Management","title":"Shilpa Nair 分享的 RedHat Linux 包管理方面的面试经验"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

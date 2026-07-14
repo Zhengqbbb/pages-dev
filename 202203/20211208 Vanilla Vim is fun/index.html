@@ -1,0 +1,262 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>简简单单的 Vim 就很好 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="简简单单的 Vim 就很好 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="简简单单的 Vim 就很好 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202203/20211208 Vanilla Vim is fun#page","@type":"TechArticle","headline":"简简单单的 Vim 就很好","inLanguage":"en","name":"简简单单的 Vim 就很好","url":"https://zhengqbbb.github.io/pages-dev/202203/20211208 Vanilla Vim is fun","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202203/20211208 Vanilla Vim is fun"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#概览">概览</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用逗号作为引导键">使用逗号作为引导键</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#文件类型和关闭语法高亮">文件类型和关闭语法高亮</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#matchit-插件">Matchit 插件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#交换文件">交换文件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#模糊寻找插件">模糊寻找插件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#缓冲区管理">缓冲区管理</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ggrep-和-fugitive-插件">Ggrep 和 fugitive 插件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#用-fugitive-进行搜索检索">用 fugitive 进行搜索、检索</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ctags">Ctags</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#按键映射">按键映射</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#airline-插件">Airline 插件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#更新">更新</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>简简单单的 Vim 就很好</h1><blockquote>
+<p>这就是我如何从 35 个 Vim 插件降到只有 6 个的原因。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202203/04/161603q6mmr6q7kkkd2yky.jpg" alt=""></p>
+<p>当你用 <code>—clean</code> 选项启动 Vim 时，它以 “素” 模式展示 Vim。没有插件、没有配置，一切回到了最初。多年来，我收集了一堆配置语句，其中一些可以追溯到 MS-DOS 或 Windows 3.1 时期。我是这样打算的：从头开始，只用 Fedora 35 中可用的插件，找到一个好的配置起点。我可以在一周的编码生活中生存下来吗？我会找到答案的！</p>
+<p>规则是这样的：尽可能少的配置语句，并且只使用 Fedora 35+ 中的插件。顺便说一下，如果你不是 Fedora 用户，也请继续阅读。你可以随时从你的操作系统软件包管理器手动安装或者使用 Vim 插件管理器安装这些插件。</p>
+<p>在我开始之前，有一个大问题需要解决：用 Vim 还是 Neovim（Vim 的一个复刻）。好吧，这由你决定。这篇文章中的所有内容应该对两者都适用。然而，我只用 Vim 测试过。当你登录到一个只有 <code>vi</code> 可用的服务器时，所有的这些技能都会派上用场。它可以是一个旧的 UNIX 系统、一个安装了最少的软件以提高安全性的 Linux 服务器、一个容器中的交互式 shell，或者一个空间宝贵的嵌入式系统。</p>
+<p>闲话少说，下面是我提炼出来的使用 Vim 进行编码的绝对最低限度的东西：</p>
+<pre><code># dnf install --allowerasing vim-default-editor \
+        vim-enhanced \
+        vim-ctrlp \
+        vim-airline \
+        vim-trailing-whitespace \
+        vim-fugitive \
+        vim-ale \
+        ctags
+</code></pre>
+<p>不要担心 <code>—allowerasing</code> 选项。在确认之前，只需查看一下安装的东西。这个选项的作用是告诉软件包管理器把现有的 <code>nano-default-editor</code> 包替换为 <code>vim-default-editor</code>。这是一个小软件包，它在 shell 配置文件中将 <code>EDITOR</code> 环境变量设置为 <code>vim</code>，如果你想默认使用 Vim（例如，与 <code>git</code> 一起使用），这是必须的。这是专门针对 Fedora 的。你不需要在其他发行版或操作系统上这样做，只要确保你的 <code>EDITOR</code> shell 变量被正确设置就行。</p>
+<h3 id="概览">概览</h3>
+<p>简单介绍一下我认为好的、干净的插件集：</p>
+<ul>
+<li><strong>CtrlP</strong>：尽可能小的模糊查找插件（纯 vimscript）</li>
+<li><strong>Fugitive</strong>：一个 git 的必备工具</li>
+<li><strong>Trailing-whitespace</strong>：显示并修复（删除）尾部的空格</li>
+<li><strong>Airline</strong>：一个改进的状态行（纯 vimscript）</li>
+<li><strong>Ale</strong>：在你打字时高亮显示错别字或语法错误</li>
+<li><strong>Ctags</strong>：不是 Vim 插件，但却是一个非常需要的工具</li>
+</ul>
+<p>还有其他的模糊查找插件，如 command-t 或我最喜欢的 <code>fzf.vim</code>（非常快）。问题是，<code>fzf.vim</code> 不在 Fedora 中，而我想要尽可能少的配置。CtrlP 就可以了，而且配置它更容易，因为它不需要什么依赖。</p>
+<p>如果让我选择一个绝对最小的配置，那就是：</p>
+<pre><code># cat ~/.vimrc
+let mapleader=&quot;,&quot;
+let maplocalleader=&quot;_&quot;
+filetype plugin indent on
+let g:ctrlp_map = &#39;&lt;leader&gt;&lt;leader&gt;&#39;
+let g:ctrlp_user_command = [&#39;.git/&#39;, &#39;git --git-dir=%s/.git ls-files -oc --exclude-standard&#39;]
+set exrc
+set secure
+</code></pre>
+<p>但这可能太极端了，所以这里是一个稍大的配置，下面是我的详细解释：</p>
+<pre><code>&quot; vim: nowrap sw=2 sts=2 ts=2 et:
+
+&quot; leaders
+let mapleader=&quot;,&quot;
+let maplocalleader=&quot;_&quot;
+
+&quot; filetype and intent
+filetype plugin indent on
+
+&quot; incompatible plugins
+if has(&#39;syntax&#39;) &amp;&amp; has(&#39;eval&#39;)
+  packadd! matchit
+end
+
+&quot; be SSD friendly (can be dangerous!)
+&quot;set directory=/tmp
+
+&quot; move backups away from projects
+set backupdir=~/.vimbackup
+
+&quot; fuzzy searching
+let g:ctrlp_map = &#39;&lt;leader&gt;&lt;leader&gt;&#39;
+let g:ctrlp_user_command = [&#39;.git/&#39;, &#39;git --git-dir=%s/.git ls-files -oc --exclude-standard&#39;]
+nnoremap &lt;leader&gt;b :CtrlPBuffer&lt;cr&gt;
+nnoremap &lt;leader&gt;t :CtrlPTag&lt;cr&gt;
+nnoremap &lt;leader&gt;f :CtrlPBufTag&lt;cr&gt;
+nnoremap &lt;leader&gt;q :CtrlPQuickfix&lt;cr&gt;
+nnoremap &lt;leader&gt;m :CtrlPMRU&lt;cr&gt;
+
+&quot; buffers and quickfix
+function! ToggleQuickFix()
+  if empty(filter(getwininfo(), &#39;v:val.quickfix&#39;))
+    copen
+  else
+    cclose
+  endif
+endfunction
+nnoremap &lt;leader&gt;w :call ToggleQuickFix()&lt;cr&gt;
+nnoremap &lt;leader&gt;d :bd&lt;cr&gt;
+
+&quot; searching ang grepping
+nnoremap &lt;leader&gt;g :copen&lt;cr&gt;:Ggrep!&lt;SPACE&gt;
+nnoremap K :Ggrep &quot;\b&lt;C-R&gt;&lt;C-W&gt;\b&quot;&lt;cr&gt;:cw&lt;cr&gt;
+nnoremap &lt;leader&gt;s :set hlsearch! hlsearch?&lt;cr&gt;
+
+&quot; ctags generation
+nnoremap &lt;leader&gt;c :!ctags -R .&lt;cr&gt;&lt;cr&gt;
+
+&quot; per-project configs
+set exrc
+set secure
+</code></pre>
+<h3 id="使用逗号作为引导键">使用逗号作为引导键</h3>
+<p>我喜欢把我的 <code>引导键</code> 映射成逗号 <code>,</code>，而不是默认的反斜杠 <code>\</code>。当你的手处于书写位置时，它是 Vim 中最接近的自由键。另外，这个键在大多数键盘布局中都是一样的，而 <code>\</code> 在每个型号或布局都不一样。我很少使用 <code>本地引导键</code>，但下划线 <code>_</code> 看起来很合适。</p>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/map.txt.html#map-which-keys">Vim 参考手册</a> 中的 <code>:help map-which-keys</code>。</li>
+<li>参见 <a href="https://vim.fandom.com/wiki/Unused_keys">Vim Tips Wiki</a> 中的 Vim 中未使用的键。</li>
+</ul>
+<h3 id="文件类型和关闭语法高亮">文件类型和关闭语法高亮</h3>
+<p>接下来是非常重要的 <code>filetype</code> 命令。看，Vim 自带“内置电池”，8.2 版本包含 644 种语言的语法高亮，251 个文件类型定义（<code>ftplugins</code>），以及 138 种语言的缩进规则。然而，缩进在默认情况下是不启用的，也许是为了给所有人提供一个一致的编辑体验。我喜欢启用它。</p>
+<p>一个简单的技巧：如果你正在编辑一个非常大的文件，并且 Vim 感觉很慢，你可能想禁用语法高亮来加快速度。只要输入 <code>:syn off</code> 命令即可。</p>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/filetype.txt.html">Vim 参考手册</a> 中的 <code>:help filetype</code>。</li>
+<li>参见 <a href="https://vimhelp.org/syntax.txt.html">Vim 参考手册</a> 中的 <code>:help syntax</code>。</li>
+<li>参见 <a href="https://vimhelp.org/indent.txt.html">Vim 参考手册</a> 中的 <code>:help indent</code>。</li>
+</ul>
+<h3 id="matchit-插件">Matchit 插件</h3>
+<p>Vim 甚至额外带有使得一些功能不兼容的插件，其中一个相当有用。它就是 <code>matchit</code> 插件，它使按下 <code>%</code> 键可以在某些语言中查找匹配的括号。通常情况下，你可以找到一个块的开始或结束（开始和结束括号）或 HTML 匹配标签及类似的。</p>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/usr_05.txt.html#matchit-install">Vim 参考手册</a> 中的 <code>:help matchit</code>。</li>
+</ul>
+<h3 id="交换文件">交换文件</h3>
+<p>我想从我的旧配置中保留的许多设置之一是使用 <code>/tmp</code> 进行交换，并在我的家目录的一个单独目录中创建备份，你需要用 <code>mkdir ~/.vimbackup</code> 来创建这个目录。重要的是要明白，当你开始编辑时，Vim 会创建一个名为 “交换文件” 的副本，所有未保存的工作都会保存在这个文件中。所以即使停电了，你的交换文件也包含了大部分未保存的工作。我更喜欢使用 <code>tmpfs</code>，因为我所有的笔记本电脑和服务器都有 UPS 保护，而且我经常保存。另外，大多数情况下，你会使用到交换文件是当你的 SSH 连接丢失而不是由于停电时。对于大文件来说，交换文件可能相当大，我很珍视我的固态硬盘，所以我决定这样做。如果你不确定，可以删除这句话，使用 <code>/var/tmp</code>，这样更安全。</p>
+<p>延伸阅读；</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/recover.txt.html#swap-file">Vim 参考手册</a> 中的 <code>:help swap-file</code>。</li>
+</ul>
+<h3 id="模糊寻找插件">模糊寻找插件</h3>
+<p>现在，模糊查找是一个我不能没有的插件。在服务器上当你每天需要打开 20 个文件时，使用 <code>:Ex</code> 或 <code>:e</code> 或 <code>:tabe</code> 等命令打开文件是没问题的。而当编码时，我通常需要打开数百个文件。正如我所说，CtrlP 很好地完成了这项工作。它很小，没有依赖性，纯 Vim。它用 <code>Ctrl + P</code> 组合键打开，这对我来说有点奇怪。我知道一些著名的编辑器（我记得是 VSCode）使用这个组合键。问题是，这已经是很重要的 Vim 绑定键，我不想覆盖它。所以对我来说，赢家是 <code>引导键 + 引导键</code>（逗号按两次）。</p>
+<p><code>ctrlp_user_command</code> 只是改变了 CtrlP 获取文件列表的方式。它不使用内置的递归文件列表（glob），而是使用 <code>git ls-files</code>，这通常更好，因为它忽略了 <code>.gitignore</code> 中的东西，所以像 <code>node_modules</code> 或其他可能拖慢列表的不相关目录不会受到影响。</p>
+<p>使用 <code>引导键</code> + <code>B</code>/<code>T</code>/<code>F</code>/<code>Q</code>/<code>M</code> 来打开缓冲区、标签、当前文件的标签、快速修复缓冲区和最近使用的文件的列表，非常有用。具体来说，一旦你用 <code>ctags</code> 生成了标签列表，这基本上就是数百种编程语言的“去……定义处”，而且不需要插件！这都是 Vim 内置的。现在澄清一下，当我说输入 <code>引导键 + B</code> 时，是指按下逗号，然后按 <code>B</code> 键，而不是像用 <code>Control</code> 或 <code>Shift</code> 那样一起按。</p>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/pi_netrw.txt.html#netrw-explore">Vim 参考手册</a> 中的 <code>:help Explore</code>。</li>
+<li>参见 <a href="https://github.com/kien/ctrlp.vim">ctrlp.vim GitHub</a>。</li>
+</ul>
+<h3 id="缓冲区管理">缓冲区管理</h3>
+<p>虽然现在 Vim 支持标签，但缓冲区管理是掌握 Vim 的一个重要技能。我通常会有很多缓冲区，我需要经常做 <code>:bdelete</code>。那么，<code>引导键 + D</code> 似乎是一个不错的选择，可以更快地完成这个任务。我也喜欢关闭 Quickfix 窗口，所以也有 <code>引导键 + W</code> 的组合键，我在浏览搜索结果时经常使用这个功能。</p>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/windows.txt.html#buffer-hidden">Vim 参考手册</a> 中的 <code>:help buffer-hidden</code>。</li>
+</ul>
+<h3 id="ggrep-和-fugitive-插件">Ggrep 和 fugitive 插件</h3>
+<p>说到搜索，它和打开文件一样重要。我希望能够对代码库进行检索。为此，有一个来自 fugitive 插件的很棒的 <code>:Ggrep</code> 命令，它使用 <code>git grep</code>，忽略了垃圾文件，只搜索 Git 中的内容。由于 <code>Shift + K</code> 是 Vim 中的一个自由键，它非常适用于自动检索光标位置的词语。最后，能够使用 <code>引导键 + G</code> 输入任意的搜索模式也很好。注意，这将打开一个叫做 Quickfix 的窗口，你可以在这里浏览结果、查看下一个/上一个/最后一个/第一个出现的地方，等等。这个窗口也用于编译器或其他工具的输出，所以要熟悉它。如果你对此感到陌生，我建议进一步阅读文档。</p>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/quickfix.txt.html">Vim 参考手册</a> 中的 <code>:help quickfix</code>。</li>
+<li>参见 <a href="https://github.com/tpope/vim-fugitive">vim-fugitive GitHub</a>。</li>
+</ul>
+<h3 id="用-fugitive-进行搜索检索">用 fugitive 进行搜索、检索</h3>
+<p>顺便说一下，用 <code>/</code> 键搜索是智能和大小写敏感的，这意味着如果所有的搜索字符都是小写的，Vim 的搜索会忽略大小写。默认情况下，它会高亮显示结果，我觉得我已经敲了无数次的 <code>:noh</code>（来关闭高亮显示）。这就是为什么我有 <code>引导键 + S</code> 来切换高亮显示。我建议以后也多读读手册中关于搜索的内容。</p>
+<p>接下来是搜索、检索。fugitive 插件已经为你提供了。使用命令 <code>:Ggrep pattern</code> 来进行 <code>git grep</code>，结果会进入 Quickfix 窗口。然后简单地使用快速修复命令（<code>:cn</code>、<code>:cp</code> 等等）浏览结果，或者简单地使用 <code>:CtrlPQuickfix</code>（<code>引导键 + Q</code>）来直观地滚动它们。CtrlP 的快速修复整合的酷炫之处是，你可以通过输入以匹配文件名或内容来进一步在搜索结果中搜索。</p>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/quickfix.txt.html#grep">Vim 参考手册</a> 中的 <code>:help grep</code>。</li>
+<li>参见 <a href="https://vimhelp.org/pattern.txt.html#noh">Vim 参考手册</a> 中的 <code>:help noh</code>。</li>
+<li>参见 <a href="https://github.com/tpope/vim-fugitive">vim-fugitive GitHub</a> 。</li>
+</ul>
+<h3 id="ctags">Ctags</h3>
+<p><code>引导键 + C</code> 可以生成一个 ctags 文件，以便更好地导航，这在处理一个新的代码库或做一个有很多跳转的较长的编码任务时很有用。ctags 支持数百种语言，而 Vim 可以利用所有这些知识来导航。后面会有更多关于如何配置它的内容。注意我已经讨论过 <code>引导键 + T</code> 来打开所有标签的模糊搜索，记得吗？这两个是非常相同的。</p>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/tagsrch.txt.html">Vim 参考手册</a> 中的 <code>:help ctags</code>。</li>
+<li>参见 <a href="https://ctags.io">Universal Ctags 网站</a>。</li>
+</ul>
+<h3 id="按键映射">按键映射</h3>
+<p>能够通过在项目目录下创建一个 <code>.vimrc</code> 文件来覆盖该项目中的任何设置是一个好主意。只要把它放在（全局的） <code>.gitignore</code> 中，以确保你不需要在每个项目中编辑成千上万的 <code>.gitignore</code> 文件。这样的一个项目的 <code>.vimrc</code> 可以是这样的（对于使用 GNU Makefile 的 C/C++ 项目）：</p>
+<pre><code>&quot; coding style
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set noexpandtab
+&quot; include and autocomplete path
+let &amp;path.=&quot;/usr/local/include&quot;
+&quot; function keys to build and run the project
+nnoremap &lt;F9&gt; :wall!&lt;cr&gt;:make!&lt;cr&gt;&lt;cr&gt;
+nnoremap &lt;F10&gt; :!LD_LIBRARY_PATH=/usr/local/lib ./project&lt;cr&gt;&lt;cr&gt;
+</code></pre>
+<p>正如你所看到的，我通常将 <code>F2</code> 到 <code>F10</code> 等键映射到编译、运行、测试和类似的操作。用 <code>F9</code> 来调用 <code>make</code>，听起来不错。还记得 MS-DOS 上的蓝色 Borland IDE 吗？</p>
+<p>如前所述，在全局范围内忽略 <code>.vimrc</code> 和（由 <code>ctags</code> 生成的）<code>tags</code> 是个好主意，所以不需要每次都更新 <code>.gitignore</code>：</p>
+<pre><code># git config --global core.excludesfile ~/.gitignore
+# cat ~/.gitignore
+/.vimrc
+/tags
+/TAGS
+</code></pre>
+<p>在我的个人配置中还有几条只与那些非美国键盘布局的人有关（我用捷克语）。我需要用“死键”来输入许多字符（LCTT 译注：“死键”是一种通过将变音符号与后面的字母结合起来打出重音字符的方法。这种方法在历史上被用于机械打字机），这根本不可能，我宁愿输入命令而不是按那些难以按下的组合键。这里有一个解决问题的办法：</p>
+<pre><code>&quot; CTRL-] is hard on my keyboard layout
+map &lt;C-K&gt; &lt;C-]&gt;
+&quot; CTRL-^ is hard on my keyboard layout
+nnoremap &lt;F1&gt; :b#&lt;cr&gt;
+nnoremap &lt;F2&gt; :bp&lt;cr&gt;
+nnoremap &lt;F3&gt; :bn&lt;cr&gt;
+&quot; I hate entering Ex mode by accident
+map Q &lt;Nop&gt;
+</code></pre>
+<p>延伸阅读：</p>
+<ul>
+<li>参见 <a href="https://vimhelp.org/map.txt.html">Vim 参考手册</a> 中的 <code>:help map</code>。</li>
+</ul>
+<p>功能键在 Vim 中都是自由的，除了 <code>F1</code>，它被绑定在帮助上。我不需要帮助，并不是说我已经会对 Vim 了如指掌，并不是。但如果需要的话，我可以简单地输入 <code>:help</code>。而 <code>F1</code> 是一个关键的键，离 <code>Esc</code> 键如此之近。我喜欢将它用于缓冲区交换（<code>:b#</code>），将 <code>F2</code>/<code>F3</code> 用作下一个/上一个。你越是与缓冲区打交道，你就越需要这个。如果你没有使用过 <code>Ctrl + ^</code>，我建议你要习惯于它。哦，你有没有丑陋地输入 <code>:visual</code> 进入过 Ex 模式？许多初学者都不知道如何从该模式下退出 Vim。对我来说，这就是打扰，因为我很少使用它。</p>
+<p>现在，熟悉 <code>ctags</code> 是成功使用 Vim 的一个关键因素。这个工具支持数百种语言，它不小心就为你不想创建标签的文件创建它，因此我建议忽略典型的垃圾目录：</p>
+<pre><code># cat ~/.ctags.d/local.ctags
+  --recurse=yes
+  --exclude=.git
+  --exclude=build/
+  --exclude=.svn
+  --exclude=vendor/*
+  --exclude=node_modules/*
+  --exclude=public/webpack/*
+  --exclude=db/*
+  --exclude=log/*
+  --exclude=test/*
+  --exclude=tests/*
+  --exclude=\*.min.\*
+  --exclude=\*.swp
+  --exclude=\*.bak
+  --exclude=\*.pyc
+  --exclude=\*.class
+  --exclude=\*.cache
+</code></pre>
+<h3 id="airline-插件">Airline 插件</h3>
+<p>我一定不能忘记 Vim 的 Airline 插件。在 Fedora 的两个插件中，这个插件很轻量级，不需要外部依赖，而且可以开箱即用我所有的字体。你可以定制它，而且还有主题之类的东西。我只是碰巧喜欢它的默认设置。</p>
+<p>我必须提到，有两个主要的 Ctags 项目：Exuberant Ctags 和 Universal Ctags。后者是一个更现代的复刻。如果你的发行版有，就用它。如果你在 Fedora 35+ 上，你应该知道你现在用的是 Universal Ctags。</p>
+<h3 id="总结">总结</h3>
+<p>作为总结，我的建议是这样的。尽量保持你的 Vim 配置流畅和干净。这将在未来得到回报。在我转换到新配置之后，我不得不重新学习“写入并退出”的命令，因为我总是不小心把它打成 <code>:Wq</code>，而我在旧的配置里有一个“小技巧”，让它实际上按我的意思工作。好吧，这个可能真的很有用，并能入选，我希望你能明白我的意思：</p>
+<pre><code>:command Wq wq
+:command WQ wq
+</code></pre>
+<p>最后的一个快速技巧是：你可能需要经常改变你的默认 Vim 配置，来找到我在这里向你介绍的和你自己口味之间的舒适区。使用下面的别名，这样你就不需要一直搜索历史。相信我，当一个 Vim 用户在命令历史里搜索 “vim” 时，找不到什么是相关的内容：</p>
+<pre><code>alias vim-vimrc=&#39;vim ~/.vimrc&#39;
+</code></pre>
+<p>就是这些了。也许这可以帮助你在没有大量插件的情况下在 Vim 的丰富世界遨游。“简简单单” 的 Vim 也很不错！</p>
+<p>要尝试你刚刚读到的内容，请安装软件包并检出这些配置：</p>
+<pre><code>test -f ~/.vimrc &amp;&amp; mv ~/.vimrc ~/.vimrc.backup
+curl -s https://raw.githubusercontent.com/lzap/vim-lzap/master/.vimrc -o ~/.vimrc
+mkdir ~/.vimbackup
+</code></pre>
+<p>特别感谢 Marc Deop 和 <a href="https://opensource.com/users/melanie-corr">Melanie Corr</a> 对本文的审阅。</p>
+<h3 id="更新">更新</h3>
+<p>我已经在这种配置下生存下来了！我唯一的纠结是 CtrlP 插件的结果顺序不同。文件的模糊算法与 <code>fzf.vim</code> 插件不同，所以我以前用各种搜索词能找到的文件现在找不到了。我最后安装了 Fedora 的 fzf 包以获得更相关的文件搜索，它附带了一个 vim 函数 <code>FZF</code>，可以绑定到引导键组合上。请看我的 <a href="https://github.com/lzap">GitHub 仓库</a> 中更新后的配置文件。一路走来，我学到了很多东西。有一些键的绑定我已经忘记了，这要感谢许多插件。</p>
+<p>这篇文章最初发表在 <a href="https://lukas.zapletalovi.com/2021/11/a-sane-vim-configuration-for-fedora.html">作者的网站</a> 上，经许可后重新发表。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/21/12/vanilla-vim-config">https://opensource.com/article/21/12/vanilla-vim-config</a></p>
+<p>作者：<a href="https://opensource.com/users/lzap">Lukáš Zapletal</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#概览">概览</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用逗号作为引导键">使用逗号作为引导键</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#文件类型和关闭语法高亮">文件类型和关闭语法高亮</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#matchit-插件">Matchit 插件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#交换文件">交换文件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#模糊寻找插件">模糊寻找插件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#缓冲区管理">缓冲区管理</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ggrep-和-fugitive-插件">Ggrep 和 fugitive 插件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#用-fugitive-进行搜索检索">用 fugitive 进行搜索、检索</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ctags">Ctags</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#按键映射">按键映射</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#airline-插件">Airline 插件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#更新">更新</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202203/20211208 Vanilla Vim is fun","title":"简简单单的 Vim 就很好"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

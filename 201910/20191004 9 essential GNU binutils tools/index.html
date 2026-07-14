@@ -1,0 +1,472 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>GNU binutils 里的九种武器 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="GNU binutils 里的九种武器 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="GNU binutils 里的九种武器 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201910/20191004 9 essential GNU binutils tools#page","@type":"TechArticle","headline":"GNU binutils 里的九种武器","inLanguage":"en","name":"GNU binutils 里的九种武器","url":"https://zhengqbbb.github.io/pages-dev/201910/20191004 9 essential GNU binutils tools","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201910/20191004 9 essential GNU binutils tools"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#软件开发的基础知识">软件开发的基础知识</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#编译的基础知识">编译的基础知识</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#探索-binutils-工具">探索 binutils 工具</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>GNU binutils 里的九种武器</h1><blockquote>
+<p>二进制分析是计算机行业中最被低估的技能。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/201910/10/115409g9nkdm2omutduw7u.jpg" alt=""></p>
+<p>想象一下，在无法访问软件的源代码时，但仍然能够理解软件的实现方式，在其中找到漏洞，并且更厉害的是还能修复错误。所有这些都是在只有二进制文件时做到的。这听起来就像是超能力，对吧？</p>
+<p>你也可以拥有这样的超能力，GNU 二进制实用程序（binutils）就是一个很好的起点。[GNU binutils] <a href="https://en.wikipedia.org/wiki/GNU_Binutils">2</a> 是一个二进制工具集，默认情况下所有 Linux 发行版中都会安装这些二进制工具。</p>
+<p>二进制分析是计算机行业中最被低估的技能。它主要由恶意软件分析师、反向工程师和使用底层软件的人使用。</p>
+<p>本文探讨了 binutils 可用的一些工具。我使用的是 RHEL，但是这些示例应该在任何 Linux 发行版上可以运行。</p>
+<pre><code>[~]# cat /etc/redhat-release 
+Red Hat Enterprise Linux Server release 7.6 (Maipo)
+[~]# 
+[~]# uname -r
+3.10.0-957.el7.x86_64
+[~]# 
+</code></pre>
+<p>请注意，某些打包命令（例如 <code>rpm</code>）在基于 Debian 的发行版中可能不可用，因此请使用等效的 <code>dpkg</code> 命令替代。</p>
+<h3 id="软件开发的基础知识">软件开发的基础知识</h3>
+<p>在开源世界中，我们很多人都专注于源代码形式的软件。当软件的源代码随时可用时，很容易获得源代码的副本，打开喜欢的编辑器，喝杯咖啡，然后就可以开始探索了。</p>
+<p>但是源代码不是在 CPU 上执行的代码，在 CPU 上执行的是二进制或者说是机器语言指令。二进制或可执行文件是编译源代码时获得的。熟练的调试人员深谙通常这种差异。</p>
+<h3 id="编译的基础知识">编译的基础知识</h3>
+<p>在深入研究 binutils 软件包本身之前，最好先了解编译的基础知识。</p>
+<p>编译是将程序从某种编程语言（如 C/C++）的源代码（文本形式）转换为机器代码的过程。</p>
+<p>机器代码是 CPU（或一般而言，硬件）可以理解的 1 和 0 的序列，因此可以由 CPU 执行或运行。该机器码以特定格式保存到文件，通常称为可执行文件或二进制文件。在 Linux（和使用 <a href="https://www.freebsd.org/doc/handbook/linuxemu.html">Linux 兼容二进制</a>的 BSD）上，这称为 <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a>（<ruby>可执行和可链接格式<rt>Executable and Linkable Format</rt></ruby>）。</p>
+<p>在生成给定的源文件的可执行文件或二进制文件之前，编译过程将经历一系列复杂的步骤。以这个源程序（C 代码）为例。打开你喜欢的编辑器，然后键入以下程序：</p>
+<pre><code>#include &lt;stdio.h&gt;
+
+int main(void)
+{
+  printf(&quot;Hello World\n&quot;);
+  return 0;
+}
+</code></pre>
+<h4 id="步骤-1用-cpp-预处理">步骤 1：用 cpp 预处理</h4>
+<p><a href="https://en.wikipedia.org/wiki/C_preprocessor">C 预处理程序（cpp）</a>用于扩展所有宏并将头文件包含进来。在此示例中，头文件 <code>stdio.h</code> 将被包含在源代码中。<code>stdio.h</code> 是一个头文件，其中包含有关程序内使用的 <code>printf</code> 函数的信息。对源代码运行 <code>cpp</code>，其结果指令保存在名为 <code>hello.i</code> 的文件中。可以使用文本编辑器打开该文件以查看其内容。打印 “hello world” 的源代码在该文件的底部。</p>
+<pre><code>[testdir]# cat hello.c
+#include &lt;stdio.h&gt;
+
+int main(void)
+{
+  printf(&quot;Hello World\n&quot;);
+  return 0;
+}
+[testdir]#
+[testdir]# cpp hello.c &gt; hello.i
+[testdir]#
+[testdir]# ls -lrt
+total 24
+-rw-r--r--. 1 root root 76 Sep 13 03:20 hello.c
+-rw-r--r--. 1 root root 16877 Sep 13 03:22 hello.i
+[testdir]#
+</code></pre>
+<h4 id="步骤-2用-gcc-编译">步骤 2：用 gcc 编译</h4>
+<p>在此阶段，无需创建目标文件就将步骤 1 中生成的预处理源代码转换为汇编语言指令。这个阶段使用 <a href="https://gcc.gnu.org/onlinedocs/gcc/">GNU 编译器集合（gcc）</a>。对 <code>hello.i</code> 文件运行带有 <code>-S</code> 选项的 <code>gcc</code> 命令后，它将创建一个名为 <code>hello.s</code> 的新文件。该文件包含该 C 程序的汇编语言指令。</p>
+<p>你可以使用任何编辑器或 <code>cat</code> 命令查看其内容。</p>
+<pre><code>[testdir]#
+[testdir]# gcc -Wall -S hello.i
+[testdir]#
+[testdir]# ls -l
+total 28
+-rw-r--r--. 1 root root 76 Sep 13 03:20 hello.c
+-rw-r--r--. 1 root root 16877 Sep 13 03:22 hello.i
+-rw-r--r--. 1 root root 448 Sep 13 03:25 hello.s
+[testdir]#
+[testdir]# cat hello.s
+.file &quot;hello.c&quot;
+.section .rodata
+.LC0:
+.string &quot;Hello World&quot;
+.text
+.globl main
+.type main, @function
+main:
+.LFB0:
+.cfi_startproc
+pushq %rbp
+.cfi_def_cfa_offset 16
+.cfi_offset 6, -16
+movq %rsp, %rbp
+.cfi_def_cfa_register 6
+movl $.LC0, %edi
+call puts
+movl $0, %eax
+popq %rbp
+.cfi_def_cfa 7, 8
+ret
+.cfi_endproc
+.LFE0:
+.size main, .-main
+.ident &quot;GCC: (GNU) 4.8.5 20150623 (Red Hat 4.8.5-36)&quot;
+.section .note.GNU-stack,&quot;&quot;,@progbits
+[testdir]#
+</code></pre>
+<h4 id="步骤-3用-as-汇编">步骤 3：用 as 汇编</h4>
+<p>汇编器的目的是将汇编语言指令转换为机器语言代码，并生成扩展名为 <code>.o</code> 的目标文件。此阶段使用默认情况下在所有 Linux 平台上都可用的 GNU 汇编器。</p>
+<pre><code>testdir]# as hello.s -o hello.o
+[testdir]#
+[testdir]# ls -l
+total 32
+-rw-r--r--. 1 root root 76 Sep 13 03:20 hello.c
+-rw-r--r--. 1 root root 16877 Sep 13 03:22 hello.i
+-rw-r--r--. 1 root root 1496 Sep 13 03:39 hello.o
+-rw-r--r--. 1 root root 448 Sep 13 03:25 hello.s
+[testdir]#
+</code></pre>
+<p>现在，你有了第一个 ELF 格式的文件；但是，还不能执行它。稍后，你将看到“<ruby>目标文件<rt>object file</rt></ruby>”和“<ruby>可执行文件<rt>executable file</rt></ruby>”之间的区别。</p>
+<pre><code>[testdir]# file hello.o
+hello.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+</code></pre>
+<h4 id="步骤-4用-ld-链接">步骤 4：用 ld 链接</h4>
+<p>这是编译的最后阶段，将目标文件链接以创建可执行文件。可执行文件通常需要外部函数，这些外部函数通常来自系统库（<code>libc</code>）。</p>
+<p>你可以使用 <code>ld</code> 命令直接调用链接器；但是，此命令有些复杂。相反，你可以使用带有 <code>-v</code>（详细）标志的 <code>gcc</code> 编译器，以了解链接是如何发生的。（使用 <code>ld</code> 命令进行链接作为一个练习，你可以自行探索。）</p>
+<pre><code>[testdir]# gcc -v hello.o
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/4.8.5/lto-wrapper
+Target: x86_64-redhat-linux
+Configured with: ../configure --prefix=/usr --mandir=/usr/share/man [...] --build=x86_64-redhat-linux
+Thread model: posix
+gcc version 4.8.5 20150623 (Red Hat 4.8.5-36) (GCC)
+COMPILER_PATH=/usr/libexec/gcc/x86_64-redhat-linux/4.8.5/:/usr/libexec/gcc/x86_64-redhat-linux/4.8.5/:[...]:/usr/lib/gcc/x86_64-redhat-linux/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-redhat-linux/4.8.5/:/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib/gcc/x86_64-redhat-linux/4.8.5/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS=&#39;-v&#39; &#39;-mtune=generic&#39; &#39;-march=x86-64&#39;
+/usr/libexec/gcc/x86_64-redhat-linux/4.8.5/collect2 --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu [...]/../../../../lib64/crtn.o
+[testdir]#
+</code></pre>
+<p>运行此命令后，你应该看到一个名为 <code>a.out</code> 的可执行文件：</p>
+<pre><code>[testdir]# ls -l
+total 44
+-rwxr-xr-x. 1 root root 8440 Sep 13 03:45 a.out
+-rw-r--r--. 1 root root 76 Sep 13 03:20 hello.c
+-rw-r--r--. 1 root root 16877 Sep 13 03:22 hello.i
+-rw-r--r--. 1 root root 1496 Sep 13 03:39 hello.o
+-rw-r--r--. 1 root root 448 Sep 13 03:25 hello.s
+</code></pre>
+<p>对 <code>a.out</code> 运行 <code>file</code> 命令，结果表明它确实是 ELF 可执行文件：</p>
+<pre><code>[testdir]# file a.out
+a.out: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.32, BuildID[sha1]=48e4c11901d54d4bf1b6e3826baf18215e4255e5, not stripped
+</code></pre>
+<p>运行该可执行文件，看看它是否如源代码所示工作：</p>
+<pre><code>[testdir]# ./a.out Hello World
+</code></pre>
+<p>工作了！在幕后发生了很多事情它才在屏幕上打印了 “Hello World”。想象一下在更复杂的程序中会发生什么。</p>
+<h3 id="探索-binutils-工具">探索 binutils 工具</h3>
+<p>上面这个练习为使用 binutils 软件包中的工具提供了良好的背景。我的系统带有 binutils 版本 2.27-34；你的 Linux 发行版上的版本可能有所不同。</p>
+<pre><code>[~]# rpm -qa | grep binutils 
+binutils-2.27-34.base.el7.x86_64
+</code></pre>
+<p>binutils 软件包中提供了以下工具：</p>
+<pre><code>[~]# rpm -ql binutils-2.27-34.base.el7.x86_64 | grep bin/
+/usr/bin/addr2line
+/usr/bin/ar
+/usr/bin/as
+/usr/bin/c++filt
+/usr/bin/dwp
+/usr/bin/elfedit
+/usr/bin/gprof
+/usr/bin/ld
+/usr/bin/ld.bfd
+/usr/bin/ld.gold
+/usr/bin/nm
+/usr/bin/objcopy
+/usr/bin/objdump
+/usr/bin/ranlib
+/usr/bin/readelf
+/usr/bin/size
+/usr/bin/strings
+/usr/bin/strip
+</code></pre>
+<p>上面的编译练习已经探索了其中的两个工具：用作汇编器的 <code>as</code> 命令，用作链接器的 <code>ld</code> 命令。继续阅读以了解上述 GNU binutils 软件包工具中的其他七个。</p>
+<h4 id="readelf显示-elf-文件信息">readelf：显示 ELF 文件信息</h4>
+<p>上面的练习提到了术语“目标文件”和“可执行文件”。使用该练习中的文件，通过带有 <code>-h</code>（标题）选项的 <code>readelf</code> 命令，以将文件的 ELF 标题转储到屏幕上。请注意，以 <code>.o</code> 扩展名结尾的目标文件显示为 <code>Type: REL (Relocatable file)</code>（可重定位文件）：</p>
+<pre><code>[testdir]# readelf -h hello.o
+ELF Header:
+Magic: 7f 45 4c 46 02 01 01 00 [...]
+[...]
+Type: REL (Relocatable file)
+[...]
+</code></pre>
+<p>如果尝试执行此目标文件，会收到一条错误消息，指出无法执行。这仅表示它尚不具备在 CPU 上执行所需的信息。</p>
+<p>请记住，你首先需要使用 <code>chmod</code> 命令在对象文件上添加 <code>x</code>（可执行位），否则你将得到“权限被拒绝”的错误。</p>
+<pre><code>[testdir]# ./hello.o
+bash: ./hello.o: Permission denied
+[testdir]# chmod +x ./hello.o
+[testdir]#
+[testdir]# ./hello.o
+bash: ./hello.o: cannot execute binary file
+</code></pre>
+<p>如果对 <code>a.out</code> 文件尝试相同的命令，则会看到其类型为 <code>EXEC (Executable file)</code>（可执行文件）。</p>
+<pre><code>[testdir]# readelf -h a.out
+ELF Header:
+Magic: 7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+Class: ELF64
+[...] Type: EXEC (Executable file)
+</code></pre>
+<p>如上所示，该文件可以直接由 CPU 执行：</p>
+<pre><code>[testdir]# ./a.out Hello World
+</code></pre>
+<p><code>readelf</code> 命令可提供有关二进制文件的大量信息。在这里，它会告诉你它是 ELF 64 位格式，这意味着它只能在 64 位 CPU 上执行，而不能在 32 位 CPU 上运行。它还告诉你它应在 X86-64（Intel/AMD）架构上执行。该二进制文件的入口点是地址 <code>0x400430</code>，它就是 C 源程序中 <code>main</code> 函数的地址。</p>
+<p>在你知道的其他系统二进制文件上尝试一下 <code>readelf</code> 命令，例如 <code>ls</code>。请注意，在 RHEL 8 或 Fedora 30 及更高版本的系统上，由于安全原因改用了<ruby>位置无关可执行文件<rt>position independent executable</rt></ruby>（<a href="https://en.wikipedia.org/wiki/Position-independent_code#Position-independent_executables">PIE</a>），因此你的输出（尤其是 <code>Type:</code>）可能会有所不同。</p>
+<pre><code>[testdir]# readelf -h /bin/ls
+ELF Header:
+Magic: 7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+Class: ELF64
+Data: 2&#39;s complement, little endian
+Version: 1 (current)
+OS/ABI: UNIX - System V
+ABI Version: 0
+Type: EXEC (Executable file)
+</code></pre>
+<p>使用 <code>ldd</code> 命令了解 <code>ls</code> 命令所依赖的系统库，如下所示：</p>
+<pre><code>[testdir]# ldd /bin/ls
+linux-vdso.so.1 =&gt; (0x00007ffd7d746000)
+libselinux.so.1 =&gt; /lib64/libselinux.so.1 (0x00007f060daca000)
+libcap.so.2 =&gt; /lib64/libcap.so.2 (0x00007f060d8c5000)
+libacl.so.1 =&gt; /lib64/libacl.so.1 (0x00007f060d6bc000)
+libc.so.6 =&gt; /lib64/libc.so.6 (0x00007f060d2ef000)
+libpcre.so.1 =&gt; /lib64/libpcre.so.1 (0x00007f060d08d000)
+libdl.so.2 =&gt; /lib64/libdl.so.2 (0x00007f060ce89000)
+/lib64/ld-linux-x86-64.so.2 (0x00007f060dcf1000)
+libattr.so.1 =&gt; /lib64/libattr.so.1 (0x00007f060cc84000)
+libpthread.so.0 =&gt; /lib64/libpthread.so.0 (0x00007f060ca68000)
+</code></pre>
+<p>对 <code>libc</code> 库文件运行 <code>readelf</code> 以查看它是哪种文件。正如它指出的那样，它是一个 <code>DYN (Shared object file)</code>（共享对象文件），这意味着它不能直接执行；必须由内部使用了该库提供的任何函数的可执行文件使用它。</p>
+<pre><code>[testdir]# readelf -h /lib64/libc.so.6
+ELF Header:
+Magic: 7f 45 4c 46 02 01 01 03 00 00 00 00 00 00 00 00
+Class: ELF64
+Data: 2&#39;s complement, little endian
+Version: 1 (current)
+OS/ABI: UNIX - GNU
+ABI Version: 0
+Type: DYN (Shared object file)
+</code></pre>
+<h4 id="size列出节的大小和全部大小">size：列出节的大小和全部大小</h4>
+<p><code>size</code> 命令仅适用于目标文件和可执行文件，因此，如果尝试在简单的 ASCII 文件上运行它，则会抛出错误，提示“文件格式无法识别”。</p>
+<pre><code>[testdir]# echo &quot;test&quot; &gt; file1
+[testdir]# cat file1
+test
+[testdir]# file file1
+file1: ASCII text
+[testdir]# size file1
+size: file1: File format not recognized
+</code></pre>
+<p>现在，在上面的练习中，对目标文件和可执行文件运行 <code>size</code> 命令。请注意，根据 <code>size</code> 命令的输出可以看出，可执行文件（<code>a.out</code>）的信息要比目标文件（<code>hello.o</code>）多得多：</p>
+<pre><code>[testdir]# size hello.o
+text data bss dec hex filename
+89 0 0 89 59 hello.o
+[testdir]# size a.out
+text data bss dec hex filename
+1194 540 4 1738 6ca a.out
+</code></pre>
+<p>但是这里的 <code>text</code>、<code>data</code> 和 <code>bss</code> 节是什么意思？</p>
+<p><code>text</code> 节是指二进制文件的代码部分，其中包含所有可执行指令。<code>data</code> 节是所有初始化数据所在的位置，<code>bss</code> 节是所有未初始化数据的存储位置。（LCTT 译注：一般来说，在静态的映像文件中，各个部分称之为<ruby>节<rt>section</rt></ruby>，而在运行时的各个部分称之为<ruby>段<rt>segment</rt></ruby>，有时统称为段。）</p>
+<p>比较其他一些可用的系统二进制文件的 <code>size</code> 结果。</p>
+<p>对于 <code>ls</code> 命令：</p>
+<pre><code>[testdir]# size /bin/ls
+text data bss dec hex filename
+103119 4768 3360 111247 1b28f /bin/ls
+</code></pre>
+<p>只需查看 <code>size</code> 命令的输出，你就可以看到 <code>gcc</code> 和 <code>gdb</code> 是比 <code>ls</code> 大得多的程序：</p>
+<pre><code>[testdir]# size /bin/gcc
+text data bss dec hex filename
+755549 8464 81856 845869 ce82d /bin/gcc
+[testdir]# size /bin/gdb
+text data bss dec hex filename
+6650433 90842 152280 6893555 692ff3 /bin/gdb
+</code></pre>
+<h4 id="strings打印文件中的可打印字符串">strings：打印文件中的可打印字符串</h4>
+<p>在 <code>strings</code> 命令中添加 <code>-d</code> 标志以仅显示 <code>data</code> 节中的可打印字符通常很有用。</p>
+<p><code>hello.o</code> 是一个目标文件，其中包含打印出 <code>Hello World</code> 文本的指令。因此，<code>strings</code> 命令的唯一输出是 <code>Hello World</code>。</p>
+<pre><code>[testdir]# strings -d hello.o 
+Hello World
+</code></pre>
+<p>另一方面，在 <code>a.out</code>（可执行文件）上运行 <code>strings</code> 会显示在链接阶段该二进制文件中包含的其他信息：</p>
+<pre><code>[testdir]# strings -d a.out
+/lib64/ld-linux-x86-64.so.2
+!^BU
+libc.so.6
+puts
+__libc_start_main
+__gmon_start__
+GLIBC_2.2.5
+UH-0
+UH-0
+=(
+[]A\A]A^A_
+Hello World
+;*3$&quot;
+</code></pre>
+<h4 id="objdump显示目标文件信息">objdump：显示目标文件信息</h4>
+<p>另一个可以从二进制文件中转储机器语言指令的 binutils 工具称为 <code>objdump</code>。使用 <code>-d</code> 选项，可从二进制文件中反汇编出所有汇编指令。</p>
+<p>回想一下，编译是将源代码指令转换为机器代码的过程。机器代码仅由 1 和 0 组成，人类难以阅读。因此，它有助于将机器代码表示为汇编语言指令。汇编语言是什么样的？请记住，汇编语言是特定于体系结构的；由于我使用的是 Intel（x86-64）架构，因此如果你使用 ARM 架构编译相同的程序，指令将有所不同。</p>
+<pre><code>[testdir]# objdump -d hello.o
+hello.o: file format elf64-x86-64
+Disassembly of section .text:
+0000000000000000
+:
+0:  55              push %rbp
+1:  48 89 e5        mov %rsp,%rbp
+4:  bf 00 00 00 00  mov $0x0,%edi
+9:  e8 00 00 00 00  callq e
+
+e:  b8 00 00 00 00  mov $0x0,%eax
+13: 5d              pop %rbp
+14: c3              retq
+</code></pre>
+<p>该输出乍一看似乎令人生畏，但请花一点时间来理解它，然后再继续。回想一下，<code>.text</code> 节包含所有的机器代码指令。汇编指令可以在第四列中看到（即 <code>push</code>、<code>mov</code>、<code>callq</code>、<code>pop</code>、<code>retq</code> 等）。这些指令作用于寄存器，寄存器是 CPU 内置的存储器位置。本示例中的寄存器是 <code>rbp</code>、<code>rsp</code>、<code>edi</code>、<code>eax</code> 等，并且每个寄存器都有特殊的含义。</p>
+<p>现在对可执行文件（<code>a.out</code>）运行 <code>objdump</code> 并查看得到的内容。可执行文件的 <code>objdump</code> 的输出可能很大，因此我使用 <code>grep</code> 命令将其缩小到 <code>main</code> 函数：</p>
+<pre><code>[testdir]# objdump -d a.out | grep -A 9 main\&gt;
+000000000040051d
+:
+40051d: 55              push %rbp
+40051e: 48 89 e5        mov %rsp,%rbp
+400521: bf d0 05 40 00  mov $0x4005d0,%edi
+400526: e8 d5 fe ff ff  callq 400400
+40052b: b8 00 00 00 00  mov $0x0,%eax
+400530: 5d              pop %rbp
+400531: c3              retq
+</code></pre>
+<p>请注意，这些指令与目标文件 <code>hello.o</code> 相似，但是其中包含一些其他信息：</p>
+<ul>
+<li>目标文件 <code>hello.o</code> 具有以下指令：<code>callq e</code></li>
+<li>可执行文件 <code>a.out</code> 由以下指令组成，该指令带有一个地址和函数：<code>callq 400400 &lt;puts@plt&gt;</code></li>
+</ul>
+<p>   
+上面的汇编指令正在调用 <code>puts</code> 函数。请记住，你在源代码中使用了一个 <code>printf</code> 函数。编译器插入了对 <code>puts</code> 库函数的调用，以将 <code>Hello World</code> 输出到屏幕。</p>
+<p>查看 <code>put</code> 上方一行的说明：</p>
+<ul>
+<li>目标文件 <code>hello.o</code> 有个指令 <code>mov</code>：<code>mov $0x0,%edi</code></li>
+<li>可执行文件 <code>a.out</code> 的 <code>mov</code> 指令带有实际地址（<code>$0x4005d0</code>）而不是 <code>$0x0</code>：<code>mov $0x4005d0,%edi</code></li>
+</ul>
+<p>该指令将二进制文件中地址 <code>$0x4005d0</code> 处存在的内容移动到名为 <code>edi</code> 的寄存器中。</p>
+<p>这个存储位置的内容中还能是别的什么吗？是的，你猜对了：它就是文本 <code>Hello, World</code>。你是如何确定的？</p>
+<p><code>readelf</code> 命令使你可以将二进制文件（<code>a.out</code>）的任何节转储到屏幕上。以下要求它将 <code>.rodata</code>（这是只读数据）转储到屏幕上：</p>
+<pre><code>[testdir]# readelf -x .rodata a.out
+
+Hex dump of section &#39;.rodata&#39;:
+0x004005c0 01000200 00000000 00000000 00000000 ....
+0x004005d0 48656c6c 6f20576f 726c6400 Hello World.
+</code></pre>
+<p>你可以在右侧看到文本 <code>Hello World</code>，在左侧可以看到其二进制格式的地址。它是否与你在上面的 <code>mov</code> 指令中看到的地址匹配？是的，确实匹配。</p>
+<h4 id="strip从目标文件中剥离符号">strip：从目标文件中剥离符号</h4>
+<p>该命令通常用于在将二进制文件交付给客户之前减小二进制文件的大小。</p>
+<p>请记住，由于重要信息已从二进制文件中删除，因此它会妨碍调试。但是，这个二进制文件可以完美地执行。</p>
+<p>对 <code>a.out</code> 可执行文件运行该命令，并注意会发生什么。首先，通过运行以下命令确保二进制文件没有被剥离（<code>not stripped</code>）：</p>
+<pre><code>[testdir]# file a.out
+a.out: ELF 64-bit LSB executable, x86-64, [......] not stripped
+</code></pre>
+<p>另外，在运行 <code>strip</code> 命令之前，请记下二进制文件中最初的字节数：</p>
+<pre><code>[testdir]# du -b a.out
+8440 a.out
+</code></pre>
+<p>现在对该可执行文件运行 <code>strip</code> 命令，并使用 <code>file</code> 命令以确保正常完成：</p>
+<pre><code>[testdir]# strip a.out
+[testdir]# file a.out a.out: ELF 64-bit LSB executable, x86-64, [......] stripped
+</code></pre>
+<p>剥离该二进制文件后，此小程序的大小从之前的 <code>8440</code> 字节减小为 <code>6296</code> 字节。对于这样小的一个程序都能有这么大的空间节省，难怪大型程序经常被剥离。</p>
+<pre><code>[testdir]# du -b a.out 
+6296 a.out
+</code></pre>
+<h4 id="addr2line转换地址到文件名和行号">addr2line：转换地址到文件名和行号</h4>
+<p><code>addr2line</code> 工具只是在二进制文件中查找地址，并将其与 C 源代码程序中的行进行匹配。很酷，不是吗？</p>
+<p>为此编写另一个测试程序；只是这一次确保使用 <code>gcc</code> 的 <code>-g</code> 标志进行编译，这将为二进制文件添加其它调试信息，并包含有助于调试的行号（由源代码中提供）：</p>
+<pre><code>[testdir]# cat -n atest.c
+1  #include &lt;stdio.h&gt;
+2
+3  int globalvar = 100;
+4
+5  int function1(void)
+6  {
+7    printf(&quot;Within function1\n&quot;);
+8    return 0;
+9  }
+10
+11 int function2(void)
+12 {
+13   printf(&quot;Within function2\n&quot;);
+14   return 0;
+15 }
+16
+17 int main(void)
+18 {
+19   function1();
+20   function2();
+21   printf(&quot;Within main\n&quot;);
+22   return 0;
+23 }
+</code></pre>
+<p>用 <code>-g</code> 标志编译并执行它。正如预期：</p>
+<pre><code>[testdir]# gcc -g atest.c
+[testdir]# ./a.out
+Within function1
+Within function2
+Within main
+</code></pre>
+<p>现在使用 <code>objdump</code> 来标识函数开始的内存地址。你可以使用 <code>grep</code> 命令来过滤出所需的特定行。函数的地址在下面突出显示（<code>55 push %rbp</code> 前的地址）：</p>
+<pre><code>[testdir]# objdump -d a.out | grep -A 2 -E &#39;main&gt;:|function1&gt;:|function2&gt;:&#39;
+000000000040051d :
+40051d: 55 push %rbp
+40051e: 48 89 e5 mov %rsp,%rbp
+--
+0000000000400532 :
+400532: 55 push %rbp
+400533: 48 89 e5 mov %rsp,%rbp
+--
+0000000000400547
+:
+400547: 55 push %rbp
+400548: 48 89 e5 mov %rsp,%rbp
+</code></pre>
+<p>现在，使用 <code>addr2line</code> 工具从二进制文件中的这些地址映射到 C 源代码匹配的地址：</p>
+<pre><code>[testdir]# addr2line -e a.out 40051d
+/tmp/testdir/atest.c:6
+[testdir]#
+[testdir]# addr2line -e a.out 400532
+/tmp/testdir/atest.c:12
+[testdir]#
+[testdir]# addr2line -e a.out 400547
+/tmp/testdir/atest.c:18
+</code></pre>
+<p>它说 <code>40051d</code> 从源文件 <code>atest.c</code> 中的第 <code>6</code> 行开始，这是 <code>function1</code> 的起始大括号（<code>{</code>）开始的行。<code>function2</code> 和 <code>main</code> 的输出也匹配。</p>
+<h4 id="nm列出目标文件的符号">nm：列出目标文件的符号</h4>
+<p>使用上面的 C 程序测试 <code>nm</code> 工具。使用 <code>gcc</code> 快速编译并执行它。</p>
+<pre><code>[testdir]# gcc atest.c
+[testdir]# ./a.out
+Within function1
+Within function2
+Within main
+</code></pre>
+<p>现在运行 <code>nm</code> 和 <code>grep</code> 获取有关函数和变量的信息：</p>
+<pre><code>[testdir]# nm a.out | grep -Ei &#39;function|main|globalvar&#39;
+000000000040051d T function1
+0000000000400532 T function2
+000000000060102c D globalvar
+U __libc_start_main@@GLIBC_2.2.5
+0000000000400547 T main
+</code></pre>
+<p>你可以看到函数被标记为 <code>T</code>，它表示 <code>text</code> 节中的符号，而变量标记为 <code>D</code>，表示初始化的 <code>data</code> 节中的符号。</p>
+<p>想象一下在没有源代码的二进制文件上运行此命令有多大用处？这使你可以窥视内部并了解使用了哪些函数和变量。当然，除非二进制文件已被剥离，这种情况下它们将不包含任何符号，因此 <code>nm</code> 就命令不会很有用，如你在此处看到的：</p>
+<pre><code>[testdir]# strip a.out
+[testdir]# nm a.out | grep -Ei &#39;function|main|globalvar&#39;
+nm: a.out: no symbols
+</code></pre>
+<h3 id="结论">结论</h3>
+<p>GNU binutils 工具为有兴趣分析二进制文件的人提供了许多选项，这只是它们可以为你做的事情的冰山一角。请阅读每种工具的手册页，以了解有关它们以及如何使用它们的更多信息。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/19/10/gnu-binutils">https://opensource.com/article/19/10/gnu-binutils</a></p>
+<p>作者：<a href="https://opensource.com/users/gkamathe">Gaurav Kamathe</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#软件开发的基础知识">软件开发的基础知识</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#编译的基础知识">编译的基础知识</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#探索-binutils-工具">探索 binutils 工具</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201910/20191004 9 essential GNU binutils tools","title":"GNU binutils 里的九种武器"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

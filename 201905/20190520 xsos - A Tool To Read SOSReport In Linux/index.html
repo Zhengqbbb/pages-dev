@@ -1,0 +1,326 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>xsos：一个在 Linux 上阅读 SOSReport 的工具 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="xsos：一个在 Linux 上阅读 SOSReport 的工具 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="xsos：一个在 Linux 上阅读 SOSReport 的工具 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201905/20190520 xsos - A Tool To Read SOSReport In Linux#page","@type":"TechArticle","headline":"xsos：一个在 Linux 上阅读 SOSReport 的工具","inLanguage":"en","name":"xsos：一个在 Linux 上阅读 SOSReport 的工具","url":"https://zhengqbbb.github.io/pages-dev/201905/20190520 xsos - A Tool To Read SOSReport In Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201905/20190520 xsos - A Tool To Read SOSReport In Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#sosreport">sosreport</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#xsos">xsos</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在-linux-上安装-xsos">如何在 Linux 上安装 xsos</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在-linux-上使用-xsos">如何在 Linux 上使用 xsos</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何使用-xsos-命令在-linux-中查看生成的-sosreport-输出">如何使用 xsos 命令在 Linux 中查看生成的 SOSReport 输出？</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>xsos：一个在 Linux 上阅读 SOSReport 的工具</h1><p><img src="https://img.linux.net.cn/data/attachment/album/201905/23/133305accwpsvhk1epsisc.jpg" alt=""></p>
+<p>我们都已经知道 <a href="https://www.2daygeek.com/how-to-create-collect-sosreport-in-linux/">SOSReport</a>。它用来收集可用于诊断的系统信息。Redhat 的支持服务建议我们在提交案例时提供 SOSReport 来分析当前的系统状态。</p>
+<p>它会收集全部类型的报告，以帮助用户找出问题的根本原因。我们可以轻松地提取和阅读 SOSReport，但它很难阅读。因为它的每个部分都是一个单独的文件。</p>
+<p>那么，在 Linux 中使用语法高亮显示阅读所有这些内容的最佳方法是什么。是的，这可以通过 <code>xsos</code> 工具做到。</p>
+<h3 id="sosreport">sosreport</h3>
+<p><code>sosreport</code> 命令是一个从运行中的系统（尤其是 RHEL 和 OEL 系统）收集大量配置细节、系统信息和诊断信息的工具。它可以帮助技术支持工程师在很多方面分析系统。</p>
+<p>此报告包含有关系统的大量信息，例如引导信息、文件系统、内存、主机名、已安装的 RPM、系统 IP、网络详细信息、操作系统版本、已安装的内核、已加载的内核模块、打开的文件列表、PCI 设备列表、挂载点及其细节、运行中的进程信息、进程树输出、系统路由、位于 <code>/etc</code> 文件夹中的所有配置文件，以及位于 <code>/var</code> 文件夹中的所有日志文件。</p>
+<p>这将需要一段时间来生成报告，这取决于你的系统安装和配置。</p>
+<p>完成后，<code>sosreport</code> 将在 <code>/tmp</code> 目录下生成一个压缩的归档文件。</p>
+<h3 id="xsos">xsos</h3>
+<p><a href="https://github.com/ryran/xsos">xsos</a> 是一个帮助用户轻松读取 Linux 系统上的 <code>sosreport</code> 的工具。另一方面，我们可以说它是 <code>sosreport</code> 考官。</p>
+<p>它可以立即从 <code>sosreport</code> 或正在运行的系统中汇总系统信息。</p>
+<p><code>xsos</code> 将尝试简化、解析、计算并格式化来自数十个文件（和命令）的数据，以便为你提供有关系统的详细概述。</p>
+<p>你可以通过运行以下命令立即汇总系统信息。</p>
+<pre><code># curl -Lo ./xsos bit.ly/xsos-direct; chmod +x ./xsos; ./xsos -ya
+</code></pre>
+<p><img src="https://www.2daygeek.com/wp-content/uploads/2019/05/xsos-a-tool-to-read-sosreport-in-linux-1.jpg" alt=""></p>
+<h3 id="如何在-linux-上安装-xsos">如何在 Linux 上安装 xsos</h3>
+<p>我们可以使用以下两种方法轻松安装 <code>xsos</code>。</p>
+<p>如果你正在寻找最新的前沿版本。使用以下步骤：</p>
+<pre><code># curl -Lo /usr/local/bin/xsos bit.ly/xsos-direct
+# chmod +x /usr/local/bin/xsos
+</code></pre>
+<p>下面是安装 <code>xsos</code> 的推荐方法。它将从 rpm 文件安装 <code>xsos</code>。</p>
+<pre><code># yum install http://people.redhat.com/rsawhill/rpms/latest-rsawaroha-release.rpm
+# yum install xsos
+</code></pre>
+<h3 id="如何在-linux-上使用-xsos">如何在 Linux 上使用 xsos</h3>
+<p>一旦通过上述方法之一安装了 xsos。只需运行 <code>xsos</code> 命令，不带任何选项，它们会显示有关系统的基本信息。</p>
+<pre><code># xsos
+
+OS
+  Hostname: CentOS7.2daygeek.com
+  Distro:   [redhat-release] CentOS Linux release 7.6.1810 (Core)
+            [centos-release] CentOS Linux release 7.6.1810 (Core)
+            [os-release] CentOS Linux 7 (Core) 7 (Core)
+  RHN:      (missing)
+  RHSM:     (missing)
+  YUM:      2 enabled plugins: fastestmirror, langpacks
+  Runlevel: N 5  (default graphical)
+  SELinux:  enforcing  (default enforcing)
+  Arch:     mach=x86_64  cpu=x86_64  platform=x86_64
+  Kernel:
+    Booted kernel:  3.10.0-957.el7.x86_64
+    GRUB default:   3.10.0-957.el7.x86_64
+    Build version:
+      Linux version 3.10.0-957.el7.x86_64 ([email protected]) (gcc version 4.8.5 20150623 (Red
+      Hat 4.8.5-36) (GCC) ) #1 SMP Thu Nov 8 23:39:32 UTC 2018
+    Booted kernel cmdline:
+      root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet
+      LANG=en_US.UTF-8
+    GRUB default kernel cmdline:
+      root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet
+      LANG=en_US.UTF-8
+    Taint-check: 0  (kernel untainted)
+    - - - - - - - - - - - - - - - - - - -
+  Sys time:  Sun May 12 10:05:21 CDT 2019
+  Boot time: Sun May 12 09:50:20 CDT 2019  (epoch: 1557672620)
+  Time Zone: America/Chicago
+  Uptime:    15 min,  1 user
+  LoadAvg:   [1 CPU] 0.00 (0%), 0.04 (4%), 0.09 (9%)
+  /proc/stat:
+    procs_running: 2   procs_blocked: 0    processes [Since boot]: 6423
+    cpu [Utilization since boot]:
+      us 1%, ni 0%, sys 1%, idle 99%, iowait 0%, irq 0%, sftirq 0%, steal 0%
+</code></pre>
+<h3 id="如何使用-xsos-命令在-linux-中查看生成的-sosreport-输出">如何使用 xsos 命令在 Linux 中查看生成的 SOSReport 输出？</h3>
+<p>我们需要份 SOSReport 以使用 <code>xsos</code> 命令进一步阅读。</p>
+<p>是的，我已经生成了一个 SOSReport，文件如下。</p>
+<pre><code># ls -lls -lh /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa.tar.xz
+9.8M -rw-------. 1 root root 9.8M May 12 10:13 /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa.tar.xz
+</code></pre>
+<p>运行如下命令解开它。</p>
+<pre><code># tar xf sosreport-CentOS7-01-1005-2019-05-12-pomeqsa.tar.xz
+</code></pre>
+<p>要查看全部信息，带上 <code>-a</code> 或 <code>--all</code> 开关运行 <code>xsos</code>：</p>
+<pre><code># xsos --all /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+</code></pre>
+<p>要查看 BIOS 信息，带上 <code>-b</code> 或 <code>--bios</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --bios /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+DMIDECODE
+  BIOS:
+    Vend: innotek GmbH
+    Vers: VirtualBox
+    Date: 12/01/2006
+    BIOS Rev:
+    FW Rev:
+  System:
+    Mfr:  innotek GmbH
+    Prod: VirtualBox
+    Vers: 1.2
+    Ser:  0
+    UUID: 002f47b8-2af2-48f5-be1d-67b67e03514c
+  CPU:
+    0 of 0 CPU sockets populated, 0 cores/0 threads per CPU
+    0 total cores, 0 total threads
+    Mfr:
+    Fam:
+    Freq:
+    Vers:
+  Memory:
+    Total: 0 MiB (0 GiB)
+    DIMMs: 0 of 0 populated
+    MaxCapacity: 0 MiB (0 GiB / 0.00 TiB)
+</code></pre>
+<p>要查看系统基本信息，如主机名、发行版、SELinux、内核信息、正常运行时间等，请使用 <code>-o</code> 或 <code>--os</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --os /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+OS
+  Hostname: CentOS7.2daygeek.com
+  Distro:   [redhat-release] CentOS Linux release 7.6.1810 (Core)
+            [centos-release] CentOS Linux release 7.6.1810 (Core)
+            [os-release] CentOS Linux 7 (Core) 7 (Core)
+  RHN:      (missing)
+  RHSM:     (missing)
+  YUM:      2 enabled plugins: fastestmirror, langpacks
+  SELinux:  enforcing  (default enforcing)
+  Arch:     mach=x86_64  cpu=x86_64  platform=x86_64
+  Kernel:
+    Booted kernel:  3.10.0-957.el7.x86_64
+    GRUB default:   3.10.0-957.el7.x86_64
+    Build version:
+      Linux version 3.10.0-957.el7.x86_64 ([email protected]) (gcc version 4.8.5 20150623 (Red
+      Hat 4.8.5-36) (GCC) ) #1 SMP Thu Nov 8 23:39:32 UTC 2018
+    Booted kernel cmdline:
+      root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet
+      LANG=en_US.UTF-8
+    GRUB default kernel cmdline:
+      root=/dev/mapper/centos-root ro crashkernel=auto rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet
+      LANG=en_US.UTF-8
+    Taint-check: 536870912  (see https://access.redhat.com/solutions/40594)
+      29  TECH_PREVIEW: Technology Preview code is loaded
+    - - - - - - - - - - - - - - - - - - -
+  Sys time:  Sun May 12 10:12:22 CDT 2019
+  Boot time: Sun May 12 09:50:20 CDT 2019  (epoch: 1557672620)
+  Time Zone: America/Chicago
+  Uptime:    22 min,  1 user
+  LoadAvg:   [1 CPU] 1.19 (119%), 0.27 (27%), 0.14 (14%)
+  /proc/stat:
+    procs_running: 8   procs_blocked: 2    processes [Since boot]: 9005
+    cpu [Utilization since boot]:
+      us 1%, ni 0%, sys 1%, idle 99%, iowait 0%, irq 0%, sftirq 0%, steal 0%
+</code></pre>
+<p>要查看 kdump 配置，请使用 <code>-k</code> 或 <code>--kdump</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --kdump /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+KDUMP CONFIG
+  kexec-tools rpm version:
+    kexec-tools-2.0.15-21.el7.x86_64
+  Service enablement:
+    UNIT           STATE
+    kdump.service  enabled
+  kdump initrd/initramfs:
+    13585734 Feb 19 05:51 initramfs-3.10.0-957.el7.x86_64kdump.img
+  Memory reservation config:
+    /proc/cmdline { crashkernel=auto }
+    GRUB default  { crashkernel=auto }
+  Actual memory reservation per /proc/iomem:
+      2a000000-340fffff : Crash kernel
+  kdump.conf:
+    path /var/crash
+    core_collector makedumpfile -l --message-level 1 -d 31
+  kdump.conf &quot;path&quot; available space:
+    System MemTotal (uncompressed core size) { 1.80 GiB }
+    Available free space on target path&#39;s fs { 22.68 GiB }  (fs=/)
+  Panic sysctls:
+    kernel.sysrq [bitmask] =  &quot;16&quot;  (see proc man page)
+    kernel.panic [secs] =  0  (no autoreboot on panic)
+    kernel.hung_task_panic =  0
+    kernel.panic_on_oops =  1
+    kernel.panic_on_io_nmi =  0
+    kernel.panic_on_unrecovered_nmi =  0
+    kernel.panic_on_stackoverflow =  0
+    kernel.softlockup_panic =  0
+    kernel.unknown_nmi_panic =  0
+    kernel.nmi_watchdog =  1
+    vm.panic_on_oom [0-2] =  0  (no panic)
+</code></pre>
+<p>要查看有关 CPU 的信息，请使用 <code>-c</code> 或 <code>--cpu</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --cpu /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+CPU
+  1 logical processors
+  1 Intel Core i7-6700HQ CPU @ 2.60GHz (flags: aes,constant_tsc,ht,lm,nx,pae,rdrand)
+</code></pre>
+<p>要查看内存利用情况，请使用 <code>-m</code> 或 <code>--mem</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --mem /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+MEMORY
+  Stats graphed as percent of MemTotal:
+    MemUsed    ▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊.....................  58.8%
+    Buffers    ..................................................   0.6%
+    Cached     ▊▊▊▊▊▊▊▊▊▊▊▊▊▊▊...................................  29.9%
+    HugePages  ..................................................   0.0%
+    Dirty      ..................................................   0.7%
+  RAM:
+    1.8 GiB total ram
+    1.1 GiB (59%) used
+    0.5 GiB (28%) used excluding Buffers/Cached
+    0.01 GiB (1%) dirty
+  HugePages:
+    No ram pre-allocated to HugePages
+  LowMem/Slab/PageTables/Shmem:
+    0.09 GiB (5%) of total ram used for Slab
+    0.02 GiB (1%) of total ram used for PageTables
+    0.01 GiB (1%) of total ram used for Shmem
+  Swap:
+    0 GiB (0%) used of 2 GiB total
+</code></pre>
+<p>要查看添加的磁盘信息，请使用 <code>-d</code> 和 <code>-disks</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --disks /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+STORAGE
+  Whole Disks from /proc/partitions:
+    2 disks, totaling 40 GiB (0.04 TiB)
+    - - - - - - - - - - - - - - - - - - - - -
+    Disk    Size in GiB
+    ----    -----------
+    sda     30
+    sdb     10
+</code></pre>
+<p>要查看网络接口配置，请使用 <code>-e</code> 或 <code>--ethtool</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --ethtool /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+ETHTOOL
+  Interface Status:
+    enp0s10     0000:00:0a.0  link=up 1000Mb/s full (autoneg=Y)  rx ring 256/4096  drv e1000 v7.3.21-k8-NAPI / fw UNKNOWN
+    enp0s9      0000:00:09.0  link=up 1000Mb/s full (autoneg=Y)  rx ring 256/4096  drv e1000 v7.3.21-k8-NAPI / fw UNKNOWN
+    virbr0      N/A           link=DOWN                          rx ring UNKNOWN   drv bridge v2.3 / fw N/A
+    virbr0-nic  tap           link=DOWN                          rx ring UNKNOWN   drv tun v1.6 / fw UNKNOWN
+</code></pre>
+<p>要查看有关 IP 地址的信息，请使用 <code>-i</code> 或 <code>--ip</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --ip /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+IP4
+  Interface   Master IF  MAC Address        MTU     State  IPv4 Address
+  =========   =========  =================  ======  =====  ==================
+  lo          -          -                  65536   up     127.0.0.1/8
+  enp0s9      -          08:00:27:0b:bc:e9  1500    up     192.168.1.8/24
+  enp0s10     -          08:00:27:b2:08:91  1500    up     192.168.1.9/24
+  virbr0      -          52:54:00:ae:01:94  1500    up     192.168.122.1/24
+  virbr0-nic  virbr0     52:54:00:ae:01:94  1500    DOWN   -
+
+IP6
+  Interface   Master IF  MAC Address        MTU     State  IPv6 Address                                 Scope
+  =========   =========  =================  ======  =====  ===========================================  =====
+  lo          -          -                  65536   up     ::1/128                                      host
+  enp0s9      -          08:00:27:0b:bc:e9  1500    up     fe80::945b:8333:f4bc:9723/64                 link
+  enp0s10     -          08:00:27:b2:08:91  1500    up     fe80::7ed4:1fab:23c3:3790/64                 link
+  virbr0      -          52:54:00:ae:01:94  1500    up     -                                            -
+  virbr0-nic  virbr0     52:54:00:ae:01:94  1500    DOWN   -                                            -
+</code></pre>
+<p>要通过 <code>ps</code> 查看正在运行的进程，请使用 <code>-p</code> 或 <code>--ps</code> 开关运行 <code>xsos</code>。</p>
+<pre><code># xsos --ps /var/tmp/sosreport-CentOS7-01-1005-2019-05-12-pomeqsa
+PS CHECK
+  Total number of threads/processes:
+    501 / 171
+  Top users of CPU &amp; MEM:
+    USER     %CPU   %MEM   RSS
+    root     20.6%  14.1%  0.30 GiB
+    gdm      0.3%   16.8%  0.33 GiB
+    postfix  0.0%   0.6%   0.01 GiB
+    polkitd  0.0%   0.6%   0.01 GiB
+    daygeek  0.0%   0.2%   0.00 GiB
+    colord   0.0%   0.4%   0.01 GiB
+  Uninteruptible sleep threads/processes (0/0):
+    [None]
+  Defunct zombie threads/processes (0/0):
+    [None]
+  Top CPU-using processes:
+    USER      PID   %CPU  %MEM  VSZ-MiB  RSS-MiB  TTY    STAT  START  TIME  COMMAND
+    root      6542  15.6  4.2   875      78       pts/0  Sl+   10:11  0:07  /usr/bin/python /sbin/sosreport
+    root      7582  3.0   0.1   10       2        pts/0  S     10:12  0:00  /bin/bash /usr/sbin/dracut --print-cmdline
+    root      7969  0.7   0.1   95       4        ?      Ss    10:12  0:00  /usr/sbin/certmonger -S -p
+    root      7889  0.4   0.2   24       4        ?      Ss    10:12  0:00  /usr/lib/systemd/systemd-hostnamed
+    gdm       3866  0.3   7.1   2856     131      ?      Sl    09:50  0:04  /usr/bin/gnome-shell
+    root      8553  0.2   0.1   47       3        ?      S     10:12  0:00  /usr/lib/systemd/systemd-udevd
+    root      6971  0.2   0.4   342      9        ?      Sl    10:12  0:00  /usr/sbin/abrt-dbus -t133
+    root      3200  0.2   0.9   982      18       ?      Ssl   09:50  0:02  /usr/sbin/libvirtd
+    root      2855  0.1   0.1   88       3        ?      Ss    09:50  0:01  /sbin/rngd -f
+    rtkit     2826  0.0   0.0   194      2        ?      SNsl  09:50  0:00  /usr/libexec/rtkit-daemon
+  Top MEM-using processes:
+    USER      PID   %CPU  %MEM  VSZ-MiB  RSS-MiB  TTY    STAT  START  TIME  COMMAND
+    gdm       3866  0.3   7.1   2856     131      ?      Sl    09:50  0:04  /usr/bin/gnome-shell
+    root      6542  15.6  4.2   875      78       pts/0  Sl+   10:11  0:07  /usr/bin/python /sbin/sosreport
+    root      3264  0.0   1.2   271      23       tty1   Ssl+  09:50  0:00  /usr/bin/X :0 -background
+    root      3200  0.2   0.9   982      18       ?      Ssl   09:50  0:02  /usr/sbin/libvirtd
+    root      3189  0.0   0.9   560      17       ?      Ssl   09:50  0:00  /usr/bin/python2 -Es /usr/sbin/tuned
+    gdm       4072  0.0   0.9   988      17       ?      Sl    09:50  0:00  /usr/libexec/gsd-media-keys
+    gdm       4076  0.0   0.8   625      16       ?      Sl    09:50  0:00  /usr/libexec/gsd-power
+    gdm       4056  0.0   0.8   697      16       ?      Sl    09:50  0:00  /usr/libexec/gsd-color
+    root      2853  0.0   0.7   622      14       ?      Ssl   09:50  0:00  /usr/sbin/NetworkManager --no-daemon
+    gdm       4110  0.0   0.7   544      14       ?      Sl    09:50  0:00  /usr/libexec/gsd-wacom
+  Top thread-spawning processes:
+    #   USER      PID   %CPU  %MEM  VSZ-MiB  RSS-MiB  TTY    STAT  START  TIME  COMMAND
+    17  root      3200  0.2   0.9   982      18       ?      -     09:50  0:02  /usr/sbin/libvirtd
+    12  root      6542  16.1  4.5   876      83       pts/0  -     10:11  0:07  /usr/bin/python /sbin/sosreport
+    10  gdm       3866  0.3   7.1   2856     131      ?      -     09:50  0:04  /usr/bin/gnome-shell
+    7   polkitd   2864  0.0   0.6   602      13       ?      -     09:50  0:01  /usr/lib/polkit-1/polkitd --no-debug
+    6   root      2865  0.0   0.0   203      1        ?      -     09:50  0:00  /usr/sbin/gssproxy -D
+    5   root      3189  0.0   0.9   560      17       ?      -     09:50  0:00  /usr/bin/python2 -Es /usr/sbin/tuned
+    5   root      2823  0.0   0.3   443      6        ?      -     09:50  0:00  /usr/libexec/udisks2/udisksd
+    5   gdm       4102  0.0   0.2   461      5        ?      -     09:50  0:00  /usr/libexec/gsd-smartcard
+    4   root      3215  0.0   0.2   470      4        ?      -     09:50  0:00  /usr/sbin/gdm
+    4   gdm       4106  0.0   0.2   444      5        ?      -     09:50  0:00  /usr/libexec/gsd-sound
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/xsos-a-tool-to-read-sosreport-in-linux/">https://www.2daygeek.com/xsos-a-tool-to-read-sosreport-in-linux/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/magesh/">Magesh Maruthamuthu</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#sosreport">sosreport</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#xsos">xsos</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在-linux-上安装-xsos">如何在 Linux 上安装 xsos</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何在-linux-上使用-xsos">如何在 Linux 上使用 xsos</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何使用-xsos-命令在-linux-中查看生成的-sosreport-输出">如何使用 xsos 命令在 Linux 中查看生成的 SOSReport 输出？</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201905/20190520 xsos - A Tool To Read SOSReport In Linux","title":"xsos：一个在 Linux 上阅读 SOSReport 的工具"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

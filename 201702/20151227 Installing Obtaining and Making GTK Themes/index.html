@@ -1,0 +1,373 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何获取、安装和制作 GTK 主题 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何获取、安装和制作 GTK 主题 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何获取、安装和制作 GTK 主题 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201702/20151227 Installing Obtaining and Making GTK Themes#page","@type":"TechArticle","headline":"如何获取、安装和制作 GTK 主题","inLanguage":"en","name":"如何获取、安装和制作 GTK 主题","url":"https://zhengqbbb.github.io/pages-dev/201702/20151227 Installing Obtaining and Making GTK Themes","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201702/20151227 Installing Obtaining and Making GTK Themes"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#主题存放位置">主题存放位置</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#主题引擎">主题引擎</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创作-gtk3-主题">创作 GTK3 主题</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#测试主题">测试主题</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#主题下载">主题下载</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#延伸阅读">延伸阅读</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何获取、安装和制作 GTK 主题</h1><p>多数桌面版 Linux 都支持主题。GUI（LCTT 译注：图形用户界面）独有的外观或者“风格”叫做主题。用户可以改变主题让桌面看起来与众不同。通常，用户也会更改图标，然而，主题和图标包是两个独立的实体。很多人想制作他们自己的主题，因此这是一篇关于 GTK 主题的制作以及各种制作时所必需的信息的文章。</p>
+<p><strong>注意：</strong> 这篇文章着重讨论 GTK3，但会稍微谈一下 GTK2、Metacity 等。本文不会讨论光标和图标。</p>
+<p>###基本概念</p>
+<p>GIMP 工具包（简称 GTK）是一个用来在多种系统上（因此造就了 GTK 的跨平台）创建图形用户界面的构件工具包。GTK（<a href="http://www.gtk.org/">http://www.gtk.org/</a>）通常被误认为代表“GNOME 工具包”，但实际上它代表“GIMP 工具包”，因为最初创造它是为了给 GIMP 设计用户界面。GTK 是一个用 C 语言编写的面向对象工具包（GTK 本身不是一种语言）。GTK 遵循 LGPL 协议完全开源。GTK 是一个广泛使用的图形用户界面工具包，它含有很多用于 GTK 的工具。</p>
+<p>为 GTK 制作的主题无法用在基于 Qt 的应用上。QT 应用需要使用 Qt 主题。</p>
+<p>主题使用层叠样式表（CSS）来生成主题样式。这里的 CSS 和网站开发者在网页上使用的相同。然而不是引用 HTML 标签，而是引用 GTK 构件的专用标签。学习 CSS 对主题开发者来说很重要。</p>
+<h3 id="主题存放位置">主题存放位置</h3>
+<p>主题可能会存储在 <code>~/.themes</code> 或者 <code>/usr/share/themes</code> 文件夹中。存放在 <code>~/.themes</code> 文件夹下的主题只有此 home 文件夹的所有者可以使用。而存放在 <code>/usr/share/themes</code> 文件夹下的全局主题可供所有用户使用。当执行 GTK 程序时，它会按照某种确定的顺序检查可用主题文件的列表。如果没有找到主题文件，它会尝试检查列表中的下一个文件。下述文字是 GTK3 程序检查时的顺序列表。</p>
+<ol>
+<li><code>$XDG_CONFIG_HOME/gtk-3.0/gtk.css</code> （另一写法 <code>~/.config/gtk-3.0/gtk.css</code>）</li>
+<li><code>~/.themes/NAME/gtk-3.0/gtk.css</code></li>
+<li><code>$datadir/share/themes/NAME/gtk-3.0/gtk.css</code> （另一写法 <code>/usr/share/themes/name/gtk-3.0/gtk.css</code>）</li>
+</ol>
+<p><strong>注意：</strong> “NAME”代表当前主题名称。</p>
+<p>如果有两个主题名字相同，那么存放在用户 home 文件夹（<code>~/.themes</code>）里的主题会被优先使用。开发者可以利用这个 GTK 主题查找算法的优势来测试存放在本地 home 文件夹的主题。</p>
+<h3 id="主题引擎">主题引擎</h3>
+<p>主题引擎是软件的一部分，用来改变图形用户界面构件的外观。引擎通过解析主题文件来了解应当绘制多少种构件。有些引擎随着主题被开发出来。每种引擎都有优点和缺点，还有些引擎添加了某些特性和特色。</p>
+<p>从默认软件源中可以获取很多主题引擎。Debian 系的 Linux 发行版可以执行 <code>apt-get install gtk2-engines-murrine gtk2-engines-pixbuf gtk3-engines-unico</code> 命令来安装三种不同的引擎。很多引擎同时支持 GTK2 和 GTK3。以下述列表为例：</p>
+<ul>
+<li>gtk2-engines-aurora - Aurora GTK2 引擎</li>
+<li>gtk2-engines-pixbuf - Pixbuf GTK2 引擎</li>
+<li>gtk3-engines-oxygen - 将 Oxygen 组件风格移植 GTK 的引擎</li>
+<li>gtk3-engines-unico - Unico GTK3 引擎</li>
+<li>gtk3-engines-xfce - 用于 Xfce 的 GTK3 引擎</li>
+</ul>
+<h3 id="创作-gtk3-主题">创作 GTK3 主题</h3>
+<p>开发者创作 GTK3 主题时，或者从空文件着手，或者将已有的主题作为模板。从现存主题着手可能会对新手有帮助。比如，开发者可以把主题复制到用户的 home 文件夹，然后编辑这些文件。</p>
+<p>GTK3 主题的通用格式是新建一个以主题名字命名的文件夹。然后新建一个名为 <code>gtk-3.0</code> 的子目录，在子目录里新建一个名为 <code>gtk.css</code> 的文件。在文件 <code>gtk.css</code> 里，使用 CSS 代码写出主题的外观。为了测试可以将主题移动到 <code>~/.theme</code> 里。使用新主题并在必要时进行改进。如果有需求，开发者可以添加额外的组件，使主题支持 GTK2、Openbox、Metacity、Unity 等桌面环境。</p>
+<p>为了阐明如何创造主题，我们会学习 Ambiance 主题，通常可以在 <code>/usr/share/themes/Ambiance</code> 找到它。此目录包含下面列出的子目录以及一个名为 <code>index.theme</code> 的文件。</p>
+<ul>
+<li>gtk-2.0</li>
+<li>gtk-3.0</li>
+<li>metacity-1</li>
+<li>unity</li>
+</ul>
+<p><code>index.theme</code> 含有元数据（比如主题的名字）和一些重要的配置（比如按钮的布局）。下面是 Ambiance 主题的 <code>index.theme</code> 文件内容。</p>
+<pre><code>[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Ambiance
+Comment=Ubuntu Ambiance theme
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Ambiance
+MetacityTheme=Ambiance
+IconTheme=ubuntu-mono-dark
+CursorTheme=DMZ-White
+ButtonLayout=close,minimize,maximize:
+X-Ubuntu-UseOverlayScrollbars=true
+</code></pre>
+<p><code>gtk-2.0</code> 目录包括支持 GTK2 的文件，比如文件 <code>gtkrc</code> 和文件夹 <code>apps</code>。文件夹 <code>apps</code> 包括具体程序的 GTK 配置。文件 <code>gtkrc</code> 是 GTK2 部分的主要 CSS 文件。下面是 <code>/usr/share/themes/Ambiance/gtk-2.0/apps/nautilus.rc</code> 文件的内容。</p>
+<pre><code># ==============================================================================
+# NAUTILUS SPECIFIC SETTINGS
+# ==============================================================================
+
+style &quot;nautilus_info_pane&quot; {
+   bg[NORMAL] = @bg_color
+}
+
+widget_class &quot;*Nautilus*&lt;GtkNotebook&gt;*&lt;GtkEventBox&gt;&quot; style &quot;nautilus_info_pane&quot;
+widget_class &quot;*Nautilus*&lt;GtkButton&gt;&quot; style &quot;notebook_button&quot;
+widget_class &quot;*Nautilus*&lt;GtkButton&gt;*&lt;GtkLabel&gt;&quot; style &quot;notebook_button&quot;
+</code></pre>
+<p><code>gtk-3.0</code> 目录里是 GTK3 的文件。GTK3 使用 <code>gtk.css</code> 取代了 <code>gtkrc</code> 作为主文件。对于 Ambiance 主题，此文件有一行 <code>@import url(&quot;gtk-main.css&quot;);</code>。<code>settings.ini</code> 包含重要的主题级配置。GTK3 主题的 <code>apps</code> 目录和 GTK2 有同样的作用。<code>assets</code> 目录里有单选按钮、多选框等的图像文件。下面是 <code>/usr/share/themes/Ambiance/gtk-3.0/gtk-main.css</code> 的内容。</p>
+<pre><code>/*default color scheme */
+@define-color bg_color #f2f1f0;
+@define-color fg_color #4c4c4c;
+@define-color base_color #ffffff;
+@define-color text_color #3C3C3C;
+@define-color selected_bg_color #f07746;
+@define-color selected_fg_color #ffffff;
+@define-color tooltip_bg_color #000000;
+@define-color tooltip_fg_color #ffffff;
+
+/* misc colors used by gtk+
+ *
+ * Gtk doesn&#39;t currently expand color variables for style properties. Thus,
+ * gtk-widgets.css uses literal color names, but includes a comment containing
+ * the name of the variable. Please remember to change values there as well
+ * when changing one of the variables below.
+ */
+@define-color info_fg_color rgb (181, 171, 156);
+@define-color info_bg_color rgb (252, 252, 189);
+@define-color warning_fg_color rgb (173, 120, 41);
+@define-color warning_bg_color rgb (250, 173, 61);
+@define-color question_fg_color rgb (97, 122, 214);
+@define-color question_bg_color rgb (138, 173, 212);
+@define-color error_fg_color rgb (235, 235, 235);
+@define-color error_bg_color rgb (223, 56, 44);
+@define-color link_color @selected_bg_color;
+@define-color success_color #4e9a06;
+@define-color error_color #df382c;
+
+/* theme common colors */
+@define-color button_bg_color shade (@bg_color, 1.02); /*shade (#cdcdcd, 1.08);*/
+@define-color notebook_button_bg_color shade (@bg_color, 1.02);
+@define-color button_insensitive_bg_color mix (@button_bg_color, @bg_color, 0.6);
+@define-color dark_bg_color #3c3b37;
+@define-color dark_fg_color #dfdbd2;
+
+@define-color backdrop_fg_color mix (@bg_color, @fg_color, 0.8);
+@define-color backdrop_text_color mix (@base_color, @text_color, 0.8);
+@define-color backdrop_dark_fg_color mix (@dark_bg_color, @dark_fg_color, 0.75);
+/*@define-color backdrop_dark_bg_color mix (@dark_bg_color, @dark_fg_color, 0.75);*/
+@define-color backdrop_selected_bg_color shade (@bg_color, 0.92);
+@define-color backdrop_selected_fg_color @fg_color;
+
+@define-color focus_color alpha (@selected_bg_color, 0.5);
+@define-color focus_bg_color alpha (@selected_bg_color, 0.1);
+
+@define-color shadow_color alpha(black, 0.5);
+
+@define-color osd_fg_color #eeeeec;
+@define-color osd_bg_color alpha(#202526, 0.7);
+@define-color osd_border_color alpha(black, 0.7);
+
+@import url(&quot;gtk-widgets-borders.css&quot;);
+@import url(&quot;gtk-widgets-assets.css&quot;);
+@import url(&quot;gtk-widgets.css&quot;);
+@import url(&quot;apps/geary.css&quot;);
+@import url(&quot;apps/unity.css&quot;);
+@import url(&quot;apps/baobab.css&quot;);
+@import url(&quot;apps/gedit.css&quot;);
+@import url(&quot;apps/nautilus.css&quot;);
+@import url(&quot;apps/gnome-panel.css&quot;);
+@import url(&quot;apps/gnome-terminal.css&quot;);
+@import url(&quot;apps/gnome-system-log.css&quot;);
+@import url(&quot;apps/unity-greeter.css&quot;);
+@import url(&quot;apps/glade.css&quot;);
+@import url(&quot;apps/california.css&quot;);
+@import url(&quot;apps/software-center.css&quot;);
+@import url(&quot;public-colors.css&quot;);
+</code></pre>
+<p><code>metacity-1</code> 文件夹含有 Metacity 窗口管理器按钮（比如“关闭窗口”按钮）的图像文件。此目录还有一个名为 <code>metacity-theme-1.xml</code> 的文件，包括了主题的元数据（像开发者的名字）和主题设计。然而，主题的 Metacity 部分使用 XML 文件而不是 CSS 文件。</p>
+<p><code>unity</code> 文件夹含有 Unity 按钮使用的 SVG 文件。除了 SVG 文件，这里没有其他的文件。</p>
+<p>一些主题可能也会包含其他的目录。比如， Clearlooks-Phenix 主题有名为 <code>openbox-3</code> 和 <code>xfwm4</code> 的文件夹。<code>openbox-3</code> 文件夹仅有一个 <code>themerc</code> 文件，声明了主题配置和外观（下面有文件示例）。<code>xfwm4</code> 目录含有几个 xpm 文件、几个 png 图像文件（在 <code>png</code> 文件夹里）、一个 <code>README</code> 文件，还有个包含了主题配置的 <code>themerc</code> 文件（就像下面看到的那样）。</p>
+<p>/usr/share/themes/Clearlooks-Phenix/xfwm4/themerc</p>
+<pre><code># Clearlooks XFWM4 by Casey Kirsle
+
+show_app_icon=true
+active_text_color=#FFFFFF
+inactive_text_color=#939393
+title_shadow_active=frame
+title_shadow_inactive=false
+button_layout=O|HMC
+button_offset=2
+button_spacing=2
+full_width_title=true
+maximized_offset=0
+title_vertical_offset_active=1
+title_vertical_offset_inactive=1
+</code></pre>
+<p>/usr/share/themes/Clearlooks-Phenix/openbox-3/themerc</p>
+<pre><code>!# Clearlooks-Evolving
+!# Clearlooks as it evolves in gnome-git...
+!# Last updated 09/03/10
+
+# Fonts
+# these are really halos, but who cares?
+
+*.font: shadow=n
+window.active.label.text.font:shadow=y:shadowtint=30:shadowoffset=1
+window.inactive.label.text.font:shadow=y:shadowtint=00:shadowoffset=0
+menu.items.font:shadow=y:shadowtint=0:shadowoffset=1
+
+!# general stuff
+
+border.width: 1
+padding.width: 3
+padding.height: 2
+window.handle.width: 3
+window.client.padding.width: 0
+menu.overlap: 2
+*.justify: center
+
+!# lets set our damn shadows here, eh?
+
+*.bg.highlight: 50
+*.bg.shadow:  05
+
+window.active.title.bg.highlight: 35
+window.active.title.bg.shadow:  05
+
+window.inactive.title.bg.highlight: 30
+window.inactive.title.bg.shadow:  05
+
+window.*.grip.bg.highlight: 50
+window.*.grip.bg.shadow:  30
+
+window.*.handle.bg.highlight: 50
+window.*.handle.bg.shadow:  30
+
+!# Menu settings
+
+menu.border.color: #aaaaaa
+menu.border.width: 1
+
+menu.title.bg: solid flat
+menu.title.bg.color: #E6E7E6
+menu.title.text.color: #111111
+
+menu.items.bg: Flat Solid
+menu.items.bg.color: #ffffff
+menu.items.text.color: #111111
+menu.items.disabled.text.color: #aaaaaa
+
+menu.items.active.bg: Flat Gradient splitvertical border
+
+menu.items.active.bg.color: #97b8e2
+menu.items.active.bg.color.splitTo: #a8c5e9
+
+menu.items.active.bg.colorTo: #91b3de
+menu.items.active.bg.colorTo.splitTo: #80a7d6
+menu.items.active.bg.border.color: #4b6e99
+menu.items.active.text.color: #ffffff
+
+menu.separator.width: 1
+menu.separator.padding.width: 0
+menu.separator.padding.height: 3
+menu.separator.color: #aaaaaa
+
+!# set handles here and only the once?
+
+window.*.handle.bg: Raised solid
+window.*.handle.bg.color: #eaebec
+
+window.*.grip.bg: Raised solid
+window.*.grip.bg.color: #eaebec
+
+!# Active
+
+window.*.border.color: #585a5d
+
+window.active.title.separator.color: #4e76a8
+
+*.title.bg: Raised Gradient splitvertical
+*.title.bg.color: #8CB0DC
+*.title.bg.color.splitTo: #99BAE3
+*.title.bg.colorTo: #86ABD9
+*.title.bg.colorTo.splitTo: #7AA1D1
+
+window.active.label.bg: Parentrelative
+window.active.label.text.color: #ffffff
+
+window.active.button.*.bg: Flat Gradient splitvertical Border
+
+window.active.button.*.bg.color: #92B4DF
+window.active.button.*.bg.color.splitTo: #B0CAEB
+window.active.button.*.bg.colorTo: #86ABD9
+window.active.button.*.bg.colorTo.splitTo: #769FD0
+
+window.active.button.*.bg.border.color: #49678B
+window.active.button.*.image.color: #F4F5F6
+
+window.active.button.hover.bg.color: #b5d3ef
+window.active.button.hover.bg.color.splitTo: #b5d3ef
+window.active.button.hover.bg.colorTo: #9cbae7
+window.active.button.hover.bg.colorTo.splitTo: #8caede
+window.active.button.hover.bg.border.color: #4A658C
+window.active.button.hover.image.color: #ffffff
+
+window.active.button.pressed.bg: Flat solid Border
+window.active.button.pressed.bg.color: #7aa1d2
+
+window.active.button.hover.bg.border.color: #4A658C
+
+!# inactive
+
+!#window.inactive.border.color: #7e8285
+window.inactive.title.separator.color: #96999d
+
+window.inactive.title.bg: Raised Gradient splitvertical
+window.inactive.title.bg.color: #E3E2E0
+window.inactive.title.bg.color.splitTo: #EBEAE9
+window.inactive.title.bg.colorTo: #DEDCDA
+window.inactive.title.bg.colorTo.splitTo: #D5D3D1
+
+window.inactive.label.bg: Parentrelative
+window.inactive.label.text.color: #70747d
+
+window.inactive.button.*.bg: Flat Gradient splitVertical Border
+window.inactive.button.*.bg.color: #ffffff
+window.inactive.button.*.bg.color.splitto: #ffffff
+window.inactive.button.*.bg.colorTo: #F9F8F8
+window.inactive.button.*.bg.colorTo.splitto: #E9E7E6
+window.inactive.button.*.bg.border.color: #928F8B
+window.inactive.button.*.image.color: #6D6C6C
+
+!# osd (pop ups and what not, dock?)
+
+osd.border.width: 1
+osd.border.color:  #aaaaaa
+
+osd.bg: flat border gradient splitvertical
+osd.bg.color: #F0EFEE
+osd.bg.color.splitto: #f5f5f4
+osd.bg.colorTo: #EAEBEC
+osd.bg.colorTo.splitto: #E7E5E4
+
+osd.bg.border.color: #ffffff
+
+osd.active.label.bg: parentrelative
+osd.active.label.bg.color: #efefef
+osd.active.label.bg.border.color: #9c9e9c
+osd.active.label.text.color: #444
+
+osd.inactive.label.bg: parentrelative
+osd.inactive.label.text.color: #70747d
+
+!# yeah whatever, this is fine anyhoo?
+osd.hilight.bg: flat vertical gradient
+osd.hilight.bg.color: #9ebde5
+osd.hilight.bg.colorTo: #749dcf
+osd.unhilight.bg: flat vertical gradient
+osd.unhilight.bg.color: #BABDB6
+osd.unhilight.bg.colorTo: #efefef
+</code></pre>
+<h3 id="测试主题">测试主题</h3>
+<p>在创作主题时，测试主题并且微调代码对得到想要的样子是很有帮助的。有相当的开发者想要用到“主题预览器”这样的工具。幸运的是，已经有了。</p>
+<ul>
+<li>GTK+ Change Theme - 这个程序可以更改 GTK 主题，开发者可以用它预览主题。这个程序由一个含有很多构件的窗口组成，因此可以为主题提供一个完整的预览。要安装它，只需输入命令 <code>apt-get install gtk-chtheme</code>。</li>
+<li>GTK Theme Switch - 用户可以使用它轻松地更换用户主题。测试主题时确保打开了一些应用，方便预览效果。要安装它，只需输入命令 <code>apt-get install gtk-theme-switch</code>，然后在终端敲出 <code>gtk-theme-switch2</code> 即可运行。</li>
+<li>LXappearance - 它可以更换主题，图标以及字体。</li>
+<li>PyWF - 这是基于 Python 开发的一个 The Widget Factory 的替代品。可以在 <a href="http://gtk-apps.org/content/show.php/PyTWF?content=102024">http://gtk-apps.org/content/show.php/PyTWF?content=102024</a> 获取 PyWF。</li>
+<li>The Widget Factory - 这是一个古老的 GTK 预览器。要安装它，只需输入命令 <code>apt-get install thewidgetfactory</code>，然后在终端敲出 <code>twf</code> 即可运行。</li>
+</ul>
+<h3 id="主题下载">主题下载</h3>
+<ul>
+<li>Cinnamon - <a href="http://gnome-look.org/index.php?xcontentmode=104">http://gnome-look.org/index.php?xcontentmode=104</a></li>
+<li>Compiz - <a href="http://gnome-look.org/index.php?xcontentmode=102">http://gnome-look.org/index.php?xcontentmode=102</a></li>
+<li>GNOME Shell - <a href="http://gnome-look.org/index.php?xcontentmode=191">http://gnome-look.org/index.php?xcontentmode=191</a></li>
+<li>GTK2 - <a href="http://gnome-look.org/index.php?xcontentmode=100">http://gnome-look.org/index.php?xcontentmode=100</a></li>
+<li>GTK3 - <a href="http://gnome-look.org/index.php?xcontentmode=167">http://gnome-look.org/index.php?xcontentmode=167</a></li>
+<li>KDE/Qt - <a href="http://kde-look.org/index.php?xcontentmode=8x9x10x11x12x13x14x15x16">http://kde-look.org/index.php?xcontentmode=8x9x10x11x12x13x14x15x16</a></li>
+<li>Linux Mint Themes - <a href="http://linuxmint-art.org/index.php?xcontentmode=9x14x100">http://linuxmint-art.org/index.php?xcontentmode=9x14x100</a></li>
+<li>Metacity - <a href="http://gnome-look.org/index.php?xcontentmode=101">http://gnome-look.org/index.php?xcontentmode=101</a></li>
+<li>Ubuntu Themes - <a href="http://www.ubuntuthemes.org/">http://www.ubuntuthemes.org/</a></li>
+</ul>
+<h3 id="延伸阅读">延伸阅读</h3>
+<ul>
+<li>Graphical User Interface (GUI) Reading Guide - <a href="http://www.linux.org/threads/gui-reading-guide.6471/">http://www.linux.org/threads/gui-reading-guide.6471/</a></li>
+<li>GTK - <a href="http://www.linux.org/threads/understanding-gtk.6291/">http://www.linux.org/threads/understanding-gtk.6291/</a></li>
+<li>Introduction to Glade - <a href="http://www.linux.org/threads/introduction-to-glade.7142/">http://www.linux.org/threads/introduction-to-glade.7142/</a></li>
+<li>Desktop Environment vs Window Managers - <a href="http://www.linux.org/threads/desktop-environment-vs-window-managers.7802/">http://www.linux.org/threads/desktop-environment-vs-window-managers.7802/</a></li>
+<li>Official GTK+ 3 Reference Manual - <a href="https://developer.gnome.org/gtk3/stable/">https://developer.gnome.org/gtk3/stable/</a></li>
+<li>GtkCssProvider - <a href="https://developer.gnome.org/gtk3/stable/GtkCssProvider.html">https://developer.gnome.org/gtk3/stable/GtkCssProvider.html</a></li>
+</ul>
+<hr>
+<p>via: <a href="http://www.linux.org/threads/installing-obtaining-and-making-gtk-themes.8463/">http://www.linux.org/threads/installing-obtaining-and-making-gtk-themes.8463/</a></p>
+<p>作者：<a href="http://www.linux.org/members/devyncjohnson.4843/">DevynCJohnson</a>
+译者：<a href="https://github.com/fuowang">fuowang</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#主题存放位置">主题存放位置</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#主题引擎">主题引擎</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创作-gtk3-主题">创作 GTK3 主题</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#测试主题">测试主题</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#主题下载">主题下载</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#延伸阅读">延伸阅读</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201702/20151227 Installing Obtaining and Making GTK Themes","title":"如何获取、安装和制作 GTK 主题"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

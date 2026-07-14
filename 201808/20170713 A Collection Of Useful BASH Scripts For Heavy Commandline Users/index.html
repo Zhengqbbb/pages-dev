@@ -1,0 +1,371 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>献给命令行重度用户的一组实用 BASH 脚本 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="献给命令行重度用户的一组实用 BASH 脚本 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="献给命令行重度用户的一组实用 BASH 脚本 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201808/20170713 A Collection Of Useful BASH Scripts For Heavy Commandline Users#page","@type":"TechArticle","headline":"献给命令行重度用户的一组实用 BASH 脚本","inLanguage":"en","name":"献给命令行重度用户的一组实用 BASH 脚本","url":"https://zhengqbbb.github.io/pages-dev/201808/20170713 A Collection Of Useful BASH Scripts For Heavy Commandline Users","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201808/20170713 A Collection Of Useful BASH Scripts For Heavy Commandline Users"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装">安装</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#用法">用法</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获得帮助">获得帮助</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#更新脚本">更新脚本</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#卸载">卸载</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>献给命令行重度用户的一组实用 BASH 脚本</h1><p><img src="https://www.ostechnix.com/wp-content/uploads/2017/07/A-Collection-Of-Useful-BASH-Scripts-720x340.png" alt=""></p>
+<p>今天，我偶然发现了一组适用于命令行重度用户的实用 BASH 脚本，这些脚本被称为 <strong>Bash-Snippets</strong>，它们对于那些整天都与终端打交道的人来说可能会很有帮助。想要查看你居住地的天气情况？它为你做了。想知道股票价格？你可以运行显示股票当前详细信息的脚本。觉得无聊？你可以看一些 YouTube 视频。这些全部在命令行中完成，你无需安装任何严重消耗内存的 GUI 应用程序。</p>
+<p>在撰写本文时，Bash-Snippets 提供以下 19 个实用工具：</p>
+<ol>
+<li><strong>Cheat</strong> – Linux 命令备忘单。</li>
+<li><strong>Cloudup</strong> – 一个将 GitHub 仓库备份到 bitbucket 的工具。</li>
+<li><strong>Crypt</strong> – 加解密文件。</li>
+<li><strong>Cryptocurrency</strong> – 前 10 大加密货币的实时汇率转换。</li>
+<li><strong>Currency</strong> – 货币转换器。</li>
+<li><strong>Geo</strong> – 提供 wan、lan、router、dns、mac 和 ip 的详细信息。</li>
+<li><strong>Lyrics</strong> – 从命令行快速获取给定歌曲的歌词。</li>
+<li><strong>Meme</strong> – 创造命令行表情包。</li>
+<li><strong>Movies</strong> – 搜索并显示电影详情。</li>
+<li><strong>Newton</strong> – 执行数值计算一直到符号数学解析。（to 校正：这里不理解）</li>
+<li><strong>Qrify</strong> – 将给定的字符串转换为二维码。</li>
+<li><strong>Short</strong> – 缩短 URL</li>
+<li><strong>Siteciphers</strong> – 检查给定 https 站点启用或禁用的密码。</li>
+<li><strong>Stocks</strong> – 提供某些股票的详细信息。</li>
+<li><strong>Taste</strong> – 推荐引擎提供三个类似的项目，如提供物品（如书籍、音乐、艺术家、电影和游戏等。）</li>
+<li><strong>Todo</strong> – 命令行待办事项管理。</li>
+<li><strong>Transfer</strong> – 从命令行快速传输文件。</li>
+<li><strong>Weather</strong> – 显示你所在地的天气详情。</li>
+<li><strong>Youtube-Viewer</strong> – 从终端观看 YouTube 视频。</li>
+</ol>
+<p>作者可能会在将来添加更多实用程序和/或功能，因此我建议你密切关注该项目的网站或 GitHub 页面以供将来更新。</p>
+<h3 id="安装">安装</h3>
+<p>你可以在任何支持 BASH 的操作系统上安装这些脚本。</p>
+<p>首先，克隆 git 仓库，使用以下命令：</p>
+<pre><code>$ git clone https://github.com/alexanderepstein/Bash-Snippets
+</code></pre>
+<p>进入目录：</p>
+<pre><code>$ cd Bash-Snippets/
+</code></pre>
+<p>切换到最新的稳定版本：</p>
+<pre><code>$ git checkout v1.22.0
+</code></pre>
+<p>最后，使用以下命令安装 Bash-Snippets：</p>
+<pre><code>$ sudo ./install.sh
+</code></pre>
+<p>这将询问你要安装哪些脚本。只需输入 <code>Y</code> 并按回车键即可安装相应的脚本。如果你不想安装某些特定脚本，输入 <code>N</code> 并按回车键。</p>
+<pre><code>Do you wish to install currency [Y/n]: y
+</code></pre>
+<p>要安装所有脚本，运行：</p>
+<pre><code>$ sudo ./install.sh all
+</code></pre>
+<p>要安装特定的脚本，比如 currency，运行：</p>
+<pre><code>$ sudo ./install.sh currency
+</code></pre>
+<p>你也可以使用 <a href="https://www.ostechnix.com/linuxbrew-common-package-manager-linux-mac-os-x/">Linuxbrew</a> 包管理器来安装它。</p>
+<p>安装所有的工具，运行：</p>
+<pre><code>$ brew install bash-snippets
+</code></pre>
+<p>安装特定的工具：</p>
+<pre><code>$ brew install bash-snippets --without-all-tools --with-newton --with-weather
+</code></pre>
+<p>另外，对于那些基于 Debian 系统的，例如 Ubuntu、Linux Mint，可以添加 PPA 源：</p>
+<pre><code>$ sudo add-apt-repository ppa:navanchauhan/bash-snippets
+$ sudo apt update
+$ sudo apt install bash-snippets
+</code></pre>
+<h3 id="用法">用法</h3>
+<p><strong>需要网络连接</strong>才能使用这些工具。用法很简单。让我们来看看如何使用其中的一些脚本，我假设你已经安装了所有脚本。</p>
+<h4 id="1-currency-货币转换器">1、 Currency – 货币转换器</h4>
+<p>这个脚本根据实时汇率转换货币。输入当前货币代码和要交换的货币，以及交换的金额，如下所示：</p>
+<pre><code>$ currency
+What is the base currency: INR
+What currency to exchange to: USD
+What is the amount being exchanged: 10
+
+=========================
+| INR to USD
+| Rate: 0.015495
+| INR: 10
+| USD: .154950
+=========================
+</code></pre>
+<p>你也可以在单条命令中传递所有参数，如下所示：</p>
+<pre><code>$ currency INR USD 10
+</code></pre>
+<p>参考以下屏幕截图：</p>
+<p><a href="http://www.ostechnix.com/wp-content/uploads/2017/07/sk@sk_001.png">![Bash-Snippets][2]</a></p>
+<h4 id="2-stocks-显示股票价格详细信息">2、 Stocks – 显示股票价格详细信息</h4>
+<p>如果你想查看一只股票价格的详细信息，输入股票即可，如下所示：</p>
+<pre><code>$ stocks Intel
+
+INTC stock info
+=============================================
+| Exchange Name: NASDAQ
+| Latest Price: 34.2500
+| Close (Previous Trading Day): 34.2500
+| Price Change: 0.0000
+| Price Change Percentage: 0.00%
+| Last Updated: Jul 12, 4:00PM EDT
+=============================================
+</code></pre>
+<p>上面输出了 <strong>Intel 股票</strong> 的详情。</p>
+<h4 id="3-weather-显示天气详细信息">3、 Weather – 显示天气详细信息</h4>
+<p>让我们查看以下天气详细信息，运行以下命令：</p>
+<pre><code>$ weather
+</code></pre>
+<p>示例输出：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/07/sk@sk_002-1.png" alt=""></p>
+<p>正如你在上面屏幕截图中看到的那样，它提供了 3 天的天气预报。不使用任何参数的话，它将根据你的 IP 地址显示天气详细信息。你还可以显示特定城市或国家/地区的天气详情，如下所示：</p>
+<pre><code>$ weather Chennai
+</code></pre>
+<p>同样，你可以查看输入以下命令来查看月相（月亮的形态）：</p>
+<pre><code>$ weather moon
+</code></pre>
+<p>示例输出：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/07/sk@sk_003.png" alt=""></p>
+<h4 id="4-crypt-加解密文件">4、 Crypt – 加解密文件</h4>
+<p>此脚本对 openssl 做了一层包装，允许你快速轻松地加密和解密文件。</p>
+<p>要加密文件，使用以下命令：</p>
+<pre><code>$ crypt -e [original file] [encrypted file]
+</code></pre>
+<p>例如，以下命令将加密 <code>ostechnix.txt</code>，并将其保存在当前工作目录下，名为 <code>encrypt_ostechnix.txt</code>。</p>
+<pre><code>$ crypt -e ostechnix.txt encrypt_ostechnix.txt
+</code></pre>
+<p>输入两次文件密码：</p>
+<pre><code>Encrypting ostechnix.txt...
+enter aes-256-cbc encryption password:
+Verifying - enter aes-256-cbc encryption password:
+Successfully encrypted
+</code></pre>
+<p>上面命令将使用 <strong>AES 256 位密钥</strong>加密给定文件。密码不要保存在纯文本文件中。你可以加密 .pdf、.txt、 .docx、 .doc、 .png、 .jpeg 类型的文件。</p>
+<p>要解密文件，使用以下命令：</p>
+<pre><code>$ crypt -d [encrypted file] [output file]
+</code></pre>
+<p>例如：</p>
+<pre><code>$ crypt -d encrypt_ostechnix.txt ostechnix.txt
+</code></pre>
+<p>输入密码解密：</p>
+<pre><code>Decrypting encrypt_ostechnix.txt...
+enter aes-256-cbc decryption password:
+Successfully decrypted
+</code></pre>
+<h4 id="5-movies-查看电影详情">5、 Movies – 查看电影详情</h4>
+<p>使用这个脚本，你可以查看电影详情。</p>
+<p>以下命令显示了一部名为 “mother” 的电影的详情：</p>
+<pre><code>$ movies mother
+
+==================================================
+| Title: Mother
+| Year: 2009
+| Tomato: 95%
+| Rated: R
+| Genre: Crime, Drama, Mystery
+| Director: Bong Joon Ho
+| Actors: Hye-ja Kim, Bin Won, Goo Jin, Je-mun Yun
+| Plot: A mother desperately searches for the killer who framed her son for a girl&#39;s horrific murder.
+==================================================
+</code></pre>
+<h4 id="6-显示类似条目">6、 显示类似条目</h4>
+<p>要使用这个脚本，你需要从**<a href="https://tastedive.com/account/api_access">这里</a>** 获取 API 密钥。不过不用担心，它完全是免费的。一旦你获得 API 密钥后，将以下行添加到 <code>~/.bash_profile</code>：<code>export TASTE_API_KEY=”你的 API 密钥放在这里”</code>。（LCTT 译注： TasteDive 是一个推荐引擎，它会根据你的品味推荐相关项目。）</p>
+<p>现在你可以根据你提供的项目查看类似项目，如下所示：</p>
+<pre><code>$ taste -i Red Hot Chilli Peppers
+</code></pre>
+<h4 id="7-short-缩短-url">7、 Short – 缩短 URL</h4>
+<p>这个脚本会缩短给定的 URL。</p>
+<pre><code>$ short &lt;URL&gt;
+</code></pre>
+<h4 id="8-geo-显示网络的详情">8、 Geo – 显示网络的详情</h4>
+<p>这个脚本会帮助你查找网络的详细信息，例如广域网、局域网、路由器、 dns、mac 地址和 ip 地址。</p>
+<p>例如，要查找你的局域网 ip，运行：</p>
+<pre><code>$ geo -l
+</code></pre>
+<p>我系统上的输出：</p>
+<pre><code>192.168.43.192
+</code></pre>
+<p>查看广域网 ip：</p>
+<pre><code>$ geo -w
+</code></pre>
+<p>在终端中输入 <code>geo</code> 来查看更多详细信息。</p>
+<pre><code>$ geo
+Geo
+Description: Provides quick access for wan, lan, router, dns, mac, and ip geolocation data
+Usage: geo [flag]
+ -w Returns WAN IP
+ -l Returns LAN IP(s)
+ -r Returns Router IP
+ -d Returns DNS Nameserver
+ -m Returns MAC address for interface. Ex. eth0
+ -g Returns Current IP Geodata
+Examples:
+ geo -g
+ geo -wlrdgm eth0
+Custom Geo Output =&gt;
+[all] [query] [city] [region] [country] [zip] [isp]
+Example: geo -a 8.8.8.8 -o city,zip,isp
+ -o [options] Returns Specific Geodata
+ -a [address] For specific ip in -s
+ -v Returns Version
+ -h Returns Help Screen
+ -u Updates Bash-Snippets
+</code></pre>
+<h4 id="9-cheat-显示-linux-命令的备忘单">9、 Cheat – 显示 Linux 命令的备忘单</h4>
+<p>想参考 Linux 命令的备忘单吗？这是可能的。以下命令将显示 <code>curl</code> 命令的备忘单：</p>
+<pre><code>$ cheat curl
+</code></pre>
+<p>只需用你选择的命令替换 <code>curl</code> 即可显示其备忘单。这对于快速参考你要使用的任何命令非常有用。</p>
+<h4 id="10-youtube-viewer-观看-youtube-视频">10、 Youtube-Viewer – 观看 YouTube 视频</h4>
+<p>使用此脚本，你可以直接在终端上搜索或打开 YouTube 视频。（LCTT 译注：在媒体播放器中，而不是文本的终端中打开）</p>
+<p>让我们来看一些有关 <strong>Ed Sheeran</strong> 的视频。</p>
+<pre><code>$ ytview Ed Sheeran
+</code></pre>
+<p>从列表中选择要播放的视频。所选内容将在你的默认媒体播放器中播放。</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/07/ytview-1.png" alt=""></p>
+<p>要查看艺术家的近期视频，你可以使用：</p>
+<pre><code>$ ytview -c [channel name]
+</code></pre>
+<p>要寻找视频，只需输入：</p>
+<pre><code>$ ytview -s [videoToSearch]
+</code></pre>
+<p>或者：</p>
+<pre><code>$ ytview [videoToSearch]
+</code></pre>
+<h4 id="11-cloudup-备份-github-仓库到-bitbucket">11、 cloudup – 备份 GitHub 仓库到 bitbucket</h4>
+<p>你在 GitHub 上托管过任何项目吗？如果托管过，那么你可以随时间 GitHub 仓库备份到 <strong>bitbucket</strong>，它是一种用于源代码和开发项目的基于 Web 的托管服务。</p>
+<p>你可以使用 <code>-a</code> 选项一次性备份指定用户的所有 GitHub 仓库，或者备份单个仓库。</p>
+<p>要备份 GitHub 仓库，运行：</p>
+<pre><code>$ cloudup
+</code></pre>
+<p>系统将要求你输入 GitHub 用户名， 要备份的仓库名称以及 bitbucket 用户名和密码等。</p>
+<h4 id="12-qrify-将字符串转换为二维码">12、 Qrify – 将字符串转换为二维码</h4>
+<p>这个脚本将任何给定的文本字符串转换为二维码。这对于发送链接或者保存一串命令到手机非常有用。</p>
+<pre><code>$ qrify convert this text into qr code
+</code></pre>
+<p>示例输出：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/07/sk@sk_005.png" alt=""></p>
+<p>很酷，不是吗？</p>
+<h4 id="13-cryptocurrency">13、 Cryptocurrency</h4>
+<p>它将显示十大加密货币实时汇率。</p>
+<p>输入以下命令，然后单击回车来运行：</p>
+<pre><code>$ cryptocurrency
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/07/cryptocurrency.png" alt=""></p>
+<h4 id="14-lyrics">14、 Lyrics</h4>
+<p>这个脚本从命令行快速获取一首歌曲的歌词。</p>
+<p>例如，我将获取 “who is it” 歌曲的歌词，这是一首由 <ruby>迈克尔·杰克逊<rt>Michael Jackson</rt></ruby> 演唱的流行歌曲。</p>
+<pre><code>$ lyrics -a michael jackson -s who is it
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/07/lyrics.png" alt=""></p>
+<h4 id="15-meme">15、 Meme</h4>
+<p>这个脚本允许你从命令行创建简单的表情贴图。它比基于 GUI 的表情包生成器快得多。</p>
+<p>要创建一个表情贴图，只需输入：</p>
+<pre><code>$ meme -f mymeme
+Enter the name for the meme&#39;s background (Ex. buzz, doge, blb ): buzz
+Enter the text for the first line: THIS IS A
+Enter the text for the second line: MEME
+</code></pre>
+<p>这将在你当前的工作目录创建 jpg 文件。</p>
+<h4 id="16-newton">16、 Newton</h4>
+<p>厌倦了解决复杂的数学问题？你来对了。Newton 脚本将执行数值计算，乃至于符号数学解析。</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/07/newton.png" alt=""></p>
+<h4 id="17-siteciphers">17、 Siteciphers</h4>
+<p>这个脚本可以帮助你检查在给定的 https 站点上启用/禁用哪些加密算法。（LCTT 译注：指 HTTPS 通讯中采用的加密算法）</p>
+<pre><code>$ siteciphers google.com
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/07/siteciphers.png" alt=""></p>
+<h4 id="18-todo">18、 Todo</h4>
+<p>它允许你直接从终端创建日常任务。</p>
+<p>让我们来创建一些任务。</p>
+<pre><code>$ todo -a The first task
+01). The first task Tue Jun 26 14:51:30 IST 2018
+</code></pre>
+<p>要添加其它任务，只需添加任务名称重新运行上述命令即可。</p>
+<pre><code>$ todo -a The second task
+01). The first task Tue Jun 26 14:51:30 IST 2018
+02). The second task Tue Jun 26 14:52:29 IST 2018
+</code></pre>
+<p>要查看任务列表，运行：</p>
+<pre><code>$ todo -g
+01). The first task Tue Jun 26 14:51:30 IST 2018
+02). A The second task Tue Jun 26 14:51:46 IST 2018
+</code></pre>
+<p>一旦你完成了任务，就可以将其从列表中删除，如下所示：</p>
+<pre><code>$ todo -r 2
+Sucessfully removed task number 2
+01). The first task Tue Jun 26 14:51:30 IST 2018
+</code></pre>
+<p>要清除所有任务，运行：</p>
+<pre><code>$ todo -c
+Tasks cleared.
+</code></pre>
+<h4 id="19-transfer">19、 Transfer</h4>
+<p>Transfer 脚本允许你通过互联网快速轻松地传输文件和目录。</p>
+<p>让我们上传一个文件：</p>
+<pre><code>$ transfer test.txt
+Uploading test.txt
+################################################################################################################################################ 100.0%
+Success!
+Transfer Download Command: transfer -d desiredOutputDirectory ivmfj test.txt
+Transfer File URL: https://transfer.sh/ivmfj/test.txt
+</code></pre>
+<p>该文件将上传到 transfer.sh 站点。Transfer.sh 允许你一次上传最大 <strong>10 GB</strong> 的文件。所有共享文件在 <strong>14 天</strong>后自动过期。如你所见，任何人都可以通过 Web 浏览器访问 URL 或使用 transfer 目录来下载文件，当然，transfer 必须安装在他/她的系统中。</p>
+<p>现在从你的系统中移除文件。</p>
+<pre><code>$ rm -fr test.txt
+</code></pre>
+<p>现在，你可以随时（14 天内）从 transfer.sh 站点下载该文件，如下所示：</p>
+<pre><code>$ transfer -d Downloads ivmfj test.txt
+</code></pre>
+<p>获取关于此实用脚本的更多详情，参考以下指南。</p>
+<ul>
+<li><a href="https://www.ostechnix.com/easy-fast-way-share-files-internet-command-line/">用命令行在互联网上共享文件的一个简单快捷方法</a></li>
+</ul>
+<h3 id="获得帮助">获得帮助</h3>
+<p>如果你不知道如何使用特定脚本，只需输入该脚本的名称，然后按下 ENTER 键，你将会看到使用细节。以下示例显示 Qrify 脚本的帮助信息。</p>
+<pre><code>$ qrify
+Qrify
+Usage: qrify [stringtoturnintoqrcode]
+Description: Converts strings or urls into a qr code.
+ -u Update Bash-Snippet Tools
+ -m Enable multiline support (feature not working yet)
+ -h Show the help
+ -v Get the tool version
+Examples:
+ qrify this is a test string
+ qrify -m two\\nlines
+ qrify github.com # notice no http:// or https:// this will fail
+</code></pre>
+<h3 id="更新脚本">更新脚本</h3>
+<p>你可以随时使用 <code>-u</code> 选项更新已安装的工具。以下命令更新 “weather” 工具。</p>
+<pre><code>$ weather -u
+</code></pre>
+<h3 id="卸载">卸载</h3>
+<p>你可以使用以下命令来卸载这些工具。</p>
+<p>克隆仓库：</p>
+<pre><code>$ git clone https://github.com/alexanderepstein/Bash-Snippets
+</code></pre>
+<p>进入 Bash-Snippets 目录：</p>
+<pre><code>$ cd Bash-Snippets
+</code></pre>
+<p>运行以下命令来卸载脚本：</p>
+<pre><code>$ sudo ./uninstall.sh
+</code></pre>
+<p>输入 <code>y</code>，并按下回车键来移除每个脚本。</p>
+<pre><code>Do you wish to uninstall currency [Y/n]: y
+</code></pre>
+<p><strong>另请阅读：</strong></p>
+<ul>
+<li><a href="https://www.ostechnix.com/cli-fyi-quick-easy-way-fetch-information-ips-emails-domains-lots/">Cli.Fyi —— 快速而简单地获取诸如 IP、电子邮件、域名等信息的方式</a></li>
+</ul>
+<p>好了，这就是全部了。我必须承认，在测试这些脚本时我印象很深刻。我真的很喜欢将所有有用的脚本组合到一个包中的想法。感谢开发者。试一试，你不会失望的。</p>
+<p>干杯！</p>
+<hr>
+<p>via: <a href="https://www.ostechnix.com/collection-useful-bash-scripts-heavy-commandline-users/">https://www.ostechnix.com/collection-useful-bash-scripts-heavy-commandline-users/</a></p>
+<p>作者：<a href="https://www.ostechnix.com/author/sk/">SK</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/MjSeven">MjSeven</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装">安装</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#用法">用法</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获得帮助">获得帮助</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#更新脚本">更新脚本</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#卸载">卸载</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201808/20170713 A Collection Of Useful BASH Scripts For Heavy Commandline Users","title":"献给命令行重度用户的一组实用 BASH 脚本"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

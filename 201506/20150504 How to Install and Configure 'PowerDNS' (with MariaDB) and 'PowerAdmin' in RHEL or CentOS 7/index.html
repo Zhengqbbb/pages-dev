@@ -1,0 +1,340 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RHEL/CentOS 7中安装并配置 PowerDNS 和 PowerAdmin - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="RHEL/CentOS 7中安装并配置 PowerDNS 和 PowerAdmin - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="RHEL/CentOS 7中安装并配置 PowerDNS 和 PowerAdmin - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201506/20150504 How to Install and Configure 'PowerDNS' (with MariaDB) and 'PowerAdmin' in RHEL or CentOS 7#page","@type":"TechArticle","headline":"RHEL/CentOS 7中安装并配置 PowerDNS 和 PowerAdmin","inLanguage":"en","name":"RHEL/CentOS 7中安装并配置 PowerDNS 和 PowerAdmin","url":"https://zhengqbbb.github.io/pages-dev/201506/20150504 How to Install and Configure 'PowerDNS' (with MariaDB) and 'PowerAdmin' in RHEL or CentOS 7","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201506/20150504 How to Install and Configure 'PowerDNS' (with MariaDB) and 'PowerAdmin' in RHEL or CentOS 7"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第一部分-安装带有mariadb后端的powerdns">第一部分： 安装带有MariaDB后端的PowerDNS</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第二部分-安装poweradmin来管理powerdns">第二部分： 安装PowerAdmin来管理PowerDNS</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第三部分-powerdns中添加编辑和删除dns区域">第三部分： PowerDNS中添加、编辑和删除DNS区域</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>RHEL/CentOS 7中安装并配置 PowerDNS 和 PowerAdmin</h1><p>PowerDNS是一个运行在许多Linux/Unix衍生版上的DNS服务器，它可以使用不同的后端进行配置，包括BIND类型的区域文件、关系型数据库，或者负载均衡/失效转移算法。它也可以被配置成一台DNS递归器，作为服务器上的一个独立进程运行。</p>
+<p>PowerDNS授权服务器的最新版本是3.4.4，但是当前EPEL仓库中可以获得的版本是3.4.3。我推荐安装EPEL仓库中提供的那一个，因为该版本已经在CentOS和Fedora中测试过。那样，你也可以在今后很容易地更新PowerDNS。</p>
+<p>本文用于向你演示如何安装并配置以MariaDB作为后端的PowerDNS，以及它的界面友好的 Web 管理工具 PowerAdmin。</p>
+<p>出于本文的写作目的，我将使用以下服务器：</p>
+<pre><code>主机名： centos7.localhost 
+IP地址： 192.168.0.102
+</code></pre>
+<h3 id="第一部分-安装带有mariadb后端的powerdns">第一部分： 安装带有MariaDB后端的PowerDNS</h3>
+<p>1、 首先，你需要为你的系统启用EPEL仓库，只需使用：</p>
+<pre><code># yum install epel-release.noarch 
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Enable-Epel-Repository.png" alt="Enable Epel Repository"></p>
+<p><em>启用Epel仓库</em></p>
+<p>2、 下一步是安装MariaDB服务器。运行以下命令即可达成：</p>
+<pre><code># yum -y install mariadb-server mariadb
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Install-MariaDB-Server.png" alt="Install MariaDB Server"></p>
+<p><em>安装MariaDB服务器</em></p>
+<p>3、 接下来，我们将配置并启用MariaDB，并设置开机启动：</p>
+<pre><code># systemctl enable mariadb.service
+# systemctl start mariadb.service
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Enable-Start-MariaDB-System-Boot.png" alt="Enable Start MariaDB System Boot"></p>
+<p><em>启用MariaDB开机启动</em></p>
+<p>4、 现在MariaDB服务运行起来了，我们将为MariaDB设置密码进行安全加固，运行以下命令：</p>
+<pre><code># mysql_secure_installation
+</code></pre>
+<p><strong>按照指示做</strong></p>
+<pre><code>/bin/mysql_secure_installation: line 379: find_mysql_client: command not found
+
+NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB
+      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!
+
+In order to log into MariaDB to secure it, we&#39;ll need the current
+password for the root user.  If you&#39;ve just installed MariaDB, and
+you haven&#39;t set the root password yet, the password will be blank,
+so you should just press enter here.
+
+Enter current password for root (enter for none):  Press ENTER
+OK, successfully used password, moving on...
+
+Setting the root password ensures that nobody can log into the MariaDB
+root user without the proper authorisation.
+
+Set root password? [Y/n] y     
+New password:  ← Set New Password
+Re-enter new password:  ← Repeat Above Password
+Password updated successfully!
+Reloading privilege tables..
+ ... Success!
+
+
+By default, a MariaDB installation has an anonymous user, allowing anyone
+to log into MariaDB without having to have a user account created for
+them.  This is intended only for testing, and to make the installation
+go a bit smoother.  You should remove them before moving into a
+production environment.
+
+Remove anonymous users? [Y/n] y ← Choose “y” to disable that user
+ ... Success!
+
+Normally, root should only be allowed to connect from &#39;localhost&#39;.  This
+ensures that someone cannot guess at the root password from the network.
+
+Disallow root login remotely? [Y/n] n ← Choose “n” for no
+ ... skipping.
+
+By default, MariaDB comes with a database named &#39;test&#39; that anyone can
+access.  This is also intended only for testing, and should be removed
+before moving into a production environment.
+
+Remove test database and access to it? [Y/n] y ← Choose “y” for yes
+ - Dropping test database...
+ ... Success!
+ - Removing privileges on test database...
+ ... Success!
+
+Reloading the privilege tables will ensure that all changes made so far
+will take effect immediately.
+
+Reload privilege tables now? [Y/n] y ← Choose “y” for yes
+ ... Success!
+
+Cleaning up...
+
+All done!  If you&#39;ve completed all of the above steps, your MariaDB
+installation should now be secure.
+
+Thanks for using MariaDB!
+</code></pre>
+<p>5、 MariaDB配置成功后，我们可以继续去安装PowerDNS。运行以下命令即可轻易完成：</p>
+<pre><code># yum -y install pdns pdns-backend-mysql
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Install-PowerDNS-with-MariaDB-Backend.png" alt="Install PowerDNS with MariaDB Backend"></p>
+<p><em>安装带有MariaDB后端的PowerDNS</em></p>
+<p>6、 PowerDNS的配置文件位于<code>/etc/pdns/pdns</code>，在编辑之前，我们将为PowerDNS服务配置一个MariaDB数据库。首先，我们将连接到MariaDB服务器并创建一个名为powerdns的数据库： </p>
+<pre><code># mysql -u root -p
+MariaDB [(none)]&gt; CREATE DATABASE powerdns;
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Create-PowerDNS-Database.png" alt="Create PowerDNS Database"></p>
+<p><em>创建PowerDNS数据库</em></p>
+<p>7、 接下来，我们将创建一个名为powerdns的数据库用户： </p>
+<pre><code>MariaDB [(none)]&gt; GRANT ALL ON powerdns.* TO &#39;powerdns&#39;@&#39;localhost&#39; IDENTIFIED BY ‘tecmint123’;
+MariaDB [(none)]&gt; GRANT ALL ON powerdns.* TO &#39;powerdns&#39;@&#39;centos7.localdomain&#39; IDENTIFIED BY &#39;tecmint123&#39;;
+MariaDB [(none)]&gt; FLUSH PRIVILEGES;
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Create-PowerDNS-User.png" alt="Create PowerDNS User"></p>
+<p><em>创建PowerDNS用户</em></p>
+<p><strong>注意</strong>： 请将“tecmint123”替换为你想要设置的实际密码。</p>
+<p>8、 我们继续创建PowerDNS要使用的数据库表。像堆积木一样执行以下这些：</p>
+<pre><code>MariaDB [(none)]&gt; USE powerdns;
+MariaDB [(none)]&gt; CREATE TABLE domains (
+id INT auto_increment,
+name VARCHAR(255) NOT NULL,
+master VARCHAR(128) DEFAULT NULL,
+last_check INT DEFAULT NULL,
+type VARCHAR(6) NOT NULL,
+notified_serial INT DEFAULT NULL,
+account VARCHAR(40) DEFAULT NULL,
+primary key (id)
+);
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Create-Table-Domains-for-PowerDNS.png" alt="Create Table Domains for PowerDNS"></p>
+<p><em>创建用于PowerDNS的表domains</em></p>
+<pre><code>MariaDB [(none)]&gt; CREATE UNIQUE INDEX name_index ON domains(name);
+MariaDB [(none)]&gt; CREATE TABLE records (
+id INT auto_increment,
+domain_id INT DEFAULT NULL,
+name VARCHAR(255) DEFAULT NULL,
+type VARCHAR(6) DEFAULT NULL,
+content VARCHAR(255) DEFAULT NULL,
+ttl INT DEFAULT NULL,
+prio INT DEFAULT NULL,
+change_date INT DEFAULT NULL,
+primary key(id)
+);
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Create-Index-Domains-for-PowerDNS.png" alt="Create Table Records for PowerDNS"></p>
+<p><em>创建用于PowerDNS的表 records</em></p>
+<pre><code>MariaDB [(none)]&gt; CREATE INDEX rec_name_index ON records(name);
+MariaDB [(none)]&gt; CREATE INDEX nametype_index ON records(name,type);
+MariaDB [(none)]&gt; CREATE INDEX domain_id ON records(domain_id);
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Create-Records.png" alt="Create Index of Table"></p>
+<p><em>创建表索引</em></p>
+<pre><code>MariaDB [(none)]&gt; CREATE TABLE supermasters (
+ip VARCHAR(25) NOT NULL,
+nameserver VARCHAR(255) NOT NULL,
+account VARCHAR(40) DEFAULT NULL
+);
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Create-Table-Supermaster.png" alt="Create Table Supermaster"></p>
+<p><em>创建表supermasters</em></p>
+<p>你现在可以输入以下命令退出MariaDB控制台：</p>
+<pre><code>MariaDB [(none)]&gt; quit;
+</code></pre>
+<p>9、 最后，我们可以继续配置PowerDNS了，以MariaDB作为后台。请打开PowerDNS的配置文件： </p>
+<pre><code># vim /etc/pdns/pdns.conf 
+</code></pre>
+<p>在该文件中查找像下面这样的行：</p>
+<pre><code>#################################
+# launch        Which backends to launch and order to query them in
+#
+# launch=
+</code></pre>
+<p>在这后面放置以下代码：</p>
+<pre><code>launch=gmysql
+gmysql-host=localhost
+gmysql-user=powerdns
+gmysql-password=user-pass
+gmysql-dbname=powerdns
+</code></pre>
+<p>修改“user-pass”为你先前设置的实际密码，配置如下：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Configure-PowerDNS.png" alt="Configure PowerDNS"></p>
+<p><em>配置PowerDNS</em></p>
+<p>保存修改并退出。</p>
+<p>10、 现在，我们将启动并添加PowerDNS到系统开机启动列表： </p>
+<pre><code># systemctl enable pdns.service 
+# systemctl start pdns.service 
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Enable-and-Start-PowerDNS.png" alt="Enable and Start PowerDNS"></p>
+<p><em>启用并启动PowerDNS</em></p>
+<p>到这一步，你的PowerDNS服务器已经起来并运行了。要获取更多关于PowerDNS的信息，你可以参考手册<a href="http://downloads.powerdns.com/documentation/html/index.html">http://downloads.powerdns.com/documentation/html/index.html</a></p>
+<h3 id="第二部分-安装poweradmin来管理powerdns">第二部分： 安装PowerAdmin来管理PowerDNS</h3>
+<p>11、 现在，我们将安装PowerAdmin——一个界面友好的PowerDNS服务器的 Web 管理器。由于它是用PHP写的，我们将需要安装PHP和一台网络服务器（Apache）： </p>
+<pre><code># yum install httpd php php-devel php-gd php-imap php-ldap php-mysql php-odbc php-pear php-xml php-xmlrpc php-mbstring php-mcrypt php-mhash gettext
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Install-Apache-PHP.jpeg" alt="Install Apache PHP"></p>
+<p><em>安装Apache 和 PHP</em></p>
+<p>PowerAdmin也需要两个PEAR包：</p>
+<pre><code># yum -y install php-pear-DB php-pear-MDB2-Driver-mysql 
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Install-Pear.jpeg" alt="Install Pear"></p>
+<p><em>安装Pear</em></p>
+<p>你也可以参考一下文章了解CentOS 7中安装LAMP堆栈的完整指南：</p>
+<ul>
+<li><a href="http://www.tecmint.com/install-lamp-in-centos-7/">CentOS 7中安装LAMP</a></li>
+</ul>
+<p>安装完成后，我们将需要启动并设置Apache开机启动：</p>
+<pre><code># systemctl enable httpd.service
+# systemctl start httpd.service
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Enable-Start-Apache-System-Boot.png" alt="Enable Start Apache System Boot"></p>
+<p><em>启用Apache开机启动</em></p>
+<p>12、 由于已经满足PowerAdmin的所有系统要求，我们可以继续下载软件包。因为Apache默认的网页目录位于/var/www/html/，我们将下载软件包到这里。 </p>
+<pre><code># cd /var/www/html/
+# wget http://downloads.sourceforge.net/project/poweradmin/poweradmin-2.1.7.tgz 
+# tar xfv poweradmin-2.1.7.tgz
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Download-PowerAdmin.jpeg" alt="Download PowerAdmin"></p>
+<p><em>下载PowerAdmin</em></p>
+<p>13、 现在，我们可以启动PowerAdmin的网页安装器了，只需打开：</p>
+<pre><code>http://192.168.0.102/poweradmin-2.1.7/install/
+</code></pre>
+<p>这会进入安装过程的第一步：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Select-Installation-Language.png" alt="Select Installation Language"></p>
+<p><em>选择安装语言</em></p>
+<p>上面的页面会要求你为PowerAdmin选择语言，请选择你想要使用的那一个，然后点击“进入步骤 2”按钮。</p>
+<p>14、 安装器需要PowerDNS数据库：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/PowerDNS-Database.png" alt="PowerDNS Database"></p>
+<p><em>PowerDNS数据库</em></p>
+<p>15、 因为我们已经创建了一个数据库，所以我们可以继续进入下一步。你会被要求提供先前配置的数据库详情，你也需要为Poweradmin设置管理员密码：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/PowerDNS.png" alt="Enter PowerDNS Database Settings"></p>
+<p><em>输入PowerDNS数据库配置</em></p>
+<p>16、 输入这些信息后，进入步骤 4。你将创建为Poweradmin创建一个受限用户。这里你需要输入的字段是：</p>
+<ul>
+<li>用户名（Username） - PowerAdmin用户名。</li>
+<li>密码（Password） – 上述用户的密码。</li>
+<li>主机管理员（Hostmaster） - 当创建SOA记录而你没有指定主机管理员时，该值会被用作默认值。</li>
+<li>主域名服务器 - 该值在创建新的DNS区域时会被用于作为主域名服务器。</li>
+<li>辅域名服务器 – 该值在创建新的DNS区域时会被用于作为辅域名服务器。</li>
+</ul>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/PowerDNS-Configuration-Settings.png" alt="PowerDNS Configuration Settings"></p>
+<p><em>PowerDNS配置设置</em></p>
+<p>17、 在下一步中，Poweradmin会要求你在数据库表中创建一个新的受限数据库用户，它会提供你需要在MariaDB控制台输入的代码： </p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Create-New-Database-User.png" alt="Create New Database User"></p>
+<p><em>创建新的数据库用户</em></p>
+<p>18、 现在打开终端并运行： </p>
+<pre><code># mysql -u root -p
+</code></pre>
+<p>提供你的密码并执行由PowerAdmin提供的代码：</p>
+<pre><code>MariaDB [(none)]&gt; GRANT SELECT, INSERT, UPDATE, DELETE
+ON powerdns.*
+TO &#39;powermarin&#39;@&#39;localhost&#39;
+IDENTIFIED BY &#39;123qweasd&#39;;
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Grant-Mysql-Permissions-to-User.png" alt="Grant Mysql Permissions to User"></p>
+<p><em>为用户授予Mysql权限</em></p>
+<p>19、 现在，回到浏览器中并继续下一步。安装器将尝试创建配置文件到/var/www/html/poweradmin-2.1.7/inc。 </p>
+<p>文件名是config.inc.php。为防止该脚本没有写权限，你可以手动复制这些内容到上述文件中：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/PowerDNS-Configuration.png" alt="Configuration Settings of PowerDNS"></p>
+<p><em>配置PowerDNS设置</em></p>
+<p>20、 现在，进入最后页面，该页面会告知你安装已经完成以及如何访问安装好的PowerAdmin：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/PowerDNS-Installation-Completed.png" alt="PowerDNS Installation Completed"></p>
+<p><em>PowerDNS安装完成</em></p>
+<p>你可以通过运行以下命令来启用用于其他动态DNS提供商的URL：</p>
+<pre><code># cp install/htaccess.dist .htaccess 
+</code></pre>
+<p>出于该目的，你将需要在Apache的配置中启用mod_rewrite。</p>
+<p>21、 现在，需要移除从PowerAdmin的根目录中移除“install”文件夹，这一点很重要。使用以下命令： </p>
+<pre><code># rm -fr /var/www/html/poweradmin/install/
+</code></pre>
+<p>在此之后，你可以通过以下方式访问PowerAdmin：</p>
+<pre><code>http://192.168.0.102/poweradmin-2.1.7/
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/PowerDNS-Login.png" alt="PowerDNS Login"></p>
+<p><em>PowerDNS登录</em></p>
+<p>在登录后，你应该会看到PowerAdmin的主页：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/PowerDNS-Dashboard.png" alt="PowerDNS Dashboard"></p>
+<p><em>PowerDNS仪表盘</em></p>
+<p>到这里，安装已经完成了，你也可以开始管理你的DNS区域了。</p>
+<h3 id="第三部分-powerdns中添加编辑和删除dns区域">第三部分： PowerDNS中添加、编辑和删除DNS区域</h3>
+<p>22、 要添加新的主区域，只需点击“添加主区域”： </p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Add-Master-Zone.png" alt="Add Master Zone"></p>
+<p><em>添加主区域</em></p>
+<p>在下一页中，你需要填写一些东西：</p>
+<ul>
+<li>域（Domain） – 你要添加区域的域。</li>
+<li>所有者（Owner） – 设置DNS区域的所有者。</li>
+<li>模板（Template）– DNS模板 – 留空。</li>
+<li>DNSSEC – 域名系统安全扩展（可选——看看你是否需要）。</li>
+</ul>
+<p>点击“添加区域”按钮来添加DNS区域。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Master-DNS-Zone.png" alt="Master DNS Zone"></p>
+<p><em>主DNS区域</em></p>
+<p>现在，你可以点击“首页”链接回到PowerAdmin的首页。要查看所有现存的DNS区域，只需转到“列出区域（List Zones）”：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Check-List-Zones.png" alt="Check List of Zones"></p>
+<p><em>查看区域列表</em></p>
+<p>你现在应该看到一个可用DNS区域列表：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/DNS-Zones.png" alt="Check List of DNS Zones"></p>
+<p><em>检查DNS区域列表</em></p>
+<p>23、 要编辑现存DNS区域或者添加新的记录，点击编辑图标：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Edit-DNS-Zone.png" alt="Edit DNS Zone"></p>
+<p><em>编辑DNS区域</em></p>
+<p>在接下来的页面，你会看到你选择的DNS区域的条目：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Domain-DNS.png" alt="Domain DNS Zone Entries"></p>
+<p><em>域名的DNS区域条目</em></p>
+<p>24、 在此处添加新的DNS条目，你需要设置以下信息：</p>
+<ul>
+<li>名称（Name） – 条目名称。只需添加域/子域的第一部分，PowerAdmin会添加剩下的。</li>
+<li>类型（Type） – 选择记录类型。</li>
+<li>优先级（Priority） – 记录优先级。</li>
+<li>TTL – 存活时间，以秒计算。</li>
+</ul>
+<p>出于本文目的，我将为子域new.example.com添加一个A记录用于解析IP地址192.168.0.102，设置存活时间为14400秒：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Add-New-DNS-Record.png" alt="Add New DNS Record"></p>
+<p><em>添加新DNS记录</em></p>
+<p>最后，点击“添加记录”按钮。</p>
+<p>25、 如果你想要删除DNS区域，你可以回到“列出区域”页面，然后点击你想要删除的DNS区域旁边“垃圾桶”图标： </p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Delete-DNS-Zone.png" alt="Delete DNS Zone"></p>
+<p><em>删除DNS区域</em></p>
+<p>Poweradmin将问你是否确定想要删除DNS区域。只需点击“是”来完成删除。</p>
+<p>如要获取更多关于怎样创建、编辑和删除区域的说明，你可以参与Poweradmin的文档：<a href="https://github.com/poweradmin/poweradmin/wiki/Documentation">https://github.com/poweradmin/poweradmin/wiki/Documentation</a></p>
+<p>我希望你已经发现本文很有趣，也很有用。一如既往，如果你有问题或要发表评论，请别犹豫，在下面评论区提交你的评论吧。</p>
+<hr>
+<p>via: <a href="http://www.tecmint.com/install-powerdns-poweradmin-mariadb-in-centos-rhel/">http://www.tecmint.com/install-powerdns-poweradmin-mariadb-in-centos-rhel/</a></p>
+<p>作者：<a href="http://www.tecmint.com/author/marintodorov89/">Marin Todorov</a>
+译者：<a href="https://github.com/GOLinux">GOLinux</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="http://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第一部分-安装带有mariadb后端的powerdns">第一部分： 安装带有MariaDB后端的PowerDNS</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第二部分-安装poweradmin来管理powerdns">第二部分： 安装PowerAdmin来管理PowerDNS</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第三部分-powerdns中添加编辑和删除dns区域">第三部分： PowerDNS中添加、编辑和删除DNS区域</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201506/20150504 How to Install and Configure 'PowerDNS' (with MariaDB) and 'PowerAdmin' in RHEL or CentOS 7","title":"RHEL/CentOS 7中安装并配置 PowerDNS 和 PowerAdmin"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

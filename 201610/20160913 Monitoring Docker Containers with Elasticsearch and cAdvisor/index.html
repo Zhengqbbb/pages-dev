@@ -1,0 +1,382 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用 Elasticsearch 和 cAdvisor 监控 Docker 容器 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用 Elasticsearch 和 cAdvisor 监控 Docker 容器 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用 Elasticsearch 和 cAdvisor 监控 Docker 容器 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201610/20160913 Monitoring Docker Containers with Elasticsearch and cAdvisor#page","@type":"TechArticle","headline":"使用 Elasticsearch 和 cAdvisor 监控 Docker 容器","inLanguage":"en","name":"使用 Elasticsearch 和 cAdvisor 监控 Docker 容器","url":"https://zhengqbbb.github.io/pages-dev/201610/20160913 Monitoring Docker Containers with Elasticsearch and cAdvisor","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201610/20160913 Monitoring Docker Containers with Elasticsearch and cAdvisor"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#我们为什么要监控容器">我们为什么要监控容器？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-elastic-stack">什么是 Elastic Stack ？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#设置测试集群或搭建自己的基础架构">设置测试集群，或搭建自己的基础架构</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#对喜欢尝鲜的用户的友情提示">对喜欢尝鲜的用户的友情提示</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#测试集群部署脚本">测试集群部署脚本</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建集群的脚本">创建集群的脚本</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建集群">创建集群</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装-elasticsearch-和-kibana">安装 Elasticsearch 和 Kibana</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#elasticsearch-容器">Elasticsearch 容器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#kibana-容器">Kibana 容器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#收集容器的运行数据">收集容器的运行数据</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#把数据汇总成报表">把数据汇总成报表</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用 Elasticsearch 和 cAdvisor 监控 Docker 容器</h1><p>如果你正在运行 Swarm 模式的集群，或者只运行单台 Docker，你都会有下面的疑问：</p>
+<blockquote>
+<p>我如何才能监控到它们都在干些什么？</p>
+</blockquote>
+<p>这个问题的答案是“很不容易”。</p>
+<p>你需要监控下面的参数：</p>
+<ol>
+<li>容器的数量和状态。</li>
+<li>一台容器是否已经移到另一个节点了，如果是，那是在什么时候，移动到哪个节点？</li>
+<li>给定节点上运行着的容器数量。</li>
+<li>一段时间内的通信峰值。</li>
+<li>孤儿卷和网络（LCTT 译注：孤儿卷就是当你删除容器时忘记删除它的卷，这个卷就不会再被使用，但会一直占用资源）。</li>
+<li>可用磁盘空间、可用 inode 数。</li>
+<li>容器数量与连接在 <code>docker0</code> 和 <code>docker_gwbridge</code> 上的虚拟网卡数量不一致（LCTT 译注：当 docker 启动时，它会在宿主机器上创建一个名为 docker0 的虚拟网络接口）。</li>
+<li>开启和关闭 Swarm 节点。</li>
+<li>收集并集中处理日志。</li>
+</ol>
+<p>本文的目标是介绍 <a href="https://github.com/elastic/elasticsearch">Elasticsearch</a> + <a href="https://github.com/elastic/kibana">Kibana</a> + <a href="https://github.com/google/cadvisor">cAdvisor</a> 的用法，使用它们来收集 Docker 容器的参数，分析数据并产生可视化报表。</p>
+<p>阅读本文后你可以发现有一个监控仪表盘能够部分解决上述列出的问题。但如果只是使用 cAdvisor，有些参数就无法显示出来，比如 Swarm 模式的节点。</p>
+<p>如果你有一些 cAdvisor 或其他工具无法解决的特殊需求，我建议你开发自己的数据收集器和数据处理器（比如 <a href="https://github.com/elastic/beats">Beats</a>），请注意我不会演示如何使用 Elasticsearch 来集中收集 Docker 容器的日志。</p>
+<blockquote>
+<p><a href="https://twitter.com/share?text=%22How+do+you+keep+track+of+all+that%27s+happening+in+a+Swarm+Mode+cluster%3F+Not+easily.%22+via+%40fntlnz&url=https://blog.codeship.com/monitoring-docker-containers-with-elasticsearch-and-cadvisor/">“你要如何才能监控到 Swarm 模式集群里面发生了什么事情？要做到这点很不容易。” —— @fntlnz</a></p>
+</blockquote>
+<h3 id="我们为什么要监控容器">我们为什么要监控容器？</h3>
+<p>想象一下这个经典场景：你在管理一台或多台虚拟机，你把 tmux 工具用得很溜，用各种 session 事先设定好了所有基础的东西，包括监控。然后生产环境出问题了，你使用 <code>top</code>、<code>htop</code>、<code>iotop</code>、<code>jnettop</code> 各种 top 来排查，然后你准备好修复故障。</p>
+<p>现在重新想象一下你有 3 个节点，包含 50 台容器，你需要在一个地方查看整洁的历史数据，这样你知道问题出在哪个地方，而不是把你的生命浪费在那些字符界面来赌你可以找到问题点。</p>
+<h3 id="什么是-elastic-stack">什么是 Elastic Stack ？</h3>
+<p>Elastic Stack 就一个工具集，包括以下工具：</p>
+<ul>
+<li>Elasticsearch</li>
+<li>Kibana</li>
+<li>Logstash</li>
+<li>Beats</li>
+</ul>
+<p>我们会使用其中一部分工具，比如使用 Elasticsearch 来分析基于 JSON 格式的文本，以及使用 Kibana 来可视化数据并产生报表。</p>
+<p>另一个重要的工具是 <a href="https://github.com/elastic/beats">Beats</a>，但在本文中我们还是把精力放在容器上，官方的 Beats 工具不支持 Docker，所以我们选择原生兼容 Elasticsearch 的 cAdvisor。</p>
+<p><a href="https://github.com/google/cadvisor">cAdvisor</a> 工具负责收集、整合正在运行的容器数据，并导出报表。在本文中，这些报表被到入到 Elasticsearch 中。</p>
+<p>cAdvisor 有两个比较酷的特性：</p>
+<ul>
+<li>它不只局限于 Docker 容器。</li>
+<li>它有自己的 Web 服务器，可以简单地显示当前节点的可视化报表。</li>
+</ul>
+<h3 id="设置测试集群或搭建自己的基础架构">设置测试集群，或搭建自己的基础架构</h3>
+<p>和我<a href="https://blog.codeship.com/nginx-reverse-proxy-docker-swarm-clusters/">以前的文章</a>一样，我习惯提供一个简单的脚本，让读者不用花很多时间就能部署好和我一样的测试环境。你可以使用以下（非生产环境使用的）脚本来搭建一个 Swarm 模式的集群，其中一个容器运行着 Elasticsearch。</p>
+<blockquote>
+<p>如果你有充足的时间和经验，你可以搭建自己的基础架构 (Bring Your Own Infrastructure，BYOI)。</p>
+</blockquote>
+<p>如果要继续阅读本文，你需要：</p>
+<ul>
+<li>运行 Docker 进程的一个或多个节点（docker 版本号大于等于 1.12）。</li>
+<li>至少有一个独立运行的 Elasticsearch 节点（版本号 2.4.X）。</li>
+</ul>
+<p>重申一下，此 Elasticsearch 集群环境不能放在生产环境中使用。生产环境也不推荐使用单节点集群，所以如果你计划安装一个生产环境，请参考 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/2.x/deploy.html">Elastic 指南</a>。</p>
+<h3 id="对喜欢尝鲜的用户的友情提示">对喜欢尝鲜的用户的友情提示</h3>
+<p>我就是一个喜欢尝鲜的人（当然我也已经在生产环境中使用了最新的 alpha 版本），但是在本文中，我不会使用最新的 Elasticsearch 5.0.0 alpha 版本，我还不是很清楚这个版本的功能，所以我不想成为那个引导你们出错的关键。</p>
+<p>所以本文中涉及的 Elasticsearch 版本为最新稳定版 2.4.0。</p>
+<h3 id="测试集群部署脚本">测试集群部署脚本</h3>
+<p>前面已经说过，我提供这个脚本给你们，让你们不必费神去部署 Swarm 集群和 Elasticsearch，当然你也可以跳过这一步，用你自己的 Swarm 模式引擎和你自己的 Elasticserch 节点。</p>
+<p>执行这段脚本之前，你需要：</p>
+<ul>
+<li><a href="https://docs.docker.com/machine/install-machine/">Docker Machine</a> – 最终版：在 DigitalOcean 中提供 Docker 引擎。</li>
+<li><a href="https://cloud.digitalocean.com/settings/api/tokens/new">DigitalOcean API Token</a>: 让 docker 机器按照你的意思来启动节点。</li>
+</ul>
+<p><img src="https://resources.codeship.com/hubfs/CTAs/EVAL/Codeship_Request_Trial_Access.png?t=1473869513342" alt=""></p>
+<h3 id="创建集群的脚本">创建集群的脚本</h3>
+<p>现在万事俱备，你可以把下面的代码拷到 create-cluster.sh 文件中：</p>
+<pre><code>#!/usr/bin/env bash
+#
+# Create a Swarm Mode cluster with a single master and a configurable number of workers
+
+workers=${WORKERS:-&quot;worker1 worker2&quot;}
+
+#######################################
+# Creates a machine on Digital Ocean
+# Globals:
+#   DO_ACCESS_TOKEN The token needed to access DigitalOcean&#39;s API
+# Arguments:
+#   $1 the actual name to give to the machine
+#######################################
+create_machine() {
+  docker-machine create \
+    -d digitalocean \
+    --digitalocean-access-token=$DO_ACCESS_TOKEN \
+    --digitalocean-size 2gb \
+    $1
+}
+
+#######################################
+# Executes a command on the specified machine
+# Arguments:
+#   $1     The machine on which to run the command
+#   $2..$n The command to execute on that machine
+#######################################
+machine_do() {
+  docker-machine ssh $@
+}
+
+main() {
+
+  if [ -z &quot;$DO_ACCESS_TOKEN&quot; ]; then
+    echo &quot;Please export a DigitalOcean Access token: https://cloud.digitalocean.com/settings/api/tokens/new&quot;
+    echo &quot;export DO_ACCESS_TOKEN=&lt;yourtokenhere&gt;&quot;
+    exit 1
+  fi
+
+  if [ -z &quot;$WORKERS&quot; ]; then
+    echo &quot;You haven&#39;t provided your workers by setting the \$WORKERS environment variable, using the default ones: $workers&quot;
+  fi
+
+  # Create the first and only master
+  echo &quot;Creating the master&quot;
+
+  create_machine master1
+
+  master_ip=$(docker-machine ip master1)
+
+  # Initialize the swarm mode on it
+  echo &quot;Initializing the swarm mode&quot;
+  machine_do master1 docker swarm init --advertise-addr $master_ip
+
+  # Obtain the token to allow workers to join
+  worker_tkn=$(machine_do master1 docker swarm join-token -q worker)
+  echo &quot;Worker token: ${worker_tkn}&quot;
+
+  # Create and join the workers
+  for worker in $workers; do
+    echo &quot;Creating worker ${worker}&quot;
+    create_machine $worker
+    machine_do $worker docker swarm join --token $worker_tkn $master_ip:2377
+  done
+}
+
+main $@
+</code></pre>
+<p>赋予它可执行权限：</p>
+<pre><code>chmod +x create-cluster.sh
+</code></pre>
+<h3 id="创建集群">创建集群</h3>
+<p>如文件名所示，我们可以用它来创建集群。默认情况下这个脚本会创建一个 master 和两个 worker，如果你想修改 worker 个数，可以设置环境变量 WORKERS。</p>
+<p>现在就来创建集群吧。</p>
+<pre><code>./create-cluster.sh
+</code></pre>
+<p>你可以出去喝杯咖啡，因为这需要花点时间。</p>
+<p>最后集群部署好了。</p>
+<p><img src="https://blog.codeship.com/wp-content/uploads/2016/09/cluster.png" alt=""></p>
+<p>现在为了验证 Swarm 模式集群已经正常运行，我们可以通过 ssh 登录进 master：</p>
+<pre><code>docker-machine ssh master1
+</code></pre>
+<p>然后列出集群的节点：</p>
+<pre><code>docker node ls
+</code></pre>
+<pre><code>ID                           HOSTNAME  STATUS  AVAILABILITY  MANAGER STATUS
+26fi3wiqr8lsidkjy69k031w2 *  master1   Ready   Active        Leader
+dyluxpq8sztj7kmwlzs51u4id    worker2   Ready   Active
+epglndegvixag0jztarn2lte8    worker1   Ready   Active
+</code></pre>
+<h3 id="安装-elasticsearch-和-kibana">安装 Elasticsearch 和 Kibana</h3>
+<blockquote>
+<p>注意，从现在开始所有的命令都运行在主节点 master1 上。</p>
+</blockquote>
+<p>在生产环境中，你可能会把 Elasticsearch 和 Kibana 安装在一个单独的、<a href="https://www.elastic.co/blog/found-sizing-elasticsearch">大小合适</a>的实例集合中。但是在我们的实验中，我们还是把它们和 Swarm 模式集群安装在一起。</p>
+<p>为了将 Elasticsearch 和 cAdvisor 连通，我们需要创建一个自定义的网络，因为我们使用了集群，并且容器可能会分布在不同的节点上，我们需要使用 <a href="https://docs.docker.com/engine/userguide/networking/get-started-overlay/">overlay</a> 网络（LCTT 译注：overlay 网络是指在不改变现有网络基础设施的前提下，通过某种约定通信协议，把二层报文封装在 IP 报文之上的新的数据格式，是目前最主流的容器跨节点数据传输和路由方案）。</p>
+<p>也许你会问，“为什么还要网络？我们不是可以用 link 吗？” 请考虑一下，自从引入<em>用户定义网络</em>后，link 机制就已经过时了。</p>
+<p>以下内容摘自<a href="https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/"> Docker 文档</a>：</p>
+<blockquote>
+<p>在 Docker network 特性出来以前，你可以使用 Docker link 特性实现容器互相发现、安全通信。而在 network 特性出来以后，你还可以使用 link，但是当容器处于默认桥接网络或用户自定义网络时，它们的表现是不一样的。</p>
+</blockquote>
+<p>现在创建 overlay 网络，名称为 monitoring：</p>
+<pre><code>docker network create monitoring -d overlay
+</code></pre>
+<h3 id="elasticsearch-容器">Elasticsearch 容器</h3>
+<pre><code>docker service create --network=monitoring \
+  --mount type=volume,target=/usr/share/elasticsearch/data \
+  --constraint node.hostname==worker1 \
+  --name elasticsearch elasticsearch:2.4.0
+</code></pre>
+<p>注意 Elasticsearch 容器被限定在 worker1 节点，这是因为它运行时需要依赖 worker1 节点上挂载的卷。</p>
+<h3 id="kibana-容器">Kibana 容器</h3>
+<pre><code>docker service create --network=monitoring --name kibana -e ELASTICSEARCH_URL=&quot;http://elasticsearch:9200&quot; -p 5601:5601 kibana:4.6.0
+</code></pre>
+<p>如你所见，我们启动这两个容器时，都让它们加入 monitoring 网络，这样一来它们可以通过名称（如 Kibana）被相同网络的其他服务访问。</p>
+<p>现在，通过 <a href="https://docs.docker.com/engine/swarm/ingress/">routing mesh</a> 机制，我们可以使用浏览器访问服务器的 IP 地址来查看 Kibana 报表界面。</p>
+<p>获取 master1 实例的公共 IP 地址：</p>
+<pre><code>docker-machine ip master1
+</code></pre>
+<p>打开浏览器输入地址：<code>http://[master1 的 ip 地址]:5601/status</code></p>
+<p>所有项目都应该是绿色：</p>
+<p><img src="https://blog.codeship.com/wp-content/uploads/2016/09/kibana-screenshot.png" alt=""></p>
+<p>让我们接下来开始收集数据！</p>
+<h3 id="收集容器的运行数据">收集容器的运行数据</h3>
+<p>收集数据之前，我们需要创建一个服务，以全局模式运行 cAdvisor，为每个有效节点设置一个定时任务。</p>
+<p>这个服务与 Elasticsearch 处于相同的网络，以便于 cAdvisor 可以推送数据给 Elasticsearch。</p>
+<pre><code>docker service create --network=monitoring --mode global --name cadvisor \
+  --mount type=bind,source=/,target=/rootfs,readonly=true \
+  --mount type=bind,source=/var/run,target=/var/run,readonly=false \
+  --mount type=bind,source=/sys,target=/sys,readonly=true \
+  --mount type=bind,source=/var/lib/docker/,target=/var/lib/docker,readonly=true \
+  google/cadvisor:latest \
+  -storage_driver=elasticsearch \
+  -storage_driver_es_host=&quot;http://elasticsearch:9200&quot;
+</code></pre>
+<blockquote>
+<p>注意：如果你想配置 cAdvisor 选项，参考<a href="https://github.com/google/cadvisor/blob/master/docs/runtime_options.md">这里</a>。</p>
+</blockquote>
+<p>现在 cAdvisor 在发送数据给 Elasticsearch，我们通过定义一个索引模型来检索 Kibana 中的数据。有两种方式可以做到这一点：通过 Kibana 或者通过 API。在这里我们使用 API 方式实现。</p>
+<p>我们需要在一个连接到 monitoring 网络的正在运行的容器中运行索引创建命令，你可以在 cAdvisor 容器中拿到 shell，不幸的是 Swarm 模式在开启服务时会在容器名称后面附加一个唯一的 ID 号，所以你需要手动指定 cAdvisor 容器的名称。</p>
+<p>拿到 shell：</p>
+<pre><code>docker exec -ti &lt;cadvisor-container-name&gt; sh
+</code></pre>
+<p>创建索引：</p>
+<pre><code>curl -XPUT http://elasticsearch:9200/.kibana/index-pattern/cadvisor -d &#39;{&quot;title&quot; : &quot;cadvisor*&quot;,  &quot;timeFieldName&quot;: &quot;container_stats.timestamp&quot;}&#39;
+</code></pre>
+<p>如果你够懒，可以只执行下面这一句：</p>
+<pre><code>docker exec $(docker ps | grep cadvisor | awk &#39;{print $1}&#39; | head -1) curl -XPUT http://elasticsearch:9200/.kibana/index-pattern/cadvisor -d &#39;{&quot;title&quot; : &quot;cadvisor*&quot;,  &quot;timeFieldName&quot;: &quot;container_stats.timestamp&quot;}&#39;
+</code></pre>
+<h3 id="把数据汇总成报表">把数据汇总成报表</h3>
+<p>你现在可以使用 Kibana 来创建一份美观的报表了。但是不要着急，我为你们建了一份报表和一些图形界面来方便你们入门。</p>
+<p><img src="https://blog.codeship.com/wp-content/uploads/2016/09/dashboard.png" alt=""></p>
+<p>访问 Kibana 界面 =&gt; Setting =&gt; Objects =&gt; Import，然后选择包含以下内容的 JSON 文件，就可以导入我的配置信息了：</p>
+<pre><code>[
+  {
+    &quot;_id&quot;: &quot;cAdvisor&quot;,
+    &quot;_type&quot;: &quot;dashboard&quot;,
+    &quot;_source&quot;: {
+      &quot;title&quot;: &quot;cAdvisor&quot;,
+      &quot;hits&quot;: 0,
+      &quot;description&quot;: &quot;&quot;,
+      &quot;panelsJSON&quot;: &quot;[{\&quot;id\&quot;:\&quot;Filesystem-usage\&quot;,\&quot;type\&quot;:\&quot;visualization\&quot;,\&quot;panelIndex\&quot;:1,\&quot;size_x\&quot;:6,\&quot;size_y\&quot;:3,\&quot;col\&quot;:1,\&quot;row\&quot;:1},{\&quot;id\&quot;:\&quot;Memory-[Node-equal-&gt;Container]\&quot;,\&quot;type\&quot;:\&quot;visualization\&quot;,\&quot;panelIndex\&quot;:2,\&quot;size_x\&quot;:6,\&quot;size_y\&quot;:4,\&quot;col\&quot;:7,\&quot;row\&quot;:4},{\&quot;id\&quot;:\&quot;memory-usage-by-machine\&quot;,\&quot;type\&quot;:\&quot;visualization\&quot;,\&quot;panelIndex\&quot;:3,\&quot;size_x\&quot;:6,\&quot;size_y\&quot;:6,\&quot;col\&quot;:1,\&quot;row\&quot;:4},{\&quot;id\&quot;:\&quot;CPU-Total-Usage\&quot;,\&quot;type\&quot;:\&quot;visualization\&quot;,\&quot;panelIndex\&quot;:4,\&quot;size_x\&quot;:6,\&quot;size_y\&quot;:5,\&quot;col\&quot;:7,\&quot;row\&quot;:8},{\&quot;id\&quot;:\&quot;Network-RX-TX\&quot;,\&quot;type\&quot;:\&quot;visualization\&quot;,\&quot;panelIndex\&quot;:5,\&quot;size_x\&quot;:6,\&quot;size_y\&quot;:3,\&quot;col\&quot;:7,\&quot;row\&quot;:1}]&quot;,
+      &quot;optionsJSON&quot;: &quot;{\&quot;darkTheme\&quot;:false}&quot;,
+      &quot;uiStateJSON&quot;: &quot;{}&quot;,
+      &quot;version&quot;: 1,
+      &quot;timeRestore&quot;: false,
+      &quot;kibanaSavedObjectMeta&quot;: {
+        &quot;searchSourceJSON&quot;: &quot;{\&quot;filter\&quot;:[{\&quot;query\&quot;:{\&quot;query_string\&quot;:{\&quot;query\&quot;:\&quot;*\&quot;,\&quot;analyze_wildcard\&quot;:true}}}]}&quot;
+      }
+    }
+  },
+  {
+    &quot;_id&quot;: &quot;Network&quot;,
+    &quot;_type&quot;: &quot;search&quot;,
+    &quot;_source&quot;: {
+      &quot;title&quot;: &quot;Network&quot;,
+      &quot;description&quot;: &quot;&quot;,
+      &quot;hits&quot;: 0,
+      &quot;columns&quot;: [
+        &quot;machine_name&quot;,
+        &quot;container_Name&quot;,
+        &quot;container_stats.network.name&quot;,
+        &quot;container_stats.network.interfaces&quot;,
+        &quot;container_stats.network.rx_bytes&quot;,
+        &quot;container_stats.network.rx_packets&quot;,
+        &quot;container_stats.network.rx_dropped&quot;,
+        &quot;container_stats.network.rx_errors&quot;,
+        &quot;container_stats.network.tx_packets&quot;,
+        &quot;container_stats.network.tx_bytes&quot;,
+        &quot;container_stats.network.tx_dropped&quot;,
+        &quot;container_stats.network.tx_errors&quot;
+      ],
+      &quot;sort&quot;: [
+        &quot;container_stats.timestamp&quot;,
+        &quot;desc&quot;
+      ],
+      &quot;version&quot;: 1,
+      &quot;kibanaSavedObjectMeta&quot;: {
+        &quot;searchSourceJSON&quot;: &quot;{\&quot;index\&quot;:\&quot;cadvisor*\&quot;,\&quot;query\&quot;:{\&quot;query_string\&quot;:{\&quot;analyze_wildcard\&quot;:true,\&quot;query\&quot;:\&quot;*\&quot;}},\&quot;highlight\&quot;:{\&quot;pre_tags\&quot;:[\&quot;@kibana-highlighted-field@\&quot;],\&quot;post_tags\&quot;:[\&quot;@/kibana-highlighted-field@\&quot;],\&quot;fields\&quot;:{\&quot;*\&quot;:{}},\&quot;fragment_size\&quot;:2147483647},\&quot;filter\&quot;:[]}&quot;
+      }
+    }
+  },
+  {
+    &quot;_id&quot;: &quot;Filesystem-usage&quot;,
+    &quot;_type&quot;: &quot;visualization&quot;,
+    &quot;_source&quot;: {
+      &quot;title&quot;: &quot;Filesystem usage&quot;,
+      &quot;visState&quot;: &quot;{\&quot;title\&quot;:\&quot;Filesystem usage\&quot;,\&quot;type\&quot;:\&quot;histogram\&quot;,\&quot;params\&quot;:{\&quot;addLegend\&quot;:true,\&quot;addTimeMarker\&quot;:false,\&quot;addTooltip\&quot;:true,\&quot;defaultYExtents\&quot;:false,\&quot;mode\&quot;:\&quot;stacked\&quot;,\&quot;scale\&quot;:\&quot;linear\&quot;,\&quot;setYExtents\&quot;:false,\&quot;shareYAxis\&quot;:true,\&quot;times\&quot;:[],\&quot;yAxis\&quot;:{}},\&quot;aggs\&quot;:[{\&quot;id\&quot;:\&quot;1\&quot;,\&quot;type\&quot;:\&quot;avg\&quot;,\&quot;schema\&quot;:\&quot;metric\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.filesystem.usage\&quot;,\&quot;customLabel\&quot;:\&quot;USED\&quot;}},{\&quot;id\&quot;:\&quot;2\&quot;,\&quot;type\&quot;:\&quot;terms\&quot;,\&quot;schema\&quot;:\&quot;split\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;machine_name\&quot;,\&quot;size\&quot;:5,\&quot;order\&quot;:\&quot;desc\&quot;,\&quot;orderBy\&quot;:\&quot;1\&quot;,\&quot;row\&quot;:false}},{\&quot;id\&quot;:\&quot;3\&quot;,\&quot;type\&quot;:\&quot;avg\&quot;,\&quot;schema\&quot;:\&quot;metric\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.filesystem.capacity\&quot;,\&quot;customLabel\&quot;:\&quot;AVAIL\&quot;}},{\&quot;id\&quot;:\&quot;4\&quot;,\&quot;type\&quot;:\&quot;terms\&quot;,\&quot;schema\&quot;:\&quot;segment\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.filesystem.device\&quot;,\&quot;size\&quot;:5,\&quot;order\&quot;:\&quot;desc\&quot;,\&quot;orderBy\&quot;:\&quot;1\&quot;}}],\&quot;listeners\&quot;:{}}&quot;,
+      &quot;uiStateJSON&quot;: &quot;{\&quot;vis\&quot;:{\&quot;colors\&quot;:{\&quot;Average container_stats.filesystem.available\&quot;:\&quot;#E24D42\&quot;,\&quot;Average container_stats.filesystem.base_usage\&quot;:\&quot;#890F02\&quot;,\&quot;Average container_stats.filesystem.capacity\&quot;:\&quot;#3F6833\&quot;,\&quot;Average container_stats.filesystem.usage\&quot;:\&quot;#E24D42\&quot;,\&quot;USED\&quot;:\&quot;#BF1B00\&quot;,\&quot;AVAIL\&quot;:\&quot;#508642\&quot;}}}&quot;,
+      &quot;description&quot;: &quot;&quot;,
+      &quot;version&quot;: 1,
+      &quot;kibanaSavedObjectMeta&quot;: {
+        &quot;searchSourceJSON&quot;: &quot;{\&quot;index\&quot;:\&quot;cadvisor*\&quot;,\&quot;query\&quot;:{\&quot;query_string\&quot;:{\&quot;analyze_wildcard\&quot;:true,\&quot;query\&quot;:\&quot;*\&quot;}},\&quot;filter\&quot;:[]}&quot;
+      }
+    }
+  },
+  {
+    &quot;_id&quot;: &quot;CPU-Total-Usage&quot;,
+    &quot;_type&quot;: &quot;visualization&quot;,
+    &quot;_source&quot;: {
+      &quot;title&quot;: &quot;CPU Total Usage&quot;,
+      &quot;visState&quot;: &quot;{\&quot;title\&quot;:\&quot;CPU Total Usage\&quot;,\&quot;type\&quot;:\&quot;area\&quot;,\&quot;params\&quot;:{\&quot;shareYAxis\&quot;:true,\&quot;addTooltip\&quot;:true,\&quot;addLegend\&quot;:true,\&quot;smoothLines\&quot;:false,\&quot;scale\&quot;:\&quot;linear\&quot;,\&quot;interpolate\&quot;:\&quot;linear\&quot;,\&quot;mode\&quot;:\&quot;stacked\&quot;,\&quot;times\&quot;:[],\&quot;addTimeMarker\&quot;:false,\&quot;defaultYExtents\&quot;:false,\&quot;setYExtents\&quot;:false,\&quot;yAxis\&quot;:{}},\&quot;aggs\&quot;:[{\&quot;id\&quot;:\&quot;1\&quot;,\&quot;type\&quot;:\&quot;avg\&quot;,\&quot;schema\&quot;:\&quot;metric\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.cpu.usage.total\&quot;}},{\&quot;id\&quot;:\&quot;2\&quot;,\&quot;type\&quot;:\&quot;date_histogram\&quot;,\&quot;schema\&quot;:\&quot;segment\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.timestamp\&quot;,\&quot;interval\&quot;:\&quot;auto\&quot;,\&quot;customInterval\&quot;:\&quot;2h\&quot;,\&quot;min_doc_count\&quot;:1,\&quot;extended_bounds\&quot;:{}}},{\&quot;id\&quot;:\&quot;3\&quot;,\&quot;type\&quot;:\&quot;terms\&quot;,\&quot;schema\&quot;:\&quot;group\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_Name\&quot;,\&quot;size\&quot;:5,\&quot;order\&quot;:\&quot;desc\&quot;,\&quot;orderBy\&quot;:\&quot;1\&quot;}},{\&quot;id\&quot;:\&quot;4\&quot;,\&quot;type\&quot;:\&quot;terms\&quot;,\&quot;schema\&quot;:\&quot;split\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;machine_name\&quot;,\&quot;size\&quot;:5,\&quot;order\&quot;:\&quot;desc\&quot;,\&quot;orderBy\&quot;:\&quot;1\&quot;,\&quot;row\&quot;:true}}],\&quot;listeners\&quot;:{}}&quot;,
+      &quot;uiStateJSON&quot;: &quot;{}&quot;,
+      &quot;description&quot;: &quot;&quot;,
+      &quot;version&quot;: 1,
+      &quot;kibanaSavedObjectMeta&quot;: {
+        &quot;searchSourceJSON&quot;: &quot;{\&quot;index\&quot;:\&quot;cadvisor*\&quot;,\&quot;query\&quot;:{\&quot;query_string\&quot;:{\&quot;query\&quot;:\&quot;*\&quot;,\&quot;analyze_wildcard\&quot;:true}},\&quot;filter\&quot;:[]}&quot;
+      }
+    }
+  },
+  {
+    &quot;_id&quot;: &quot;memory-usage-by-machine&quot;,
+    &quot;_type&quot;: &quot;visualization&quot;,
+    &quot;_source&quot;: {
+      &quot;title&quot;: &quot;Memory [Node]&quot;,
+      &quot;visState&quot;: &quot;{\&quot;title\&quot;:\&quot;Memory [Node]\&quot;,\&quot;type\&quot;:\&quot;area\&quot;,\&quot;params\&quot;:{\&quot;shareYAxis\&quot;:true,\&quot;addTooltip\&quot;:true,\&quot;addLegend\&quot;:true,\&quot;smoothLines\&quot;:false,\&quot;scale\&quot;:\&quot;linear\&quot;,\&quot;interpolate\&quot;:\&quot;linear\&quot;,\&quot;mode\&quot;:\&quot;stacked\&quot;,\&quot;times\&quot;:[],\&quot;addTimeMarker\&quot;:false,\&quot;defaultYExtents\&quot;:false,\&quot;setYExtents\&quot;:false,\&quot;yAxis\&quot;:{}},\&quot;aggs\&quot;:[{\&quot;id\&quot;:\&quot;1\&quot;,\&quot;type\&quot;:\&quot;avg\&quot;,\&quot;schema\&quot;:\&quot;metric\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.memory.usage\&quot;}},{\&quot;id\&quot;:\&quot;2\&quot;,\&quot;type\&quot;:\&quot;date_histogram\&quot;,\&quot;schema\&quot;:\&quot;segment\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.timestamp\&quot;,\&quot;interval\&quot;:\&quot;auto\&quot;,\&quot;customInterval\&quot;:\&quot;2h\&quot;,\&quot;min_doc_count\&quot;:1,\&quot;extended_bounds\&quot;:{}}},{\&quot;id\&quot;:\&quot;3\&quot;,\&quot;type\&quot;:\&quot;terms\&quot;,\&quot;schema\&quot;:\&quot;group\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;machine_name\&quot;,\&quot;size\&quot;:5,\&quot;order\&quot;:\&quot;desc\&quot;,\&quot;orderBy\&quot;:\&quot;1\&quot;}}],\&quot;listeners\&quot;:{}}&quot;,
+      &quot;uiStateJSON&quot;: &quot;{}&quot;,
+      &quot;description&quot;: &quot;&quot;,
+      &quot;version&quot;: 1,
+      &quot;kibanaSavedObjectMeta&quot;: {
+        &quot;searchSourceJSON&quot;: &quot;{\&quot;index\&quot;:\&quot;cadvisor*\&quot;,\&quot;query\&quot;:{\&quot;query_string\&quot;:{\&quot;query\&quot;:\&quot;*\&quot;,\&quot;analyze_wildcard\&quot;:true}},\&quot;filter\&quot;:[]}&quot;
+      }
+    }
+  },
+  {
+    &quot;_id&quot;: &quot;Network-RX-TX&quot;,
+    &quot;_type&quot;: &quot;visualization&quot;,
+    &quot;_source&quot;: {
+      &quot;title&quot;: &quot;Network RX TX&quot;,
+      &quot;visState&quot;: &quot;{\&quot;title\&quot;:\&quot;Network RX TX\&quot;,\&quot;type\&quot;:\&quot;histogram\&quot;,\&quot;params\&quot;:{\&quot;addLegend\&quot;:true,\&quot;addTimeMarker\&quot;:true,\&quot;addTooltip\&quot;:true,\&quot;defaultYExtents\&quot;:false,\&quot;mode\&quot;:\&quot;stacked\&quot;,\&quot;scale\&quot;:\&quot;linear\&quot;,\&quot;setYExtents\&quot;:false,\&quot;shareYAxis\&quot;:true,\&quot;times\&quot;:[],\&quot;yAxis\&quot;:{}},\&quot;aggs\&quot;:[{\&quot;id\&quot;:\&quot;1\&quot;,\&quot;type\&quot;:\&quot;avg\&quot;,\&quot;schema\&quot;:\&quot;metric\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.network.rx_bytes\&quot;,\&quot;customLabel\&quot;:\&quot;RX\&quot;}},{\&quot;id\&quot;:\&quot;2\&quot;,\&quot;type\&quot;:\&quot;date_histogram\&quot;,\&quot;schema\&quot;:\&quot;segment\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.timestamp\&quot;,\&quot;interval\&quot;:\&quot;s\&quot;,\&quot;customInterval\&quot;:\&quot;2h\&quot;,\&quot;min_doc_count\&quot;:1,\&quot;extended_bounds\&quot;:{}}},{\&quot;id\&quot;:\&quot;3\&quot;,\&quot;type\&quot;:\&quot;avg\&quot;,\&quot;schema\&quot;:\&quot;metric\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.network.tx_bytes\&quot;,\&quot;customLabel\&quot;:\&quot;TX\&quot;}}],\&quot;listeners\&quot;:{}}&quot;,
+      &quot;uiStateJSON&quot;: &quot;{\&quot;vis\&quot;:{\&quot;colors\&quot;:{\&quot;RX\&quot;:\&quot;#EAB839\&quot;,\&quot;TX\&quot;:\&quot;#BF1B00\&quot;}}}&quot;,
+      &quot;description&quot;: &quot;&quot;,
+      &quot;savedSearchId&quot;: &quot;Network&quot;,
+      &quot;version&quot;: 1,
+      &quot;kibanaSavedObjectMeta&quot;: {
+        &quot;searchSourceJSON&quot;: &quot;{\&quot;filter\&quot;:[]}&quot;
+      }
+    }
+  },
+  {
+    &quot;_id&quot;: &quot;Memory-[Node-equal-&gt;Container]&quot;,
+    &quot;_type&quot;: &quot;visualization&quot;,
+    &quot;_source&quot;: {
+      &quot;title&quot;: &quot;Memory [Node=&gt;Container]&quot;,
+      &quot;visState&quot;: &quot;{\&quot;title\&quot;:\&quot;Memory [Node=&gt;Container]\&quot;,\&quot;type\&quot;:\&quot;area\&quot;,\&quot;params\&quot;:{\&quot;shareYAxis\&quot;:true,\&quot;addTooltip\&quot;:true,\&quot;addLegend\&quot;:true,\&quot;smoothLines\&quot;:false,\&quot;scale\&quot;:\&quot;linear\&quot;,\&quot;interpolate\&quot;:\&quot;linear\&quot;,\&quot;mode\&quot;:\&quot;stacked\&quot;,\&quot;times\&quot;:[],\&quot;addTimeMarker\&quot;:false,\&quot;defaultYExtents\&quot;:false,\&quot;setYExtents\&quot;:false,\&quot;yAxis\&quot;:{}},\&quot;aggs\&quot;:[{\&quot;id\&quot;:\&quot;1\&quot;,\&quot;type\&quot;:\&quot;avg\&quot;,\&quot;schema\&quot;:\&quot;metric\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.memory.usage\&quot;}},{\&quot;id\&quot;:\&quot;2\&quot;,\&quot;type\&quot;:\&quot;date_histogram\&quot;,\&quot;schema\&quot;:\&quot;segment\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_stats.timestamp\&quot;,\&quot;interval\&quot;:\&quot;auto\&quot;,\&quot;customInterval\&quot;:\&quot;2h\&quot;,\&quot;min_doc_count\&quot;:1,\&quot;extended_bounds\&quot;:{}}},{\&quot;id\&quot;:\&quot;3\&quot;,\&quot;type\&quot;:\&quot;terms\&quot;,\&quot;schema\&quot;:\&quot;group\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;container_Name\&quot;,\&quot;size\&quot;:5,\&quot;order\&quot;:\&quot;desc\&quot;,\&quot;orderBy\&quot;:\&quot;1\&quot;}},{\&quot;id\&quot;:\&quot;4\&quot;,\&quot;type\&quot;:\&quot;terms\&quot;,\&quot;schema\&quot;:\&quot;split\&quot;,\&quot;params\&quot;:{\&quot;field\&quot;:\&quot;machine_name\&quot;,\&quot;size\&quot;:5,\&quot;order\&quot;:\&quot;desc\&quot;,\&quot;orderBy\&quot;:\&quot;1\&quot;,\&quot;row\&quot;:true}}],\&quot;listeners\&quot;:{}}&quot;,
+      &quot;uiStateJSON&quot;: &quot;{}&quot;,
+      &quot;description&quot;: &quot;&quot;,
+      &quot;version&quot;: 1,
+      &quot;kibanaSavedObjectMeta&quot;: {
+        &quot;searchSourceJSON&quot;: &quot;{\&quot;index\&quot;:\&quot;cadvisor*\&quot;,\&quot;query\&quot;:{\&quot;query_string\&quot;:{\&quot;query\&quot;:\&quot;* NOT container_Name.raw: \\\\\\\&quot;/\\\\\\\&quot; AND NOT container_Name.raw: \\\\\\\&quot;/docker\\\\\\\&quot;\&quot;,\&quot;analyze_wildcard\&quot;:true}},\&quot;filter\&quot;:[]}&quot;
+      }
+    }
+  }
+]
+</code></pre>
+<p>这里还有很多东西可以玩，你也许想自定义报表界面，比如添加内存页错误状态，或者收发包的丢包数。如果你能实现开头列表处我没能实现的项目，那也是很好的。</p>
+<h3 id="总结">总结</h3>
+<p>正确监控需要大量时间和精力，容器的 CPU、内存、IO、网络和磁盘，监控的这些参数还只是整个监控项目中的沧海一粟而已。</p>
+<p>我不知道你做到了哪一阶段，但接下来的任务也许是：</p>
+<ul>
+<li>收集运行中的容器的日志</li>
+<li>收集应用的日志</li>
+<li>监控应用的性能</li>
+<li>报警</li>
+<li>监控健康状态</li>
+</ul>
+<p>如果你有意见或建议，请留言。祝你玩得开心。</p>
+<p>现在你可以关掉这些测试系统了：</p>
+<pre><code>docker-machine rm master1 worker{1,2}
+</code></pre>
+<hr>
+<p>via: <a href="https://blog.codeship.com/monitoring-docker-containers-with-elasticsearch-and-cadvisor/">https://blog.codeship.com/monitoring-docker-containers-with-elasticsearch-and-cadvisor/</a></p>
+<p>作者：<a href="https://blog.codeship.com/author/lorenzofontana/">Lorenzo Fontana</a>
+译者：<a href="https://github.com/bazz2">bazz2</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#我们为什么要监控容器">我们为什么要监控容器？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-elastic-stack">什么是 Elastic Stack ？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#设置测试集群或搭建自己的基础架构">设置测试集群，或搭建自己的基础架构</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#对喜欢尝鲜的用户的友情提示">对喜欢尝鲜的用户的友情提示</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#测试集群部署脚本">测试集群部署脚本</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建集群的脚本">创建集群的脚本</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建集群">创建集群</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装-elasticsearch-和-kibana">安装 Elasticsearch 和 Kibana</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#elasticsearch-容器">Elasticsearch 容器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#kibana-容器">Kibana 容器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#收集容器的运行数据">收集容器的运行数据</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#把数据汇总成报表">把数据汇总成报表</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201610/20160913 Monitoring Docker Containers with Elasticsearch and cAdvisor","title":"使用 Elasticsearch 和 cAdvisor 监控 Docker 容器"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

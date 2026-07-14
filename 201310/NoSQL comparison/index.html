@@ -1,0 +1,365 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>各种 NoSQL 的比较 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="各种 NoSQL 的比较 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="各种 NoSQL 的比较 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201310/NoSQL comparison#page","@type":"TechArticle","headline":"各种 NoSQL 的比较","inLanguage":"en","name":"各种 NoSQL 的比较","url":"https://zhengqbbb.github.io/pages-dev/201310/NoSQL comparison","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201310/NoSQL comparison"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>各种 NoSQL 的比较</h1><p>即使关系型数据库依然是非常有用的工具，但它们持续几十年的垄断地位就要走到头了。现在已经存在无数能撼动关系型数据库地位的 NoSQL，当然，这些 NoSQL 还无法完全取代它们。（也就是说，关系型数据库还是处理关系型事务的最佳方式。）</p>
+<p>NoSQL 与 NoSQL 之间的区别，要远大于不同的 SQL 数据库之间的区别，所以软件架构师必须要在项目一开始就选好一款合适的 NoSQL。</p>
+<p>考虑到这种情况，本文为大家介绍以下几种 NoSQL 之间的区别：<a href="http://cassandra.apache.org/">Cassandra</a>, <a href="http://www.mongodb.org/">Mongodb</a>, <a href="http://couchdb.apache.org/">CouchDB</a>, <a href="http://redis.io/">Redis</a>, <a href="http://basho.com/riak/">Riak</a>, <a href="http://www.couchbase.org/membase">Couchbase (ex-Membase)</a>, <a href="http://hypertable.org/">Hypertable</a>, <a href="http://www.elasticsearch.org/">ElasticSearch</a>, <a href="http://accumulo.apache.org/">Accumulo</a>, <a href="http://voltdb.com/">VoltDB</a>, <a href="http://fallabs.com/kyototycoon/">Kyoto Tycoon</a>, <a href="https://code.google.com/p/scalaris/">Scalaris</a>, <a href="http://neo4j.org/">Neo4j</a>和<a href="http://hbase.apache.org/">HBase</a>：</p>
+<p>##最流行的 NoSQL</p>
+<p>###MongoDB 2.2版</p>
+<p><strong>开发语言：</strong> C++</p>
+<p><strong>主要特性：</strong> 保留 SQL 中一些用户友好的特性（查询、索引等）</p>
+<p><strong>许可证：</strong> AGPL （驱动: 采用Apache许可协议）</p>
+<p><strong>数据传输格式：</strong> 自定义，二进制（ BSON 文档格式）</p>
+<ul>
+<li>主/从备份（支持自动故障切换功能）</li>
+<li>自带数据分片功能</li>
+<li>通过 javascript 表达式提供数据查询</li>
+<li>服务器端完全支持 javascript 脚本</li>
+<li>比 CouchDB 更好的升级功能</li>
+<li>数据存储使用内存映射文件技术</li>
+<li>功能丰富，性能不俗</li>
+<li>最好开启日志功能（使用 --journal 参数）</li>
+<li>在 32 位系统中，内存限制在 2.5GB</li>
+<li>空数据库占用 192MB 空间</li>
+<li>使用 GridFS（不是真正的文件系统）来保存大数据和元数据</li>
+<li>支持对地理数据建立索引</li>
+<li>可用于数据中心</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>动态查询</li>
+<li>喜欢定义索引，而不是使用 map/reduce 功能</li>
+<li>高性能的大数据访问</li>
+<li>想使用 CouchDB 但数据变化频度太大</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>想布署 MySQL 或 PostgreSQL，但预先定义数据字典让你望而却步。这个时候，MongoDB 是你可以考虑的选项</p>
+<p>###Riak 1.2版</p>
+<p><strong>开发语言：</strong> Erlang、C、以及一些 JavaScript</p>
+<p><strong>主要特性：</strong> 容错机制（当一份数据失效，服务会自动切换到备份数据，保证服务一直在线 —— 译者注）</p>
+<p><strong>许可证：</strong> Apache</p>
+<p><strong>数据传输格式：</strong> HTTP/REST 架构，或自定义二进制格式</p>
+<ul>
+<li>可存储 BLOB（binary large object，二进制大对象，比如一张图片、一个声音文件 —— 译者注）</li>
+<li>可在分布式存储和复制存储之间作协调</li>
+<li>为了保证可验证性和安全性，Riak 在 JS 和 Erlaing 中提供提交前（pre-commit）和提交后（post-commit）钩子（hook）函数（你可以在提交数据前执行一个 hook，或者在提交数据后执行一个 hook —— 译者注）</li>
+<li>JS 和 Erlang 提供映射和简化（map/reduce）编程模型</li>
+<li>使用 links 和 link walking ，用于图形化数据库（link 用于描述对象之间的关系，link walking 是一个用于查询对象关系的进程 —— 译者注）</li>
+<li>次要标记（secondaty indeces，开发者在写数据时可用多个名称来标记一个对象 —— 译者注），一次只能用一个</li>
+<li>支持大数据对象（Luwak）（Luwak 是 Riak 中的一个服务层，为大数据量对象提供简单的、面向文档的抽象，弥补了 Riak 的 Key/Value 存储格式在处理大数据对象方面的不足 —— 译者注）</li>
+<li>提供“开源”和“企业”两个版本</li>
+<li>基于Riak搜索的全文检索、建立索引和查询</li>
+<li>正在将存储后端从“Bitcask”迁移到 Google 的“LevelDB”上</li>
+<li>企业版本提供无主模式的多点复制（各点地位平等，非主从架构）和SNMP监控功能</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>假如你想要类似 Dynamo 的数据库，但不想要它的庞大和复杂</li>
+<li>假如你需要良好的单点可扩展性、可用性和容错能力，但不想为多点备份买单。</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>销售点数据收集；工厂控制系统；必须实时在线的系统；需要易于升级的网站服务器</p>
+<p>###CouchDB 1.2版</p>
+<p><strong>开发语言：</strong> Erlang</p>
+<p><strong>主要特性：</strong> 数据一致性；易于使用</p>
+<p><strong>许可证：</strong> Apache</p>
+<p><strong>数据传输格式：</strong> HTTP/REST</p>
+<ul>
+<li>双向复制！（一种同步技术，每个备份点都有一份它们自己的拷贝，允许用户在存储点断线的情况下修改数据，当存储节点重新上线时，CouchDB 会对所有节点同步这些修改 —— 译者注）</li>
+<li>支持持续同步或者点对点同步</li>
+<li>支持冲突检测</li>
+<li>支持主主互备！（多个数据库实时同步数据，起到备份和分摊用户并行访问量的作用 —— 译者注）</li>
+<li>多版本并发控制（MVCC），写操作时不需要阻塞读操作（或者说不需要锁住数据库的读取操作）</li>
+<li>向下兼容以前版本的数据</li>
+<li>可靠的 crash-only 设计（所谓 crash-only，就是程序出错时，只需重启下程序，丢弃内存的所有数据，不需要执行复杂的数据恢复操作 —— 译者注）</li>
+<li>需要实时压缩数据</li>
+<li>视图（文档是 CouchDB 的核心概念，CouchDB 中的视图声明了如何从文档中提取数据，以及如何对提取出来的数据进行处理 —— 译者注）：内嵌映射和简化（map/reduce）编程模型</li>
+<li>格式化的views字段：lists（包含把视图运行结果转换成非 JSON 格式的方法）和 shows（包含把文档转换成非 JSON 格式的方法）（在 CouchDB 中，一个 Web 应用是与一个设计文档相对应的。在设计文档中可以包含一些特殊的字段，views 字段包含永久的视图定义 —— 译者注）</li>
+<li>能够进行服务器端文档验证</li>
+<li>能够提供身份认证功能</li>
+<li>通过 _changes 函数实时更新数据！</li>
+<li>链接处理（attachment：couchDB 的每份文档都可以有一个 attachment，就像一份 email 有它的网址 —— 译者注）</li>
+<li>有个 <a href="http://couchapp.org/">CouchApps</a>（第三方JS的应用）</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>用于随机数据量多、需要预定义查询的地方</li>
+<li>用于版本控制比较重要的地方</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>可用于客户关系管理（CRM），内容管理系统（CMS）；可用于主主互备甚至多机互备</p>
+<p>###Redis 2.4版</p>
+<p><strong>开发语言：</strong> C/C++</p>
+<p><strong>主要特性：</strong> 快到掉渣</p>
+<p><strong>许可证：</strong> BSD</p>
+<p><strong>数据传输格式：</strong> 类似 Telnet 式的交换</p>
+<ul>
+<li>Redis 是一个内存数据库（in-memory database，简称 IMDB，将数据放在内存进行读写，这才是“快到掉渣”的真正原因 —— 译者注），磁盘只是提供数据持久化（即将内存的数据写到磁盘）的功能（这类数据库被称为“disk backed”数据库）</li>
+<li>当前不支持将磁盘作为 swap 分区，虚拟内存（VM）和 Diskstore 方式都没加到此版本（Redis 的数据持久化共有4种方式：定时快照、基于语句追加、虚拟内存、diskstore。其中 VM 方式由于性能不好以及不稳定的问题，已经被作者放弃，而 diskstore 方式还在实验阶段 —— 译者注）</li>
+<li>主从备份</li>
+<li>存储结构为简单的 key/value 或 hash 表</li>
+<li>但是<a href="http://redis.io/commands">操作比较复杂</a>，比如：ZREVRANGEBYSCORE</li>
+<li>支持 INCR（INCR key 就是将key中存储的数值加一 —— 译者注）命令（对限速和统计有帮助）</li>
+<li>支持sets数据类型（以及 union/diff/inter）</li>
+<li>支持 lists （以及 queue/blocking pop）</li>
+<li>支持 hash sets （多级对象）</li>
+<li>支持 sorted sets（高效率的表，在范围查找方面有优势）</li>
+<li>支持事务处理！</li>
+<li>缓存中的数据可被标记为过期</li>
+<li>Pub/Sub 实现了消息订阅和推送！</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>适合布署快速多变的小规模数据（可以完全运行在存在中）</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>股价系统、分析系统、实时数据收集系统、实时通信系统、以及取代 memcached</p>
+<p>##Google Bigtable 的衍生品</p>
+<p>###HBase 0.92.0 版</p>
+<p><strong>开发语言：</strong> Java</p>
+<p><strong>主要特性：</strong> 支持几十亿行*几百万列的大表</p>
+<p><strong>许可证：</strong> Apache </p>
+<p><strong>数据传输格式：</strong> HTTP/REST （也支持 Thrift 开发框架）</p>
+<ul>
+<li>仿造 Google 的 BigTable</li>
+<li>使用 Hadoop 的 HDFS 文件系统作为存储</li>
+<li>使用 Hadoop 的映射和简化（map/reduce）编程模型</li>
+<li>查询条件被推送到服务器端，由服务器端执行扫描和过滤</li>
+<li>对实时查询进行优化</li>
+<li>高性能的 Thrift gateway（访问 HBase 的接口之一，特点是利用 Thrift 序列化支持多种语言，可用于异构系统在线访问 HBase 表数据 —— 译者注）</li>
+<li>使用 HTTP 通信协议，支持 XML、Protobuf 以及二进制格式</li>
+<li>支持基于 Jruby（JIRB）的shell</li>
+<li>当配置信息有更改时，支持 rolling restart（轮流重启数据节点）</li>
+<li>随机读写性能与 MySQL 一样</li>
+<li>一个集群可由不同类型的结点组成</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>Hadoop 可能是在大数据上跑 Map/Reduce 业务的最佳选择</li>
+<li>如果你已经搭建了 Hadoop/HDFS 架构，HBase 也是你最佳的选择。</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>搜索引擎；日志分析系统；扫描大型二维非关系型数据表。</p>
+<p>###Cassandra 1.2版</p>
+<p><strong>开发语言：</strong> Java</p>
+<p><strong>主要特性：</strong> BigTable 和 Dynamo的完美结合（Cassandra 以 Amazon 专有的完全分布式的 Dynamo 为基础，结合了Google BigTable基于 Column Family 的数据模型 —— 译者注）</p>
+<p><strong>许可证：</strong> Apache</p>
+<p><strong>数据传输格式：</strong> Thrift 和自定义二进制 CQL3（即 Cassandra 查询语言第3版 —— 译者注）</p>
+<ul>
+<li>可以灵活调整对数据的分布式或备份式存储（通过设置N，R，W之间的关系）（NRW是数据库布署模型中的概念，N是存储网络中复制数据的节点数，R是网络中读数据的节点数，W是网络中写数据的节点数。一个环境中N值是固定的，设置不同的WR值组合能在数据可用性和数据一致性之间取得不同的平衡，可参考 CAP 定理 —— 译者注）</li>
+<li>按列查询，按keys值排序后存储（需要包含你想要搜索的任何信息）（Cassandra 的数据模型借鉴自 BigTable 的列式存储，列式存储可以理解成这样，将行ID、列簇号，列号以及时间戳一起，组成一个Key，然后将Value按Key的顺序进行存储 —— 译者注）</li>
+<li>类似 BigTable 的特性：列、列簇</li>
+<li>支持分布式 hash 表，使用“类 SQL” 语言 —— CQL（但没有 SQL 中的 JOIN 语句）</li>
+<li>可以为数据设置一个过期时间（使用 INSERT 指令）</li>
+<li>写性能远高于读性能（读性能的瓶颈是磁盘 IO）</li>
+<li>可使用 Hadoop 的映射和简化（map/reduce）编程模型</li>
+<li>所有节点都相似，这点与 Hadop/HBase 架构不同</li>
+<li>可靠的跨数据中心备份解决方案</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>写操作多于读操作的环境（比如日志系统）</li>
+<li>如果系统全部由 JAVA 组成（“没人会因为使用了 Apache 许可下的产品而被炒鱿鱼”（此句貌似是网上有人针对“Apache considered harmful”一文所作的回应 —— 译者注））</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>银行、金融机构；写性能强于读性能，所以 Cassandra 天生就是用来作数据分析的。</p>
+<p>###Hypertable 0.9.6.5版</p>
+<p><strong>开发语言：</strong> C++</p>
+<p><strong>主要特性：</strong> HBase 的精简版，但比 HBase 更快</p>
+<p><strong>许可证：</strong> GPL 2.0</p>
+<p><strong>数据传输格式：</strong> Thrift，C++库，或者 HQL shell</p>
+<ul>
+<li>采用与 Google BigTable 相似的设计</li>
+<li>运行在 Hadoop HDFS 之上</li>
+<li>使用自己的“类 SQL”语言 —— HQL</li>
+<li>可以根据 key 值、单元（cell）进行查找，可以在列簇上查找</li>
+<li>查询数据可以指定 key 或者列的范围</li>
+<li>由百度公司赞助（百度早在2009年就成为这个项目的赞助商了 —— 好吧译者表示有点大惊小怪了:P）</li>
+<li>能保留一个值的 N 个历史版本</li>
+<li>表在命名空间内定义</li>
+<li>使用 Hadoop 的 Map/reduce 模型</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>假如你需要一个更好的HBase，就用Hypertable吧</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>与HBase一样，就是搜索引擎被换了下；分析日志数据的系统；适用于浏览大规模二维非关系型数据表。</p>
+<p>###Accumulo 1.4版</p>
+<p><strong>开发语言：</strong> Java 和 C++</p>
+<p><strong>主要特性：</strong> 一个有着单元级安全的 BigTable</p>
+<p><strong>许可证：</strong> Apache</p>
+<p><strong>数据传输格式：</strong> Thrift</p>
+<ul>
+<li>另一个 BigTable 的复制品，也是跑在 Hadoop 的上层</li>
+<li>单元级安全保证</li>
+<li>允许使用比内存容量更大的数据列</li>
+<li>通过 C++ 的 STL 可保持数据从 JAVA 环境的内存映射出来</li>
+<li>使用 Hadoop 的 Map/reduce 模型</li>
+<li>支持在服务器端编程</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>HBase的替代品</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>与HBase一样，就是搜索引擎被换了下；分析日志数据的系统；适用于浏览大规模二维非关系型数据表。</p>
+<p>##特殊用途</p>
+<p>###Neo4j V1.5M02 版</p>
+<p><strong>开发语言：</strong> Java</p>
+<p><strong>主要特性：</strong> 图形化数据库</p>
+<p><strong>许可证：</strong> GPL，AGPL（商业用途）</p>
+<p><strong>数据传输格式：</strong> HTTP/REST（或内嵌在 Java 中）</p>
+<ul>
+<li>可独立存在，或内嵌在 JAVA 的应用中</li>
+<li>完全的 ACID 保证（包括正在处理的数据）</li>
+<li>节点和节点的关系都可以拥有原数据</li>
+<li>集成基于“模式匹配”的查询语言（Cypher）</li>
+<li>支持“Gremlin”图形转化语言</li>
+<li>可对节点与节点关系进行索引</li>
+<li>良好的自包含网页管理技术</li>
+<li>多个算法实现高级文件查找功能</li>
+<li>可对 key 与 key 的关系进行索引</li>
+<li>优化读性能</li>
+<li>在 JAVA API 中实现事务处理</li>
+<li>可运行脚本 Groovy 脚本</li>
+<li>在商用版本中提供在线备份，高级监控和高可用性功能</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>适用于用图形显示复杂的交互型数据。</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>搜寻社交关系网、公共传输链、公路路线图、或网络拓扑结构</p>
+<p>###ElasticSearch 0.20.1 版</p>
+<p><strong>开发语言：</strong> Java</p>
+<p><strong>主要特性：</strong> 高级搜索</p>
+<p><strong>许可证：</strong> Apache</p>
+<p><strong>数据传输格式：</strong> 通过 HTTP 使用 JSON 进行数据索引（插件：Thrift, memcached）</p>
+<ul>
+<li>以 JSON 形式保存数据</li>
+<li>提供版本升级功能</li>
+<li>有父文档和子文档功能</li>
+<li>文档有过期时间</li>
+<li>提供复杂多样的查询指令，可使用脚本</li>
+<li>支持写操作一致性的三个级别：ONE、QUORUM、ALL</li>
+<li>支持通过分数排序</li>
+<li>支持通过地理位置排序</li>
+<li>支持模糊查询（通过近似数据查询等方式实现）</li>
+<li>支持异步复制</li>
+<li>自动升级，也可通过设置脚本升级</li>
+<li>可以维持自动的“统计组”（对调试很有帮助）</li>
+<li>只有一个开发者（kimchy）</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>当你有可伸缩性很强的项目并且想拥有“高级搜索”功能。</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>可布署一个约会服务，提供不同年龄、不同地理位置、不同品味的客户的交友需求。或者可以布署一个基于多项参数的排行榜。</p>
+<p>##其他</p>
+<p>（不怎么有名，但值得在这里介绍一下）</p>
+<p>###Couchbase (ex-Membase) 2.0 版</p>
+<p><strong>开发语言：</strong> Erlang 和 C</p>
+<p><strong>主要特性：</strong> 兼容 Memcache，但数据是持久化的，并且支持集群</p>
+<p><strong>许可证：</strong> Apache</p>
+<p><strong>数据传输格式：</strong> 缓存和扩展（memcached + extensions）</p>
+<ul>
+<li>通过 key 访问数据非常快（20万以上IOPS）</li>
+<li>数据保存在磁盘（不像 Memcache 保存在内存中 —— 译者注）</li>
+<li>在主主互备中，所有节点数据是一致的</li>
+<li>提供类似 Memcache 将数据保存在内存的功能</li>
+<li>支持重复数据删除功能</li>
+<li>友好的集群管理 Web 界面</li>
+<li>支持池和多丛结构的代理（利用 Moxi 项目）</li>
+<li>支持 Map/reduce 模式</li>
+<li>支持跨数据中心备份</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>适用于低延迟数据访问系统，高并发和高可用系统。</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>低延迟可用于广告定投；高并发可用于在线游戏（如星佳公司）。</p>
+<p>###VoltDB 2.8.4.1版</p>
+<p><strong>开发语言：</strong> Java</p>
+<p><strong>主要特性：</strong> 快速的事务处理和数据变更</p>
+<p><strong>许可证：</strong> GPL 3</p>
+<p><strong>数据传输格式：</strong> 专有方式</p>
+<ul>
+<li>运行在内存的关系型数据库</li>
+<li>可以将数据导入到 Hadoop</li>
+<li>支持 ANSI SQL</li>
+<li>在 JAVA 环境中保存操作过程</li>
+<li>支持跨数据中心备份</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>适用于在大量传入数据中保证快速反应能力的场合。</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>销售点数据分析系统；工厂控制系统。</p>
+<p>###Scalaris 0.5版</p>
+<p><strong>开发语言：</strong> Erlang</p>
+<p><strong>主要特性：</strong> 分布式 P2P 键值存储</p>
+<p><strong>许可证：</strong> Apache</p>
+<p><strong>数据传输和存储的方式：</strong> 自有方式和 基于JSON的远程过程调用协议</p>
+<ul>
+<li>数据保存在内存中（使用 Tokyo Cabinet 作为后台时，数据可以持久化到磁盘中）</li>
+<li>使用 YAWS 作为 Web 服务器</li>
+<li>Has transactions (an adapted Paxos commit)</li>
+<li>支持事务处理（基于 Paxos 提交）（Paxos 是一种基于消息传递模型的一致性算法 —— 译者注）</li>
+<li>支持分布式数据的一致性写操作</li>
+<li>根据 CAP 定理，数据一致性要求高于数据可用性（前提是在一个比较大的网络分区环境下工作）（CAP 定理：数据一致性consistency、数据可用性availability、分隔容忍partition tolerance是分布式计算系统的三个属性，一个分布式计算系统不可能同时满足全部三项）</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>如果你喜欢 Erlang 并且想要使用 Mnesia 或 DETS 或 ETS，但你需要一个能使用多种语言（并且可扩展性强于 ETS 和 DETS）的技术，那就选它吧。</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>使用基于 Erlang 的系统，但是想通过 Python、Ruby 或 JAVA 访问数据库</p>
+<p>###Kyoto Tycoon 0.9.56版</p>
+<p><strong>开发语言：</strong> C++</p>
+<p><strong>主要特性：</strong> 轻量级网络数据库管理系统</p>
+<p><strong>许可证：</strong> GPL</p>
+<p><strong>数据传输和存储的方式：</strong> HTTP (TSV-RPC or REST)</p>
+<ul>
+<li>基于 Kyoto Cabinet, 是 Tokyo Cabinet 的成功案例</li>
+<li>支持多种存储后端：Hash，树、目录等等（所有概念都是从 Kyoto Cabinet 那里来的）</li>
+<li>Kyoto Cabinet 可以达到每秒100万次插入/查询操作（但是 Tycoon 由于瓶颈问题，性能比 Cabinet 要差点）</li>
+<li>服务器端支持 Lua 脚本语言</li>
+<li>支持 C、JAVA、Python、Ruby、Perl、Lua 等语言</li>
+<li>使用访问者模式开发（visitor patten：让开发者能在不修改类层次结构的前提下，定义该类层次结构的操作 —— 不明白就算了，译者也不明白）</li>
+<li>支持热备、异步备份</li>
+<li>支持内存数据库在后端执行快照</li>
+<li>自动过期处理（可用来布署一个缓存服务器）</li>
+</ul>
+<p><strong>应用场景：</strong> </p>
+<ul>
+<li>当你想要一个很精准的后端存储算法引擎，并且速度是刚需的时候，玩玩 Kyoto Tycoon 吧。</li>
+</ul>
+<p><strong>使用案例：</strong> </p>
+<p>缓存服务器；股价查询系统；数据分析系统；实时数据控制系统；实时交互系统；memcached的替代品。</p>
+<p>当然，上述系统的特点肯定不止列出来这么点。我只是列出了我认为很关键的信息。另外科技发展迅猛，技术改变得非常快。</p>
+<p>附：现在下定论比较孰优孰劣还为时过早。上述数据库的版本号以及特性我会一个一个慢慢更新。相信我，这些数据库的特性不会变得很快。</p>
+<hr>
+<p>via: <a href="http://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis">http://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis</a></p>
+<p>译者：<a href="https://github.com/bazz2">bazz2</a> 校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="http://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201310/NoSQL comparison","title":"各种 NoSQL 的比较"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

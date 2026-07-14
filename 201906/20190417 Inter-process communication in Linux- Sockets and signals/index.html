@@ -1,0 +1,339 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Linux 下的进程间通信：套接字和信号 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Linux 下的进程间通信：套接字和信号 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Linux 下的进程间通信：套接字和信号 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201906/20190417 Inter-process communication in Linux- Sockets and signals#page","@type":"TechArticle","headline":"Linux 下的进程间通信：套接字和信号","inLanguage":"en","name":"Linux 下的进程间通信：套接字和信号","url":"https://zhengqbbb.github.io/pages-dev/201906/20190417 Inter-process communication in Linux- Sockets and signals","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201906/20190417 Inter-process communication in Linux- Sockets and signals"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#套接字">套接字</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#信号">信号</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Linux 下的进程间通信：套接字和信号</h1><blockquote>
+<p>学习在 Linux 中进程是如何与其他进程进行同步的。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/201906/02/234437y6gig4tg4yy94356.jpg" alt=""></p>
+<p>本篇是 Linux 下[进程间通信][1]（IPC）系列的第三篇同时也是最后一篇文章。[第一篇文章][2]聚焦在通过共享存储（文件和共享内存段）来进行 IPC，[第二篇文章][3]则通过管道（无名的或者命名的）及消息队列来达到相同的目的。这篇文章将目光从高处（套接字）然后到低处（信号）来关注 IPC。代码示例将用力地充实下面的解释细节。</p>
+<h3 id="套接字">套接字</h3>
+<p>正如管道有两种类型（命名和无名）一样，套接字也有两种类型。IPC 套接字（即 Unix 套接字）给予进程在相同设备（主机）上基于通道的通信能力；而网络套接字给予进程运行在不同主机的能力，因此也带来了网络通信的能力。网络套接字需要底层协议的支持，例如 TCP（传输控制协议）或 UDP（用户数据报协议）。</p>
+<p>与之相反，IPC 套接字依赖于本地系统内核的支持来进行通信；特别的，IPC 通信使用一个本地的文件作为套接字地址。尽管这两种套接字的实现有所不同，但在本质上，IPC 套接字和网络套接字的 API 是一致的。接下来的例子将包含网络套接字的内容，但示例服务器和客户端程序可以在相同的机器上运行，因为服务器使用了 <code>localhost</code>（127.0.0.1）这个网络地址，该地址表示的是本地机器上的本地机器地址。</p>
+<p>套接字以流的形式（下面将会讨论到）被配置为双向的，并且其控制遵循 C/S（客户端/服务器端）模式：客户端通过尝试连接一个服务器来初始化对话，而服务器端将尝试接受该连接。假如万事顺利，来自客户端的请求和来自服务器端的响应将通过管道进行传输，直到其中任意一方关闭该通道，从而断开这个连接。</p>
+<p>一个迭代服务器（只适用于开发）将一直和连接它的客户端打交道：从最开始服务第一个客户端，然后到这个连接关闭，然后服务第二个客户端，循环往复。这种方式的一个缺点是处理一个特定的客户端可能会挂起，使得其他的客户端一直在后面等待。生产级别的服务器将是并发的，通常使用了多进程或者多线程的混合。例如，我台式机上的 Nginx 网络服务器有一个 4 个<ruby>工人<rt>worker</rt></ruby>的进程池，它们可以并发地处理客户端的请求。在下面的代码示例中，我们将使用迭代服务器，使得我们将要处理的问题保持在一个很小的规模，只关注基本的 API，而不去关心并发的问题。</p>
+<p>最后，随着各种 POSIX 改进的出现，套接字 API 随着时间的推移而发生了显著的变化。当前针对服务器端和客户端的示例代码特意写的比较简单，但是它着重强调了基于流的套接字中连接的双方。下面是关于流控制的一个总结，其中服务器端在一个终端中开启，而客户端在另一个不同的终端中开启：</p>
+<ul>
+<li>服务器端等待客户端的连接，对于给定的一个成功连接，它就读取来自客户端的数据。</li>
+<li>为了强调是双方的会话，服务器端会对接收自客户端的数据做回应。这些数据都是 ASCII 字符代码，它们组成了一些书的标题。</li>
+<li>客户端将书的标题写给服务器端的进程，并从服务器端的回应中读取到相同的标题。然后客户端和服务器端都在屏幕上打印出标题。下面是服务器端的输出，客户端的输出也和它完全一样：</li>
+</ul>
+<pre><code>Listening on port 9876 for clients...
+War and Peace
+Pride and Prejudice
+The Sound and the Fury
+</code></pre>
+<h4 id="示例-1-使用套接字的客户端程序">示例 1. 使用套接字的客户端程序</h4>
+<pre><code class="language-c">#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/tcp.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &quot;sock.h&quot;
+
+void report(const char* msg, int terminate) {
+  perror(msg);
+  if (terminate) exit(-1); /* failure */
+}
+
+int main() {
+  int fd = socket(AF_INET,     /* network versus AF_LOCAL */
+		  SOCK_STREAM, /* reliable, bidirectional: TCP */
+		  0);          /* system picks underlying protocol */
+  if (fd &lt; 0) report(&quot;socket&quot;, 1); /* terminate */
+  	
+  /* bind the server&#39;s local address in memory */
+  struct sockaddr_in saddr;
+  memset(&amp;saddr, 0, sizeof(saddr));          /* clear the bytes */
+  saddr.sin_family = AF_INET;                /* versus AF_LOCAL */
+  saddr.sin_addr.s_addr = htonl(INADDR_ANY); /* host-to-network endian */
+  saddr.sin_port = htons(PortNumber);        /* for listening */
+  
+  if (bind(fd, (struct sockaddr *) &amp;saddr, sizeof(saddr)) &lt; 0)
+    report(&quot;bind&quot;, 1); /* terminate */
+	
+  /* listen to the socket */
+  if (listen(fd, MaxConnects) &lt; 0) /* listen for clients, up to MaxConnects */
+    report(&quot;listen&quot;, 1); /* terminate */
+
+  fprintf(stderr, &quot;Listening on port %i for clients...\n&quot;, PortNumber);
+  /* a server traditionally listens indefinitely */
+  while (1) {
+    struct sockaddr_in caddr; /* client address */
+    int len = sizeof(caddr);  /* address length could change */
+    
+    int client_fd = accept(fd, (struct sockaddr*) &amp;caddr, &amp;len);  /* accept blocks */
+    if (client_fd &lt; 0) {
+      report(&quot;accept&quot;, 0); /* don&#39;t terminated, though there&#39;s a problem */
+      continue;
+    }
+
+    /* read from client */
+    int i;
+    for (i = 0; i &lt; ConversationLen; i++) {
+      char buffer[BuffSize + 1];
+      memset(buffer, &#39;\0&#39;, sizeof(buffer)); 
+      int count = read(client_fd, buffer, sizeof(buffer));
+      if (count &gt; 0) {
+	puts(buffer);
+	write(client_fd, buffer, sizeof(buffer)); /* echo as confirmation */
+      }
+    }
+    close(client_fd); /* break connection */
+  }  /* while(1) */
+  return 0;
+}
+</code></pre>
+<p>上面的服务器端程序执行典型的 4 个步骤来准备回应客户端的请求，然后接受其他的独立请求。这里每一个步骤都以服务器端程序调用的系统函数来命名。</p>
+<ol>
+<li><code>socket(…)</code>：为套接字连接获取一个文件描述符</li>
+<li><code>bind(…)</code>：将套接字和服务器主机上的一个地址进行绑定</li>
+<li><code>listen(…)</code>：监听客户端请求</li>
+<li><code>accept(…)</code>：接受一个特定的客户端请求</li>
+</ol>
+<p>上面的 <code>socket</code> 调用的完整形式为：</p>
+<pre><code>int sockfd = socket(AF_INET,      /* versus AF_LOCAL */
+                    SOCK_STREAM,  /* reliable, bidirectional */
+                    0);           /* system picks protocol (TCP) */
+</code></pre>
+<p>第一个参数特别指定了使用的是一个网络套接字，而不是 IPC 套接字。对于第二个参数有多种选项，但 <code>SOCK_STREAM</code> 和 <code>SOCK_DGRAM</code>（数据报）是最为常用的。基于流的套接字支持可信通道，在这种通道中如果发生了信息的丢失或者更改，都将会被报告。这种通道是双向的，并且从一端到另外一端的有效载荷在大小上可以是任意的。相反的，基于数据报的套接字大多是不可信的，没有方向性，并且需要固定大小的载荷。<code>socket</code> 的第三个参数特别指定了协议。对于这里展示的基于流的套接字，只有一种协议选择：TCP，在这里表示的 <code>0</code>。因为对 <code>socket</code> 的一次成功调用将返回相似的文件描述符，套接字可以被读写，对应的语法和读写一个本地文件是类似的。</p>
+<p>对 <code>bind</code> 的调用是最为复杂的，因为它反映出了在套接字 API 方面上的各种改进。我们感兴趣的点是这个调用将一个套接字和服务器端所在机器中的一个内存地址进行绑定。但对 <code>listen</code> 的调用就非常直接了：</p>
+<pre><code>if (listen(fd, MaxConnects) &lt; 0)
+</code></pre>
+<p>第一个参数是套接字的文件描述符，第二个参数则指定了在服务器端处理一个拒绝连接错误之前，有多少个客户端连接被允许连接。（在头文件 <code>sock.h</code> 中 <code>MaxConnects</code> 的值被设置为 <code>8</code>。）</p>
+<p><code>accept</code> 调用默认将是一个阻塞等待：服务器端将不做任何事情直到一个客户端尝试连接它，然后进行处理。<code>accept</code> 函数返回的值如果是 <code>-1</code> 则暗示有错误发生。假如这个调用是成功的，则它将返回另一个文件描述符，这个文件描述符被用来指代另一个可读可写的套接字，它与 <code>accept</code> 调用中的第一个参数对应的接收套接字有所不同。服务器端使用这个可读可写的套接字来从客户端读取请求然后写回它的回应。接收套接字只被用于接受客户端的连接。</p>
+<p>在设计上，服务器端可以一直运行下去。当然服务器端可以通过在命令行中使用 <code>Ctrl+C</code> 来终止它。</p>
+<h4 id="示例-2-使用套接字的客户端">示例 2. 使用套接字的客户端</h4>
+<pre><code class="language-c">#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;netinet/tcp.h&gt;
+#include &lt;netdb.h&gt;
+#include &quot;sock.h&quot;
+
+const char* books[] = {&quot;War and Peace&quot;,
+		       &quot;Pride and Prejudice&quot;,
+		       &quot;The Sound and the Fury&quot;};
+
+void report(const char* msg, int terminate) {
+  perror(msg);
+  if (terminate) exit(-1); /* failure */
+}
+
+int main() {
+  /* fd for the socket */
+  int sockfd = socket(AF_INET,      /* versus AF_LOCAL */
+		      SOCK_STREAM,  /* reliable, bidirectional */
+		      0);           /* system picks protocol (TCP) */
+  if (sockfd &lt; 0) report(&quot;socket&quot;, 1); /* terminate */
+
+  /* get the address of the host */
+  struct hostent* hptr = gethostbyname(Host); /* localhost: 127.0.0.1 */ 
+  if (!hptr) report(&quot;gethostbyname&quot;, 1); /* is hptr NULL? */
+  if (hptr-&gt;h_addrtype != AF_INET)       /* versus AF_LOCAL */
+    report(&quot;bad address family&quot;, 1);
+  
+  /* connect to the server: configure server&#39;s address 1st */
+  struct sockaddr_in saddr;
+  memset(&amp;saddr, 0, sizeof(saddr));
+  saddr.sin_family = AF_INET;
+  saddr.sin_addr.s_addr = 
+     ((struct in_addr*) hptr-&gt;h_addr_list[0])-&gt;s_addr;
+  saddr.sin_port = htons(PortNumber); /* port number in big-endian */
+  
+  if (connect(sockfd, (struct sockaddr*) &amp;saddr, sizeof(saddr)) &lt; 0)
+    report(&quot;connect&quot;, 1);
+  
+  /* Write some stuff and read the echoes. */
+  puts(&quot;Connect to server, about to write some stuff...&quot;);
+  int i;
+  for (i = 0; i &lt; ConversationLen; i++) {
+    if (write(sockfd, books[i], strlen(books[i])) &gt; 0) {
+      /* get confirmation echoed from server and print */
+      char buffer[BuffSize + 1];
+      memset(buffer, &#39;\0&#39;, sizeof(buffer));
+      if (read(sockfd, buffer, sizeof(buffer)) &gt; 0)
+	puts(buffer);
+    }
+  }
+  puts(&quot;Client done, about to exit...&quot;);
+  close(sockfd); /* close the connection */
+  return 0;
+}
+</code></pre>
+<p>客户端程序的设置代码和服务器端类似。两者主要的区别既不是在于监听也不在于接收，而是连接：</p>
+<pre><code>if (connect(sockfd, (struct sockaddr*) &amp;saddr, sizeof(saddr)) &lt; 0)
+</code></pre>
+<p>对 <code>connect</code> 的调用可能因为多种原因而导致失败，例如客户端拥有错误的服务器端地址或者已经有太多的客户端连接上了服务器端。假如 <code>connect</code> 操作成功，客户端将在一个 <code>for</code> 循环中，写入它的请求然后读取返回的响应。在会话后，服务器端和客户端都将调用 <code>close</code> 去关闭这个可读可写套接字，尽管任何一边的关闭操作就足以关闭它们之间的连接。此后客户端可以退出了，但正如前面提到的那样，服务器端可以一直保持开放以处理其他事务。</p>
+<p>从上面的套接字示例中，我们看到了请求信息被回显给客户端，这使得客户端和服务器端之间拥有进行丰富对话的可能性。也许这就是套接字的主要魅力。在现代系统中，客户端应用（例如一个数据库客户端）和服务器端通过套接字进行通信非常常见。正如先前提及的那样，本地 IPC 套接字和网络套接字只在某些实现细节上面有所不同，一般来说，IPC 套接字有着更低的消耗和更好的性能。它们的通信 API 基本是一样的。</p>
+<h3 id="信号">信号</h3>
+<p>信号会中断一个正在执行的程序，在这种意义下，就是用信号与这个程序进行通信。大多数的信号要么可以被忽略（阻塞）或者被处理（通过特别设计的代码）。<code>SIGSTOP</code> （暂停）和 <code>SIGKILL</code>（立即停止）是最应该提及的两种信号。这种符号常量有整数类型的值，例如 <code>SIGKILL</code> 对应的值为 <code>9</code>。</p>
+<p>信号可以在与用户交互的情况下发生。例如，一个用户从命令行中敲了 <code>Ctrl+C</code> 来终止一个从命令行中启动的程序；<code>Ctrl+C</code> 将产生一个 <code>SIGTERM</code> 信号。<code>SIGTERM</code> 意即终止，它可以被阻塞或者被处理，而不像 <code>SIGKILL</code> 信号那样。一个进程也可以通过信号和另一个进程通信，这样使得信号也可以作为一种 IPC 机制。</p>
+<p>考虑一下一个多进程应用，例如 Nginx 网络服务器是如何被另一个进程优雅地关闭的。<code>kill</code> 函数：</p>
+<pre><code>int kill(pid_t pid, int signum); /* declaration */
+</code></pre>
+<p>可以被一个进程用来终止另一个进程或者一组进程。假如 <code>kill</code> 函数的第一个参数是大于 <code>0</code> 的，那么这个参数将会被认为是目标进程的 <code>pid</code>（进程 ID），假如这个参数是 <code>0</code>，则这个参数将会被视作信号发送者所属的那组进程。</p>
+<p><code>kill</code> 的第二个参数要么是一个标准的信号数字（例如 <code>SIGTERM</code> 或 <code>SIGKILL</code>），要么是 <code>0</code> ，这将会对信号做一次询问，确认第一个参数中的 <code>pid</code> 是否是有效的。这样优雅地关闭一个多进程应用就可以通过向组成该应用的一组进程发送一个终止信号来完成，具体来说就是调用一个 <code>kill</code> 函数，使得这个调用的第二个参数是 <code>SIGTERM</code> 。（Nginx 主进程可以通过调用 <code>kill</code> 函数来终止其他工人进程，然后再停止自己。）就像许多库函数一样，<code>kill</code> 函数通过一个简单的可变语法拥有更多的能力和灵活性。</p>
+<h4 id="示例-3-一个多进程系统的优雅停止">示例 3. 一个多进程系统的优雅停止</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/wait.h&gt;
+
+void graceful(int signum) {
+  printf(&quot;\tChild confirming received signal: %i\n&quot;, signum);
+  puts(&quot;\tChild about to terminate gracefully...&quot;);
+  sleep(1);
+  puts(&quot;\tChild terminating now...&quot;);
+  _exit(0); /* fast-track notification of parent */
+}
+
+void set_handler() {
+  struct sigaction current;
+  sigemptyset(&amp;current.sa_mask);         /* clear the signal set */
+  current.sa_flags = 0;                  /* enables setting sa_handler, not sa_action */
+  current.sa_handler = graceful;         /* specify a handler */
+  sigaction(SIGTERM, &amp;current, NULL);    /* register the handler */
+}
+
+void child_code() {
+  set_handler();
+
+  while (1) {   /` loop until interrupted `/
+    sleep(1);
+    puts(&quot;\tChild just woke up, but going back to sleep.&quot;);
+  }
+}
+
+void parent_code(pid_t cpid) {
+  puts(&quot;Parent sleeping for a time...&quot;);
+  sleep(5);
+
+  /* Try to terminate child. */
+  if (-1 == kill(cpid, SIGTERM)) {
+    perror(&quot;kill&quot;);
+    exit(-1);
+  }
+  wait(NULL); /` wait for child to terminate `/
+  puts(&quot;My child terminated, about to exit myself...&quot;);
+}
+
+int main() {
+  pid_t pid = fork();
+  if (pid &lt; 0) {
+    perror(&quot;fork&quot;);
+    return -1; /* error */
+  }
+  if (0 == pid)
+    child_code();
+  else
+    parent_code(pid);
+  return 0;  /* normal */
+}
+</code></pre>
+<p>上面的停止程序模拟了一个多进程系统的优雅退出，在这个例子中，这个系统由一个父进程和一个子进程组成。这次模拟的工作流程如下：</p>
+<ul>
+<li>父进程尝试去 <code>fork</code> 一个子进程。假如这个 <code>fork</code> 操作成功了，每个进程就执行它自己的代码：子进程就执行函数 <code>child_code</code>，而父进程就执行函数 <code>parent_code</code>。</li>
+<li>子进程将会进入一个潜在的无限循环，在这个循环中子进程将睡眠一秒，然后打印一个信息，接着再次进入睡眠状态，以此循环往复。来自父进程的一个 <code>SIGTERM</code> 信号将引起子进程去执行一个信号处理回调函数 <code>graceful</code>。这样这个信号就使得子进程可以跳出循环，然后进行子进程和父进程之间的优雅终止。在终止之前，进程将打印一个信息。</li>
+<li>在 <code>fork</code> 一个子进程后，父进程将睡眠 5 秒，使得子进程可以执行一会儿；当然在这个模拟中，子进程大多数时间都在睡眠。然后父进程调用 <code>SIGTERM</code> 作为第二个参数的 <code>kill</code> 函数，等待子进程的终止，然后自己再终止。</li>
+</ul>
+<p>下面是一次运行的输出：</p>
+<pre><code>% ./shutdown
+Parent sleeping for a time...
+        Child just woke up, but going back to sleep.
+        Child just woke up, but going back to sleep.
+        Child just woke up, but going back to sleep.
+        Child just woke up, but going back to sleep.
+        Child confirming received signal: 15  ## SIGTERM is 15
+        Child about to terminate gracefully...
+        Child terminating now...
+My child terminated, about to exit myself...
+</code></pre>
+<p>对于信号的处理，上面的示例使用了 <code>sigaction</code> 库函数（POSIX 推荐的用法）而不是传统的 <code>signal</code> 函数，<code>signal</code> 函数有移植性问题。下面是我们主要关心的代码片段：</p>
+<ul>
+<li><p>假如对 <code>fork</code> 的调用成功了，父进程将执行 <code>parent_code</code> 函数，而子进程将执行 <code>child_code</code> 函数。在给子进程发送信号之前，父进程将会等待 5 秒：</p>
+<pre><code>
+</code></pre>
+</li>
+</ul>
+<p>puts(&quot;Parent sleeping for a time...&quot;);
+sleep(5);
+if (-1 == kill(cpid, SIGTERM)) {
+...sleepkillcpidSIGTERM...</p>
+<pre><code>
+  假如 `kill` 调用成功了，父进程将在子进程终止时做等待，使得子进程不会变成一个僵尸进程。在等待完成后，父进程再退出。
+
+* `child_code` 函数首先调用 `set_handler` 然后进入它的可能永久睡眠的循环。下面是我们将要查看的 `set_handler` 函数：
+</code></pre>
+<p>void set_handler() {
+  struct sigaction current;            /* current setup <em>/
+  sigemptyset(&amp;current.sa_mask);       /</em> clear the signal set <em>/
+  current.sa_flags = 0;                /</em> for setting sa_handler, not sa_action <em>/
+  current.sa_handler = graceful;       /</em> specify a handler <em>/
+  sigaction(SIGTERM, &amp;current, NULL);  /</em> register the handler */
+}</p>
+<pre><code>
+  上面代码的前三行在做相关的准备。第四个语句将为 `graceful` 设定为句柄，它将在调用 `_exit` 来停止之前打印一些信息。第 5 行和最后一行的语句将通过调用 `sigaction` 来向系统注册上面的句柄。`sigaction` 的第一个参数是 `SIGTERM` ，用作终止；第二个参数是当前的 `sigaction` 设定，而最后的参数（在这个例子中是 `NULL` ）可被用来保存前面的 `sigaction` 设定，以备后面的可能使用。
+
+使用信号来作为 IPC 的确是一个很轻量的方法，但确实值得尝试。通过信号来做 IPC 显然可以被归入 IPC 工具箱中。
+
+### 这个系列的总结
+
+在这个系列中，我们通过三篇有关 IPC 的文章，用示例代码介绍了如下机制：
+
+  * 共享文件
+  * 共享内存（通过信号量）
+  * 管道（命名和无名）
+  * 消息队列
+  * 套接字
+  * 信号
+
+甚至在今天，在以线程为中心的语言，例如 Java、C# 和 Go 等变得越来越流行的情况下，IPC 仍然很受欢迎，因为相比于使用多线程，通过多进程来实现并发有着一个明显的优势：默认情况下，每个进程都有它自己的地址空间，除非使用了基于共享内存的 IPC 机制（为了达到安全的并发，竞争条件在多线程和多进程的时候必须被加上锁），在多进程中可以排除掉基于内存的竞争条件。对于任何一个写过即使是基本的通过共享变量来通信的多线程程序的人来说，他都会知道想要写一个清晰、高效、线程安全的代码是多么具有挑战性。使用单线程的多进程的确是很有吸引力的，这是一个切实可行的方式，使用它可以利用好今天多处理器的机器，而不需要面临基于内存的竞争条件的风险。
+
+当然，没有一个简单的答案能够回答上述 IPC 机制中的哪一个更好。在编程中每一种 IPC 机制都会涉及到一个取舍问题：是追求简洁，还是追求功能强大。以信号来举例，它是一个相对简单的 IPC 机制，但并不支持多个进程之间的丰富对话。假如确实需要这样的对话，另外的选择可能会更合适一些。带有锁的共享文件则相对直接，但是当要处理大量共享的数据流时，共享文件并不能很高效地工作。管道，甚至是套接字，有着更复杂的 API，可能是更好的选择。让具体的问题去指导我们的选择吧。
+
+尽管所有的示例代码（可以在[我的网站][4]上获取到）都是使用 C 写的，其他的编程语言也经常提供这些 IPC 机制的轻量包装。这些代码示例都足够短小简单，希望这样能够鼓励你去进行实验。
+
+--------------------------------------------------------------------------------
+
+via: https://opensource.com/article/19/4/interprocess-communication-linux-networking
+
+作者：[Marty Kalin][a]
+选题：[lujun9972][b]
+译者：[FSSlc](https://github.com/FSSlc)
+校对：[wxy](https://github.com/wxy)
+
+本文由 [LCTT](https://github.com/LCTT/TranslateProject) 原创编译，[Linux中国](https://linux.cn/) 荣誉推出
+
+[a]: https://opensource.com/users/mkalindepauledu
+[b]: https://github.com/lujun9972
+[1]: https://en.wikipedia.org/wiki/Inter-process_communication
+[2]: https://linux.cn/article-10826-1.html
+[3]: https://linux.cn/article-10845-1.html
+[4]: http://condor.depaul.edu/mkalin
+</code></pre>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#套接字">套接字</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#信号">信号</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201906/20190417 Inter-process communication in Linux- Sockets and signals","title":"Linux 下的进程间通信：套接字和信号"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

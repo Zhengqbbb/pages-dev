@@ -1,0 +1,406 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Linux 下 cut 命令的 4 个基础实用的示例 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Linux 下 cut 命令的 4 个基础实用的示例 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Linux 下 cut 命令的 4 个基础实用的示例 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201808/20180710 4 Essential and Practical Usage of Cut Command in Linux#page","@type":"TechArticle","headline":"Linux 下 cut 命令的 4 个基础实用的示例","inLanguage":"en","name":"Linux 下 cut 命令的 4 个基础实用的示例","url":"https://zhengqbbb.github.io/pages-dev/201808/20180710 4 Essential and Practical Usage of Cut Command in Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201808/20180710 4 Essential and Practical Usage of Cut Command in Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#linux-下-cut-命令的-4-个实用示例">Linux 下 cut 命令的 4 个实用示例</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-作用在一系列字符上">1、 作用在一系列字符上</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-作用在一系列字节上">2、 作用在一系列字节上</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-作用在域上">3、 作用在域上</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-非-posix-gnu-扩展">4、 非 POSIX GNU 扩展</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cut-命令可以实现更多功能">使用 cut 命令可以实现更多功能</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Linux 下 cut 命令的 4 个基础实用的示例</h1><p><code>cut</code> 命令是用来从文本文件中移除“某些列”的经典工具。在本文中的“一列”可以被定义为按照一行中位置区分的一系列字符串或者字节，或者是以某个分隔符为间隔的某些域。</p>
+<p>先前我已经介绍了<a href="https://linuxhandbook.com/awk-command-tutorial/">如何使用 AWK 命令</a>。在本文中，我将解释 linux 下 <code>cut</code> 命令的 4 个本质且实用的例子，有时这些例子将帮你节省很多时间。</p>
+<p><img src="https://i1.wp.com/linuxhandbook.com/wp-content/uploads/2018/07/cut-command-linux.jpeg?resize=702%2C395&ssl=1" alt="Cut Linux 命令示例"></p>
+<h3 id="linux-下-cut-命令的-4-个实用示例">Linux 下 cut 命令的 4 个实用示例</h3>
+<p>假如你想，你可以观看下面的视频，视频中解释了本文中我列举的 cut 命令的使用例子。</p>
+<ul>
+<li><a href="https://www.youtube.com/PhE_cFLzVFw">https://www.youtube.com/PhE_cFLzVFw</a></li>
+</ul>
+<h3 id="1-作用在一系列字符上">1、 作用在一系列字符上</h3>
+<p>当启用 <code>-c</code> 命令行选项时，<code>cut</code> 命令将移除一系列字符。</p>
+<p>和其他的过滤器类似， <code>cut</code> 命令不会直接改变输入的文件，它将复制已修改的数据到它的标准输出里去。你可以通过重定向命令的结果到一个文件中来保存修改后的结果，或者使用管道将结果送到另一个命令的输入中，这些都由你来负责。</p>
+<p>假如你已经下载了上面视频中的<a href="https://static.yesik.it/EP22/Yes_I_Know_IT-EP22.tar.gz">示例测试文件</a>，你将看到一个名为 <code>BALANCE.txt</code> 的数据文件，这些数据是直接从我妻子在她工作中使用的某款会计软件中导出的：</p>
+<pre><code>sh$ head BALANCE.txt
+ACCDOC    ACCDOCDATE    ACCOUNTNUM ACCOUNTLIB              ACCDOCLIB                        DEBIT          CREDIT
+4         1012017       623477     TIDE SCHEDULE           ALNEENRE-4701-LOC                00000001615,00
+4         1012017       445452     VAT BS/ENC              ALNEENRE-4701-LOC                00000000323,00
+4         1012017       4356       PAYABLES                ALNEENRE-4701-LOC                               00000001938,00
+5         1012017       623372     ACCOMODATION GUIDE      ALNEENRE-4771-LOC                00000001333,00
+5         1012017       445452     VAT BS/ENC              ALNEENRE-4771-LOC                00000000266,60
+5         1012017       4356       PAYABLES                ALNEENRE-4771-LOC                               00000001599,60
+6         1012017       4356       PAYABLES                FACT FA00006253 - BIT QUIROBEN                  00000001837,20
+6         1012017       445452     VAT BS/ENC              FACT FA00006253 - BIT QUIROBEN   00000000306,20
+6         1012017       623795     TOURIST GUIDE BOOK      FACT FA00006253 - BIT QUIROBEN   00000001531,00
+</code></pre>
+<p>上述文件是一个固定宽度的文本文件，因为对于每一项数据，都使用了不定长的空格做填充，使得它看起来是一个对齐的列表。</p>
+<p>这样一来，每一列数据开始和结束的位置都是一致的。从 <code>cut</code> 命令的字面意思去理解会给我们带来一个小陷阱：<code>cut</code> 命令实际上需要你指出你想_保留_的数据范围，而不是你想_移除_的范围。所以，假如我_只_需要上面文件中的 <code>ACCOUNTNUM</code> 和 <code>ACCOUNTLIB</code> 列，我需要这么做：</p>
+<pre><code>sh$ cut -c 25-59 BALANCE.txt | head
+ACCOUNTNUM ACCOUNTLIB
+623477     TIDE SCHEDULE
+445452     VAT BS/ENC
+4356       /accountPAYABLES
+623372     ACCOMODATION GUIDE
+445452     VAT BS/ENC
+4356       PAYABLES
+4356       PAYABLES
+445452     VAT BS/ENC
+623795     TOURIST GUIDE BOOK
+</code></pre>
+<h4 id="范围如何定义">范围如何定义？</h4>
+<p>正如我们上面看到的那样， <code>cut</code> 命令需要我们特别指定需要保留的数据的_范围_。所以，下面我将更正式地介绍如何定义范围：对于 <code>cut</code> 命令来说，范围是由连字符(<code>-</code>)分隔的起始和结束位置组成，范围是基于 1 计数的，即每行的第一项是从 1 开始计数的，而不是从 0 开始。范围是一个闭区间，开始和结束位置都将包含在结果之中，正如它们之间的所有字符那样。如果范围中的结束位置比起始位置小，则这种表达式是错误的。作为快捷方式，你可以省略起始_或_结束值，正如下面的表格所示：</p>
+<table>
+<thead>
+<tr>
+<th>范围</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>a-b</code></td>
+<td>a 和 b 之间的范围（闭区间）</td>
+</tr>
+<tr>
+<td><code>a</code></td>
+<td>与范围 <code>a-a</code> 等价</td>
+</tr>
+<tr>
+<td><code>-b</code></td>
+<td>与范围 <code>1-a</code> 等价</td>
+</tr>
+<tr>
+<td><code>b-</code></td>
+<td>与范围 <code>b-∞</code>  等价</td>
+</tr>
+</tbody></table>
+<p><code>cut</code> 命令允许你通过逗号分隔多个范围，下面是一些示例：</p>
+<pre><code># 保留 1 到 24 之间（闭区间）的字符
+cut -c -24 BALANCE.txt
+
+# 保留 1 到 24（闭区间）以及 36 到 59（闭区间）之间的字符
+cut -c -24,36-59 BALANCE.txt
+
+# 保留 1 到 24（闭区间）、36 到 59（闭区间）和 93 到该行末尾之间的字符
+cut -c -24,36-59,93- BALANCE.txt
+</code></pre>
+<p><code>cut</code> 命令的一个限制（或者是特性，取决于你如何看待它）是它将 <em>不会对数据进行重排</em>。所以下面的命令和先前的命令将产生相同的结果，尽管范围的顺序做了改变：</p>
+<pre><code>cut -c 93-,-24,36-59 BALANCE.txt
+</code></pre>
+<p>你可以轻易地使用 <code>diff</code> 命令来验证：</p>
+<pre><code>diff -s &lt;(cut -c -24,36-59,93- BALANCE.txt) \
+              &lt;(cut -c 93-,-24,36-59 BALANCE.txt)
+Files /dev/fd/63 and /dev/fd/62 are identical
+</code></pre>
+<p>类似的，<code>cut</code> 命令 <em>不会重复数据</em>：</p>
+<pre><code># 某人或许期待这可以第一列三次，但并不会……
+cut -c -10,-10,-10 BALANCE.txt | head -5
+ACCDOC
+4
+4
+4
+5
+</code></pre>
+<p>值得提及的是，曾经有一个提议，建议使用 <code>-o</code> 选项来去除上面提到的两个限制，使得 <code>cut</code> 工具可以重排或者重复数据。但这个提议被 <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/cut.html#tag_20_28_18">POSIX 委员会拒绝了</a>，<em>“因为这类增强不属于 IEEE P1003.2b 草案标准的范围”</em>。</p>
+<p>据我所知，我还没有见过哪个版本的 <code>cut</code> 程序实现了上面的提议，以此来作为扩展，假如你知道某些例外，请使用下面的评论框分享给大家！</p>
+<h3 id="2-作用在一系列字节上">2、 作用在一系列字节上</h3>
+<p>当使用 <code>-b</code> 命令行选项时，<code>cut</code> 命令将移除字节范围。</p>
+<p>咋一看，使用_字符_范围和使用_字节_没有什么明显的不同：</p>
+<pre><code>sh$ diff -s &lt;(cut -b -24,36-59,93- BALANCE.txt) \
+              &lt;(cut -c -24,36-59,93- BALANCE.txt)
+Files /dev/fd/63 and /dev/fd/62 are identical
+</code></pre>
+<p>这是因为我们的示例数据文件使用的是 <a href="https://en.wikipedia.org/wiki/ASCII#Character_set">US-ASCII 编码</a>（字符集），使用 <code>file -i</code> 便可以正确地猜出来：</p>
+<pre><code>sh$ file -i BALANCE.txt
+BALANCE.txt: text/plain; charset=us-ascii
+</code></pre>
+<p>在 US-ASCII 编码中，字符和字节是一一对应的。理论上，你只需要使用一个字节就可以表示 256 个不同的字符（数字、字母、标点符号和某些符号等）。实际上，你能表达的字符数比 256 要更少一些，因为字符编码中为某些特定值做了规定（例如 32 或 65 就是<a href="https://en.wikipedia.org/wiki/Control_character">控制字符</a>）。即便我们能够使用上述所有的字节范围，但对于存储种类繁多的人类手写符号来说，256 是远远不够的。所以如今字符和字节间的一一对应更像是某种例外，并且几乎总是被无处不在的 UTF-8 多字节编码所取代。下面让我们看看如何来处理多字节编码的情形。</p>
+<h4 id="作用在多字节编码的字符上">作用在多字节编码的字符上</h4>
+<p>正如我前面提到的那样，示例数据文件来源于我妻子使用的某款会计软件。最近好像她升级了那个软件，然后呢，导出的文本就完全不同了，你可以试试和上面的数据文件相比，找找它们之间的区别：</p>
+<pre><code>sh$ head BALANCE-V2.txt
+ACCDOC    ACCDOCDATE    ACCOUNTNUM ACCOUNTLIB              ACCDOCLIB                        DEBIT          CREDIT
+4         1012017       623477     TIDE SCHEDULE           ALNÉENRE-4701-LOC                00000001615,00
+4         1012017       445452     VAT BS/ENC              ALNÉENRE-4701-LOC                00000000323,00
+4         1012017       4356       PAYABLES                ALNÉENRE-4701-LOC                               00000001938,00
+5         1012017       623372     ACCOMODATION GUIDE      ALNÉENRE-4771-LOC                00000001333,00
+5         1012017       445452     VAT BS/ENC              ALNÉENRE-4771-LOC                00000000266,60
+5         1012017       4356       PAYABLES                ALNÉENRE-4771-LOC                               00000001599,60
+6         1012017       4356       PAYABLES                FACT FA00006253 - BIT QUIROBEN                  00000001837,20
+6         1012017       445452     VAT BS/ENC              FACT FA00006253 - BIT QUIROBEN   00000000306,20
+6         1012017       623795     TOURIST GUIDE BOOK      FACT FA00006253 - BIT QUIROBEN   00000001531,00
+</code></pre>
+<p>上面的标题栏或许能够帮助你找到什么被改变了，但无论你找到与否，现在让我们看看上面的更改过后的结果：</p>
+<pre><code>sh$ cut -c 93-,-24,36-59 BALANCE-V2.txt
+ACCDOC    ACCDOCDATE    ACCOUNTLIB              DEBIT          CREDIT
+4         1012017       TIDE SCHEDULE            00000001615,00
+4         1012017       VAT BS/ENC               00000000323,00
+4         1012017       PAYABLES                                00000001938,00
+5         1012017       ACCOMODATION GUIDE       00000001333,00
+5         1012017       VAT BS/ENC               00000000266,60
+5         1012017       PAYABLES                                00000001599,60
+6         1012017       PAYABLES                               00000001837,20
+6         1012017       VAT BS/ENC              00000000306,20
+6         1012017       TOURIST GUIDE BOOK      00000001531,00
+19        1012017       SEMINAR FEES            00000000080,00
+19        1012017       PAYABLES                               00000000080,00
+28        1012017       MAINTENANCE             00000000746,58
+28        1012017       VAT BS/ENC              00000000149,32
+28        1012017       PAYABLES                               00000000895,90
+31        1012017       PAYABLES                                00000000240,00
+31        1012017       VAT BS/DEBIT             00000000040,00
+31        1012017       ADVERTISEMENTS           00000000200,00
+32        1012017       WATER                   00000000202,20
+32        1012017       VAT BS/DEBIT            00000000020,22
+32        1012017       WATER                   00000000170,24
+32        1012017       VAT BS/DEBIT            00000000009,37
+32        1012017       PAYABLES                               00000000402,03
+34        1012017       RENTAL COSTS            00000000018,00
+34        1012017       PAYABLES                               00000000018,00
+35        1012017       MISCELLANEOUS CHARGES   00000000015,00
+35        1012017       VAT BS/DEBIT            00000000003,00
+35        1012017       PAYABLES                               00000000018,00
+36        1012017       LANDLINE TELEPHONE        00000000069,14
+36        1012017       VAT BS/ENC                00000000013,83
+</code></pre>
+<p>我_毫无删减地_复制了上面命令的输出。所以可以很明显地看出列对齐那里有些问题。</p>
+<p>对此我的解释是原来的数据文件只包含 US-ASCII 编码的字符（符号、标点符号、数字和没有发音符号的拉丁字母）。</p>
+<p>但假如你仔细地查看经软件升级后产生的文件，你可以看到新导出的数据文件保留了带发音符号的字母。例如现在合理地记录了名为 “ALNÉENRE” 的公司，而不是先前的 “ALNEENRE”（没有发音符号）。</p>
+<p><code>file -i</code> 正确地识别出了改变，因为它报告道现在这个文件是 <a href="https://en.wikipedia.org/wiki/UTF-8#Codepage_layout">UTF-8 编码</a> 的。</p>
+<pre><code>sh$ file -i BALANCE-V2.txt
+BALANCE-V2.txt: text/plain; charset=utf-8
+</code></pre>
+<p>如果想看看 UTF-8 文件中那些带发音符号的字母是如何编码的，我们可以使用 <code>[hexdump][12]</code>，它可以让我们直接以字节形式查看文件：</p>
+<pre><code># 为了减少输出，让我们只关注文件的第 2 行
+sh$ sed &#39;2!d&#39; BALANCE-V2.txt
+4         1012017       623477     TIDE SCHEDULE           ALNÉENRE-4701-LOC                00000001615,00
+sh$ sed &#39;2!d&#39; BALANCE-V2.txt  | hexdump -C
+00000000  34 20 20 20 20 20 20 20  20 20 31 30 31 32 30 31  |4         101201|
+00000010  37 20 20 20 20 20 20 20  36 32 33 34 37 37 20 20  |7       623477  |
+00000020  20 20 20 54 49 44 45 20  53 43 48 45 44 55 4c 45  |   TIDE SCHEDULE|
+00000030  20 20 20 20 20 20 20 20  20 20 20 41 4c 4e c3 89  |           ALN..|
+00000040  45 4e 52 45 2d 34 37 30  31 2d 4c 4f 43 20 20 20  |ENRE-4701-LOC   |
+00000050  20 20 20 20 20 20 20 20  20 20 20 20 20 30 30 30  |             000|
+00000060  30 30 30 30 31 36 31 35  2c 30 30 20 20 20 20 20  |00001615,00     |
+00000070  20 20 20 20 20 20 20 20  20 20 20 0a              |           .|
+0000007c
+</code></pre>
+<p>在 <code>hexdump</code>  输出的 00000030 那行，在一系列的空格（字节 <code>20</code>）之后，你可以看到：</p>
+<ul>
+<li>字母 <code>A</code> 被编码为 <code>41</code>，</li>
+<li>字母 <code>L</code> 被编码为 <code>4c</code>，</li>
+<li>字母 <code>N</code> 被编码为 <code>4e</code>。</li>
+</ul>
+<p>但对于大写的<a href="https://www.fileformat.info/info/unicode/char/00c9/index.htm">带有注音的拉丁大写字母 E</a> （这是它在 Unicode 标准中字母 <em>É</em> 的官方名称），则是使用 <em>2</em> 个字节 <code>c3 89</code> 来编码的。</p>
+<p>这样便出现问题了：对于使用固定宽度编码的文件， 使用字节位置来表示范围的 <code>cut</code> 命令工作良好，但这并不适用于使用变长编码的 UTF-8 或者 <a href="https://en.wikipedia.org/wiki/Shift_JIS#Shift_JIS_byte_map">Shift JIS</a> 编码。这种情况在下面的 <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/cut.html#tag_20_28_16">POSIX 标准的非规范性摘录</a> 中被明确地解释过：</p>
+<blockquote>
+<p>先前版本的 <code>cut</code> 程序将字节和字符视作等同的环境下运作（正如在某些实现下对退格键 <code>&lt;backspace&gt;</code> 和制表键 <code>&lt;tab&gt;</code> 的处理）。在针对多字节字符的情况下，特别增加了 <code>-b</code> 选项。</p>
+</blockquote>
+<p>嘿，等一下！我并没有在上面“有错误”的例子中使用 &#39;-b&#39; 选项，而是 <code>-c</code> 选项呀！所以，难道_不应该_能够成功处理了吗！？</p>
+<p>是的，确实_应该_：但是很不幸，即便我们现在已身处 2018 年，GNU Coreutils 的版本为 8.30 了，<code>cut</code> 程序的 GNU 版本实现仍然不能很好地处理多字节字符。引用 <a href="https://www.gnu.org/software/coreutils/manual/html_node/cut-invocation.html#cut-invocation">GNU 文档</a> 的话说，<em><code>-c</code> 选项“现在和 <code>-b</code> 选项是相同的，但对于国际化的情形将有所不同[...]”</em>。需要提及的是，这个问题距今已有 10 年之久了！</p>
+<p>另一方面，<a href="https://www.openbsd.org/">OpenBSD</a> 的实现版本和 POSIX 相吻合，这将归功于当前的本地化（<code>locale</code>）设定来合理地处理多字节字符：</p>
+<pre><code># 确保随后的命令知晓我们现在处理的是 UTF-8 编码的文本文件
+openbsd-6.3$ export LC_CTYPE=en_US.UTF-8
+
+# 使用 `-c` 选项， `cut` 能够合理地处理多字节字符
+openbsd-6.3$ cut -c -24,36-59,93- BALANCE-V2.txt
+ACCDOC    ACCDOCDATE    ACCOUNTLIB              DEBIT          CREDIT
+4         1012017       TIDE SCHEDULE           00000001615,00
+4         1012017       VAT BS/ENC              00000000323,00
+4         1012017       PAYABLES                               00000001938,00
+5         1012017       ACCOMODATION GUIDE      00000001333,00
+5         1012017       VAT BS/ENC              00000000266,60
+5         1012017       PAYABLES                               00000001599,60
+6         1012017       PAYABLES                               00000001837,20
+6         1012017       VAT BS/ENC              00000000306,20
+6         1012017       TOURIST GUIDE BOOK      00000001531,00
+19        1012017       SEMINAR FEES            00000000080,00
+19        1012017       PAYABLES                               00000000080,00
+28        1012017       MAINTENANCE             00000000746,58
+28        1012017       VAT BS/ENC              00000000149,32
+28        1012017       PAYABLES                               00000000895,90
+31        1012017       PAYABLES                               00000000240,00
+31        1012017       VAT BS/DEBIT            00000000040,00
+31        1012017       ADVERTISEMENTS          00000000200,00
+32        1012017       WATER                   00000000202,20
+32        1012017       VAT BS/DEBIT            00000000020,22
+32        1012017       WATER                   00000000170,24
+32        1012017       VAT BS/DEBIT            00000000009,37
+32        1012017       PAYABLES                               00000000402,03
+34        1012017       RENTAL COSTS            00000000018,00
+34        1012017       PAYABLES                               00000000018,00
+35        1012017       MISCELLANEOUS CHARGES   00000000015,00
+35        1012017       VAT BS/DEBIT            00000000003,00
+35        1012017       PAYABLES                               00000000018,00
+36        1012017       LANDLINE TELEPHONE      00000000069,14
+36        1012017       VAT BS/ENC              00000000013,83
+</code></pre>
+<p>正如期望的那样，当使用 <code>-b</code> 选项而不是 <code>-c</code> 选项后， OpenBSD 版本的 <code>cut</code> 实现和传统的 <code>cut</code> 表现是类似的：</p>
+<pre><code>openbsd-6.3$ cut -b -24,36-59,93- BALANCE-V2.txt
+ACCDOC    ACCDOCDATE    ACCOUNTLIB              DEBIT          CREDIT
+4         1012017       TIDE SCHEDULE            00000001615,00
+4         1012017       VAT BS/ENC               00000000323,00
+4         1012017       PAYABLES                                00000001938,00
+5         1012017       ACCOMODATION GUIDE       00000001333,00
+5         1012017       VAT BS/ENC               00000000266,60
+5         1012017       PAYABLES                                00000001599,60
+6         1012017       PAYABLES                               00000001837,20
+6         1012017       VAT BS/ENC              00000000306,20
+6         1012017       TOURIST GUIDE BOOK      00000001531,00
+19        1012017       SEMINAR FEES            00000000080,00
+19        1012017       PAYABLES                               00000000080,00
+28        1012017       MAINTENANCE             00000000746,58
+28        1012017       VAT BS/ENC              00000000149,32
+28        1012017       PAYABLES                               00000000895,90
+31        1012017       PAYABLES                                00000000240,00
+31        1012017       VAT BS/DEBIT             00000000040,00
+31        1012017       ADVERTISEMENTS           00000000200,00
+32        1012017       WATER                   00000000202,20
+32        1012017       VAT BS/DEBIT            00000000020,22
+32        1012017       WATER                   00000000170,24
+32        1012017       VAT BS/DEBIT            00000000009,37
+32        1012017       PAYABLES                               00000000402,03
+34        1012017       RENTAL COSTS            00000000018,00
+34        1012017       PAYABLES                               00000000018,00
+35        1012017       MISCELLANEOUS CHARGES   00000000015,00
+35        1012017       VAT BS/DEBIT            00000000003,00
+35        1012017       PAYABLES                               00000000018,00
+36        1012017       LANDLINE TELEPHONE        00000000069,14
+36        1012017       VAT BS/ENC                00000000013,83
+</code></pre>
+<h3 id="3-作用在域上">3、 作用在域上</h3>
+<p>从某种意义上说，使用 <code>cut</code> 来处理用特定分隔符隔开的文本文件要更加容易一些，因为只需要确定好每行中域之间的分隔符，然后复制域的内容到输出就可以了，而不需要烦恼任何与编码相关的问题。</p>
+<p>下面是一个用分隔符隔开的示例文本文件：</p>
+<pre><code>sh$ head BALANCE.csv
+ACCDOC;ACCDOCDATE;ACCOUNTNUM;ACCOUNTLIB;ACCDOCLIB;DEBIT;CREDIT
+4;1012017;623477;TIDE SCHEDULE;ALNEENRE-4701-LOC;00000001615,00;
+4;1012017;445452;VAT BS/ENC;ALNEENRE-4701-LOC;00000000323,00;
+4;1012017;4356;PAYABLES;ALNEENRE-4701-LOC;;00000001938,00
+5;1012017;623372;ACCOMODATION GUIDE;ALNEENRE-4771-LOC;00000001333,00;
+5;1012017;445452;VAT BS/ENC;ALNEENRE-4771-LOC;00000000266,60;
+5;1012017;4356;PAYABLES;ALNEENRE-4771-LOC;;00000001599,60
+6;1012017;4356;PAYABLES;FACT FA00006253 - BIT QUIROBEN;;00000001837,20
+6;1012017;445452;VAT BS/ENC;FACT FA00006253 - BIT QUIROBEN;00000000306,20;
+6;1012017;623795;TOURIST GUIDE BOOK;FACT FA00006253 - BIT QUIROBEN;00000001531,00;
+</code></pre>
+<p>你可能知道上面文件是一个 <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV</a> 格式的文件（它以逗号来分隔），即便有时候域分隔符不是逗号。例如分号（<code>;</code>）也常被用来作为分隔符，并且对于那些总使用逗号作为 <a href="https://en.wikipedia.org/wiki/Decimal_separator">十进制分隔符</a>的国家（例如法国，所以上面我的示例文件中选用了他们国家的字符），当导出数据为 “CSV” 格式时，默认将使用分号来分隔数据。另一种常见的情况是使用 <a href="https://en.wikipedia.org/wiki/Tab-separated_values">tab 键</a> 来作为分隔符，从而生成叫做 <a href="https://en.wikipedia.org/wiki/Tab-separated_values">tab 分隔的值</a> 的文件。最后，在 Unix 和 Linux 领域，冒号 (<code>:</code>) 是另一种你能找到的常见分隔符号，例如在标准的 <code>/etc/passwd</code> 和 <code>/etc/group</code> 这两个文件里。</p>
+<p>当处理使用分隔符隔开的文本文件格式时，你可以向带有 <code>-f</code> 选项的 <code>cut</code> 命令提供需要保留的域的范围，并且你也可以使用 <code>-d</code> 选项来指定分隔符（当没有使用 <code>-d</code> 选项时，默认以 tab 字符来作为分隔符）：</p>
+<pre><code>sh$ cut -f 5- -d&#39;;&#39; BALANCE.csv | head
+ACCDOCLIB;DEBIT;CREDIT
+ALNEENRE-4701-LOC;00000001615,00;
+ALNEENRE-4701-LOC;00000000323,00;
+ALNEENRE-4701-LOC;;00000001938,00
+ALNEENRE-4771-LOC;00000001333,00;
+ALNEENRE-4771-LOC;00000000266,60;
+ALNEENRE-4771-LOC;;00000001599,60
+FACT FA00006253 - BIT QUIROBEN;;00000001837,20
+FACT FA00006253 - BIT QUIROBEN;00000000306,20;
+FACT FA00006253 - BIT QUIROBEN;00000001531,00;
+</code></pre>
+<h4 id="处理不包含分隔符的行">处理不包含分隔符的行</h4>
+<p>但要是输入文件中的某些行没有分隔符又该怎么办呢？很容易地认为可以将这样的行视为只包含第一个域。但 <code>cut</code> 程序并 <em>不是</em> 这样做的。 </p>
+<p>默认情况下，当使用 <code>-f</code> 选项时，<code>cut</code> 将总是原样输出不包含分隔符的那一行（可能假设它是非数据行，就像表头或注释等）：</p>
+<pre><code>sh$ (echo &quot;# 2018-03 BALANCE&quot;; cat BALANCE.csv) &gt; BALANCE-WITH-HEADER.csv
+
+sh$ cut -f 6,7 -d&#39;;&#39; BALANCE-WITH-HEADER.csv | head -5
+# 2018-03 BALANCE
+DEBIT;CREDIT
+00000001615,00;
+00000000323,00;
+;00000001938,00
+</code></pre>
+<p>使用 <code>-s</code> 选项，你可以做出相反的行为，这样 <code>cut</code> 将总是忽略这些行：</p>
+<pre><code>sh$ cut -s -f 6,7 -d&#39;;&#39; BALANCE-WITH-HEADER.csv | head -5
+DEBIT;CREDIT
+00000001615,00;
+00000000323,00;
+;00000001938,00
+00000001333,00;
+</code></pre>
+<p>假如你好奇心强，你还可以探索这种特性，来作为一种相对隐晦的方式去保留那些只包含给定字符的行：</p>
+<pre><code># 保留含有一个 `e` 的行
+sh$ printf &quot;%s\n&quot; {mighty,bold,great}-{condor,monkey,bear} | cut -s -f 1- -d&#39;e&#39;
+</code></pre>
+<h4 id="改变输出的分隔符">改变输出的分隔符</h4>
+<p>作为一种扩展， GNU 版本实现的 <code>cut</code> 允许通过使用 <code>--output-delimiter</code> 选项来为结果指定一个不同的域分隔符：</p>
+<pre><code>sh$ cut -f 5,6- -d&#39;;&#39; --output-delimiter=&quot;*&quot; BALANCE.csv | head
+ACCDOCLIB*DEBIT*CREDIT
+ALNEENRE-4701-LOC*00000001615,00*
+ALNEENRE-4701-LOC*00000000323,00*
+ALNEENRE-4701-LOC**00000001938,00
+ALNEENRE-4771-LOC*00000001333,00*
+ALNEENRE-4771-LOC*00000000266,60*
+ALNEENRE-4771-LOC**00000001599,60
+FACT FA00006253 - BIT QUIROBEN**00000001837,20
+FACT FA00006253 - BIT QUIROBEN*00000000306,20*
+FACT FA00006253 - BIT QUIROBEN*00000001531,00*
+</code></pre>
+<p>需要注意的是，在上面这个例子中，所有出现域分隔符的地方都被替换掉了，而不仅仅是那些在命令行中指定的作为域范围边界的分隔符。</p>
+<h3 id="4-非-posix-gnu-扩展">4、 非 POSIX GNU 扩展</h3>
+<p>说到非 POSIX GNU 扩展，它们中的某些特别有用。特别需要提及的是下面的扩展也同样对字节、字符或者域范围工作良好（相对于当前的 GNU 实现来说）。</p>
+<p><code>--complement</code>：</p>
+<p>想想在 sed 地址中的感叹符号(<code>!</code>)，使用它，<code>cut</code> 将只保存<strong>没有</strong>被匹配到的范围:</p>
+<pre><code># 只保留第 5 个域
+sh$ cut -f 5 -d&#39;;&#39; BALANCE.csv |head -3
+ACCDOCLIB
+ALNEENRE-4701-LOC
+ALNEENRE-4701-LOC
+
+# 保留除了第 5 个域之外的内容
+sh$ cut --complement -f 5 -d&#39;;&#39; BALANCE.csv |head -3
+ACCDOC;ACCDOCDATE;ACCOUNTNUM;ACCOUNTLIB;DEBIT;CREDIT
+4;1012017;623477;TIDE SCHEDULE;00000001615,00;
+4;1012017;445452;VAT BS/ENC;00000000323,00;
+</code></pre>
+<p><code>--zero-terminated (-z)</code>：</p>
+<p>使用 <a href="https://en.wikipedia.org/wiki/Null_character">NUL 字符</a> 来作为行终止符，而不是 <a href="https://en.wikipedia.org/wiki/Newline"><ruby>新行<rt>newline</rt></ruby>字符</a>。当你的数据包含 新行字符时， <code>-z</code> 选项就特别有用了，例如当处理文件名的时候（因为在文件名中新行字符是可以使用的，而 NUL 则不可以）。</p>
+<p>为了展示 <code>-z</code> 选项，让我们先做一点实验。首先，我们将创建一个文件名中包含换行符的文件：</p>
+<pre><code>bash$ touch $&#39;EMPTY\nFILE\nWITH FUNKY\nNAME&#39;.txt
+bash$ ls -1 *.txt
+BALANCE.txt
+BALANCE-V2.txt
+EMPTY?FILE?WITH FUNKY?NAME.txt
+</code></pre>
+<p>现在假设我想展示每个 <code>*.txt</code> 文件的前 5 个字符。一个想当然的解决方法将会失败：</p>
+<pre><code>sh$ ls -1 *.txt | cut -c 1-5
+BALAN
+BALAN
+EMPTY
+FILE
+WITH
+NAME.
+</code></pre>
+<p>你可以已经知道 <a href="https://linux.die.net/man/1/ls">ls</a> 是为了<a href="http://lists.gnu.org/archive/html/coreutils/2014-02/msg00005.html">方便人类使用</a>而特别设计的，并且在一个命令管道中使用它是一个反模式（确实是这样的）。所以让我们用 <a href="https://linux.die.net/man/1/find">find</a> 来替换它：</p>
+<pre><code>sh$ find . -name &#39;*.txt&#39; -printf &quot;%f\n&quot; | cut -c 1-5
+BALAN
+EMPTY
+FILE
+WITH
+NAME.
+BALAN
+</code></pre>
+<p>上面的命令基本上产生了与先前类似的结果（尽管以不同的次序，因为 <code>ls</code> 会隐式地对文件名做排序，而 <code>find</code> 则不会）。</p>
+<p>在上面的两个例子中，都有一个相同的问题，<code>cut</code> 命令不能区分 新行 字符是数据域的一部分（即文件名），还是作为最后标记的 新行 记号。但使用 NUL 字节（<code>\0</code>）来作为行终止符就将排除掉这种混淆的情况，使得我们最后可以得到期望的结果：</p>
+<pre><code># 我被告知在某些旧版的 `tr` 程序中需要使用 `\000` 而不是 `\0` 来代表 NUL 字符（假如你需要这种改变请让我知晓！）
+sh$ find . -name &#39;*.txt&#39; -printf &quot;%f\0&quot; | cut -z -c 1-5| tr &#39;\0&#39; &#39;\n&#39;
+BALAN
+EMPTY
+BALAN
+</code></pre>
+<p>通过上面最后的例子，我们就达到了本文的最后部分了，所以我将让你自己试试 <code>-printf</code> 后面那个有趣的 <code>&quot;%f\0&quot;</code> 参数或者理解为什么我在管道的最后使用了 <a href="https://linux.die.net/man/1/tr">tr</a> 命令。</p>
+<h3 id="使用-cut-命令可以实现更多功能">使用 cut 命令可以实现更多功能</h3>
+<p>我只是列举了 <code>cut</code> 命令的最常见且在我眼中最基础的使用方式。你甚至可以将它以更加实用的方式加以运用，这取决于你的逻辑和想象。</p>
+<p>不要再犹豫了，请使用下面的评论框贴出你的发现。最后一如既往的，假如你喜欢这篇文章，请不要忘记将它分享到你最喜爱网站和社交媒体中！</p>
+<hr>
+<p>via: <a href="https://linuxhandbook.com/cut-command/">https://linuxhandbook.com/cut-command/</a></p>
+<p>作者：<a href="https://linuxhandbook.com/author/sylvain/">Sylvain Leroux</a>
+译者：<a href="https://github.com/FSSlc">FSSlc</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#linux-下-cut-命令的-4-个实用示例">Linux 下 cut 命令的 4 个实用示例</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-作用在一系列字符上">1、 作用在一系列字符上</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-作用在一系列字节上">2、 作用在一系列字节上</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-作用在域上">3、 作用在域上</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-非-posix-gnu-扩展">4、 非 POSIX GNU 扩展</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-cut-命令可以实现更多功能">使用 cut 命令可以实现更多功能</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201808/20180710 4 Essential and Practical Usage of Cut Command in Linux","title":"Linux 下 cut 命令的 4 个基础实用的示例"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>理解 Python 的 Dataclasses（一） - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="理解 Python 的 Dataclasses（一） - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="理解 Python 的 Dataclasses（一） - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201809/20180703 Understanding Python Dataclasses — Part 1#page","@type":"TechArticle","headline":"理解 Python 的 Dataclasses（一）","inLanguage":"en","name":"理解 Python 的 Dataclasses（一）","url":"https://zhengqbbb.github.io/pages-dev/201809/20180703 Understanding Python Dataclasses — Part 1","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201809/20180703 Understanding Python Dataclasses — Part 1"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#介绍">介绍</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#初始化">初始化</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#表示">表示</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#数据比较">数据比较</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#dataclass-作为一个可调用的装饰器">dataclass 作为一个可调用的装饰器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#frozen不可变-实例">Frozen（不可变） 实例</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#后期初始化处理">后期初始化处理</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#继承">继承</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>理解 Python 的 Dataclasses（一）</h1><p><img src="https://cdn-images-1.medium.com/max/900/1*7pr8EL8EDsP296pxL7Wz_g.png" alt=""></p>
+<p>如果你正在阅读本文，那么你已经意识到了 Python 3.7 以及它所包含的新特性。就我个人而言，我对 <code>Dataclasses</code> 感到非常兴奋，因为我等了它一段时间了。</p>
+<p>本系列包含两部分：</p>
+<ol>
+<li>Dataclass 特点概述</li>
+<li>在下一篇文章概述 Dataclass 的 <code>fields</code></li>
+</ol>
+<h3 id="介绍">介绍</h3>
+<p><code>Dataclasses</code> 是 Python 的类（LCTT 译注：更准确的说，它是一个模块），适用于存储数据对象。你可能会问什么是数据对象？下面是定义数据对象的一个不太详细的特性列表：</p>
+<ul>
+<li>它们存储数据并代表某种数据类型。例如：一个数字。对于熟悉 ORM 的人来说，模型实例就是一个数据对象。它代表一种特定的实体。它包含那些定义或表示实体的属性。</li>
+<li>它们可以与同一类型的其他对象进行比较。例如：一个数字可以是 <code>greater than</code>（大于）、<code>less than</code>（小于） 或 <code>equal</code>（等于） 另一个数字。</li>
+</ul>
+<p>当然还有更多的特性，但是这个列表足以帮助你理解问题的关键。</p>
+<p>为了理解 <code>Dataclasses</code>，我们将实现一个包含数字的简单类，并允许我们执行上面提到的操作。</p>
+<p>首先，我们将使用普通类，然后我们再使用 <code>Dataclasses</code> 来实现相同的结果。</p>
+<p>但在我们开始之前，先来谈谈 <code>Dataclasses</code> 的用法。</p>
+<p>Python 3.7 提供了一个装饰器 <a href="https://docs.python.org/3.7/library/dataclasses.html#dataclasses.dataclass">dataclass</a>，用于将类转换为 <code>dataclass</code>。</p>
+<p>你所要做的就是将类包在装饰器中：</p>
+<pre><code>from dataclasses import dataclass
+
+@dataclass
+class A:
+ ...
+</code></pre>
+<p>现在，让我们深入了解一下 <code>dataclass</code> 带给我们的变化和用途。</p>
+<h3 id="初始化">初始化</h3>
+<p>通常是这样：</p>
+<pre><code>class Number:
+
+    def __init__(self, val):
+        self.val = val
+
+&gt;&gt;&gt; one = Number(1)
+&gt;&gt;&gt; one.val
+&gt;&gt;&gt; 1
+</code></pre>
+<p>用 <code>dataclass</code> 是这样：</p>
+<pre><code>@dataclass
+class Number:
+    val:int 
+
+&gt;&gt;&gt; one = Number(1)
+&gt;&gt;&gt; one.val
+&gt;&gt;&gt; 1
+</code></pre>
+<p>以下是 <code>dataclass</code> 装饰器带来的变化：</p>
+<ol>
+<li>无需定义 <code>__init__</code>，然后将值赋给 <code>self</code>，<code>dataclass</code> 负责处理它（LCTT 译注：此处原文可能有误，提及一个不存在的 <code>d</code>）</li>
+<li>我们以更加易读的方式预先定义了成员属性，以及<a href="https://stackoverflow.com/q/32557920/4333721">类型提示</a>。我们现在立即能知道 <code>val</code> 是 <code>int</code> 类型。这无疑比一般定义类成员的方式更具可读性。</li>
+</ol>
+<blockquote>
+<p>Python 之禅: 可读性很重要</p>
+</blockquote>
+<p>它也可以定义默认值：</p>
+<pre><code>@dataclass
+class Number:
+    val:int = 0
+</code></pre>
+<h3 id="表示">表示</h3>
+<p>对象表示指的是对象的一个有意义的字符串表示，它在调试时非常有用。</p>
+<p>默认的 Python 对象表示不是很直观：</p>
+<pre><code>class Number:
+    def __init__(self, val = 0):
+    self.val = val
+
+&gt;&gt;&gt; a = Number(1)
+&gt;&gt;&gt; a
+&gt;&gt;&gt; &lt;__main__.Number object at 0x7ff395b2ccc0&gt;
+</code></pre>
+<p>这让我们无法知悉对象的作用，并且会导致糟糕的调试体验。</p>
+<p>一个有意义的表示可以通过在类中定义一个 <code>__repr__</code> 方法来实现。</p>
+<pre><code>def __repr__(self):
+    return self.val
+</code></pre>
+<p>现在我们得到这个对象有意义的表示：</p>
+<pre><code>&gt;&gt;&gt; a = Number(1)
+&gt;&gt;&gt; a
+&gt;&gt;&gt; 1
+</code></pre>
+<p><code>dataclass</code> 会自动添加一个 <code>__repr__ </code> 函数，这样我们就不必手动实现它了。</p>
+<pre><code>@dataclass
+class Number:
+    val: int = 0
+</code></pre>
+<pre><code>&gt;&gt;&gt; a = Number(1)
+&gt;&gt;&gt; a
+&gt;&gt;&gt; Number(val = 1)
+</code></pre>
+<h3 id="数据比较">数据比较</h3>
+<p>通常，数据对象之间需要相互比较。</p>
+<p>两个对象 <code>a</code> 和 <code>b</code> 之间的比较通常包括以下操作：</p>
+<ul>
+<li><code>a &lt; b</code></li>
+<li><code>a &gt; b</code></li>
+<li><code>a == b</code></li>
+<li><code>a &gt;= b</code></li>
+<li><code>a &lt;= b</code></li>
+</ul>
+<p>在 Python 中，能够在可以执行上述操作的类中定义<a href="https://docs.python.org/3/reference/datamodel.html#object.__lt__">方法</a>。为了简单起见，不让这篇文章过于冗长，我将只展示 <code>==</code> 和 <code>&lt;</code> 的实现。</p>
+<p>通常这样写：</p>
+<pre><code>class Number:
+    def __init__( self, val = 0):
+       self.val = val
+
+    def __eq__(self, other):
+        return self.val == other.val
+
+    def __lt__(self, other):
+        return self.val &lt; other.val
+</code></pre>
+<p>使用 <code>dataclass</code>：</p>
+<pre><code>@dataclass(order = True)
+class Number:
+    val: int = 0
+</code></pre>
+<p>是的，就是这样简单。</p>
+<p>我们不需要定义 <code>__eq__</code> 和 <code>__lt__</code> 方法，因为当 <code>order = True</code> 被调用时，<code>dataclass</code> 装饰器会自动将它们添加到我们的类定义中。</p>
+<p>那么，它是如何做到的呢？</p>
+<p>当你使用 <code>dataclass</code> 时，它会在类定义中添加函数 <code>__eq__</code> 和 <code>__lt__</code> 。我们已经知道这点了。那么，这些函数是怎样知道如何检查相等并进行比较呢？</p>
+<p>生成 <code>__eq__</code> 函数的 <code>dataclass</code> 类会比较两个属性构成的元组，一个由自己属性构成的，另一个由同类的其他实例的属性构成。在我们的例子中，<code>自动</code>生成的 <code>__eq__</code> 函数相当于：</p>
+<pre><code>def __eq__(self, other):
+    return (self.val,) == (other.val,)
+</code></pre>
+<p>让我们来看一个更详细的例子：</p>
+<p>我们会编写一个 <code>dataclass</code> 类 <code>Person</code> 来保存 <code>name</code> 和 <code>age</code>。</p>
+<pre><code>@dataclass(order = True)
+class Person:
+    name: str
+    age:int = 0
+</code></pre>
+<p>自动生成的 <code>__eq__</code> 方法等同于：</p>
+<pre><code>def __eq__(self, other):
+    return (self.name, self.age) == ( other.name, other.age)
+</code></pre>
+<p>请注意属性的顺序。它们总是按照你在 <code>dataclass</code> 类中定义的顺序生成。</p>
+<p>同样，等效的 <code>__le__</code> 函数类似于：</p>
+<pre><code>def __le__(self, other):
+    return (self.name, self.age) &lt;= (other.name, other.age)
+</code></pre>
+<p>当你需要对数据对象列表进行排序时，通常会出现像 <code>__le__</code> 这样的函数的定义。Python 内置的 <a href="https://docs.python.org/3.7/library/functions.html#sorted">sorted</a> 函数依赖于比较两个对象。</p>
+<pre><code>&gt;&gt;&gt; import random
+
+&gt;&gt;&gt; a = [Number(random.randint(1,10)) for _ in range(10)] #generate list of random numbers
+
+&gt;&gt;&gt; a
+
+&gt;&gt;&gt; [Number(val=2), Number(val=7), Number(val=6), Number(val=5), Number(val=10), Number(val=9), Number(val=1), Number(val=10), Number(val=1), Number(val=7)]
+
+&gt;&gt;&gt; sorted_a = sorted(a) #Sort Numbers in ascending order
+
+&gt;&gt;&gt; [Number(val=1), Number(val=1), Number(val=2), Number(val=5), Number(val=6), Number(val=7), Number(val=7), Number(val=9), Number(val=10), Number(val=10)]
+
+&gt;&gt;&gt; reverse_sorted_a = sorted(a, reverse = True) #Sort Numbers in descending order 
+
+&gt;&gt;&gt; reverse_sorted_a
+
+&gt;&gt;&gt; [Number(val=10), Number(val=10), Number(val=9), Number(val=7), Number(val=7), Number(val=6), Number(val=5), Number(val=2), Number(val=1), Number(val=1)]
+</code></pre>
+<h3 id="dataclass-作为一个可调用的装饰器">dataclass 作为一个可调用的装饰器</h3>
+<p>定义所有的 <code>dunder</code>（LCTT 译注：这是指双下划线方法，即魔法方法）方法并不总是值得的。你的用例可能只包括存储值和检查相等性。因此，你只需定义 <code>__init__</code> 和  <code>__eq__</code> 方法。如果我们可以告诉装饰器不生成其他方法，那么它会减少一些开销，并且我们将在数据对象上有正确的操作。</p>
+<p>幸运的是，这可以通过将 <code>dataclass</code> 装饰器作为可调用对象来实现。</p>
+<p>从官方<a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass">文档</a>来看，装饰器可以用作具有如下参数的可调用对象：</p>
+<pre><code>@dataclass(init=True, repr=True, eq=True, order=False, unsafe_hash=False, frozen=False)
+class C:
+ …
+</code></pre>
+<ol>
+<li><code>init</code>：默认将生成 <code>__init__</code> 方法。如果传入 <code>False</code>，那么该类将不会有 <code>__init__</code> 方法。  </li>
+<li><code>repr</code>：<code>__repr__</code> 方法默认生成。如果传入 <code>False</code>，那么该类将不会有 <code>__repr__</code> 方法。</li>
+<li><code>eq</code>：默认将生成 <code>__eq__</code> 方法。如果传入 <code>False</code>，那么 <code>__eq__</code> 方法将不会被 <code>dataclass</code> 添加，但默认为 <code>object.__eq__</code>。</li>
+<li><code>order</code>：默认将生成 <code>__gt__</code>、<code>__ge__</code>、<code>__lt__</code>、<code>__le__</code> 方法。如果传入 <code>False</code>，则省略它们。</li>
+</ol>
+<p>我们在接下来会讨论 <code>frozen</code>。由于 <code>unsafe_hash</code> 参数复杂的用例，它值得单独发布一篇文章。</p>
+<p>现在回到我们的用例，以下是我们需要的：</p>
+<p>1. <code>__init__</code>
+2. <code>__eq__</code></p>
+<p>默认会生成这些函数，因此我们需要的是不生成其他函数。那么我们该怎么做呢？很简单，只需将相关参数作为 false 传入给生成器即可。</p>
+<pre><code>@dataclass(repr = False) # order, unsafe_hash and frozen are False
+class Number:
+    val: int = 0
+
+
+&gt;&gt;&gt; a = Number(1)
+
+&gt;&gt;&gt; a
+
+&gt;&gt;&gt; &lt;__main__.Number object at 0x7ff395afe898&gt;
+
+&gt;&gt;&gt; b = Number(2)
+
+&gt;&gt;&gt; c = Number(1)
+
+&gt;&gt;&gt; a == b
+
+&gt;&gt;&gt; False
+
+&gt;&gt;&gt; a &lt; b
+
+&gt;&gt;&gt; Traceback (most recent call last):
+ File “&lt;stdin&gt;”, line 1, in &lt;module&gt;
+TypeError: ‘&lt;’ not supported between instances of ‘Number’ and ‘Number’
+</code></pre>
+<h3 id="frozen不可变-实例">Frozen（不可变） 实例</h3>
+<p>Frozen 实例是在初始化对象后无法修改其属性的对象。</p>
+<blockquote>
+<p>无法创建真正不可变的 Python 对象</p>
+</blockquote>
+<p>在 Python 中创建对象的不可变属性是一项艰巨的任务，我将不会在本篇文章中深入探讨。</p>
+<p>以下是我们期望不可变对象能够做到的：</p>
+<pre><code>&gt;&gt;&gt; a = Number(10) #Assuming Number class is immutable
+
+&gt;&gt;&gt; a.val = 10 # Raises Error
+</code></pre>
+<p>有了 <code>dataclass</code>，就可以通过使用 <code>dataclass</code> 装饰器作为可调用对象配合参数 <code>frozen=True</code> 来定义一个 <code>frozen</code> 对象。</p>
+<p>当实例化一个 <code>frozen</code> 对象时，任何企图修改对象属性的行为都会引发 <code>FrozenInstanceError</code>。</p>
+<pre><code>@dataclass(frozen = True)
+class Number:
+    val: int = 0
+
+&gt;&gt;&gt; a = Number(1)
+
+&gt;&gt;&gt; a.val
+
+&gt;&gt;&gt; 1
+
+&gt;&gt;&gt; a.val = 2
+
+&gt;&gt;&gt; Traceback (most recent call last):
+ File “&lt;stdin&gt;”, line 1, in &lt;module&gt;
+ File “&lt;string&gt;”, line 3, in __setattr__
+dataclasses.FrozenInstanceError: cannot assign to field ‘val’
+</code></pre>
+<p>因此，一个 <code>frozen</code> 实例是一种很好方式来存储：</p>
+<ul>
+<li>常数</li>
+<li>设置</li>
+</ul>
+<p>这些通常不会在应用程序的生命周期内发生变化，任何企图修改它们的行为都应该被禁止。</p>
+<h3 id="后期初始化处理">后期初始化处理</h3>
+<p>有了 <code>dataclass</code>，需要定义一个 <code>__init__</code> 方法来将变量赋给 <code>self</code> 这种初始化操作已经得到了处理。但是我们失去了在变量被赋值之后立即需要的函数调用或处理的灵活性。</p>
+<p>让我们来讨论一个用例，在这个用例中，我们定义一个 <code>Float</code> 类来包含浮点数，然后在初始化之后立即计算整数和小数部分。</p>
+<p>通常是这样：</p>
+<pre><code>import math
+
+class Float:
+    def __init__(self, val = 0):
+        self.val = val
+        self.process()
+
+    def process(self):
+        self.decimal, self.integer = math.modf(self.val)
+
+&gt;&gt;&gt; a = Float( 2.2)
+
+&gt;&gt;&gt; a.decimal
+
+&gt;&gt;&gt; 0.2000
+
+&gt;&gt;&gt; a.integer
+
+&gt;&gt;&gt; 2.0
+</code></pre>
+<p>幸运的是，使用 <a href="https://docs.python.org/3/library/dataclasses.html#post-init-processing"><strong>post_init</strong></a>  方法已经能够处理后期初始化操作。</p>
+<p>生成的 <code>__init__</code>  方法在返回之前调用 <code>__post_init__</code> 返回。因此，可以在函数中进行任何处理。</p>
+<pre><code>import math
+
+@dataclass
+class FloatNumber:
+    val: float = 0.0
+
+    def __post_init__(self):
+        self.decimal, self.integer = math.modf(self.val)
+
+&gt;&gt;&gt; a = Number(2.2)
+
+&gt;&gt;&gt; a.val
+
+&gt;&gt;&gt; 2.2
+
+&gt;&gt;&gt; a.integer
+
+&gt;&gt;&gt; 2.0
+
+&gt;&gt;&gt; a.decimal
+
+&gt;&gt;&gt; 0.2
+</code></pre>
+<p>多么方便！</p>
+<h3 id="继承">继承</h3>
+<p><code>Dataclasses</code> 支持继承，就像普通的 Python 类一样。</p>
+<p>因此，父类中定义的属性将在子类中可用。</p>
+<pre><code>@dataclass
+class Person:
+    age: int = 0
+    name: str
+
+@dataclass
+class Student(Person):
+    grade: int
+
+&gt;&gt;&gt; s = Student(20, &quot;John Doe&quot;, 12)
+
+&gt;&gt;&gt; s.age
+
+&gt;&gt;&gt; 20
+
+&gt;&gt;&gt; s.name
+
+&gt;&gt;&gt; &quot;John Doe&quot;
+
+&gt;&gt;&gt; s.grade
+
+&gt;&gt;&gt; 12
+</code></pre>
+<p>请注意，<code>Student</code> 的参数是在类中定义的字段的顺序。</p>
+<p>继承过程中 <code>__post_init__</code> 的行为是怎样的？</p>
+<p>由于 <code>__post_init__</code> 只是另一个函数，因此必须以传统方式调用它：</p>
+<pre><code>@dataclass
+class A:
+    a: int
+
+    def __post_init__(self):
+        print(&quot;A&quot;)
+
+@dataclass
+class B(A):
+    b: int
+
+    def __post_init__(self):
+        print(&quot;B&quot;)
+
+&gt;&gt;&gt; a = B(1,2)
+
+&gt;&gt;&gt; B
+</code></pre>
+<p>在上面的例子中，只有 <code>B</code> 的 <code>__post_init__</code> 被调用，那么我们如何调用 <code>A</code> 的 <code>__post_init__</code> 呢？</p>
+<p>因为它是父类的函数，所以可以用 <code>super</code> 来调用它。</p>
+<pre><code>@dataclass
+class B(A):
+    b: int
+
+    def __post_init__(self):
+        super().__post_init__() # 调用 A 的 post init
+        print(&quot;B&quot;)
+
+&gt;&gt;&gt; a = B(1,2)
+
+&gt;&gt;&gt; A
+    B
+</code></pre>
+<h3 id="结论">结论</h3>
+<p>因此，以上是 <code>dataclass</code> 使 Python 开发人员变得更轻松的几种方法。</p>
+<p>我试着彻底覆盖大部分的用例，但是，没有人是完美的。如果你发现了错误，或者想让我注意相关的用例，请联系我。</p>
+<p>我将在另一篇文章中介绍 <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field">dataclasses.field</a> 和 <code>unsafe_hash</code>。</p>
+<p>在 <a href="http://github.com/xssChauhan/">Github</a> 和 <a href="https://twitter.com/xssChauhan">Twitter</a> 关注我。</p>
+<p>更新：<code>dataclasses.field</code> 的文章可以在<a href="https://medium.com/@xsschauhan/understanding-python-dataclasses-part-2-660ecc11c9b8">这里</a>找到。</p>
+<hr>
+<p>via: <a href="https://medium.com/mindorks/understanding-python-dataclasses-part-1-c3ccd4355c34">https://medium.com/mindorks/understanding-python-dataclasses-part-1-c3ccd4355c34</a></p>
+<p>作者：<a href="https://medium.com/@xsschauhan?source=post_header_lockup">Shikhar Chauhan</a>
+译者：<a href="https://github.com/MjSeven">MjSeven</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#介绍">介绍</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#初始化">初始化</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#表示">表示</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#数据比较">数据比较</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#dataclass-作为一个可调用的装饰器">dataclass 作为一个可调用的装饰器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#frozen不可变-实例">Frozen（不可变） 实例</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#后期初始化处理">后期初始化处理</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#继承">继承</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201809/20180703 Understanding Python Dataclasses — Part 1","title":"理解 Python 的 Dataclasses（一）"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用 mkosi 构建 RHEL 和 RHEL UBI 镜像 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用 mkosi 构建 RHEL 和 RHEL UBI 镜像 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用 mkosi 构建 RHEL 和 RHEL UBI 镜像 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202311/20231124 Building RHEL and RHEL UBI images with mkosi#page","@type":"TechArticle","headline":"使用 mkosi 构建 RHEL 和 RHEL UBI 镜像","inLanguage":"en","name":"使用 mkosi 构建 RHEL 和 RHEL UBI 镜像","url":"https://zhengqbbb.github.io/pages-dev/202311/20231124 Building RHEL and RHEL UBI images with mkosi","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202311/20231124 Building RHEL and RHEL UBI images with mkosi"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#mkosi-特性">mkosi 特性</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#项目目标">项目目标</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#带有-shell-的基本-rhel-ubi-镜像">带有 Shell 的基本 RHEL UBI 镜像</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建镜像">创建镜像</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用自己的文件扩展镜像">使用自己的文件扩展镜像</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从源代码构建">从源代码构建</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取-rhel-的开发者订阅">获取 RHEL 的开发者订阅</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-rhel-构建镜像">使用 RHEL 构建镜像</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#最后">最后</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用 mkosi 构建 RHEL 和 RHEL UBI 镜像</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202311/27/232213c9y5jt85t7vj8men.png" alt=""></p>
+<p>mkosi 是一个轻量级工具，用于从发行版软件包构建镜像。本文介绍如何使用 mkosi 从 RHEL 和 RHEL <ruby><a href="https://uapi-group.org/specifications/specs/discoverable_disk_image/">通用基础镜像</a><rt>Universal Base Image</rt></ruby>（UBI）的软件包构建镜像。RHEL UBI 是 RHEL 的一个子集，可以在没有订阅的情况下免费使用。</p>
+<h3 id="mkosi-特性">mkosi 特性</h3>
+<p>mkosi 支持一些输出格式，但最重要的是 <ruby><a href="https://uapi-group.org/specifications/specs/discoverable_disk_image/">可发现磁盘镜像</a><rt>Discoverable Disk Images</rt></ruby>（DDI）。同一个 DDI 可用于引导容器、或运行在虚拟机、抑或是复制到 U 盘以引导真实物理机，然后从 U 盘复制到磁盘以引导系统。该镜像具有标准化的布局和描述其用途的元数据。</p>
+<p>mkosi 依赖其他工具来完成大部分工作：使用 <code>systemd-repart</code> 在磁盘镜像上创建分区，使用 <code>mkfs.btrfs</code> / <code>mkfs.ext4</code> / <code>mkfs.xfs</code> 等创建文件系统，并使用 <code>dnf</code> / <code>apt</code> / <code>pacman</code> / <code>zypper</code> 下载和解压包。</p>
+<p>mkosi 支持一系列发行版：Debian 和 Ubuntu、Arch Linux、openSUSE，当然还包括 Fedora、CentOS Stream 及其衍生版本，以及最近的 RHEL UBI 和 RHEL 。由于实际的“重活”是由其他工具完成的，mkosi 可以进行交叉构建。这意味着可以使用一个发行版构建各种其他发行版的镜像。唯一的要求是主机上安装了相应的工具。Fedora 有原生的 <code>apt</code>、<code>pacman</code> 和 <code>zypper</code>，因此它为使用 mkosi 构建任何其他发行版提供了良好的基础。</p>
+<p>它还有一些有趣的功能：镜像可以由非特权用户创建，或者在没有设备文件的容器中创建，特别是没有对回环设备的访问权限。它还可以在没有特权的情况下将这些镜像启动为虚拟机（使用 <code>qemu</code>）。</p>
+<p>配置是声明性的，非常容易创建。使用 <code>systemd-repart</code> 创建磁盘分区，并使用 <code>repart.d</code> 配置文件定义应该如何完成此操作。</p>
+<p>有关更多详细信息，请参见 Daan DeMeyer 在 All Systems Go 大会上的两个演讲：《<a href="https://media.ccc.de/v/all-systems-go-2023-191-systemd-repart-building-discoverable-disk-images">systemd-repart: Building Discoverable Disk Images</a>》 和 《<a href="https://media.ccc.de/v/all-systems-go-2023-190-mkosi-building-bespoke-operating-system-images">mkosi: Building Bespoke Operating System Images</a>》。</p>
+<h3 id="项目目标">项目目标</h3>
+<p>mkosi 的一个目标是允许对软件项目进行针对不同发行版的测试。它将为一个发行版创建一个镜像（使用该发行版的软件包），然后将软件项目编译并安装到该镜像中，插入不属于软件包的额外文件。但是，首个阶段，即从软件包创建镜像的过程，本身就是有用的。这是我们将首先展示的内容。</p>
+<p>我们 [^1] 最近添加了对 RHEL 和 RHEL UBI 的支持。让我们从 RHEL UBI 开始，利用发行版软件包创建镜像。</p>
+<p>请注意，下面的示例要求 mkosi 19，而且不适用于更早的版本。</p>
+<h3 id="带有-shell-的基本-rhel-ubi-镜像">带有 Shell 的基本 RHEL UBI 镜像</h3>
+<pre><code>$ mkdir -p mkosi.cache
+$ mkosi \
+    -d rhel-ubi \
+    -t directory \
+    -p bash,coreutils,util-linux,systemd,rpm \
+    --autologin
+</code></pre>
+<p>上面的命令指定了发行版 <code>rhel-ubi</code>，输出格式 <code>directory</code>，并请求安装软件包 <code>bash</code>、<code>coreutils</code>、…、<code>rpm</code>。<code>rpm</code> 通常不需要放到镜像内部，但在这里用于内省会很有用。我们还启用了以 root 用户自动登录。</p>
+<p>在启动构建之前，我们创建了缓存目录 <code>mkosi.cache</code>。当存在缓存目录时，mkosi 会自动使用它来持久化下载的 RPM 包。这将使相同软件包集合的后续调用速度更快。</p>
+<p>然后，我们可以使用 <code>systemd-nspawn</code> 将此镜像作为容器启动：</p>
+<pre><code>$ sudo mkosi \
+    -d rhel-ubi \
+    -t directory \
+    boot
+</code></pre>
+<pre><code>systemd 252-14.el9_2.3 running in system mode (+PAM +AUDIT +SELINUX -APPARMOR +IMA +SMACK +SECCOMP +GCRYPT +GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS -FIDO2 +IDN2 -IDN -IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY +P11KIT -QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK +XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified)
+Detected virtualization systemd-nspawn.
+Detected architecture x86-64.
+Detected first boot.
+
+Red Hat Enterprise Linux 9.2 (Plow)
+...
+[ OK ] Created slice Slice /system/getty.
+[ OK ] Created slice Slice /system/modprobe.
+[ OK ] Created slice User and Session Slice.
+...
+[ OK ] Started User Login Management.
+[ OK ] Reached target Multi-User System.
+
+Red Hat Enterprise Linux 9.2 (Plow)
+Kernel 6.5.6-300.fc39.x86_64 on an x86_64
+
+image login: root (automatic login)
+
+[root@image ~]# rpm -q rpm systemd
+rpm-4.16.1.3-22.el9.x86_64
+systemd-252-14.el9_2.3.x86_64
+</code></pre>
+<p>正如前面提到的，此镜像可以用于启动虚拟机。但在此设置下，这是不可能的 —— 我们的镜像没有内核。事实上，RHEL UBI 根本不提供内核，因此我们无法使用它进行引导（无论是在虚拟机上还是在裸机上）。</p>
+<h3 id="创建镜像">创建镜像</h3>
+<p>我一开始说是要创建镜像，但到目前为止我们只有一个目录。让我们开始实际创建一个镜像：</p>
+<pre><code>$ mkosi \
+    -d rhel-ubi \
+    -t disk \
+    -p bash,coreutils,util-linux,systemd,rpm \
+    --autologin
+</code></pre>
+<p>这将生成 <code>image.raw</code>，一个带有 GPT 分区表和单个根分区（用于本机架构）的磁盘镜像。</p>
+<pre><code>$ sudo systemd-dissect image.raw
+Name: image.raw
+Size: 301.0M
+Sec. Size: 512
+Arch.: x86-64
+
+Image UUID: dcbd6499-409e-4b62-b251-e0dd15e446d5
+OS Release: NAME=Red Hat Enterprise Linux
+VERSION=9.2 (Plow)
+ID=rhel
+ID_LIKE=fedora
+VERSION_ID=9.2
+PLATFORM_ID=platform:el9
+PRETTY_NAME=Red Hat Enterprise Linux 9.2 (Plow)
+ANSI_COLOR=0;31
+LOGO=fedora-logo-icon
+CPE_NAME=cpe:/o:redhat:enterprise_linux:9::baseos
+HOME_URL=https://www.redhat.com/
+DOCUMENTATION_URL=https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9
+BUG_REPORT_URL=https://bugzilla.redhat.com/
+REDHAT_BUGZILLA_PRODUCT=Red Hat Enterprise Linux 9
+REDHAT_BUGZILLA_PRODUCT_VERSION=9.2
+REDHAT_SUPPORT_PRODUCT=Red Hat Enterprise Linux
+REDHAT_SUPPORT_PRODUCT_VERSION=9.2
+
+Use As: ✗ bootable system for UEFI
+        ✓ bootable system for container
+        ✗ portable service
+        ✗ initrd
+        ✗ sysext extension for system
+        ✗ sysext extension for initrd
+        ✗ sysext extension for portable service
+
+RW DESIGNATOR PARTITION UUID PARTITION LABEL FSTYPE ARCHITECTURE VERITY GROWFS NODE PARTNO
+rw root 1236e211-4729-4561-a6fc-9ef8f18b828f root-x86-64 xfs x86-64 no yes /dev/loop0p1 1
+</code></pre>
+<p>好的，我们现在有一个镜像，镜像中包含了一些来自 RHEL UBI 软件包的内容。我们如何在其上加点我们自己的东西呢？</p>
+<h3 id="使用自己的文件扩展镜像">使用自己的文件扩展镜像</h3>
+<p>有几种方法可以扩展镜像，包括从头开始编译某些东西。但在那之前，让我们做一些更简单的事情，将一个现成的文件系统注入到镜像中：</p>
+<pre><code>$ mkdir -p mkosi.extra/srv/www/content
+$ cat &gt;mkosi.extra/srv/www/content/index.html &lt;&lt;&#39;EOF&#39;
+&lt;h1&gt;Hello, World!&lt;/h1&gt;
+EOF
+</code></pre>
+<p>现在，该镜像将包含 <code>/srv/www/content/index.html</code>。</p>
+<p>这种方法用于注入额外的配置或简单的程序。</p>
+<h3 id="从源代码构建">从源代码构建</h3>
+<p>现在让我们过一遍完整流程，从源代码构建一些东西。例如，一个简单的 Meson 项目，有一个单独的 C 文件：</p>
+<pre><code>$ cat &gt;hello.c &lt;&lt;&#39;EOF&#39;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv) {
+    char buf[1024];
+
+    FILE *f = fopen(&quot;/srv/www/content/index.html&quot;, &quot;re&quot;);
+    size_t n = fread(buf, 1, sizeof buf, f);
+
+    fwrite(buf, 1, n, stdout);
+    fclose(f);
+    return 0;
+}
+EOF
+
+$ cat &gt;meson.build &lt;&lt;&#39;EOF&#39;
+project(&#39;hello&#39;, &#39;c&#39;)
+executable(&#39;hello&#39;, &#39;hello.c&#39;,
+            install: true)
+EOF
+</code></pre>
+<pre><code>$ cat &gt;mkosi.build &lt;&lt;&#39;EOF&#39;
+set -ex
+
+mkosi-as-caller rm -rf &quot;$BUILDDIR/build&quot;
+mkosi-as-caller meson setup &quot;$BUILDDIR/build&quot; &quot;$SRCDIR&quot;
+mkosi-as-caller meson compile -C &quot;$BUILDDIR/build&quot;
+meson install -C &quot;$BUILDDIR/build&quot; --no-rebuild
+EOF
+$ chmod +x mkosi.build
+</code></pre>
+<p>总结一下：我们有一些源代码（<code>hello.c</code>），一个构建系统配置文件（<code>meson.build</code>），以及一个由 mkosi 调用的胶水脚本（<code>mkosi.build</code>）。对于实际的项目，也会有相同的元素，只是更加复杂。</p>
+<p>这个脚本需要一些解释。mkosi 在创建镜像时使用用户命名空间。这允许包管理器（例如 <code>dnf</code>）安装由不同用户拥有的文件，即使它是由一个普通非特权用户调用的。我们使用 <code>mkosi-as-caller</code> 切换回调用者以进行编译。这样，在 <code>$BUILDDIR</code> 下编译期间创建的文件将由调用者拥有。</p>
+<p>现在让我们使用我们的程序构建镜像。与之前的调用相比，我们需要额外的软件包：<code>meson</code>、<code>gcc</code>。由于我们现在有了构建脚本，mkosi 将执行两个构建阶段：首先创建一个构建镜像，并在其中调用构建脚本，将安装产物存储在一个临时目录中，然后构建最终镜像，并将安装产物注入其中。（mkosi 设置 <code>$DESTDIR</code>，<code>meson install</code> 自动使用 <code>$DESTDIR</code>，因此并不需要我们明确指定。）</p>
+<pre><code>$ mkosi \
+    -d rhel-ubi \
+    -t disk \
+    -p bash,coreutils,util-linux,systemd,rpm \
+    --autologin \
+    --build-package=meson,gcc \
+    --build-dir=mkosi.builddir \
+    --build-script=mkosi.build \
+    -f
+</code></pre>
+<p>此时，我们有了带有自定义载荷的镜像 <code>image.raw</code>。我们可以启动我们新创建的可执行文件作为 shell 命令：</p>
+<pre><code>$ sudo mkosi -d rhel-ubi -t directory shell hello
+&lt;h1&gt;Hello, World!&lt;/h1&gt;
+</code></pre>
+<h3 id="获取-rhel-的开发者订阅">获取 RHEL 的开发者订阅</h3>
+<p>RHEL UBI 主要用作容器构建的基础层。它提供了有限的软件包（约 1500 个）。现在让我们切换到完整的 RHEL 安装。</p>
+<p>获取 RHEL 的最简单方法是使用 <a href="https://developers.redhat.com/articles/faqs-no-cost-red-hat-enterprise-linux">开发者许可证</a>。它提供了权限注册 16 个运行 RHEL 的物理或虚拟节点，并提供自助式支持。</p>
+<p>首先，<a href="https://developers.redhat.com/register">创建一个账户</a>。然后，转到 <a href="https://access.redhat.com/management">管理页面</a> 并确保启用了“用于 Red Hat 订阅管理的简化内容访问”。接下来，<a href="https://access.redhat.com/management/activation_keys/new">创建一个新的激活密钥</a>，选择 “Red Hat 个人开发者订阅”。记下显示的组织 ID。在下面，我们将使用密钥名称和组织 ID 分别表示为 <code>$KEY_NAME</code> 和 <code>$ORGANIZATION_ID</code>。</p>
+<p>现在，我们准备使用 RHEL 内容：</p>
+<pre><code>$ sudo dnf install subscription-manager
+$ sudo subscription-manager register \
+    --org $ORGANIZATION_ID --activationkey $KEY_NAME
+</code></pre>
+<h3 id="使用-rhel-构建镜像">使用 RHEL 构建镜像</h3>
+<p>在之前的示例中，我们通过参数开关指定了所有配置。这对于快速开发很友好，但可能在情况复杂时变得难以处理。RHEL 是一个严肃的发行版，所以让我们改为使用配置文件：</p>
+<pre><code>$ cat &gt;mkosi.conf &lt;&lt;&#39;EOF&#39;
+[Output]
+Format=directory
+Output=rhel-directory
+
+[Distribution]
+Distribution=rhel
+
+[Content]
+Packages=
+bash
+coreutils
+util-linux
+systemd
+systemd-boot
+systemd-udev
+kernel-core
+
+Bootable=yes
+Bootloader=uki
+Autologin=yes
+WithDocs=no
+EOF
+</code></pre>
+<p>首先，让我们检查一下一切是否正常：</p>
+<pre><code>$ mkosi summary
+</code></pre>
+<p>现在让我们构建镜像（呃，或者说，目录）：</p>
+<pre><code>$ mkosi build
+$ mkosi qemu
+</code></pre>
+<pre><code>Welcome to Red Hat Enterprise Linux 9.2 (Plow)!
+
+[ OK ] Created slice Slice /system/modprobe.
+[ OK ] Reached target Initrd Root Device.
+[ OK ] Reached target Initrd /usr File System.
+[ OK ] Reached target Local Integrity Protected Volumes.
+[ OK ] Reached target Local File Systems.
+[ OK ] Reached target Path Units.
+[ OK ] Reached target Remote Encrypted Volumes.
+[ OK ] Reached target Remote Verity Protected Volumes.
+[ OK ] Reached target Slice Units.
+[ OK ] Reached target Swaps.
+...
+[ OK ] Listening on Journal Socket.
+[ OK ] Listening on udev Control Socket.
+[ OK ] Listening on udev Kernel Socket.
+...
+Red Hat Enterprise Linux 9.2 (Plow)
+Kernel 5.14.0-284.30.1.el9_2.x86_64 on an x86_64
+
+localhost login: root (automatic login)
+[root@localhost ~]#
+</code></pre>
+<p>很好，我们将“镜像”构建为一个带有文件系统树的目录，并在虚拟机中引导了它。</p>
+<p>在引导的虚拟机中，<code>findmnt /</code> 显示根文件系统是 virtiofs。这是一个虚拟文件系统，将主机的目录暴露给客户机。我们其实也可以构建一个更传统的镜像，其中包含文件系统和文件内的分区表，但“目录 + virtiofs” 对于开发来说更快且更友好。</p>
+<p>我们刚刚引导的镜像未注册。要允许从镜像“内部”下载更新，我们必须将 <code>yum</code> 、<code>subscription-manager</code> 和 <code>NetworkManager</code> 添加到软件包列表，并在下载任何更新之前以与上述相同的方式调用 <code>subscription-manager</code>。在这之后，我们在基本仓库中就有大约 4500 个软件包可用，并且还有一些包含更多专业软件包的额外仓库。</p>
+<h3 id="最后">最后</h3>
+<p>今天就是这些了。如果您有问题，可以在 Matrix 上找到我们，地址为 <a href="https://matrix.to/#/#mkosi:matrix.org">#mkosi:matrix.org</a>，或者在 <a href="https://lists.freedesktop.org/mailman/listinfo/systemd-devel">systemd 邮件列表</a> 上找到我们。</p>
+<p>[^1]: Daan DeMeyer、Lukáš Nykrýn、Michal Sekletár、Zbigiew Jędrzejewski-Szmek</p>
+<p><em>（题图：MJ/a6e60316-ed03-4e23-b8b4-22332a0f5bfa）</em></p>
+<hr>
+<p>via: <a href="https://fedoramagazine.org/create-images-directly-from-rhel-and-rhel-ubi-package-using-mkosi/">https://fedoramagazine.org/create-images-directly-from-rhel-and-rhel-ubi-package-using-mkosi/</a></p>
+<p>作者：<a href="https://fedoramagazine.org/author/zbyszek/">Zbigniew Jędrzejewski-Szmek</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/GlassFoxowo-Dev">GlassFoxowo</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#mkosi-特性">mkosi 特性</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#项目目标">项目目标</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#带有-shell-的基本-rhel-ubi-镜像">带有 Shell 的基本 RHEL UBI 镜像</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建镜像">创建镜像</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用自己的文件扩展镜像">使用自己的文件扩展镜像</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从源代码构建">从源代码构建</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获取-rhel-的开发者订阅">获取 RHEL 的开发者订阅</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用-rhel-构建镜像">使用 RHEL 构建镜像</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#最后">最后</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202311/20231124 Building RHEL and RHEL UBI images with mkosi","title":"使用 mkosi 构建 RHEL 和 RHEL UBI 镜像"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

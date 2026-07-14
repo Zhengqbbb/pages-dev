@@ -1,0 +1,249 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>五种加速 Go 的特性 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="五种加速 Go 的特性 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="五种加速 Go 的特性 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201810/20140607 Five things that make Go fast#page","@type":"TechArticle","headline":"五种加速 Go 的特性","inLanguage":"en","name":"五种加速 Go 的特性","url":"https://zhengqbbb.github.io/pages-dev/201810/20140607 Five things that make Go fast","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201810/20140607 Five things that make Go fast"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#相关文章">相关文章：</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>五种加速 Go 的特性</h1><p><em>Anthony Starks 使用他出色的 Deck 演示工具重构了我原来的基于 Google Slides 的幻灯片。你可以在他的博客上查看他重构后的幻灯片, 
+<a href="http://mindchunk.blogspot.com.au/2014/06/remixing-with-deck.html">mindchunk.blogspot.com.au/2014/06/remixing-with-deck</a>。</em></p>
+<p>我最近被邀请在 Gocon 发表演讲，这是一个每半年在日本东京举行的 Go 的精彩大会。<a href="http://ymotongpoo.hatenablog.com/entry/2014/06/01/124350">Gocon 2014</a> 是一个完全由社区驱动的为期一天的活动，由培训和一整个下午的围绕着生产环境中的 Go 这个主题的演讲组成.（LCTT 译注：本文发表于 2014 年）</p>
+<p>以下是我的讲义。原文的结构能让我缓慢而清晰的演讲，因此我已经编辑了它使其更可读。</p>
+<p>我要感谢 <a href="http://www.goinggo.net/">Bill Kennedy</a> 和 Minux Ma，特别是 <a href="https://twitter.com/offbymany">Josh Bleecher Snyder</a>，感谢他们在我准备这次演讲中的帮助。</p>
+<hr>
+<p>大家下午好。</p>
+<p>我叫 David.</p>
+<p>我很高兴今天能来到 Gocon。我想参加这个会议已经两年了，我很感谢主办方能提供给我向你们演讲的机会。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-1.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-1.jpg" alt="Gocon 2014"></a></p>
+<p>我想以一个问题开始我的演讲。</p>
+<p>为什么选择 Go？</p>
+<p>当大家讨论学习或在生产环境中使用 Go 的原因时，答案不一而足，但因为以下三个原因的最多。</p>
+<p><a href="https://dave.cheney.net/2014/06/07/five-things-that-make-go-fast/gocon-2014-2"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-2.jpg" alt="Gocon 2014 "></a></p>
+<p>这就是 TOP3 的原因。</p>
+<p>第一，并发。</p>
+<p>Go 的 <ruby>并发原语<rt>Concurrency Primitives</rt></ruby> 对于来自 Nodejs，Ruby 或 Python 等单线程脚本语言的程序员，或者来自 C++ 或 Java 等重量级线程模型的语言都很有吸引力。</p>
+<p>易于部署。</p>
+<p>我们今天从经验丰富的 Gophers 那里听说过，他们非常欣赏部署 Go 应用的简单性。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-3.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-3.jpg" alt="Gocon 2014"></a></p>
+<p>然后是性能。</p>
+<p>我相信人们选择 Go 的一个重要原因是它 <em>快</em>。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-4.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-4.jpg" alt="Gocon 2014 (4)"></a></p>
+<p>在今天的演讲中，我想讨论五个有助于提高 Go 性能的特性。</p>
+<p>我还将与大家分享 Go 如何实现这些特性的细节。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-5.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-5.jpg" alt="Gocon 2014 (5)"></a></p>
+<p>我要谈的第一个特性是 Go 对于值的高效处理和存储。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-6.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-6.jpg" alt="Gocon 2014 (6)"></a></p>
+<p>这是 Go 中一个值的例子。编译时，<code>gocon</code> 正好消耗四个字节的内存。</p>
+<p>让我们将 Go 与其他一些语言进行比较</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-7.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-7.jpg" alt="Gocon 2014 (7)"></a></p>
+<p>由于 Python 表示变量的方式的开销，使用 Python 存储相同的值会消耗六倍的内存。</p>
+<p>Python 使用额外的内存来跟踪类型信息，进行 <ruby>引用计数<rt>Reference Counting</rt></ruby> 等。</p>
+<p>让我们看另一个例子：</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-8.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-8.jpg" alt="Gocon 2014 (8)"></a></p>
+<p>与 Go 类似，Java 消耗 4 个字节的内存来存储 <code>int</code> 型。</p>
+<p>但是，要在像 <code>List</code> 或 <code>Map</code> 这样的集合中使用此值，编译器必须将其转换为 <code>Integer</code> 对象。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-9.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-9.jpg" alt="Gocon 2014 (9)"></a></p>
+<p>因此，Java 中的整数通常消耗 16 到 24 个字节的内存。</p>
+<p>为什么这很重要？ 内存便宜且充足，为什么这个开销很重要？</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-10.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-10.jpg" alt="Gocon 2014 (10)"></a></p>
+<p>这是一张显示 CPU 时钟速度与内存总线速度的图表。</p>
+<p>请注意 CPU 时钟速度和内存总线速度之间的差距如何继续扩大。</p>
+<p>两者之间的差异实际上是 CPU 花费多少时间等待内存。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-11.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-11.jpg" alt="Gocon 2014 (11)"></a></p>
+<p>自 1960 年代后期以来，CPU 设计师已经意识到了这个问题。</p>
+<p>他们的解决方案是一个缓存，一个更小、更快的内存区域，介入 CPU 和主存之间。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-12.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-12.jpg" alt="Gocon 2014 (12)"></a></p>
+<p>这是一个 <code>Location</code> 类型，它保存物体在三维空间中的位置。它是用 Go 编写的，因此每个 <code>Location</code> 只消耗 24 个字节的存储空间。</p>
+<p>我们可以使用这种类型来构造一个容纳 1000 个 <code>Location</code> 的数组类型，它只消耗 24000 字节的内存。</p>
+<p>在数组内部，<code>Location</code> 结构体是顺序存储的，而不是随机存储的 1000 个 <code>Location</code> 结构体的指针。</p>
+<p>这很重要，因为现在所有 1000 个 <code>Location</code> 结构体都按顺序放在缓存中，紧密排列在一起。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-13.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-13.jpg" alt="Gocon 2014 (13)"></a></p>
+<p>Go 允许您创建紧凑的数据结构，避免不必要的填充字节。</p>
+<p>紧凑的数据结构能更好地利用缓存。</p>
+<p>更好的缓存利用率可带来更好的性能。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-14.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-14.jpg" alt="Gocon 2014 (14)"></a></p>
+<p>函数调用不是无开销的。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-15.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-15.jpg" alt="Gocon 2014 (15)"></a></p>
+<p>调用函数时会发生三件事。</p>
+<p>创建一个新的 <ruby>栈帧<rt>Stack Frame</rt></ruby>，并记录调用者的详细信息。</p>
+<p>在函数调用期间可能被覆盖的任何寄存器都将保存到栈中。</p>
+<p>处理器计算函数的地址并执行到该新地址的分支。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-16.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-16.jpg" alt="Gocon 2014 (16)"></a></p>
+<p>由于函数调用是非常常见的操作，因此 CPU 设计师一直在努力优化此过程，但他们无法消除开销。</p>
+<p>函调固有开销，或重于泰山，或轻于鸿毛，这取决于函数做了什么。</p>
+<p>减少函数调用开销的解决方案是 <ruby>内联<rt>Inlining</rt></ruby>。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-17.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-17.jpg" alt="Gocon 2014 (17)"></a></p>
+<p>Go 编译器通过将函数体视为调用者的一部分来内联函数。</p>
+<p>内联也有成本，它增加了二进制文件大小。</p>
+<p>只有当调用开销与函数所做工作关联度的很大时内联才有意义，因此只有简单的函数才能用于内联。</p>
+<p>复杂的函数通常不受调用它们的开销所支配，因此不会内联。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-18.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-18.jpg" alt="Gocon 2014 (18)"></a></p>
+<p>这个例子显示函数 <code>Double</code> 调用 <code>util.Max</code>。</p>
+<p>为了减少调用 <code>util.Max</code> 的开销，编译器可以将 <code>util.Max</code> 内联到 <code>Double</code> 中，就象这样</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-19.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-19.jpg" alt="Gocon 2014 (19)"></a></p>
+<p>内联后不再调用 <code>util.Max</code>，但是 <code>Double</code> 的行为没有改变。</p>
+<p>内联并不是 Go 独有的。几乎每种编译或及时编译的语言都执行此优化。但是 Go 的内联是如何实现的？</p>
+<p>Go 实现非常简单。编译包时，会标记任何适合内联的小函数，然后照常编译。</p>
+<p>然后函数的源代码和编译后版本都会被存储。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-20.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-20.jpg" alt="Gocon 2014 (20)"></a></p>
+<p>此幻灯片显示了 <code>util.a</code> 的内容。源代码已经过一些转换，以便编译器更容易快速处理。</p>
+<p>当编译器编译 <code>Double</code> 时，它看到 <code>util.Max</code> 可内联的，并且 <code>util.Max</code> 的源代码是可用的。</p>
+<p>就会替换原函数中的代码，而不是插入对 <code>util.Max</code> 的编译版本的调用。</p>
+<p>拥有该函数的源代码可以实现其他优化。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-21.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-21.jpg" alt="Gocon 2014 (21)"></a></p>
+<p>在这个例子中，尽管函数 <code>Test</code> 总是返回 <code>false</code>，但 <code>Expensive</code> 在不执行它的情况下无法知道结果。</p>
+<p>当 <code>Test</code> 被内联时，我们得到这样的东西。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-22.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-22.jpg" alt="Gocon 2014 (22)"></a></p>
+<p>编译器现在知道 <code>Expensive</code> 的代码无法访问。</p>
+<p>这不仅节省了调用 <code>Test</code> 的成本，还节省了编译或运行任何现在无法访问的 <code>Expensive</code> 代码。</p>
+<p>Go 编译器可以跨文件甚至跨包自动内联函数。还包括从标准库调用的可内联函数的代码。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-23.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-23.jpg" alt="Gocon 2014 (23)"></a></p>
+<p><ruby>强制垃圾回收<rt>Mandatory Garbage Collection</rt></ruby> 使 Go 成为一种更简单，更安全的语言。</p>
+<p>这并不意味着垃圾回收会使 Go 变慢，或者垃圾回收是程序速度的瓶颈。</p>
+<p>这意味着在堆上分配的内存是有代价的。每次 GC 运行时都会花费 CPU 时间，直到释放内存为止。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-24.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-24.jpg" alt="Gocon 2014 (24)"></a></p>
+<p>然而，有另一个地方分配内存，那就是栈。</p>
+<p>与 C 不同，它强制您选择是否将值通过 <code>malloc</code> 将其存储在堆上，还是通过在函数范围内声明将其储存在栈上；Go 实现了一个名为 <ruby>逃逸分析<rt>Escape Analysis</rt></ruby> 的优化。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-25.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-25.jpg" alt="Gocon 2014 (25)"></a></p>
+<p>逃逸分析决定了对一个值的任何引用是否会从被声明的函数中逃逸。</p>
+<p>如果没有引用逃逸，则该值可以安全地存储在栈中。</p>
+<p>存储在栈中的值不需要分配或释放。</p>
+<p>让我们看一些例子</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-26.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-26.jpg" alt="Gocon 2014 (26)"></a></p>
+<p><code>Sum</code> 返回 1 到 100 的整数的和。这是一种相当不寻常的做法，但它说明了逃逸分析的工作原理。</p>
+<p>因为切片 <code>numbers</code> 仅在 <code>Sum</code> 内引用，所以编译器将安排到栈上来存储的 100 个整数，而不是安排到堆上。</p>
+<p>没有必要回收 <code>numbers</code>，它会在 <code>Sum</code> 返回时自动释放。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-27.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-27.jpg" alt="Gocon 2014 (27)"></a></p>
+<p>第二个例子也有点尬。在 <code>CenterCursor</code> 中，我们创建一个新的 <code>Cursor</code> 对象并在 <code>c</code> 中存储指向它的指针。</p>
+<p>然后我们将 <code>c</code> 传递给 <code>Center()</code> 函数，它将 <code>Cursor</code> 移动到屏幕的中心。</p>
+<p>最后我们打印出那个 &#39;Cursor` 的 X 和 Y 坐标。</p>
+<p>即使 <code>c</code> 被 <code>new</code> 函数分配了空间，它也不会存储在堆上，因为没有引用 <code>c</code> 的变量逃逸 <code>CenterCursor</code> 函数。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-28.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-28.jpg" alt="Gocon 2014 (28)"></a></p>
+<p>默认情况下，Go 的优化始终处于启用状态。可以使用 <code>-gcflags = -m</code> 开关查看编译器的逃逸分析和内联决策。</p>
+<p>因为逃逸分析是在编译时执行的，而不是运行时，所以无论垃圾回收的效率如何，栈分配总是比堆分配快。</p>
+<p>我将在本演讲的其余部分详细讨论栈。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-30.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-30.jpg" alt="Gocon 2014 (30)"></a></p>
+<p>Go 有 goroutine。 这是 Go 并发的基石。</p>
+<p>我想退一步，探索 goroutine 的历史。</p>
+<p>最初，计算机一次运行一个进程。在 60 年代，多进程或 <ruby>分时<rt>Time Sharing</rt></ruby> 的想法变得流行起来。</p>
+<p>在分时系统中，操作系统必须通过保护当前进程的现场，然后恢复另一个进程的现场，不断地在这些进程之间切换 CPU 的注意力。</p>
+<p>这称为 <em>进程切换</em>。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-29.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-29.jpg" alt="Gocon 2014 (29)"></a></p>
+<p>进程切换有三个主要开销。</p>
+<p>首先，内核需要保护该进程的所有 CPU 寄存器的现场，然后恢复另一个进程的现场。</p>
+<p>内核还需要将 CPU 的映射从虚拟内存刷新到物理内存，因为这些映射仅对当前进程有效。</p>
+<p>最后是操作系统 <ruby>上下文切换<rt>Context Switch</rt></ruby> 的成本，以及 <ruby>调度函数<rt>Scheduler Function</rt></ruby> 选择占用 CPU 的下一个进程的开销。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-31.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-31.jpg" alt="Gocon 2014 (31)"></a></p>
+<p>现代处理器中有数量惊人的寄存器。我很难在一张幻灯片上排开它们，这可以让你知道保护和恢复它们需要多少时间。</p>
+<p>由于进程切换可以在进程执行的任何时刻发生，因此操作系统需要存储所有寄存器的内容，因为它不知道当前正在使用哪些寄存器。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-32.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-32.jpg" alt="Gocon 2014 (32)"></a></p>
+<p>这导致了线程的出生，这些线程在概念上与进程相同，但共享相同的内存空间。</p>
+<p>由于线程共享地址空间，因此它们比进程更轻，因此创建速度更快，切换速度更快。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-33.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-33.jpg" alt="Gocon 2014 (33)"></a></p>
+<p>Goroutine 升华了线程的思想。</p>
+<p>Goroutine 是 <ruby>协作式调度<rt>Cooperative Scheduled</rt></ruby>的，而不是依靠内核来调度。</p>
+<p>当对 Go <ruby>运行时调度器<rt>Runtime Scheduler</rt></ruby> 进行显式调用时，goroutine 之间的切换仅发生在明确定义的点上。</p>
+<p>编译器知道正在使用的寄存器并自动保存它们。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-34.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-34.jpg" alt="Gocon 2014 (34)"></a></p>
+<p>虽然 goroutine 是协作式调度的，但运行时会为你处理。</p>
+<p>Goroutine 可能会给禅让给其他协程时刻是：</p>
+<ul>
+<li>阻塞式通道发送和接收。</li>
+<li>Go 声明，虽然不能保证会立即调度新的 goroutine。</li>
+<li>文件和网络操作式的阻塞式系统调用。</li>
+<li>在被垃圾回收循环停止后。</li>
+</ul>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-35.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-35.jpg" alt="Gocon 2014 (35)"></a></p>
+<p>这个例子说明了上一张幻灯片中描述的一些调度点。</p>
+<p>箭头所示的线程从左侧的 <code>ReadFile</code> 函数开始。遇到 <code>os.Open</code>，它在等待文件操作完成时阻塞线程，因此调度器将线程切换到右侧的 goroutine。</p>
+<p>继续执行直到从通道 <code>c</code> 中读，并且此时 <code>os.Open</code> 调用已完成，因此调度器将线程切换回左侧并继续执行 <code>file.Read</code> 函数，然后又被文件 IO 阻塞。</p>
+<p>调度器将线程切换回右侧以进行另一个通道操作，该操作在左侧运行期间已解锁，但在通道发送时再次阻塞。</p>
+<p>最后，当 <code>Read</code> 操作完成并且数据可用时，线程切换回左侧。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-36.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-36.jpg" alt="Gocon 2014 (36)"></a></p>
+<p>这张幻灯片显示了低级语言描述的 <code>runtime.Syscall</code> 函数，它是 <code>os</code> 包中所有函数的基础。</p>
+<p>只要你的代码调用操作系统，就会通过此函数。</p>
+<p>对 <code>entersyscall</code> 的调用通知运行时该线程即将阻塞。</p>
+<p>这允许运行时启动一个新线程，该线程将在当前线程被阻塞时为其他 goroutine 提供服务。</p>
+<p>这导致每 Go 进程的操作系统线程相对较少，Go 运行时负责将可运行的 Goroutine 分配给空闲的操作系统线程。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-37.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-37.jpg" alt="Gocon 2014 (37)"></a></p>
+<p>在上一节中，我讨论了 goroutine 如何减少管理许多（有时是数十万个并发执行线程）的开销。</p>
+<p>Goroutine故事还有另一面，那就是栈管理，它引导我进入我的最后一个话题。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-39.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-39.jpg" alt="Gocon 2014 (39)"></a></p>
+<p>这是一个进程的内存布局图。我们感兴趣的关键是堆和栈的位置。</p>
+<p>传统上，在进程的地址空间内，堆位于内存的底部，位于程序（代码）的上方并向上增长。</p>
+<p>栈位于虚拟地址空间的顶部，并向下增长。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-40.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-40.jpg" alt="Gocon 2014 (40)"></a></p>
+<p>因为堆和栈相互覆盖的结果会是灾难性的，操作系统通常会安排在栈和堆之间放置一个不可写内存区域，以确保如果它们发生碰撞，程序将中止。</p>
+<p>这称为保护页，有效地限制了进程的栈大小，通常大约为几兆字节。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-41.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-41.jpg" alt="Gocon 2014 (41)"></a></p>
+<p>我们已经讨论过线程共享相同的地址空间，因此对于每个线程，它必须有自己的栈。</p>
+<p>由于很难预测特定线程的栈需求，因此为每个线程的栈和保护页面保留了大量内存。</p>
+<p>希望是这些区域永远不被使用，而且防护页永远不会被击中。</p>
+<p>缺点是随着程序中线程数的增加，可用地址空间的数量会减少。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-42.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-42.jpg" alt="Gocon 2014 (42)"></a></p>
+<p>我们已经看到 Go 运行时将大量的 goroutine 调度到少量线程上，但那些 goroutines 的栈需求呢？</p>
+<p>Go 编译器不使用保护页，而是在每个函数调用时插入一个检查，以检查是否有足够的栈来运行该函数。如果没有，运行时可以分配更多的栈空间。</p>
+<p>由于这种检查，goroutines 初始栈可以做得更小，这反过来允许 Go 程序员将 goroutines 视为廉价资源。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-43.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-43.jpg" alt="Gocon 2014 (43)"></a></p>
+<p>这是一张显示了 Go 1.2 如何管理栈的幻灯片。</p>
+<p>当 <code>G</code> 调用 <code>H</code> 时，没有足够的空间让 <code>H</code> 运行，所以运行时从堆中分配一个新的栈帧，然后在新的栈段上运行 <code>H</code>。当 <code>H</code> 返回时，栈区域返回到堆，然后返回到 <code>G</code>。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-44.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-44.jpg" alt="Gocon 2014 (44)"></a></p>
+<p>这种管理栈的方法通常很好用，但对于某些类型的代码，通常是递归代码，它可能导致程序的内部循环跨越这些栈边界之一。</p>
+<p>例如，在程序的内部循环中，函数 <code>G</code> 可以在循环中多次调用 <code>H</code>，</p>
+<p>每次都会导致栈拆分。 这被称为 <ruby>热分裂<rt>Hot Split</rt></ruby> 问题。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-45.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-45.jpg" alt="Gocon 2014 (45)"></a></p>
+<p>为了解决热分裂问题，Go 1.3 采用了一种新的栈管理方法。</p>
+<p>如果 goroutine 的栈太小，则不会添加和删除其他栈段，而是分配新的更大的栈。</p>
+<p>旧栈的内容被复制到新栈，然后 goroutine 使用新的更大的栈继续运行。</p>
+<p>在第一次调用 <code>H</code> 之后，栈将足够大，对可用栈空间的检查将始终成功。</p>
+<p>这解决了热分裂问题。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-46.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-46.jpg" alt="Gocon 2014 (46)"></a></p>
+<p>值，内联，逃逸分析，Goroutines 和分段/复制栈。</p>
+<p>这些是我今天选择谈论的五个特性，但它们绝不是使 Go 成为快速的语言的唯一因素，就像人们引用他们学习 Go 的理由的三个原因一样。</p>
+<p>这五个特性一样强大，它们不是孤立存在的。</p>
+<p>例如，运行时将 goroutine 复用到线程上的方式在没有可扩展栈的情况下几乎没有效率。</p>
+<p>内联通过将较小的函数组合成较大的函数来降低栈大小检查的成本。</p>
+<p>逃逸分析通过自动将从实例从堆移动到栈来减少垃圾回收器的压力。</p>
+<p>逃逸分析还提供了更好的 <ruby>缓存局部性<rt>Cache Locality</rt></ruby>。</p>
+<p>如果没有可增长的栈，逃逸分析可能会对栈施加太大的压力。</p>
+<p><a href="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-47.jpg"><img src="https://dave.cheney.net/wp-content/uploads/2014/06/Gocon-2014-47.jpg" alt="Gocon 2014 (47)"></a></p>
+<ul>
+<li>感谢 Gocon 主办方允许我今天发言</li>
+<li>twitter / web / email details</li>
+<li>感谢 @offbymany，@billkennedy_go 和 Minux 在准备这个演讲的过程中所提供的帮助。</li>
+</ul>
+<h3 id="相关文章">相关文章：</h3>
+<ol>
+<li><a href="https://dave.cheney.net/2015/05/31/hear-me-speak-about-go-performance-at-oscon">听我在 OSCON 上关于 Go 性能的演讲</a></li>
+<li><a href="https://dave.cheney.net/2013/06/02/why-is-a-goroutines-stack-infinite">为什么 Goroutine 的栈是无限大的？</a></li>
+<li><a href="https://dave.cheney.net/2015/11/29/a-whirlwind-tour-of-gos-runtime-environment-variables">Go 的运行时环境变量的旋风之旅</a></li>
+<li><a href="https://dave.cheney.net/2015/08/08/performance-without-the-event-loop">没有事件循环的性能</a></li>
+</ol>
+<hr>
+<p>作者简介：</p>
+<p>David 是来自澳大利亚悉尼的程序员和作者。</p>
+<p>自 2011 年 2 月起成为 Go 的 contributor，自 2012 年 4 月起成为 committer。</p>
+<p>联系信息</p>
+<ul>
+<li><a href="mailto:dave@cheney.net">dave@cheney.net</a></li>
+<li>twitter: @davecheney</li>
+</ul>
+<hr>
+<p>via: <a href="https://dave.cheney.net/2014/06/07/five-things-that-make-go-fast">https://dave.cheney.net/2014/06/07/five-things-that-make-go-fast</a></p>
+<p>作者：<a href="https://dave.cheney.net/">Dave Cheney</a>
+译者：<a href="https://github.com/houbaron">houbaron</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#相关文章">相关文章：</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201810/20140607 Five things that make Go fast","title":"五种加速 Go 的特性"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>在 Java 中使用外部库 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="在 Java 中使用外部库 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="在 Java 中使用外部库 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202109/20200211 Using external libraries in Java#page","@type":"TechArticle","headline":"在 Java 中使用外部库","inLanguage":"en","name":"在 Java 中使用外部库","url":"https://zhengqbbb.github.io/pages-dev/202109/20200211 Using external libraries in Java","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202109/20200211 Using external libraries in Java"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是库">什么是库？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例连接-postgresql-数据库">示例：连接 PostgreSQL 数据库</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>在 Java 中使用外部库</h1><blockquote>
+<p>外部库填补了 Java 核心库中的一些功能空白。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202109/10/075749s65x89uzxj8x5kq9.jpg" alt=""></p>
+<p>Java 自带有一组核心库，其中包含了定义常用数据类型和相关行为的库（例如 <code>String</code> 和 <code>Date</code>）、与主机操作系统交互的实用程序（例如 <code>System</code> 和 <code>File</code>），以及一些用来管理安全性、处理网络通信、创建或解析 XML的有用的子系统。鉴于核心库的丰富性，程序员通常很容易在其中找到有用的组件，以减少需要编写的代码量。</p>
+<p>即便如此，核心库仍有一些功能上的不足，因此发现这些不足的程序员们还额外创建了很多有趣的 Java 库。例如，<a href="https://commons.apache.org/">Apache Commons</a>“是一个专注于可重用 Java 组件所有方面的 Apache 项目”，提供了大约 43 个开源库的集合（截至撰写本文时），涵盖了 Java 核心库之外的一系列功能 （例如 <a href="https://commons.apache.org/proper/commons-geometry/">geometry</a> 或 <a href="https://commons.apache.org/proper/commons-statistics/">statistics</a>），并增强或替换了 Java 核心库中的原有功能（例如 <a href="https://commons.apache.org/proper/commons-math/">math</a> 或 <a href="https://commons.apache.org/proper/commons-numbers/">numbers</a>）。</p>
+<p>另一种常见的 Java 库类型是系统组件的接口（例如数据库系统接口），本文会着眼于使用此类接口连接到 <a href="https://opensource.com/article/19/11/getting-started-postgresql">PostgreSQL</a> 数据库，并得到一些有趣的信息。首先，我们来回顾一下库的重要部分。</p>
+<h3 id="什么是库">什么是库？</h3>
+<p><ruby>库<rt>library</rt></ruby>里自然包含的是一些有用的代码。但为了发挥用处，代码需要以特定方式进行组织，特定的方式使 Java 程序员可以访问其中组件来解决手头问题。</p>
+<p>可以说，一个库最重要的部分是它的应用程序编程接口（API）文档。这种文档很多人都熟悉，通常是由 <a href="https://en.wikipedia.org/wiki/Javadoc">Javadoc</a> 生成的。Javadoc 读取代码中的结构化注释并以 HTML 格式输出文档，通常 API 的 <ruby>包<rt>package</rt></ruby> 在页面左上角的面板中显示，<ruby>类<rt>class</rt></ruby> 在左下角显示，同时右侧会有库、包或类级别的详细文档（具体取决于在主面板中选择的内容）。例如，<a href="https://commons.apache.org/proper/commons-math/apidocs/index.html">Apache Commons Math 的顶级 API 文档</a> 如下所示：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/api-documentation_apachecommonsmath.png" alt="API documentation for Apache Commons Math" title="API documentation for Apache Commons Math"></p>
+<p>单击主面板中的包会显示该包中定义的 Java 类和接口。例如，<a href="https://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math4/analysis/solvers/package-summary.html">org.apache.commons.math4.analysis.solvers</a> 显示了诸如 <code>BisectionSolver</code> 这样的类，该类用于使用二分算法查找单变量实函数的零点。单击 <a href="https://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math4/analysis/solvers/BisectionSolver.html">BisectionSolver</a> 链接会列出 <code>BisectionSolver</code> 类的所有方法。 </p>
+<p>这类文档可用作参考文档，不适合作为学习如何使用库的教程。比如，如果你知道什么是单变量实函数并查看包 <code>org.apache.commons.math4.analysis.function</code>，就可以试着使用该包来组合函数定义，然后使用 <code>org.apache.commons.math4.analysis.solvers</code> 包来查找刚刚创建的函数的零点。但如果你不知道，就可能需要更多学习向的文档，也许甚至是一个实际例子，来读懂参考文档。</p>
+<p>这种文档结构还有助于阐明 <ruby>包<rt>package</rt></ruby>（相关 Java 类和接口定义的集合）的含义，并显示特定库中捆绑了哪些包。</p>
+<p>这种库的代码通常是在 <a href="https://en.wikipedia.org/wiki/JAR_(file_format)">.jar 文件</a> 中，它基本上是由 Java 的 <code>jar</code> 命令创建的 .zip 文件，其中还包含一些其他有用的信息。.jar 文件通常被创建为构建过程的端点，该构建过程编译了所定义包中的所有 .java 文件。</p>
+<p>要访问外部库提供的功能，有两个主要步骤：</p>
+<ol>
+<li>确保通过类路径（或者命令行中的 <code>-cp</code> 参数或者 <code>CLASSPATH</code> 环境变量），库可用于 Java 编译步骤（<a href="https://en.wikipedia.org/wiki/Javac">javac</a>）和执行步骤（<code>java</code>）。</li>
+<li>使用恰当的 <code>import</code> 语句访问程序源代码中的包和类。</li>
+</ol>
+<p>其余的步骤就与使用 <code>String</code> 等 Java核心类相同，使用库提供的类和接口定义来编写代码。很简单对吧？不过也没那么简单。首先，你需要了解库组件的预期使用模式，然后才能编写代码。</p>
+<h3 id="示例连接-postgresql-数据库">示例：连接 PostgreSQL 数据库</h3>
+<p>在数据库系统中访问数据的典型使用步骤是：</p>
+<ol>
+<li>访问正在使用的特定数据库软件代码。</li>
+<li>连接到数据库服务器。</li>
+<li>构建查询字符串。</li>
+<li>执行查询字符串。</li>
+<li>针对返回的结果，做需要的处理。</li>
+<li>断开与数据库服务器的连接。</li>
+</ol>
+<p>所有这些面向程序员的部分由接口包 <a href="https://docs.oracle.com/javase/8/docs/api/java/sql/package-summary.html">java.sql</a> 提供，它独立于数据库，定义了核心客户端 Java 数据库连接（JDBC）API。<code>java.sql</code> 包是 Java 核心库的一部分，因此无需提供 .jar 文件即可编译。但每个数据库提供者都会创建自己的 <code>java.sql</code> 接口实现（例如 <code>Connection</code> 接口），并且必须在运行步骤中提供这些实现。</p>
+<p>接下来我们使用 PostgreSQL，看看这一过程是如何进行的。</p>
+<h4 id="访问特定数据库的代码">访问特定数据库的代码</h4>
+<p>以下代码使用 <a href="https://en.wikipedia.org/wiki/Java_Classloader">Java 类加载器</a>（<code>Class.forName()</code> 调用）将 PostgreSQL 驱动程序代码加载到正在执行的虚拟机中：</p>
+<pre><code>import java.sql.*;
+
+public class Test1 {
+
+    public static void main(String args[]) {
+
+        // Load the driver (jar file must be on class path) [1]
+
+        try {
+            Class.forName(&quot;org.postgresql.Driver&quot;);
+            System.out.println(&quot;driver loaded&quot;);
+        } catch (Exception e1) {
+            System.err.println(&quot;couldn&#39;t find driver&quot;);
+            System.err.println(e1);
+            System.exit(1);
+        }
+
+        // If we get here all is OK
+
+        System.out.println(&quot;done.&quot;);
+    }
+}
+</code></pre>
+<p>因为类加载器可能失败，失败时会抛出异常，所以将对 <code>Class.forName()</code> 的调用放在 <code>try-catch</code> 代码块中。</p>
+<p>如果你使用 <code>javac</code> 编译上面的代码，然后用 <code>java</code> 运行，会报异常：</p>
+<pre><code>me@mymachine:~/Test$ javac Test1.java
+me@mymachine:~/Test$ java Test1
+couldn&#39;t find driver
+java.lang.ClassNotFoundException: org.postgresql.Driver
+me@mymachine:~/Test$
+</code></pre>
+<p>类加载器要求类路径中有包含 PostgreSQL JDBC 驱动程序实现的 .jar 文件：</p>
+<pre><code>me@mymachine:~/Test$ java -cp ~/src/postgresql-42.2.5.jar:. Test1
+driver loaded
+done.
+me@mymachine:~/Test$
+</code></pre>
+<h4 id="连接到数据库服务器">连接到数据库服务器</h4>
+<p>以下代码实现了加载 JDBC 驱动程序和创建到 PostgreSQL 数据库的连接：</p>
+<pre><code>import java.sql.*;
+
+public class Test2 {
+
+        public static void main(String args[]) {
+
+                // Load the driver (jar file must be on class path) [1]
+
+                try {
+                        Class.forName(&quot;org.postgresql.Driver&quot;);
+                        System.out.println(&quot;driver loaded&quot;);
+                } catch (Exception e1) {
+                        System.err.println(&quot;couldn&#39;t find driver&quot;);
+                        System.err.println(e1);
+                        System.exit(1);
+                }
+
+                // Set up connection properties [2]
+
+                java.util.Properties props = new java.util.Properties();
+                props.setProperty(&quot;user&quot;,&quot;me&quot;);
+                props.setProperty(&quot;password&quot;,&quot;mypassword&quot;);
+                String database = &quot;jdbc:postgresql://myhost.org:5432/test&quot;;
+
+                // Open the connection to the database [3]
+
+                try (Connection conn = DriverManager.getConnection(database, props)) {
+                        System.out.println(&quot;connection created&quot;);
+                } catch (Exception e2) {
+                        System.err.println(&quot;sql operations failed&quot;);
+                        System.err.println(e2);
+                        System.exit(2);
+                }
+                System.out.println(&quot;connection closed&quot;);
+
+                // If we get here all is OK
+
+                System.out.println(&quot;done.&quot;);
+        }
+}
+</code></pre>
+<p>编译并运行上述代码:</p>
+<pre><code>me@mymachine:~/Test$ javac Test2.java
+me@mymachine:~/Test$ java -cp ~/src/postgresql-42.2.5.jar:. Test2
+driver loaded
+connection created
+connection closed
+done.
+me@mymachine:~/Test$
+</code></pre>
+<p>关于上述的一些注意事项：</p>
+<ul>
+<li>注释 <code>[2]</code> 后面的代码使用系统属性来设置连接参数（在本例中参数为 PostgreSQL 用户名和密码）。代码也可以从 Java 命令行获取这些参数并将所有参数作为参数包传递，同时还有一些其他 <code>Driver.getConnection()</code> 选项可用于单独传递参数。</li>
+<li>JDBC 需要一个用于定义数据库的 URL，它在上述代码中被声明为 <code>String database</code> 并与连接参数一起传递给 <code>Driver.getConnection()</code> 方法。</li>
+<li>代码使用 <code>try-with-resources</code> 语句，它会在 <code>try-catch</code> 块中的代码完成后自动关闭连接。<a href="https://stackoverflow.com/questions/8066501/how-should-i-use-try-with-resources-with-jdbc">Stack Overflow</a> 上对这种方法进行了长期的讨论。</li>
+<li><code>try-with-resources</code> 语句提供对 <code>Connection</code> 实例的访问，并可以在其中执行 SQL 语句；所有错误都会被同一个 <code>catch</code> 语句捕获。</li>
+</ul>
+<h4 id="用数据库的连接处理一些有趣的事情">用数据库的连接处理一些有趣的事情</h4>
+<p>日常工作中，我经常需要知道为给定的数据库服务器实例定义了哪些用户，这里我使用这个 <a href="https://www.postgresql.org/message-id/1121195544.8208.242.camel@state.g2switchworks.com">简便的 SQL</a> 来获取所有用户的列表：</p>
+<pre><code>import java.sql.*;
+
+public class Test3 {
+
+        public static void main(String args[]) {
+
+                // Load the driver (jar file must be on class path) [1]
+
+                try {
+                        Class.forName(&quot;org.postgresql.Driver&quot;);
+                        System.out.println(&quot;driver loaded&quot;);
+                } catch (Exception e1) {
+                        System.err.println(&quot;couldn&#39;t find driver&quot;);
+                        System.err.println(e1);
+                        System.exit(1);
+                }
+
+                // Set up connection properties [2]
+
+                java.util.Properties props = new java.util.Properties();
+                props.setProperty(&quot;user&quot;,&quot;me&quot;);
+                props.setProperty(&quot;password&quot;,&quot;mypassword&quot;);
+                String database = &quot;jdbc:postgresql://myhost.org:5432/test&quot;;
+
+                // Open the connection to the database [3]
+
+                try (Connection conn = DriverManager.getConnection(database, props)) {
+                        System.out.println(&quot;connection created&quot;);
+
+                        // Create the SQL command string [4]
+
+                        String qs = &quot;SELECT &quot; +
+                                &quot;       u.usename AS \&quot;User name\&quot;, &quot; +
+                                &quot;       u.usesysid AS \&quot;User ID\&quot;, &quot; +
+                                &quot;       CASE &quot; +
+                                &quot;       WHEN u.usesuper AND u.usecreatedb THEN &quot; +
+                                &quot;               CAST(&#39;superuser, create database&#39; AS pg_catalog.text) &quot; +
+                        &quot;       WHEN u.usesuper THEN &quot; +
+                                &quot;               CAST(&#39;superuser&#39; AS pg_catalog.text) &quot; +
+                                &quot;       WHEN u.usecreatedb THEN &quot; +
+                                &quot;               CAST(&#39;create database&#39; AS pg_catalog.text) &quot; +
+                                &quot;       ELSE &quot; +
+                                &quot;               CAST(&#39;&#39; AS pg_catalog.text) &quot; +
+                                &quot;       END AS \&quot;Attributes\&quot; &quot; +
+                                &quot;FROM pg_catalog.pg_user u &quot; +
+                                &quot;ORDER BY 1&quot;;
+
+                        // Use the connection to create a statement, execute it,
+                        // analyze the results and close the result set [5]
+
+                        Statement stat = conn.createStatement();
+                        ResultSet rs = stat.executeQuery(qs);
+                        System.out.println(&quot;User name;User ID;Attributes&quot;);
+                        while (rs.next()) {
+                                System.out.println(rs.getString(&quot;User name&quot;) + &quot;;&quot; +
+                                                rs.getLong(&quot;User ID&quot;) + &quot;;&quot; +
+                                                rs.getString(&quot;Attributes&quot;));
+                        }
+                        rs.close();
+                        stat.close();
+               
+                } catch (Exception e2) {
+                        System.err.println(&quot;connecting failed&quot;);
+                        System.err.println(e2);
+                        System.exit(1);
+                }
+                System.out.println(&quot;connection closed&quot;);
+
+                // If we get here all is OK
+
+                System.out.println(&quot;done.&quot;);
+        }
+}
+</code></pre>
+<p>在上述代码中，一旦有了 <code>Connection</code> 实例，它就会定义一个查询字符串（上面的注释 <code>[4]</code>），创建一个 <code>Statement</code> 实例并用其来执行查询字符串，然后将其结果放入一个 <code>ResultSet</code> 实例。程序可以遍历该 <code>ResultSet</code> 实例来分析返回的结果，并以关闭 <code>ResultSet</code> 和 <code>Statement</code> 实例结束（上面的注释 <code>[5]</code>）。</p>
+<p>编译和执行程序会产生以下输出：</p>
+<pre><code>me@mymachine:~/Test$ javac Test3.java
+me@mymachine:~/Test$ java -cp ~/src/postgresql-42.2.5.jar:. Test3
+driver loaded
+connection created
+User name;User ID;Attributes
+fwa;16395;superuser
+vax;197772;
+mbe;290995;
+aca;169248;
+connection closed
+done.
+me@mymachine:~/Test$
+</code></pre>
+<p>这是在一个简单的 Java 应用程序中使用 PostgreSQL JDBC 库的（非常简单的）示例。要注意的是，由于 <code>java.sql</code> 库的设计方式，它不需要在代码中使用像 <code>import org.postgresql.jdbc.*;</code> 这样的 Java 导入语句，而是使用 Java 类加载器在运行时引入 PostgreSQL 代码的方式，也正因此无需在代码编译时指定类路径。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/2/external-libraries-java">https://opensource.com/article/20/2/external-libraries-java</a></p>
+<p>作者：<a href="https://opensource.com/users/clhermansen">Chris Hermansen</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/unigeorge">unigeorge</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是库">什么是库？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例连接-postgresql-数据库">示例：连接 PostgreSQL 数据库</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202109/20200211 Using external libraries in Java","title":"在 Java 中使用外部库"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

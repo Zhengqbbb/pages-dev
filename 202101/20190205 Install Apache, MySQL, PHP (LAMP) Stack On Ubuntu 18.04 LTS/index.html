@@ -1,0 +1,288 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>在 Ubuntu 中安装 Apache、MySQL、PHP（LAMP）套件 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="在 Ubuntu 中安装 Apache、MySQL、PHP（LAMP）套件 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="在 Ubuntu 中安装 Apache、MySQL、PHP（LAMP）套件 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202101/20190205 Install Apache, MySQL, PHP (LAMP) Stack On Ubuntu 18.04 LTS#page","@type":"TechArticle","headline":"在 Ubuntu 中安装 Apache、MySQL、PHP（LAMP）套件","inLanguage":"en","name":"在 Ubuntu 中安装 Apache、MySQL、PHP（LAMP）套件","url":"https://zhengqbbb.github.io/pages-dev/202101/20190205 Install Apache, MySQL, PHP (LAMP) Stack On Ubuntu 18.04 LTS","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202101/20190205 Install Apache, MySQL, PHP (LAMP) Stack On Ubuntu 18.04 LTS"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-安装-apache-web-服务器">1. 安装 Apache Web 服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-安装-mysql">2. 安装 MySQL</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-安装-php">3. 安装 PHP</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>在 Ubuntu 中安装 Apache、MySQL、PHP（LAMP）套件</h1><p><a href="collector:" title="lujun9972">#</a>: subject: (Install Apache, MySQL, PHP (LAMP) Stack On Ubuntu 18.04 LTS)
+<a href="collector:" title="lujun9972">#</a>: via: (<a href="https://www.ostechnix.com/install-apache-mysql-php-lamp-stack-on-ubuntu-18-04-lts/">https://www.ostechnix.com/install-apache-mysql-php-lamp-stack-on-ubuntu-18-04-lts/</a>)
+<a href="collector:" title="lujun9972">#</a>: author: (SK <a href="https://www.ostechnix.com/author/sk/">https://www.ostechnix.com/author/sk/</a>)</p>
+<p><img src="https://www.ostechnix.com/wp-content/uploads/2019/02/lamp-720x340.jpg" alt=""></p>
+<p><strong>LAMP</strong> 套件是一种流行的开源 Web 开发平台，可用于运行和部署动态网站和基于 Web 的应用程序。通常，LAMP 套件由 Apache Web 服务器、MariaDB/MySQL 数据库、PHP/Python/Perl 程序设计（脚本）语言组成。 LAMP 是 <strong>L</strong>inux，<strong>M</strong>ariaDB/<strong>M</strong>YSQL，<strong>P</strong>HP/<strong>P</strong>ython/<strong>P</strong>erl 的缩写。 本教程描述了如何在 Ubuntu 18.04 LTS 服务器中安装 Apache、MySQL、PHP（LAMP 套件）。</p>
+<p>就本教程而言，我们将使用以下 Ubuntu 测试。</p>
+<ul>
+<li><strong>操作系统</strong>：Ubuntu 18.04.1 LTS Server Edition</li>
+<li><strong>IP 地址</strong> ：192.168.225.22/24</li>
+</ul>
+<h3 id="1-安装-apache-web-服务器">1. 安装 Apache Web 服务器</h3>
+<p>首先，利用下面命令更新 Ubuntu 服务器：</p>
+<pre><code>$ sudo apt update
+$ sudo apt upgrade
+</code></pre>
+<p>然后，安装 Apache Web 服务器（命令如下）：</p>
+<pre><code>$ sudo apt install apache2
+</code></pre>
+<p>检查 Apache Web 服务器是否已经运行：</p>
+<pre><code>$ sudo systemctl status apache2
+</code></pre>
+<p>输出结果大概是这样的：</p>
+<pre><code>● apache2.service - The Apache HTTP Server
+ Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset: en
+ Drop-In: /lib/systemd/system/apache2.service.d
+ └─apache2-systemd.conf
+ Active: active (running) since Tue 2019-02-05 10:48:03 UTC; 1min 5s ago
+ Main PID: 2025 (apache2)
+ Tasks: 55 (limit: 2320)
+ CGroup: /system.slice/apache2.service
+ ├─2025 /usr/sbin/apache2 -k start
+ ├─2027 /usr/sbin/apache2 -k start
+ └─2028 /usr/sbin/apache2 -k start
+
+Feb 05 10:48:02 ubuntuserver systemd[1]: Starting The Apache HTTP Server...
+Feb 05 10:48:03 ubuntuserver apachectl[2003]: AH00558: apache2: Could not reliably
+Feb 05 10:48:03 ubuntuserver systemd[1]: Started The Apache HTTP Server.
+</code></pre>
+<p>祝贺你！ Apache 服务已经启动并运行了！！</p>
+<h4 id="11-调整防火墙允许-apache-web-服务器">1.1 调整防火墙允许 Apache Web 服务器</h4>
+<p>默认情况下，如果你已在 Ubuntu 中启用 UFW 防火墙，则无法从远程系统访问 Apache Web 服务器。 必须按照以下步骤开启 <code>http</code> 和 <code>https</code> 端口。</p>
+<p>首先，使用以下命令列出 Ubuntu 系统上可用的应用程序配置文件：</p>
+<pre><code>$ sudo ufw app list
+</code></pre>
+<p>输出结果：</p>
+<pre><code>Available applications:
+Apache
+Apache Full
+Apache Secure
+OpenSSH
+</code></pre>
+<p>如你所见，Apache 和 OpenSSH 应用程序已安装 UFW 配置文件。你可以使用 <code>ufw app info &quot;Profile Name&quot;</code> 命令列出有关每个配置文件及其包含的规则的信息。</p>
+<p>让我们研究一下 “Apache Full” 配置文件。 为此，请运行：</p>
+<pre><code>$ sudo ufw app info &quot;Apache Full&quot;
+</code></pre>
+<p>输出结果：</p>
+<pre><code>Profile: Apache Full
+Title: Web Server (HTTP,HTTPS)
+Description: Apache v2 is the next generation of the omnipresent Apache web
+server.
+
+Ports:
+80,443/tcp
+</code></pre>
+<p>如你所见，“Apache Full” 配置文件包含了启用经由端口 <strong>80</strong> 和 <strong>443</strong> 的传输规则：</p>
+<p>现在，运行以下命令配置允许 HTTP 和 HTTPS 传入通信：</p>
+<pre><code>$ sudo ufw allow in &quot;Apache Full&quot;
+Rules updated
+Rules updated (v6)
+</code></pre>
+<p>如果你不想允许 HTTP 通信，而只允许 HTTP（80） 通信，请运行：</p>
+<pre><code>$ sudo ufw app info &quot;Apache&quot;
+</code></pre>
+<h4 id="12-测试-apache-web-服务器">1.2 测试 Apache Web 服务器</h4>
+<p>现在，打开 Web 浏览器并导航到 <a href="http://localhost/">http://localhost/</a> 或 <a href="http://IP-Address/">http://IP-Address/</a> 来访问 Apache 测试页。</p>
+<p><img src="https://www.ostechnix.com/wp-content/uploads/2016/06/apache-2.png" alt=""></p>
+<p>如果看到上面类似的显示内容，那就成功了。 Apache 服务器正在工作！</p>
+<h3 id="2-安装-mysql">2. 安装 MySQL</h3>
+<p>在 Ubuntu 安装 MySQL 请运行：</p>
+<pre><code>$ sudo apt install mysql-server
+</code></pre>
+<p>使用以下命令验证 MySQL 服务是否正在运行：</p>
+<pre><code>$ sudo systemctl status mysql
+</code></pre>
+<p>输出结果：</p>
+<pre><code>● mysql.service - MySQL Community Server
+Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enab
+Active: active (running) since Tue 2019-02-05 11:07:50 UTC; 17s ago
+Main PID: 3423 (mysqld)
+Tasks: 27 (limit: 2320)
+CGroup: /system.slice/mysql.service
+└─3423 /usr/sbin/mysqld --daemonize --pid-file=/run/mysqld/mysqld.pid
+
+Feb 05 11:07:49 ubuntuserver systemd[1]: Starting MySQL Community Server...
+Feb 05 11:07:50 ubuntuserver systemd[1]: Started MySQL Community Server.
+</code></pre>
+<p>MySQL 正在运行！</p>
+<h4 id="21-配置数据库管理用户root密码">2.1 配置数据库管理用户（root）密码</h4>
+<p>默认情况下，MySQL root 用户密码为空。你需要通过运行以下脚本使你的 MySQL 服务器安全：</p>
+<pre><code>$ sudo mysql_secure_installation
+</code></pre>
+<p>系统将询问你是否要安装 “VALIDATE PASSWORD plugin（密码验证插件）”。该插件允许用户为数据库配置强密码凭据。如果启用，它将自动检查密码的强度并强制用户设置足够安全的密码。<strong>禁用此插件是安全的</strong>。但是，必须为数据库使用唯一的强密码凭据。如果不想启用此插件，只需按任意键即可跳过密码验证部分，然后继续其余步骤。</p>
+<p>如果回答是 <code>y</code>，则会要求你选择密码验证级别。</p>
+<pre><code>Securing the MySQL server deployment.
+
+Connecting to MySQL using a blank password.
+
+VALIDATE PASSWORD PLUGIN can be used to test passwords
+and improve security. It checks the strength of password
+and allows the users to set only those passwords which are
+secure enough. Would you like to setup VALIDATE PASSWORD plugin?
+
+Press y|Y for Yes, any other key for No y
+</code></pre>
+<p>可用的密码验证有 “low（低）”、 “medium（中）” 和 “strong（强）”。只需输入适当的数字（0 表示低，1 表示中，2 表示强密码）并按回车键。</p>
+<pre><code>There are three levels of password validation policy:
+
+LOW Length &gt;= 8
+MEDIUM Length &gt;= 8, numeric, mixed case, and special characters
+STRONG Length &gt;= 8, numeric, mixed case, special characters and dictionary file
+
+Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG:
+</code></pre>
+<p>现在，输入 MySQL root 用户的密码。请注意，必须根据上一步中选择的密码策略，为 MySQL root 用户使用密码。如果你未启用该插件，则只需使用你选择的任意强度且唯一的密码即可。</p>
+<pre><code>Please set the password for root here.
+
+New password:
+
+Re-enter new password:
+
+Estimated strength of the password: 50
+Do you wish to continue with the password provided?(Press y|Y for Yes, any other key for No) : y
+</code></pre>
+<p>两次输入密码后，你将看到密码强度（在此示例情况下为 50）。如果你确定可以，请按 <code>y</code> 继续提供的密码。如果对密码长度不满意，请按其他任意键并设置一个强密码。我现在的密码可以，所以我选择了<code>y</code>。</p>
+<p>对于其余的问题，只需键入 <code>y</code> 并按回车键。这将删除匿名用户、禁止 root 用户远程登录并删除 <code>test</code>（测试）数据库。</p>
+<pre><code>Remove anonymous users? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+Normally, root should only be allowed to connect from
+&#39;localhost&#39;. This ensures that someone cannot guess at
+the root password from the network.
+
+Disallow root login remotely? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+By default, MySQL comes with a database named &#39;test&#39; that
+anyone can access. This is also intended only for testing,
+and should be removed before moving into a production
+environment.
+
+Remove test database and access to it? (Press y|Y for Yes, any other key for No) : y
+- Dropping test database...
+Success.
+
+- Removing privileges on test database...
+Success.
+
+Reloading the privilege tables will ensure that all changes
+made so far will take effect immediately.
+
+Reload privilege tables now? (Press y|Y for Yes, any other key for No) : y
+Success.
+
+All done!
+</code></pre>
+<p>以上就是为 MySQL root 用户设置密码。</p>
+<h4 id="22-更改-mysql-超级用户的身份验证方法">2.2 更改 MySQL 超级用户的身份验证方法</h4>
+<p>默认情况下，Ubuntu 系统的 MySQL root 用户为 MySQL 5.7 版本及更新的版本使用插件 <code>auth_socket</code> 设置身份验证。尽管它增强了安全性，但是当你使用任何外部程序（例如 phpMyAdmin）访问数据库服务器时，也会变得更困难。要解决此问题，你需要将身份验证方法从 <code>auth_socket</code> 更改为 <code>mysql_native_password</code>。为此，请使用以下命令登录到你的 MySQL 提示符下：</p>
+<pre><code>$ sudo mysql
+</code></pre>
+<p>在 MySQL 提示符下运行以下命令，找到所有 MySQL 当前用户帐户的身份验证方法：</p>
+<pre><code>SELECT user,authentication_string,plugin,host FROM mysql.user;
+</code></pre>
+<p>输出结果：</p>
+<pre><code>+------------------|-------------------------------------------|-----------------------|-----------+
+| user | authentication_string | plugin | host |
++------------------|-------------------------------------------|-----------------------|-----------+
+| root | | auth_socket | localhost |
+| mysql.session | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE | mysql_native_password | localhost |
+| mysql.sys | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE | mysql_native_password | localhost |
+| debian-sys-maint | *F126737722832701DD3979741508F05FA71E5BA0 | mysql_native_password | localhost |
++------------------|-------------------------------------------|-----------------------|-----------+
+4 rows in set (0.00 sec)
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2019/02/mysql-1.png" alt=""></p>
+<p>如你所见，Mysql root 用户使用 <code>auth_socket</code> 插件进行身份验证。</p>
+<p>要将此身份验证更改为 <code>mysql_native_password</code> 方法，请在 MySQL 提示符下运行以下命令。 别忘了用你选择的强大唯一的密码替换 <code>password</code>。 如果已启用 VALIDATION 插件，请确保已根据当前策略要求使用了强密码。</p>
+<pre><code>ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED WITH mysql_native_password BY &#39;password&#39;;
+</code></pre>
+<p>使用以下命令更新数据库：</p>
+<pre><code>FLUSH PRIVILEGES;
+</code></pre>
+<p>使用命令再次检查身份验证方法是否已更改：</p>
+<pre><code>SELECT user,authentication_string,plugin,host FROM mysql.user;
+</code></pre>
+<p>输出结果：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2019/02/mysql-2.png" alt=""></p>
+<p>好！MySQL root 用户就可以使用密码进行身份验证来访问 <code>mysql shell</code>。</p>
+<p>从 MySQL 提示符下退出：</p>
+<pre><code>exit
+</code></pre>
+<h3 id="3-安装-php">3. 安装 PHP</h3>
+<p>安装 PHP 请运行：</p>
+<pre><code>$ sudo apt install php libapache2-mod-php php-mysql
+</code></pre>
+<p>安装 PHP 后，在 Apache 文档根目录中创建 <code>info.php</code> 文件。通常，在大多数基于 Debian 的 Linux 发行版中，Apache 文档根目录为 <code>/var/www/html/</code> 或 <code>/var/www/</code>。Ubuntu 18.04 LTS 系统下，文档根目录是 <code>/var/www/html/</code>。</p>
+<p>在 Apache 根目录中创建 <code>info.php</code> 文件：</p>
+<pre><code>$ sudo vi /var/www/html/info.php
+</code></pre>
+<p>在此文件中编辑如下内容：</p>
+<pre><code>&lt;?php
+phpinfo();
+?&gt;
+</code></pre>
+<p>然后按下 <code>ESC</code> 键并且输入 <code>:wq</code> 保存并退出此文件。重新启动 Apache 服务使更改生效。</p>
+<pre><code>$ sudo systemctl restart apache2
+</code></pre>
+<h4 id="31-测试-php">3.1 测试 PHP</h4>
+<p>打开 Web 浏览器，然后导航到 URL <a href="http://IP%E5%9C%B0%E5%9D%80/info.php">http://IP地址/info.php</a>。</p>
+<p>你就将看到 PHP 测试页面。</p>
+<p><img src="https://www.ostechnix.com/wp-content/uploads/2019/02/php-test-page.png" alt=""></p>
+<p>通常，当用户向 Web 服务器发出请求时，Apache 首先会在文档根目录中查找名为 <code>index.html</code> 的文件。如果你想将 Apache 更改为 <code>php</code> 文件提供服务而不是其他文件，请将 <code>dir.conf</code> 配置文件中的 <code>index.php</code> 移至第一个位置，如下所示：</p>
+<pre><code>$ sudo vi /etc/apache2/mods-enabled/dir.conf
+</code></pre>
+<p>上面的配置文件（<code>dir.conf</code>） 内容如下：</p>
+<pre><code>&lt;IfModule mod_dir.c&gt;
+DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm
+&lt;/IfModule&gt;
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+</code></pre>
+<p>将 <code>index.php</code> 移动到最前面。更改后，<code>dir.conf</code> 文件内容看起来如下所示。</p>
+<pre><code>&lt;IfModule mod_dir.c&gt;
+DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+&lt;/IfModule&gt;
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+</code></pre>
+<p>然后按下 <code>ESC</code> 键并且输入 <code>:wq</code> 保存并关闭此文件。重新启动 Apache 服务使更改生效。</p>
+<pre><code>$ sudo systemctl restart apache2
+</code></pre>
+<h4 id="32-安装-php-模块">3.2 安装 PHP 模块</h4>
+<p>为了增加 PHP 的功能，可以安装一些其他的 PHP 模块。</p>
+<p>要列出可用的 PHP 模块，请运行：</p>
+<pre><code>$ sudo apt-cache search php- | less
+</code></pre>
+<p>输出结果：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2016/06/php-modules.png" alt=""></p>
+<p>使用方向键浏览结果。要退出，请输入 <code>q</code> 并按下回车键。</p>
+<p>要查找任意 <code>php</code> 模块的详细信息，例如 <code>php-gd</code>，请运行：</p>
+<pre><code>$ sudo apt-cache show php-gd
+</code></pre>
+<p>安装 PHP 模块请运行：</p>
+<pre><code>$ sudo apt install php-gd
+</code></pre>
+<p>安装所有的模块（虽然没有必要），请运行：</p>
+<pre><code>$ sudo apt-get install php*
+</code></pre>
+<p>安装任何 <code>php</code> 模块后，请不要忘记重新启动 Apache 服务。要检查模块是否已加载，请在浏览器中打开 <code>info.php</code> 文件并检查是否存在。</p>
+<p>接下来，你可能需要安装数据库管理工具，以通过 Web 浏览器轻松管理数据库。如果是这样，请按照以下链接中的说明安装 <code>phpMyAdmin</code>。</p>
+<p>祝贺你！我们已经在 Ubuntu 服务器中成功配置了 LAMP 套件。</p>
+<hr>
+<p>via: <a href="https://www.ostechnix.com/install-apache-mysql-php-lamp-stack-on-ubuntu-18-04-lts/">https://www.ostechnix.com/install-apache-mysql-php-lamp-stack-on-ubuntu-18-04-lts/</a></p>
+<p>作者：<a href="https://www.ostechnix.com/author/sk/">SK</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/stevenzdg988">stevenzdg988</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-安装-apache-web-服务器">1. 安装 Apache Web 服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-安装-mysql">2. 安装 MySQL</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-安装-php">3. 安装 PHP</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202101/20190205 Install Apache, MySQL, PHP (LAMP) Stack On Ubuntu 18.04 LTS","title":"在 Ubuntu 中安装 Apache、MySQL、PHP（LAMP）套件"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

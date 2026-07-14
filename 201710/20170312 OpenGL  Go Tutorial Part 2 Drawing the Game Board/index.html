@@ -1,0 +1,432 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>OpenGL 与 Go 教程（二）绘制游戏面板 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="OpenGL 与 Go 教程（二）绘制游戏面板 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="OpenGL 与 Go 教程（二）绘制游戏面板 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201710/20170312 OpenGL  Go Tutorial Part 2 Drawing the Game Board#page","@type":"TechArticle","headline":"OpenGL 与 Go 教程（二）绘制游戏面板","inLanguage":"en","name":"OpenGL 与 Go 教程（二）绘制游戏面板","url":"https://zhengqbbb.github.io/pages-dev/201710/20170312 OpenGL  Go Tutorial Part 2 Drawing the Game Board","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201710/20170312 OpenGL  Go Tutorial Part 2 Drawing the Game Board"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#利用三角形绘制方形">利用三角形绘制方形</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在窗口中绘制方形格子">在窗口中绘制方形格子</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#回顾">回顾</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>OpenGL 与 Go 教程（二）绘制游戏面板</h1><ul>
+<li><a href="https://linux.cn/article-8933-1.html">第一节: Hello, OpenGL</a></li>
+<li><a href="https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-2-drawing-the-game-board">第二节: 绘制游戏面板</a></li>
+<li><a href="https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-3-implementing-the-game">第三节：实现游戏功能</a></li>
+</ul>
+<p>这篇教程的所有源代码都可以在 <a href="https://github.com/KyleBanks/conways-gol">GitHub</a> 上找到。</p>
+<p>欢迎回到《OpenGL 与 Go 教程》。如果你还没有看过<a href="https://linux.cn/article-8933-1.html">第一节</a>，那就要回过头去看看那一节。</p>
+<p>你现在应该能够创造一个漂亮的白色三角形，但我们不会把三角形当成我们游戏的基本单元，是时候把三角形变成正方形了，然后我们会做出一个完整的方格。</p>
+<p>让我们现在开始做吧！</p>
+<h3 id="利用三角形绘制方形">利用三角形绘制方形</h3>
+<p>在我们绘制方形之前，先把三角形变成直角三角形。打开 <code>main.go</code> 文件，把 <code>triangle</code> 的定义改成像这个样子：</p>
+<pre><code>triangle = []float32{
+    -0.5, 0.5, 0,
+    -0.5, -0.5, 0,
+    0.5, -0.5, 0,
+}
+</code></pre>
+<p>我们做的事情是，把最上面的顶点 X 坐标移动到左边（也就是变为 <code>-0.5</code>），这就变成了像这样的三角形：</p>
+<p><img src="https://kylewbanks.com/images/post/golang-opengl-conway-4.png" alt="Conway&#39;s Game of Life - 右弦三角形"> </p>
+<p>很简单，对吧？现在让我们用两个这样的三角形顶点做成正方形。把 <code>triangle</code> 重命名为 <code>square</code>，然后添加第二个倒置的三角形的顶点数据，把直角三角形变成这样的：</p>
+<pre><code>square = []float32{
+    -0.5, 0.5, 0,
+    -0.5, -0.5, 0,
+    0.5, -0.5, 0,
+
+    -0.5, 0.5, 0,
+    0.5, 0.5, 0,
+    0.5, -0.5, 0,
+}
+</code></pre>
+<p>注意：你也要把在 <code>main</code> 和 <code>draw</code> 里面命名的 <code>triangle</code> 改为 <code>square</code>。</p>
+<p>我们通过添加三个顶点，把顶点数增加了一倍，这三个顶点就是右上角的三角形，用来拼成方形。运行它看看效果：</p>
+<p> <img src="https://kylewbanks.com/images/post/golang-opengl-conway-5.png" alt="Conway&#39;s Game of Life - 两个三角形构成方形"> </p>
+<p>很好，现在我们能够绘制正方形了！OpenGL 一点都不难，对吧？</p>
+<h3 id="在窗口中绘制方形格子">在窗口中绘制方形格子</h3>
+<p>现在我们能画一个方形，怎么画 100 个吗？我们来创建一个 <code>cell</code> 结构体，用来表示格子的每一个单元，因此我们能够很灵活的选择绘制的数量：</p>
+<pre><code>type cell struct {
+    drawable uint32
+
+    x int
+    y int
+}
+</code></pre>
+<p><code>cell</code> 结构体包含一个 <code>drawable</code> 属性，这是一个顶点数组对象，就像我们在之前创建的一样，这个结构体还包含 X 和 Y 坐标，用来表示这个格子的位置。</p>
+<p>我们还需要两个常量，用来设定格子的大小和形状：</p>
+<pre><code>const (
+    ...
+
+    rows = 10
+    columns = 10
+)
+</code></pre>
+<p>现在我们添加一个创建格子的函数：</p>
+<pre><code>func makeCells() [][]*cell {
+    cells := make([][]*cell, rows, rows)
+    for x := 0; x &lt; rows; x++ {
+        for y := 0; y &lt; columns; y++ {
+            c := newCell(x, y)
+            cells[x] = append(cells[x], c)
+        }
+    }
+
+    return cells
+}
+</code></pre>
+<p>这里我们创建多维的<ruby>切片<rt>slice</rt></ruby>，代表我们的游戏面板，用名为 <code>newCell</code> 的新函数创建的 <code>cell</code> 来填充矩阵的每个元素，我们待会就来实现 <code>newCell</code> 这个函数。</p>
+<p>在接着往下阅读前，我们先花一点时间来看看 <code>makeCells</code> 函数做了些什么。我们创造了一个切片，这个切片的长度和格子的行数相等，每一个切片里面都有一个<ruby>细胞<rt>cell</rt></ruby>的切片，这些细胞的数量与列数相等。如果我们把 <code>rows</code> 和 <code>columns</code> 都设定成 2，那么就会创建如下的矩阵：</p>
+<pre><code>[
+    [cell, cell],
+    [cell, cell]
+]
+</code></pre>
+<p>还可以创建一个更大的矩阵，包含 <code>10x10</code> 个细胞：</p>
+<pre><code>[
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell],
+    [cell, cell, cell, cell, cell, cell, cell, cell, cell, cell]
+]
+</code></pre>
+<p>现在应该理解了我们创造的矩阵的形状和表示方法。让我们看看 <code>newCell</code> 函数到底是怎么填充矩阵的：</p>
+<pre><code>func newCell(x, y int) *cell {
+    points := make([]float32, len(square), len(square))
+    copy(points, square)
+
+    for i := 0; i &lt; len(points); i++ {
+        var position float32
+        var size float32
+        switch i % 3 {
+        case 0:
+                size = 1.0 / float32(columns)
+                position = float32(x) * size
+        case 1:
+                size = 1.0 / float32(rows)
+                position = float32(y) * size
+        default:
+                continue
+        }
+
+        if points[i] &lt; 0 {
+                points[i] = (position * 2) - 1
+        } else {
+                points[i] = ((position + size) * 2) - 1
+        }
+    }
+
+    return &amp;cell{
+        drawable: makeVao(points),
+
+        x: x,
+        y: y,
+    }
+}
+</code></pre>
+<p>这个函数里有很多内容，我们把它分成几个部分。我们做的第一件事是复制了 <code>square</code>  的定义。这让我们能够修改该定义，定制当前的细胞位置，而不会影响其它使用 <code>square</code> 切片定义的细胞。然后我们基于当前索引迭代 <code>points</code> 副本。我们用求余数的方法来判断我们是在操作 X 坐标（<code>i % 3 == 0</code>），还是在操作 Y 坐标（<code>i % 3 == 1</code>）（跳过 Z 坐标是因为我们仅在二维层面上进行操作），跟着确定细胞的大小（也就是占据整个游戏面板的比例），当然它的位置是基于细胞在 <code>相对游戏面板的</code> X 和 Y 坐标。</p>
+<p>接着，我们改变那些包含在 <code>square</code> 切片中定义的 <code>0.5</code>，<code>0</code>， <code>-0.5</code> 这样的点。如果点小于 0，我们就把它设置成原来的 2 倍（因为 OpenGL 坐标的范围在 <code>-1</code> 到 <code>1</code> 之间，范围大小是 2），减 1 是为了归一化 OpenGL 坐标。如果点大于等于 0，我们的做法还是一样的，不过要加上我们计算出的尺寸。</p>
+<p>这样做是为了设置每个细胞的大小，这样它就能只填充它在面板中的部分。因为我们有 10 行 10 列，每一个格子能分到游戏面板的 10% 宽度和高度。</p>
+<p>最后，确定了所有点的位置和大小，我们用提供的 X 和 Y 坐标创建一个 <code>cell</code>，并设置 <code>drawable</code> 字段与我们刚刚操作 <code>points</code> 得到的顶点数组对象（vao）一致。</p>
+<p>好了，现在我们在 <code>main</code> 函数里可以移去对 <code>makeVao</code> 的调用了，用 <code>makeCells</code> 代替。我们还修改了 <code>draw</code>，让它绘制一系列的细胞而不是一个 <code>vao</code>。</p>
+<pre><code>func main() {
+    ...
+
+    // vao := makeVao(square)
+    cells := makeCells()
+
+    for !window.ShouldClose() {
+        draw(cells, window, program)
+    }
+}
+
+func draw(cells [][]*cell, window *glfw.Window, program uint32) {
+    gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    gl.UseProgram(program)
+
+    // TODO
+
+    glfw.PollEvents()
+    window.SwapBuffers()
+}
+</code></pre>
+<p>现在我们要让每个细胞知道怎么绘制出自己。在 <code>cell</code> 里面添加一个 <code>draw</code> 函数：</p>
+<pre><code>func (c *cell) draw() {
+    gl.BindVertexArray(c.drawable)
+    gl.DrawArrays(gl.TRIANGLES, 0, int32(len(square) / 3))
+}
+</code></pre>
+<p>这看上去很熟悉，它很像我们之前在 <code>vao</code> 里写的 <code>draw</code>，唯一的区别是我们的 <code>BindVertexArray</code> 函数用的是 <code>c.drawable</code>，这是我们在 <code>newCell</code> 中创造的细胞的 <code>vao</code>。</p>
+<p>回到 main 中的 <code>draw</code> 函数上，我们可以循环每个细胞，让它们自己绘制自己：</p>
+<pre><code>func draw(cells [][]*cell, window *glfw.Window, program uint32) {
+    gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    gl.UseProgram(program)
+
+    for x := range cells {
+        for _, c := range cells[x] {
+            c.draw()
+        }
+    }
+
+    glfw.PollEvents()
+    window.SwapBuffers()
+}
+</code></pre>
+<p>如你所见，我们循环每一个细胞，调用它的 <code>draw</code> 函数。如果运行这段代码，你能看到像下面这样的东西：</p>
+<p><img src="https://kylewbanks.com/images/post/golang-opengl-conway-6.png" alt="Conway&#39;s Game of Life - 全部格子"> </p>
+<p>这是你想看到的吗？我们做的是在格子里为每一行每一列创建了一个方块，然后给它上色，这就填满了整个面板！</p>
+<p>注释掉 for 循环，我们就可以看到一个明显独立的细胞，像这样：</p>
+<pre><code>// for x := range cells {
+//     for _, c := range cells[x] {
+//         c.draw()
+//     }
+// }
+
+cells[2][3].draw()
+</code></pre>
+<p><img src="https://kylewbanks.com/images/post/golang-opengl-conway-7.png" alt="Conway&#39;s Game of Life - 一个单独的细胞"> </p>
+<p>这只绘制坐标在 <code>(X=2, Y=3)</code> 的格子。你可以看到，每一个独立的细胞占据着面板的一小块部分，并且负责绘制自己那部分空间。我们也能看到游戏面板有自己的原点，也就是坐标为 <code>(X=0, Y=0)</code> 的点，在窗口的左下方。这仅仅是我们的 <code>newCell</code> 函数计算位置的方式，也可以用右上角，右下角，左上角，中央，或者其它任何位置当作原点。</p>
+<p>接着往下做，移除 <code>cells[2][3].draw()</code> 这一行，取消 for 循环的那部分注释，变成之前那样全部绘制的样子。</p>
+<h3 id="总结">总结</h3>
+<p>好了，我们现在能用两个三角形画出一个正方形了，我们还有一个游戏的面板了！我们该为此自豪，目前为止我们已经接触到了很多零碎的内容，老实说，最难的部分还在前面等着我们！</p>
+<p>在接下来的第三节，我们会实现游戏核心逻辑，看到很酷的东西！</p>
+<h3 id="回顾">回顾</h3>
+<p>这是这一部分教程中 <code>main.go</code> 文件的内容：</p>
+<pre><code>package main
+
+import (
+	&quot;fmt&quot;
+	&quot;log&quot;
+	&quot;runtime&quot;
+	&quot;strings&quot;
+
+	&quot;github.com/go-gl/gl/v4.1-core/gl&quot; // OR: github.com/go-gl/gl/v2.1/gl
+	&quot;github.com/go-gl/glfw/v3.2/glfw&quot;
+)
+
+const (
+	width  = 500
+	height = 500
+
+	vertexShaderSource = `
+		#version 410
+		in vec3 vp;
+		void main() {
+			gl_Position = vec4(vp, 1.0);
+		}
+	` + &quot;\x00&quot;
+
+	fragmentShaderSource = `
+		#version 410
+		out vec4 frag_colour;
+		void main() {
+			frag_colour = vec4(1, 1, 1, 1.0);
+		}
+	` + &quot;\x00&quot;
+
+	rows    = 10
+	columns = 10
+)
+
+var (
+	square = []float32{
+		-0.5, 0.5, 0,
+		-0.5, -0.5, 0,
+		0.5, -0.5, 0,
+
+		-0.5, 0.5, 0,
+		0.5, 0.5, 0,
+		0.5, -0.5, 0,
+	}
+)
+
+type cell struct {
+	drawable uint32
+
+	x int
+	y int
+}
+
+func main() {
+	runtime.LockOSThread()
+
+	window := initGlfw()
+	defer glfw.Terminate()
+	program := initOpenGL()
+
+	cells := makeCells()
+	for !window.ShouldClose() {
+		draw(cells, window, program)
+	}
+}
+
+func draw(cells [][]*cell, window *glfw.Window, program uint32) {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.UseProgram(program)
+
+	for x := range cells {
+		for _, c := range cells[x] {
+			c.draw()
+		}
+	}
+
+	glfw.PollEvents()
+	window.SwapBuffers()
+}
+
+func makeCells() [][]*cell {
+	cells := make([][]*cell, rows, rows)
+	for x := 0; x &lt; rows; x++ {
+		for y := 0; y &lt; columns; y++ {
+			c := newCell(x, y)
+			cells[x] = append(cells[x], c)
+		}
+	}
+
+	return cells
+}
+
+func newCell(x, y int) *cell {
+	points := make([]float32, len(square), len(square))
+	copy(points, square)
+
+	for i := 0; i &lt; len(points); i++ {
+		var position float32
+		var size float32
+		switch i % 3 {
+		case 0:
+			size = 1.0 / float32(columns)
+			position = float32(x) * size
+		case 1:
+			size = 1.0 / float32(rows)
+			position = float32(y) * size
+		default:
+			continue
+		}
+
+		if points[i] &lt; 0 {
+			points[i] = (position * 2) - 1
+		} else {
+			points[i] = ((position + size) * 2) - 1
+		}
+	}
+
+	return &amp;cell{
+		drawable: makeVao(points),
+
+		x: x,
+		y: y,
+	}
+}
+
+func (c *cell) draw() {
+	gl.BindVertexArray(c.drawable)
+	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(square)/3))
+}
+
+// 初始化 glfw，返回一个可用的 Window
+func initGlfw() *glfw.Window {
+	if err := glfw.Init(); err != nil {
+		panic(err)
+	}
+	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
+	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+
+	window, err := glfw.CreateWindow(width, height, &quot;Conway&#39;s Game of Life&quot;, nil, nil)
+	if err != nil {
+		panic(err)
+	}
+	window.MakeContextCurrent()
+
+	return window
+}
+
+// 初始化 OpenGL 并返回一个可用的着色器程序
+func initOpenGL() uint32 {
+	if err := gl.Init(); err != nil {
+		panic(err)
+	}
+	version := gl.GoStr(gl.GetString(gl.VERSION))
+	log.Println(&quot;OpenGL version&quot;, version)
+
+	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
+	if err != nil {
+		panic(err)
+	}
+
+	fragmentShader, err := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
+	if err != nil {
+		panic(err)
+	}
+
+	prog := gl.CreateProgram()
+	gl.AttachShader(prog, vertexShader)
+	gl.AttachShader(prog, fragmentShader)
+	gl.LinkProgram(prog)
+	return prog
+}
+
+// 初始化并返回由 points 提供的顶点数组
+func makeVao(points []float32) uint32 {
+	var vbo uint32
+	gl.GenBuffers(1, &amp;vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BufferData(gl.ARRAY_BUFFER, 4*len(points), gl.Ptr(points), gl.STATIC_DRAW)
+
+	var vao uint32
+	gl.GenVertexArrays(1, &amp;vao)
+	gl.BindVertexArray(vao)
+	gl.EnableVertexAttribArray(0)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
+
+	return vao
+}
+
+func compileShader(source string, shaderType uint32) (uint32, error) {
+	shader := gl.CreateShader(shaderType)
+
+	csources, free := gl.Strs(source)
+	gl.ShaderSource(shader, 1, csources, nil)
+	free()
+	gl.CompileShader(shader)
+
+	var status int32
+	gl.GetShaderiv(shader, gl.COMPILE_STATUS, &amp;status)
+	if status == gl.FALSE {
+		var logLength int32
+		gl.GetShaderiv(shader, gl.INFO_LOG_LENGTH, &amp;logLength)
+
+		log := strings.Repeat(&quot;\x00&quot;, int(logLength+1))
+		gl.GetShaderInfoLog(shader, logLength, nil, gl.Str(log))
+
+		return 0, fmt.Errorf(&quot;failed to compile %v: %v&quot;, source, log)
+	}
+
+	return shader, nil
+}
+</code></pre>
+<p>让我知道这篇文章对你有没有帮助，在 Twitter <a href="https://twitter.com/kylewbanks">@kylewbanks</a> 或者下方的连接，关注我以便获取最新的文章！</p>
+<hr>
+<p>via: <a href="https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-2-drawing-the-game-board">https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-2-drawing-the-game-board</a></p>
+<p>作者：<a href="https://twitter.com/kylewbanks">kylewbanks</a>
+译者：<a href="https://github.com/GitFuture">GitFtuture</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#利用三角形绘制方形">利用三角形绘制方形</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在窗口中绘制方形格子">在窗口中绘制方形格子</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#回顾">回顾</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201710/20170312 OpenGL  Go Tutorial Part 2 Drawing the Game Board","title":"OpenGL 与 Go 教程（二）绘制游戏面板"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

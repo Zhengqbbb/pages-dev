@@ -1,0 +1,352 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 Ubuntu 15.04 中安装 puppet - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 Ubuntu 15.04 中安装 puppet - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 Ubuntu 15.04 中安装 puppet - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201512/20150806 Installation Guide for Puppet on Ubuntu 15.04#page","@type":"TechArticle","headline":"如何在 Ubuntu 15.04 中安装 puppet","inLanguage":"en","name":"如何在 Ubuntu 15.04 中安装 puppet","url":"https://zhengqbbb.github.io/pages-dev/201512/20150806 Installation Guide for Puppet on Ubuntu 15.04","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201512/20150806 Installation Guide for Puppet on Ubuntu 15.04"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1设置主机文件">1.设置主机文件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-用-ntp-更新时间">2. 用 NTP 更新时间</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-安装主控服务器软件">3. 安装主控服务器软件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-使用-apt-工具锁定主控服务器的版本">4. 使用 Apt 工具锁定主控服务器的版本</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-配置-puppet-主控服务器">5. 配置 Puppet 主控服务器###</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6-创建一个-puppet-清单">6. 创建一个 Puppet 清单</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7-运行-puppet-主控服务">7. 运行 puppet 主控服务</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#8-安装-puppet-代理节点的软件包">8. 安装 Puppet 代理节点的软件包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#9-使用-apt-工具锁定代理软件的版本">9. 使用 Apt 工具锁定代理软件的版本</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#10-配置-puppet-代理节点">10. 配置 puppet 代理节点</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#11-在主控服务器上对证书请求进行签名">11. 在主控服务器上对证书请求进行签名</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#12-删除一个-puppet-证书">12. 删除一个 Puppet 证书</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#13-部署-puppet-清单">13. 部署 Puppet 清单</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#14-为特定节点配置清单">14. 为特定节点配置清单</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#15-配置清单模块">15. 配置清单模块</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 Ubuntu 15.04 中安装 puppet</h1><p>大家好，本教程将学习如何在 ubuntu 15.04 上面安装 puppet，它可以用来管理你的服务器基础环境。puppet 是由puppet 实验室（Puppet Labs）开发并维护的一款开源的配置管理软件，它能够帮我们自动化供给、配置和管理服务器的基础环境。不管我们管理的是几个服务器还是数以千计的计算机组成的业务报表体系，puppet 都能够使管理员从繁琐的手动配置调整中解放出来，腾出时间和精力去提系统的升整体效率。它能够确保所有自动化流程作业的一致性、可靠性以及稳定性。它让管理员和开发者更紧密的联系在一起，使开发者更容易产出付出设计良好、简洁清晰的代码。puppet 提供了配置管理和数据中心自动化的两个解决方案。这两个解决方案分别是 <strong>puppet 开源版</strong> 和 <strong>puppet 企业版</strong>。puppet 开源版以 Apache 2.0 许可证发布，它是一个非常灵活、可定制的解决方案，设置初衷是帮助管理员去完成那些重复性操作工作。pupprt 企业版是一个全平台复杂 IT 环境下的成熟解决方案，它除了拥有开源版本所有优势以外还有移动端 apps、只有商业版才有的加强支持，以及模块化和集成管理等。Puppet 使用 SSL 证书来认证主控服务器与代理节点之间的通信。</p>
+<p>本教程将要介绍如何在运行 ubuntu 15.04 的主控服务器和代理节点上面安装开源版的 puppet。在这里，我们用一台服务器做主控服务器（master），管理和控制剩余的当作 puppet 代理节点（agent node）的服务器，这些代理节点将依据主控服务器来进行配置。在 ubuntu 15.04 只需要简单的几步就能安装配置好 puppet，用它来管理我们的服务器基础环境非常的方便。（LCTT 译注：puppet 采用 C/S 架构，所以必须有至少有一台作为服务器，其他作为客户端处理）</p>
+<h3 id="1设置主机文件">1.设置主机文件</h3>
+<p>在本教程里，我们将使用2台运行 ubuntu 15.04 “Vivid Vervet&quot; 的主机，一台作为主控服务器，另一台作为 puppet 的代理节点。下面是我们将用到的服务器的基础信息。</p>
+<ul>
+<li>puupet 主控服务器 IP：44.55.88.6 ，主机名： puppetmaster</li>
+<li>puppet 代理节点 IP： 45.55.86.39 ，主机名： puppetnode</li>
+</ul>
+<p>我们要在代理节点和服务器这两台机器的 hosts 文件里面都添加上相应的条目，使用 root 或是 sudo 访问权限来编辑 /etc/hosts 文件，命令如下：</p>
+<pre><code># nano /etc/hosts
+
+45.55.88.6 puppetmaster.example.com puppetmaster
+45.55.86.39 puppetnode.example.com puppetnode
+</code></pre>
+<p>注意，puppet 主控服务器必使用 8140 端口来运行，所以请务必保证开启8140端口。</p>
+<h3 id="2-用-ntp-更新时间">2. 用 NTP 更新时间</h3>
+<p>puppet 代理节点所使用系统时间必须要准确，这样可以避免代理证书出现问题。如果有时间差异，那么证书将过期失效，所以服务器与代理节点的系统时间必须互相同步。我们使用 NTP（Network Time Protocol，网络时间协议）来同步时间。<strong>在服务器与代理节点上面分别</strong>运行以下命令来同步时间。</p>
+<pre><code># ntpdate pool.ntp.org
+
+17 Jun 00:17:08 ntpdate[882]: adjust time server 66.175.209.17 offset -0.001938 sec    
+</code></pre>
+<p>（LCTT 译注：显示类似的输出结果表示运行正常）</p>
+<p>如果没有安装 ntp，请使用下面的命令更新你的软件仓库，安装并运行ntp服务</p>
+<pre><code># apt-get update &amp;&amp; sudo apt-get -y install ntp ; service ntp restart
+</code></pre>
+<h3 id="3-安装主控服务器软件">3. 安装主控服务器软件</h3>
+<p>安装开源版本的 puppet 有很多的方法。在本教程中我们在 puppet 实验室官网下载一个名为 puppetlabs-release 的软件包的软件源，安装后它将为我们在软件源里面添加 puppetmaster-passenger。puppetmaster-passenger 包括带有 apache 的 puppet 主控服务器。我们开始下载这个软件包：</p>
+<pre><code># cd /tmp/
+# wget https://apt.puppetlabs.com/puppetlabs-release-trusty.deb
+
+--2015-06-17 00:19:26-- https://apt.puppetlabs.com/puppetlabs-release-trusty.deb
+Resolving apt.puppetlabs.com (apt.puppetlabs.com)... 192.155.89.90, 2600:3c03::f03c:91ff:fedb:6b1d
+Connecting to apt.puppetlabs.com (apt.puppetlabs.com)|192.155.89.90|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7384 (7.2K) [application/x-debian-package]
+Saving to: ‘puppetlabs-release-trusty.deb’
+
+puppetlabs-release-tr 100%[===========================&gt;] 7.21K --.-KB/s in 0.06s
+
+2015-06-17 00:19:26 (130 KB/s) - ‘puppetlabs-release-trusty.deb’ saved [7384/7384]
+</code></pre>
+<p>下载完成，我们来安装它：</p>
+<pre><code># dpkg -i puppetlabs-release-trusty.deb
+
+Selecting previously unselected package puppetlabs-release.
+(Reading database ... 85899 files and directories currently installed.)
+Preparing to unpack puppetlabs-release-trusty.deb ...
+Unpacking puppetlabs-release (1.0-11) ...
+Setting up puppetlabs-release (1.0-11) ...
+</code></pre>
+<p>使用 apt 包管理命令更新一下本地的软件源：</p>
+<pre><code># apt-get update
+</code></pre>
+<p>现在我们就可以安装 puppetmaster-passenger 了 </p>
+<pre><code># apt-get install puppetmaster-passenger
+</code></pre>
+<p><strong>提示</strong>: 在安装的时候可能会报错：</p>
+<pre><code>Warning: Setting templatedir is deprecated.see http://links.puppetlabs.com/env-settings-deprecations (at /usr/lib/ruby/vendor_ruby/puppet/settings.rb:1139:in `issue_deprecation_warning&#39;)
+</code></pre>
+<p>不过不用担心，忽略掉它就好，我们只需要在设置配置文件的时候把这一项禁用就行了。</p>
+<p>如何来查看puppet 主控服务器是否已经安装成功了呢？非常简单，只需要使用下面的命令查看它的版本就可以了。</p>
+<pre><code># puppet --version
+
+3.8.1
+</code></pre>
+<p>现在我们已经安装好了 puppet 主控服务器。因为我们使用的是配合 apache 的 passenger，由 apache 来控制 puppet 主控服务器，当 apache 运行时 puppet 主控才运行。</p>
+<p>在开始之前，我们需要通过停止 apache 服务来让 puppet 主控服务器停止运行。</p>
+<pre><code># systemctl stop apache2
+</code></pre>
+<h3 id="4-使用-apt-工具锁定主控服务器的版本">4. 使用 Apt 工具锁定主控服务器的版本</h3>
+<p>现在已经安装了 3.8.1 版的 puppet，我们锁定这个版本不让它随意升级，因为升级会造成配置文件混乱。 使用 apt 工具来锁定它，这里我们需要使用文本编辑器来创建一个新的文件 <strong>/etc/apt/preferences.d/00-puppet.pref</strong> </p>
+<pre><code># nano /etc/apt/preferences.d/00-puppet.pref
+</code></pre>
+<p>在新创建的文件里面添加以下内容：</p>
+<pre><code># /etc/apt/preferences.d/00-puppet.pref
+Package: puppet puppet-common puppetmaster-passenger
+Pin: version 3.8*
+Pin-Priority: 501
+</code></pre>
+<p>这样在以后的系统软件升级中， puppet 主控服务器将不会跟随系统软件一起升级。</p>
+<h3 id="5-配置-puppet-主控服务器">5. 配置 Puppet 主控服务器###</h3>
+<p>Puppet 主控服务器作为一个证书发行机构，需要生成它自己的证书，用于签署所有代理的证书的请求。首先我们要删除所有在该软件包安装过程中创建出来的 ssl 证书。本地默认的 puppet 证书放在 /var/lib/puppet/ssl。因此我们只需要使用 rm 命令来整个移除这些证书就可以了。</p>
+<pre><code># rm -rf /var/lib/puppet/ssl
+</code></pre>
+<p>现在来配置该证书，在创建 puppet 主控服务器证书时，我们需要包括代理节点与主控服务器沟通所用的每个 DNS  名称。使用文本编辑器来修改服务器的配置文件 puppet.conf </p>
+<pre><code># nano /etc/puppet/puppet.conf
+</code></pre>
+<p>输出的结果像下面这样</p>
+<pre><code>[main]
+logdir=/var/log/puppet
+vardir=/var/lib/puppet
+ssldir=/var/lib/puppet/ssl
+rundir=/var/run/puppet
+factpath=$vardir/lib/facter
+templatedir=$confdir/templates
+
+[master]
+# These are needed when the puppetmaster is run by passenger
+# and can safely be removed if webrick is used.
+ssl_client_header = SSL_CLIENT_S_DN
+ssl_client_verify_header = SSL_CLIENT_VERIFY
+</code></pre>
+<p>在这我们需要注释掉 templatedir 这行使它失效。然后在文件的 <code>[main]</code> 小节的结尾添加下面的信息。</p>
+<pre><code>server = puppetmaster
+environment = production
+runinterval = 1h
+strict_variables = true
+certname = puppetmaster
+dns_alt_names = puppetmaster, puppetmaster.example.com
+</code></pre>
+<p>还有很多你可能用的到的配置选项。 如果你有需要，在 Puppet 实验室有一份详细的描述文件供你阅读： <a href="https://docs.puppetlabs.com/puppet/latest/reference/config_file_main.html">Main Config File (puppet.conf)</a>。</p>
+<p>编辑完成后保存退出。</p>
+<p>使用下面的命令来生成一个新的证书。</p>
+<pre><code># puppet master --verbose --no-daemonize
+
+Info: Creating a new SSL key for ca
+Info: Creating a new SSL certificate request for ca
+Info: Certificate Request fingerprint (SHA256): F6:2F:69:89:BA:A5:5E:FF:7F:94:15:6B:A7:C4:20:CE:23:C7:E3:C9:63:53:E0:F2:76:D7:2E:E0:BF:BD:A6:78
+...
+Notice: puppetmaster has a waiting certificate request
+Notice: Signed certificate request for puppetmaster
+Notice: Removing file Puppet::SSL::CertificateRequest puppetmaster at &#39;/var/lib/puppet/ssl/ca/requests/puppetmaster.pem&#39;
+Notice: Removing file Puppet::SSL::CertificateRequest puppetmaster at &#39;/var/lib/puppet/ssl/certificate_requests/puppetmaster.pem&#39;
+Notice: Starting Puppet master version 3.8.1
+^CNotice: Caught INT; storing stop
+Notice: Processing stop
+</code></pre>
+<p>至此，证书已经生成。一旦我们看到 <strong>Notice: Starting Puppet master version 3.8.1</strong>，就表明证书就已经制作好了。我们按下 CTRL-C 回到 shell 命令行。</p>
+<p>查看新生成证书的信息，可以使用下面的命令。</p>
+<pre><code># puppet cert list -all
+
++ &quot;puppetmaster&quot; (SHA256) 33:28:97:86:A1:C3:2F:73:10:D1:FB:42:DA:D5:42:69:71:84:F0:E2:8A:01:B9:58:38:90:E4:7D:B7:25:23:EC (alt names: &quot;DNS:puppetmaster&quot;, &quot;DNS:puppetmaster.example.com&quot;)
+</code></pre>
+<h3 id="6-创建一个-puppet-清单">6. 创建一个 Puppet 清单</h3>
+<p>默认的主要清单（Manifest）是 /etc/puppet/manifests/site.pp。 这个主要清单文件包括了用于在代理节点执行的配置定义。现在我们来创建一个清单文件：</p>
+<pre><code># nano /etc/puppet/manifests/site.pp
+</code></pre>
+<p>在刚打开的文件里面添加下面这几行：</p>
+<pre><code># execute &#39;apt-get update&#39;
+exec { &#39;apt-update&#39;: # exec resource named &#39;apt-update&#39;
+command =&gt; &#39;/usr/bin/apt-get update&#39; # command this resource will run
+}
+
+# install apache2 package
+package { &#39;apache2&#39;:
+require =&gt; Exec[&#39;apt-update&#39;], # require &#39;apt-update&#39; before installing
+ensure =&gt; installed,
+}
+
+# ensure apache2 service is running
+service { &#39;apache2&#39;:
+ensure =&gt; running,
+}
+</code></pre>
+<p>以上这几行的意思是给代理节点部署 apache web 服务。</p>
+<h3 id="7-运行-puppet-主控服务">7. 运行 puppet 主控服务</h3>
+<p>已经准备好运行 puppet 主控服务器 了，那么开启 apache 服务来让它启动</p>
+<pre><code># systemctl start apache2
+</code></pre>
+<p>我们 puppet 主控服务器已经运行，不过它还不能管理任何代理节点。现在我们给 puppet 主控服务器添加代理节点.</p>
+<p><strong>提示</strong>: 如果报错</p>
+<pre><code>Job for apache2.service failed. see &quot;systemctl status apache2.service&quot; and &quot;journalctl -xe&quot; for details.
+</code></pre>
+<p>肯定是 apache 服务器有一些问题，我们可以使用 root 或是 sudo 访问权限来运行<strong>apachectl start</strong>查看它输出的日志。在本教程执行过程中, 我们发现一个 <strong>/etc/apache2/sites-enabled/puppetmaster.conf</strong> 的证书配置问题。修改其中的<strong>SSLCertificateFile /var/lib/puppet/ssl/certs/server.pem <strong>为  <strong>SSLCertificateFile /var/lib/puppet/ssl/certs/puppetmaster.pem</strong>，然后注释掉后面这行</strong>SSLCertificateKeyFile</strong> 。然后在命令行重新启动 apache。</p>
+<h3 id="8-安装-puppet-代理节点的软件包">8. 安装 Puppet 代理节点的软件包</h3>
+<p>我们已经准备好了 puppet 的服务器，现在需要一个可以管理的代理节点，我们将安装 puppet 代理软件到节点上去。这里我们要给每一个需要管理的节点安装代理软件，并且确保这些节点能够通过 DNS 查询到服务器主机。下面将 安装最新的代理软件到 节点 puppetnode.example.com 上。</p>
+<p>在代理节点上使用下面的命令下载 puppet 实验室提供的软件包：</p>
+<pre><code># cd /tmp/
+# wget https://apt.puppetlabs.com/puppetlabs-release-trusty.deb\
+
+--2015-06-17 00:54:42-- https://apt.puppetlabs.com/puppetlabs-release-trusty.deb
+Resolving apt.puppetlabs.com (apt.puppetlabs.com)... 192.155.89.90, 2600:3c03::f03c:91ff:fedb:6b1d
+Connecting to apt.puppetlabs.com (apt.puppetlabs.com)|192.155.89.90|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7384 (7.2K) [application/x-debian-package]
+Saving to: ‘puppetlabs-release-trusty.deb’
+
+puppetlabs-release-tr 100%[===========================&gt;] 7.21K --.-KB/s in 0.04s
+
+2015-06-17 00:54:42 (162 KB/s) - ‘puppetlabs-release-trusty.deb’ saved [7384/7384]
+</code></pre>
+<p>在 ubuntu 15.04 上我们使用debian包管理系统来安装它，命令如下：</p>
+<pre><code># dpkg -i puppetlabs-release-trusty.deb
+</code></pre>
+<p>使用 apt 包管理命令更新一下本地的软件源：</p>
+<pre><code># apt-get update
+</code></pre>
+<p>通过远程仓库安装：</p>
+<pre><code># apt-get install puppet
+</code></pre>
+<p>Puppet 代理默认是不启动的。这里我们需要使用文本编辑器修改 /etc/default/puppet 文件，使它正常工作：</p>
+<pre><code># nano /etc/default/puppet
+</code></pre>
+<p>更改 <strong>START</strong> 的值改成 &quot;yes&quot; 。</p>
+<pre><code>START=yes
+</code></pre>
+<p>最后保存并退出。</p>
+<h3 id="9-使用-apt-工具锁定代理软件的版本">9. 使用 Apt 工具锁定代理软件的版本</h3>
+<p>和上面的步骤一样为防止随意升级造成的配置文件混乱，我们要使用 apt 工具来把它锁定。具体做法是使用文本编辑器创建一个文件 <strong>/etc/apt/preferences.d/00-puppet.pref</strong> </p>
+<pre><code># nano /etc/apt/preferences.d/00-puppet.pref
+</code></pre>
+<p>在新建的文件里面加入如下内容</p>
+<pre><code># /etc/apt/preferences.d/00-puppet.pref
+Package: puppet puppet-common
+Pin: version 3.8*
+Pin-Priority: 501
+</code></pre>
+<p>这样 puppet 就不会随着系统软件升级而随意升级了。</p>
+<h3 id="10-配置-puppet-代理节点">10. 配置 puppet 代理节点</h3>
+<p>我们需要编辑一下代理节点的 puppet.conf 文件，来使它运行。</p>
+<pre><code># nano /etc/puppet/puppet.conf
+</code></pre>
+<p>它看起来和服务器的配置文件完全一样。同样注释掉<strong>templatedir</strong>这行。不同的是在这里我们需要删除掉所有关于<code>[master]</code> 的部分。</p>
+<p>假定主控服务器可以通过名字“puppet-master”访问，我们的客户端应该可以和它相互连接通信。如果不行的话，我们需要使用完整的主机域名 puppetmaster.example.com</p>
+<pre><code>[agent]
+server = puppetmaster.example.com
+certname = puppetnode.example.com
+</code></pre>
+<p>在文件的结尾增加上面3行，增加之后文件内容像下面这样：</p>
+<pre><code>[main]
+logdir=/var/log/puppet
+vardir=/var/lib/puppet
+ssldir=/var/lib/puppet/ssl
+rundir=/var/run/puppet
+factpath=$vardir/lib/facter
+#templatedir=$confdir/templates
+
+[agent]
+server = puppetmaster.example.com
+certname = puppetnode.example.com
+</code></pre>
+<p>最后保存并退出。</p>
+<p>使用下面的命令来启动客户端软件：</p>
+<pre><code># systemctl start puppet
+</code></pre>
+<p>如果一切顺利的话，我们不会看到命令行有任何输出。 第一次运行的时候，代理节点会生成一个 ssl 证书并且给服务器发送一个请求，经过签名确认后，两台机器就可以互相通信了。</p>
+<p><strong>提示</strong>： 如果这是你添加的第一个代理节点，建议你在添加其他节点前先给这个证书签名。一旦能够通过并正常运行，回过头来再添加其他代理节点。</p>
+<h3 id="11-在主控服务器上对证书请求进行签名">11. 在主控服务器上对证书请求进行签名</h3>
+<p>第一次运行的时候，代理节点会生成一个 ssl 证书并且给服务器发送一个签名请求。在主控服务器给代理节点服务器证书签名之后，主服务器才能和代理服务器通信并且控制代理服务器。</p>
+<p>在主控服务器上使用下面的命令来列出当前的证书请求：</p>
+<pre><code># puppet cert list
+&quot;puppetnode.example.com&quot; (SHA256) 31:A1:7E:23:6B:CD:7B:7D:83:98:33:8B:21:01:A6:C4:01:D5:53:3D:A0:0E:77:9A:77:AE:8F:05:4A:9A:50:B2
+</code></pre>
+<p>因为只设置了一台代理节点服务器，所以我们将只看到一个请求。看起来类似如上，代理节点的完整域名即其主机名。</p>
+<p>注意有没有“+”号在前面，代表这个证书有没有被签名。</p>
+<p>使用带有主机名的<strong>puppet cert sign</strong>这个命令来签署这个签名请求，如下：</p>
+<pre><code># puppet cert sign puppetnode.example.com
+Notice: Signed certificate request for puppetnode.example.com
+Notice: Removing file Puppet::SSL::CertificateRequest puppetnode.example.com at &#39;/var/lib/puppet/ssl/ca/requests/puppetnode.example.com.pem&#39;
+</code></pre>
+<p>主控服务器现在可以通讯和控制它签名过的代理节点了。</p>
+<p>如果想签署所有的当前请求，可以使用 -all 选项，如下所示：</p>
+<pre><code># puppet cert sign --all
+</code></pre>
+<h3 id="12-删除一个-puppet-证书">12. 删除一个 Puppet 证书</h3>
+<p>如果我们想移除一个主机，或者想重建一个主机然后再添加它。下面的例子里我们将展示如何删除 puppet 主控服务器上面的一个证书。使用的命令如下：</p>
+<pre><code># puppet cert clean hostname
+Notice: Revoked certificate with serial 5
+Notice: Removing file Puppet::SSL::Certificate puppetnode.example.com at &#39;/var/lib/puppet/ssl/ca/signed/puppetnode.example.com.pem&#39;
+Notice: Removing file Puppet::SSL::Certificate puppetnode.example.com at &#39;/var/lib/puppet/ssl/certs/puppetnode.example.com.pem&#39;
+</code></pre>
+<p>如果我们想查看所有的签署和未签署的请求，使用下面这条命令：</p>
+<pre><code># puppet cert list --all
++ &quot;puppetmaster&quot; (SHA256) 33:28:97:86:A1:C3:2F:73:10:D1:FB:42:DA:D5:42:69:71:84:F0:E2:8A:01:B9:58:38:90:E4:7D:B7:25:23:EC (alt names: &quot;DNS:puppetmaster&quot;, &quot;DNS:puppetmaster.example.com&quot;) 
+</code></pre>
+<h3 id="13-部署-puppet-清单">13. 部署 Puppet 清单</h3>
+<p>当配置并完成 puppet 清单后，现在我们需要部署清单到代理节点服务器上。要应用并加载主 puppet 清单，我们可以在代理节点服务器上面使用下面的命令：</p>
+<pre><code># puppet agent --test
+
+Info: Retrieving pluginfacts
+Info: Retrieving plugin
+Info: Caching catalog for puppetnode.example.com
+Info: Applying configuration version &#39;1434563858&#39;
+Notice: /Stage[main]/Main/Exec[apt-update]/returns: executed successfully
+Notice: Finished catalog run in 10.53 seconds
+</code></pre>
+<p>这里向我们展示了主清单如何立即影响到了一个单一的服务器。</p>
+<p>如果我们打算运行的 puppet 清单与主清单没有什么关联，我们可以简单使用 puppet apply 带上相应的清单文件的路径即可。它仅将清单应用到我们运行该清单的代理节点上。</p>
+<pre><code># puppet apply /etc/puppet/manifest/test.pp
+</code></pre>
+<h3 id="14-为特定节点配置清单">14. 为特定节点配置清单</h3>
+<p>如果我们想部署一个清单到某个特定的节点，我们需要如下配置清单。</p>
+<p>在主控服务器上面使用文本编辑器编辑 /etc/puppet/manifest/site.pp：</p>
+<pre><code># nano /etc/puppet/manifest/site.pp
+</code></pre>
+<p>添加下面的内容进去</p>
+<pre><code>node &#39;puppetnode&#39;, &#39;puppetnode1&#39; {
+# execute &#39;apt-get update&#39;
+exec { &#39;apt-update&#39;: # exec resource named &#39;apt-update&#39;
+command =&gt; &#39;/usr/bin/apt-get update&#39; # command this resource will run
+}
+
+# install apache2 package
+package { &#39;apache2&#39;:
+require =&gt; Exec[&#39;apt-update&#39;], # require &#39;apt-update&#39; before installing
+ensure =&gt; installed,
+}
+
+# ensure apache2 service is running
+service { &#39;apache2&#39;:
+ensure =&gt; running,
+}
+}
+</code></pre>
+<p>这里的配置显示我们将在名为 puppetnode 和 puppetnode1 的2个指定的节点上面安装 apache 服务。这里可以添加其他我们需要安装部署的具体节点进去。</p>
+<h3 id="15-配置清单模块">15. 配置清单模块</h3>
+<p>模块对于组合任务是非常有用的，在 Puppet 社区有很多人贡献了自己的模块组件。</p>
+<p>在主控服务器上, 我们将使用 puppet module 命令来安装 <strong>puppetlabs-apache</strong> 模块。</p>
+<pre><code># puppet module install puppetlabs-apache
+</code></pre>
+<p><strong>警告</strong>: 千万不要在一个已经部署 apache 环境的机器上面使用这个模块，否则它将清空你没有被 puppet 管理的 apache 配置。</p>
+<p>现在用文本编辑器来修改 <strong>site.pp</strong> ：</p>
+<pre><code># nano /etc/puppet/manifest/site.pp
+</code></pre>
+<p>添加下面的内容进去，在 puppetnode 上面安装 apache 服务。</p>
+<pre><code>node &#39;puppet-node&#39; {
+class { &#39;apache&#39;: } # use apache module
+apache::vhost { &#39;example.com&#39;: # define vhost resource
+port =&gt; &#39;80&#39;,
+docroot =&gt; &#39;/var/www/html&#39;
+}
+}
+</code></pre>
+<p>保存退出。然后重新运行该清单来为我们的代理节点部署 apache 配置。</p>
+<h3 id="总结">总结</h3>
+<p>现在我们已经成功的在 ubuntu 15.04 上面部署并运行 puppet 来管理代理节点服务器的基础运行环境。我们学习了puppet 是如何工作的，编写清单文件，节点与主机间使用 ssl 证书认证的认证过程。使用 puppet 开源软件配置管理工具在众多的代理节点上来控制、管理和配置重复性任务是非常容易的。如果你有任何的问题，建议，反馈，与我们取得联系，我们将第一时间完善更新，谢谢。</p>
+<hr>
+<p>via: <a href="http://linoxide.com/linux-how-to/install-puppet-ubuntu-15-04/">http://linoxide.com/linux-how-to/install-puppet-ubuntu-15-04/</a></p>
+<p>作者：<a href="http://linoxide.com/author/arunp/">Arun Pyasi</a>
+译者：<a href="https://github.com/ivo-wang">ivo-wang</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1设置主机文件">1.设置主机文件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-用-ntp-更新时间">2. 用 NTP 更新时间</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-安装主控服务器软件">3. 安装主控服务器软件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-使用-apt-工具锁定主控服务器的版本">4. 使用 Apt 工具锁定主控服务器的版本</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-配置-puppet-主控服务器">5. 配置 Puppet 主控服务器###</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6-创建一个-puppet-清单">6. 创建一个 Puppet 清单</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7-运行-puppet-主控服务">7. 运行 puppet 主控服务</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#8-安装-puppet-代理节点的软件包">8. 安装 Puppet 代理节点的软件包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#9-使用-apt-工具锁定代理软件的版本">9. 使用 Apt 工具锁定代理软件的版本</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#10-配置-puppet-代理节点">10. 配置 puppet 代理节点</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#11-在主控服务器上对证书请求进行签名">11. 在主控服务器上对证书请求进行签名</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#12-删除一个-puppet-证书">12. 删除一个 Puppet 证书</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#13-部署-puppet-清单">13. 部署 Puppet 清单</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#14-为特定节点配置清单">14. 为特定节点配置清单</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#15-配置清单模块">15. 配置清单模块</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201512/20150806 Installation Guide for Puppet on Ubuntu 15.04","title":"如何在 Ubuntu 15.04 中安装 puppet"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

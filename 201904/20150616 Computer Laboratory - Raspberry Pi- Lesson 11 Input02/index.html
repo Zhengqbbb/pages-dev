@@ -1,0 +1,763 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>计算机实验室之树莓派：课程 11 输入02 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="计算机实验室之树莓派：课程 11 输入02 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="计算机实验室之树莓派：课程 11 输入02 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201904/20150616 Computer Laboratory - Raspberry Pi- Lesson 11 Input02#page","@type":"TechArticle","headline":"计算机实验室之树莓派：课程 11 输入02","inLanguage":"en","name":"计算机实验室之树莓派：课程 11 输入02","url":"https://zhengqbbb.github.io/pages-dev/201904/20150616 Computer Laboratory - Raspberry Pi- Lesson 11 Input02","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201904/20150616 Computer Laboratory - Raspberry Pi- Lesson 11 Input02"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1终端">1、终端</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2文本显示">2、文本显示</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3行打印">3、行打印</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4标志输入">4、标志输入</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5终端机器进化">5、终端：机器进化</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>计算机实验室之树莓派：课程 11 输入02</h1><p>课程输入 02 是以课程输入 01 为基础讲解的，通过一个简单的命令行实现用户的命令输入和计算机的处理和显示。本文假设你已经具备 <a href="https://linux.cn/article-10676-1.html">课程11：输入01</a> 的操作系统代码基础。</p>
+<h3 id="1终端">1、终端</h3>
+<p>几乎所有的操作系统都是以字符终端显示启动的。经典的黑底白字，通过键盘输入计算机要执行的命令，然后会提示你拼写错误，或者恰好得到你想要的执行结果。这种方法有两个主要优点：键盘和显示器可以提供简易、健壮的计算机交互机制，几乎所有的计算机系统都采用这个机制，这个也广泛被系统管理员应用。</p>
+<blockquote>
+<p>早期的计算一般是在一栋楼里的一个巨型计算机系统，它有很多可以输命令的&#39;终端&#39;。计算机依次执行不同来源的命令。</p>
+</blockquote>
+<p>让我们分析下真正想要哪些信息：</p>
+<ol>
+<li>计算机打开后，显示欢迎信息</li>
+<li>计算机启动后可以接受输入标志</li>
+<li>用户从键盘输入带参数的命令</li>
+<li>用户输入回车键或提交按钮</li>
+<li>计算机解析命令后执行可用的命令</li>
+<li>计算机显示命令的执行结果，过程信息</li>
+<li>循环跳转到步骤 2</li>
+</ol>
+<p>这样的终端被定义为标准的输入输出设备。用于（显示）输入的屏幕和打印输出内容的屏幕是同一个（LCTT 译注：最早期的输出打印真是“打印”到打印机/电传机的，而用于输入的终端只是键盘，除非做了回显，否则输出终端是不会显示输入的字符的）。也就是说终端是对字符显示的一个抽象。字符显示中，单个字符是最小的单元，而不是像素。屏幕被划分成固定数量不同颜色的字符。我们可以在现有的屏幕代码基础上，先存储字符和对应的颜色，然后再用方法 <code>DrawCharacter</code> 把其推送到屏幕上。一旦我们需要字符显示，就只需要在屏幕上画出一行字符串。</p>
+<p>新建文件名为 <code>terminal.s</code>，如下：</p>
+<pre><code>.section .data
+.align 4
+terminalStart:
+.int terminalBuffer
+terminalStop:
+.int terminalBuffer
+terminalView:
+.int terminalBuffer
+terminalColour:
+.byte 0xf
+.align 8
+terminalBuffer:
+.rept 128*128
+.byte 0x7f
+.byte 0x0
+.endr
+terminalScreen:
+.rept 1024/8 core.md Dict.md lctt2014.md lctt2016.md lctt2018.md LICENSE published README.md scripts sources translated 768/16
+.byte 0x7f
+.byte 0x0
+.endr
+</code></pre>
+<p>这是文件终端的配置数据文件。我们有两个主要的存储变量：<code>terminalBuffer</code> 和 <code>terminalScreen</code>。<code>terminalBuffer</code> 保存所有显示过的字符。它保存 128 行字符文本（1 行包含 128 个字符）。每个字符有一个 ASCII 字符和颜色单元组成，初始值为 0x7f（ASCII 的删除字符）和 0（前景色和背景色为黑）。<code>terminalScreen</code> 保存当前屏幕显示的字符。它保存 128x48 个字符，与 <code>terminalBuffer</code> 初始化值一样。你可能会觉得我仅需要 <code>terminalScreen</code> 就够了，为什么还要<code>terminalBuffer</code>，其实有两个好处：</p>
+<ol>
+<li>我们可以很容易看到字符串的变化，只需画出有变化的字符。</li>
+<li>我们可以回滚终端显示的历史字符，也就是缓冲的字符（有限制）</li>
+</ol>
+<p>这种独特的技巧在低功耗系统里很常见。画屏是很耗时的操作，因此我们仅在不得已的时候才去执行这个操作。在这个系统里，我们可以任意改变 <code>terminalBuffer</code>，然后调用一个仅拷贝屏幕上字节变化的方法。也就是说我们不需要持续画出每个字符，这样可以节省一大段跨行文本的操作时间。</p>
+<blockquote>
+<p>你总是需要尝试去设计一个高效的系统，如果在很少变化的情况下这个系统会运行的更快。</p>
+</blockquote>
+<p>其他在 <code>.data</code> 段的值得含义如下：</p>
+<ul>
+<li><code>terminalStart</code>
+写入到 <code>terminalBuffer</code> 的第一个字符</li>
+<li><code>terminalStop</code>
+写入到 <code>terminalBuffer</code> 的最后一个字符</li>
+<li><code>terminalView</code>
+表示当前屏幕的第一个字符，这样我们可以控制滚动屏幕</li>
+<li><code>temrinalColour</code>
+即将被描画的字符颜色</li>
+</ul>
+<p><code>terminalStart</code> 需要保存起来的原因是 <code>termainlBuffer</code> 是一个环状缓冲区。意思是当缓冲区变满时，末尾地方会回滚覆盖开始位置，这样最后一个字符变成了第一个字符。因此我们需要将 <code>terminalStart</code> 往前推进，这样我们知道我们已经占满它了。如何实现缓冲区检测：如果索引越界到缓冲区的末尾，就将索引指向缓冲区的开始位置。环状缓冲区是一个比较常见的存储大量数据的高明方法，往往这些数据的最近部分比较重要。它允许无限制的写入，只保证最近一些特定数据有效。这个常常用于信号处理和数据压缩算法。这样的情况，可以允许我们存储 128 行终端记录，超过128行也不会有问题。如果不是这样，当超过第 128 行时，我们需要把 127 行分别向前拷贝一次，这样很浪费时间。</p>
+<p><img src="https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/os/images/circular_buffer.png" alt="显示 Hellow world 插入到大小为5的循环缓冲区的示意图。"> </p>
+<blockquote>
+<p>环状缓冲区是<strong>数据结构</strong>一个例子。这是一个组织数据的思路，有时我们通过软件实现这种思路。</p>
+</blockquote>
+<p>之前已经提到过 <code>terminalColour</code> 几次了。你可以根据你的想法实现终端颜色，但这个文本终端有 16 个前景色和 16 个背景色（这里相当于有 16^2 = 256 种组合）。<a href="https://en.wikipedia.org/wiki/Color_Graphics_Adapter">CGA</a>终端的颜色定义如下：</p>
+<p>表格 1.1 - CGA 颜色编码</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>颜色 (R, G, B)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>黑 (0, 0, 0)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>蓝 (0, 0, ⅔)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>绿 (0, ⅔, 0)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>青色 (0, ⅔, ⅔)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>红色 (⅔, 0, 0)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>品红 (⅔, 0, ⅔)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>棕色 (⅔, ⅓, 0)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>浅灰色 (⅔, ⅔, ⅔)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>灰色 (⅓, ⅓, ⅓)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>淡蓝色 (⅓, ⅓, 1)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>淡绿色 (⅓, 1, ⅓)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>淡青色 (⅓, 1, 1)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>淡红色 (1, ⅓, ⅓)</td>
+</tr>
+<tr>
+<td>13</td>
+<td>浅品红 (1, ⅓, 1)</td>
+</tr>
+<tr>
+<td>14</td>
+<td>黄色 (1, 1, ⅓)</td>
+</tr>
+<tr>
+<td>15</td>
+<td>白色 (1, 1, 1)</td>
+</tr>
+</tbody></table>
+<p>我们将前景色保存到颜色的低字节，背景色保存到颜色高字节。除了棕色，其他这些颜色遵循一种模式如二进制的高位比特代表增加 ⅓ 到每个组件，其他比特代表增加 ⅔ 到各自组件。这样很容易进行 RGB 颜色转换。</p>
+<blockquote>
+<p>棕色作为替代色（黑黄色）既不吸引人也没有什么用处。</p>
+</blockquote>
+<p>我们需要一个方法从 <code>TerminalColour</code> 读取颜色编码的四个比特，然后用 16 比特等效参数调用 <code>SetForeColour</code>。尝试你自己实现。如果你感觉麻烦或者还没有完成屏幕系列课程，我们的实现如下：</p>
+<pre><code>.section .text
+TerminalColour:
+teq r0,#6
+ldreq r0,=0x02B5
+beq SetForeColour
+
+tst r0,#0b1000
+ldrne r1,=0x52AA
+moveq r1,#0
+tst r0,#0b0100
+addne r1,#0x15
+tst r0,#0b0010
+addne r1,#0x540
+tst r0,#0b0001
+addne r1,#0xA800
+mov r0,r1
+b SetForeColour
+</code></pre>
+<h3 id="2文本显示">2、文本显示</h3>
+<p>我们的终端第一个真正需要的方法是 <code>TerminalDisplay</code>，它用来把当前的数据从 <code>terminalBuffer</code>拷贝到 <code>terminalScreen</code> 和实际的屏幕。如上所述，这个方法必须是最小开销的操作，因为我们需要频繁调用它。它主要比较 <code>terminalBuffer</code> 与 <code>terminalDisplay</code> 的文本，然后只拷贝有差异的字节。请记住 <code>terminalBuffer</code> 是以环状缓冲区运行的，这种情况，就是从 <code>terminalView</code> 到 <code>terminalStop</code>，或者 128*48 个字符，要看哪个来的最快。如果我们遇到 <code>terminalStop</code>，我们将会假定在这之后的所有字符是 7f<sub>16</sub> (ASCII 删除字符)，颜色为 0（黑色前景色和背景色）。</p>
+<p>让我们看看必须要做的事情：</p>
+<ol>
+<li>加载 <code>terminalView</code>、<code>terminalStop</code> 和 <code>terminalDisplay</code> 的地址。</li>
+<li>对于每一行：
+1. 对于每一列：
+<ol>
+<li>如果 <code>terminalView</code> 不等于 <code>terminalStop</code>，根据 <code>terminalView</code> 加载当前字符和颜色</li>
+<li>否则加载 0x7f 和颜色 0</li>
+<li>从 <code>terminalDisplay</code> 加载当前的字符</li>
+<li>如果字符和颜色相同，直接跳转到第 10 步</li>
+<li>存储字符和颜色到 <code>terminalDisplay</code></li>
+<li>用 <code>r0</code> 作为背景色参数调用 <code>TerminalColour</code></li>
+<li>用 <code>r0 = 0x7f</code>（ASCII 删除字符，一个块）、 <code>r1 = x</code>、<code>r2 = y</code> 调用 <code>DrawCharacter</code></li>
+<li>用 <code>r0</code> 作为前景色参数调用 <code>TerminalColour</code></li>
+<li>用 <code>r0 = 字符</code>、<code>r1 = x</code>、<code>r2 = y</code> 调用 <code>DrawCharacter</code></li>
+<li>对位置参数 <code>terminalDisplay</code> 累加 2</li>
+<li>如果 <code>terminalView</code> 不等于 <code>terminalStop</code>，<code>terminalView</code> 位置参数累加 2</li>
+<li>如果 <code>terminalView</code> 位置已经是文件缓冲器的末尾，将它设置为缓冲区的开始位置</li>
+<li>x 坐标增加 8
+2. y 坐标增加 16</li>
+</ol>
+</li>
+</ol>
+<p>尝试去自己实现吧。如果你遇到问题，我们的方案下面给出来了：</p>
+<p>1、我这里的变量有点乱。为了方便起见，我用 <code>taddr</code> 存储 <code>textBuffer</code> 的末尾位置。</p>
+<pre><code>.globl TerminalDisplay
+TerminalDisplay:
+push {r4,r5,r6,r7,r8,r9,r10,r11,lr}
+x .req r4
+y .req r5
+char .req r6
+col .req r7
+screen .req r8
+taddr .req r9
+view .req r10
+stop .req r11
+
+ldr taddr,=terminalStart
+ldr view,[taddr,#terminalView - terminalStart]
+ldr stop,[taddr,#terminalStop - terminalStart]
+add taddr,#terminalBuffer - terminalStart
+add taddr,#128*128*2
+mov screen,taddr
+</code></pre>
+<p>2、从 <code>yLoop</code> 开始运行。</p>
+<pre><code>mov y,#0
+yLoop$:
+</code></pre>
+<p>2.1、</p>
+<pre><code>mov x,#0
+xLoop$:
+</code></pre>
+<p>从 <code>xLoop</code> 开始运行。</p>
+<p>2.1.1、为了方便起见，我把字符和颜色同时加载到 <code>char</code> 变量了</p>
+<pre><code>teq view,stop
+ldrneh char,[view]
+</code></pre>
+<p>2.1.2、这行是对上面一行的补充说明：读取黑色的删除字符</p>
+<pre><code>moveq char,#0x7f
+</code></pre>
+<p>2.1.3、为了简便我把字符和颜色同时加载到 <code>col</code> 里。</p>
+<pre><code>ldrh col,[screen]
+</code></pre>
+<p>2.1.4、 现在我用 <code>teq</code> 指令检查是否有数据变化</p>
+<pre><code>teq col,char
+beq xLoopContinue$
+</code></pre>
+<p>2.1.5、我可以容易的保存当前值</p>
+<pre><code>strh char,[screen]
+</code></pre>
+<p>2.1.6、我用比特偏移指令 <code>lsr</code> 和 <code>and</code> 指令从切分 <code>char</code> 变量，将颜色放到 <code>col</code> 变量，字符放到 <code>char</code> 变量，然后再用比特偏移指令 <code>lsr</code> 获取背景色后调用 <code>TerminalColour</code> 。</p>
+<pre><code>lsr col,char,#8
+and char,#0x7f
+lsr r0,col,#4
+bl TerminalColour
+</code></pre>
+<p>2.1.7、写入一个彩色的删除字符</p>
+<pre><code>mov r0,#0x7f
+mov r1,x
+mov r2,y
+bl DrawCharacter
+</code></pre>
+<p>2.1.8、用 <code>and</code> 指令获取 <code>col</code> 变量的低半字节，然后调用 <code>TerminalColour</code></p>
+<pre><code>and r0,col,#0xf
+bl TerminalColour
+</code></pre>
+<p>2.1.9、写入我们需要的字符</p>
+<pre><code>mov r0,char
+mov r1,x
+mov r2,y
+bl DrawCharacter
+</code></pre>
+<p>2.1.10、自增屏幕指针</p>
+<pre><code>xLoopContinue$:
+add screen,#2
+</code></pre>
+<p>2.1.11、如果可能自增 <code>view</code> 指针</p>
+<pre><code>teq view,stop
+addne view,#2
+</code></pre>
+<p>2.1.12、很容易检测 <code>view</code> 指针是否越界到缓冲区的末尾，因为缓冲区的地址保存在 <code>taddr</code> 变量里</p>
+<pre><code>teq view,taddr
+subeq view,#128*128*2
+</code></pre>
+<p>2.1.13、 如果还有字符需要显示，我们就需要自增 <code>x</code> 变量然后到 <code>xLoop</code> 循环执行</p>
+<pre><code>add x,#8
+teq x,#1024
+bne xLoop$
+</code></pre>
+<p>2.2、 如果还有更多的字符显示我们就需要自增 <code>y</code> 变量，然后到 <code>yLoop</code> 循环执行</p>
+<pre><code>add y,#16
+teq y,#768
+bne yLoop$
+</code></pre>
+<p>3、不要忘记最后清除变量</p>
+<pre><code>pop {r4,r5,r6,r7,r8,r9,r10,r11,pc}
+.unreq x
+.unreq y
+.unreq char
+.unreq col
+.unreq screen
+.unreq taddr
+.unreq view
+.unreq stop
+</code></pre>
+<h3 id="3行打印">3、行打印</h3>
+<p>现在我有了自己 <code>TerminalDisplay</code> 方法，它可以自动显示 <code>terminalBuffer</code> 内容到 <code>terminalScreen</code>，因此理论上我们可以画出文本。但是实际上我们没有任何基于字符显示的例程。 首先快速容易上手的方法便是 <code>TerminalClear</code>， 它可以彻底清除终端。这个方法不用循环也很容易实现。可以尝试分析下面的方法应该不难：</p>
+<pre><code>.globl TerminalClear
+TerminalClear:
+ldr r0,=terminalStart
+add r1,r0,#terminalBuffer-terminalStart
+str r1,[r0]
+str r1,[r0,#terminalStop-terminalStart]
+str r1,[r0,#terminalView-terminalStart]
+mov pc,lr
+</code></pre>
+<p>现在我们需要构造一个字符显示的基础方法：<code>Print</code> 函数。它将保存在 <code>r0</code> 的字符串和保存在 <code>r1</code> 的字符串长度简单的写到屏幕上。有一些特定字符需要特别的注意，这些特定的操作是确保 <code>terminalView</code> 是最新的。我们来分析一下需要做什么： </p>
+<ol>
+<li>检查字符串的长度是否为 0，如果是就直接返回</li>
+<li>加载 <code>terminalStop</code> 和 <code>terminalView</code></li>
+<li>计算出 <code>terminalStop</code> 的 x 坐标</li>
+<li>对每一个字符的操作：
+1. 检查字符是否为新起一行
+2. 如果是的话，自增 <code>bufferStop</code> 到行末，同时写入黑色删除字符
+3. 否则拷贝当前 <code>terminalColour</code> 的字符
+4. 检查是否在行末
+5. 如果是，检查从 <code>terminalView</code> 到 <code>terminalStop</code> 之间的字符数是否大于一屏
+6. 如果是，<code>terminalView</code> 自增一行
+7. 检查 <code>terminalView</code> 是否为缓冲区的末尾，如果是的话将其替换为缓冲区的起始位置
+8. 检查 <code>terminalStop</code> 是否为缓冲区的末尾，如果是的话将其替换为缓冲区的起始位置
+9. 检查 <code>terminalStop</code> 是否等于 <code>terminalStart</code>， 如果是的话 <code>terminalStart</code> 自增一行。
+10. 检查 <code>terminalStart</code> 是否为缓冲区的末尾，如果是的话将其替换为缓冲区的起始位置</li>
+<li>存取 <code>terminalStop</code> 和 <code>terminalView</code></li>
+</ol>
+<p>试一下自己去实现。我们的方案提供如下：</p>
+<p>1、这个是 <code>Print</code> 函数开始快速检查字符串为0的代码</p>
+<pre><code>.globl Print
+Print:
+teq r1,#0
+moveq pc,lr
+</code></pre>
+<p>2、这里我做了很多配置。 <code>bufferStart</code> 代表 <code>terminalStart</code>， <code>bufferStop</code> 代表<code>terminalStop</code>， <code>view</code> 代表 <code>terminalView</code>，<code>taddr</code> 代表 <code>terminalBuffer</code> 的末尾地址。</p>
+<pre><code>push {r4,r5,r6,r7,r8,r9,r10,r11,lr}
+bufferStart .req r4
+taddr .req r5
+x .req r6
+string .req r7
+length .req r8
+char .req r9
+bufferStop .req r10
+view .req r11
+
+mov string,r0
+mov length,r1
+
+ldr taddr,=terminalStart
+ldr bufferStop,[taddr,#terminalStop-terminalStart]
+ldr view,[taddr,#terminalView-terminalStart]
+ldr bufferStart,[taddr]
+add taddr,#terminalBuffer-terminalStart
+add taddr,#128*128*2
+</code></pre>
+<p>3、和通常一样，巧妙的对齐技巧让许多事情更容易。由于需要对齐 <code>terminalBuffer</code>，每个字符的 x 坐标需要 8 位要除以 2。</p>
+<pre><code>and x,bufferStop,#0xfe
+lsr x,#1
+</code></pre>
+<p>4.1、我们需要检查新行</p>
+<pre><code>charLoop$:
+ldrb char,[string]
+and char,#0x7f
+teq char,#&#39;\n&#39;
+bne charNormal$
+</code></pre>
+<p>4.2、循环执行值到行末写入 0x7f；黑色删除字符</p>
+<pre><code>mov r0,#0x7f
+clearLine$:
+strh r0,[bufferStop]
+add bufferStop,#2
+add x,#1
+teq x,#128 blt clearLine$
+    
+b charLoopContinue$
+</code></pre>
+<p>4.3、存储字符串的当前字符和 <code>terminalBuffer</code> 末尾的 <code>terminalColour</code> 然后将它和 x 变量自增</p>
+<pre><code>charNormal$:
+strb char,[bufferStop]
+ldr r0,=terminalColour
+ldrb r0,[r0]
+strb r0,[bufferStop,#1]
+add bufferStop,#2
+add x,#1
+</code></pre>
+<p>4.4、检查 x 是否为行末；128</p>
+<pre><code>charLoopContinue$:
+cmp x,#128
+blt noScroll$
+</code></pre>
+<p>4.5、设置 x 为 0 然后检查我们是否已经显示超过 1 屏。请记住，我们是用的循环缓冲区，因此如果 <code>bufferStop</code> 和 <code>view</code> 之前的差是负值，我们实际上是环绕了缓冲区。</p>
+<pre><code>mov x,#0
+subs r0,bufferStop,view
+addlt r0,#128*128*2
+cmp r0,#128*(768/16)*2
+</code></pre>
+<p>4.6、增加一行字节到 <code>view</code> 的地址</p>
+<pre><code>addge view,#128*2
+</code></pre>
+<p>4.7、 如果 <code>view</code> 地址是缓冲区的末尾，我们就从它上面减去缓冲区的长度，让其指向开始位置。我会在开始的时候设置 <code>taddr</code> 为缓冲区的末尾地址。</p>
+<pre><code>teq view,taddr
+subeq view,taddr,#128*128*2
+</code></pre>
+<p>4.8、如果 <code>stop</code> 的地址在缓冲区末尾，我们就从它上面减去缓冲区的长度，让其指向开始位置。我会在开始的时候设置 <code>taddr</code> 为缓冲区的末尾地址。</p>
+<pre><code>noScroll$:
+teq bufferStop,taddr
+subeq bufferStop,taddr,#128*128*2
+</code></pre>
+<p>4.9、检查 <code>bufferStop</code> 是否等于 <code>bufferStart</code>。 如果等于增加一行到 <code>bufferStart</code>。</p>
+<pre><code>teq bufferStop,bufferStart
+addeq bufferStart,#128*2
+</code></pre>
+<p>4.10、如果 <code>start</code> 的地址在缓冲区的末尾，我们就从它上面减去缓冲区的长度，让其指向开始位置。我会在开始的时候设置 <code>taddr</code> 为缓冲区的末尾地址。</p>
+<pre><code>teq bufferStart,taddr
+subeq bufferStart,taddr,#128*128*2
+</code></pre>
+<p>循环执行知道字符串结束</p>
+<pre><code>subs length,#1
+add string,#1
+bgt charLoop$
+</code></pre>
+<p>5、保存变量然后返回</p>
+<pre><code>charLoopBreak$:
+sub taddr,#128*128*2
+sub taddr,#terminalBuffer-terminalStart
+str bufferStop,[taddr,#terminalStop-terminalStart]
+str view,[taddr,#terminalView-terminalStart]
+str bufferStart,[taddr]
+
+pop {r4,r5,r6,r7,r8,r9,r10,r11,pc}
+.unreq bufferStart
+.unreq taddr
+.unreq x
+.unreq string
+.unreq length
+.unreq char
+.unreq bufferStop
+.unreq view
+</code></pre>
+<p>这个方法允许我们打印任意字符到屏幕。然而我们用了颜色变量，但实际上没有设置它。一般终端用特性的组合字符去行修改颜色。如 ASCII 转义（1b<sub>16</sub>）后面跟着一个 0 - f 的 16 进制的数，就可以设置前景色为 CGA 颜色号。如果你自己想尝试实现；在下载页面有一个我的详细的例子。</p>
+<h3 id="4标志输入">4、标志输入</h3>
+<p>现在我们有一个可以打印和显示文本的输出终端。这仅仅是说对了一半，我们需要输入。我们想实现一个方法：<code>ReadLine</code>，可以保存文件的一行文本，文本位置由 <code>r0</code> 给出，最大的长度由 <code>r1</code> 给出，返回 <code>r0</code> 里面的字符串长度。棘手的是用户输出字符的时候要回显功能，同时想要退格键的删除功能和命令回车执行功能。它们还需要一个闪烁的下划线代表计算机需要输入。这些完全合理的要求让构造这个方法更具有挑战性。有一个方法完成这些需求就是存储用户输入的文本和文件大小到内存的某个地方。然后当调用 <code>ReadLine</code> 的时候，移动 <code>terminalStop</code> 的地址到它开始的地方然后调用 <code>Print</code>。也就是说我们只需要确保在内存维护一个字符串，然后构造一个我们自己的打印函数。</p>
+<blockquote>
+<p>按照惯例，许多编程语言中，任意程序可以访问 stdin 和 stdin，它们可以连接到终端的输入和输出流。在图形程序其实也可以进行同样操作，但实际几乎不用。</p>
+</blockquote>
+<p>让我们看看 <code>ReadLine</code> 做了哪些事情：</p>
+<ol>
+<li>如果字符串可保存的最大长度为 0，直接返回</li>
+<li>检索 <code>terminalStop</code> 和 <code>terminalStop</code> 的当前值</li>
+<li>如果字符串的最大长度大约缓冲区的一半，就设置大小为缓冲区的一半</li>
+<li>从最大长度里面减去 1 来确保输入的闪烁字符或结束符</li>
+<li>向字符串写入一个下划线</li>
+<li>写入一个 <code>terminalView</code> 和 <code>terminalStop</code> 的地址到内存</li>
+<li>调用 <code>Print</code> 打印当前字符串</li>
+<li>调用 <code>TerminalDisplay</code></li>
+<li>调用 <code>KeyboardUpdate</code></li>
+<li>调用 <code>KeyboardGetChar</code></li>
+<li>如果是一个新行直接跳转到第 16 步</li>
+<li>如果是一个退格键，将字符串长度减 1（如果其大于 0）</li>
+<li>如果是一个普通字符，将它写入字符串（字符串大小确保小于最大值）</li>
+<li>如果字符串是以下划线结束，写入一个空格，否则写入下划线</li>
+<li>跳转到第 6 步</li>
+<li>字符串的末尾写入一个新行字符</li>
+<li>调用 <code>Print</code> 和 <code>TerminalDisplay</code></li>
+<li>用结束符替换新行</li>
+<li>返回字符串的长度</li>
+</ol>
+<p>为了方便读者理解，然后然后自己去实现，我们的实现提供如下：</p>
+<ol>
+<li>快速处理长度为 0 的情况</li>
+</ol>
+<pre><code>.globl ReadLine
+ReadLine:
+teq r1,#0
+moveq r0,#0
+moveq pc,lr
+</code></pre>
+<p>2、考虑到常见的场景，我们初期做了很多初始化动作。<code>input</code> 代表 <code>terminalStop</code> 的值，<code>view</code> 代表 <code>terminalView</code>。<code>Length</code> 默认为 <code>0</code>。 </p>
+<pre><code>string .req r4
+maxLength .req r5
+input .req r6
+taddr .req r7
+length .req r8
+view .req r9
+
+push {r4,r5,r6,r7,r8,r9,lr}
+
+mov string,r0
+mov maxLength,r1
+ldr taddr,=terminalStart
+ldr input,[taddr,#terminalStop-terminalStart]
+ldr view,[taddr,#terminalView-terminalStart]
+mov length,#0
+</code></pre>
+<p>3、我们必须检查异常大的读操作，我们不能处理超过 <code>terminalBuffer</code> 大小的输入（理论上可行，但是 <code>terminalStart</code> 移动越过存储的 terminalStop`，会有很多问题）。</p>
+<pre><code>cmp maxLength,#128*64
+movhi maxLength,#128*64
+</code></pre>
+<p>4、由于用户需要一个闪烁的光标，我们需要一个备用字符在理想状况在这个字符串后面放一个结束符。</p>
+<pre><code>sub maxLength,#1
+</code></pre>
+<p>5、写入一个下划线让用户知道我们可以输入了。</p>
+<pre><code>mov r0,#&#39;_&#39;
+strb r0,[string,length]
+</code></pre>
+<p>6、保存 <code>terminalStop</code> 和 <code>terminalView</code>。这个对重置一个终端很重要，它会修改这些变量。严格讲也可以修改 <code>terminalStart</code>，但是不可逆。</p>
+<pre><code>readLoop$:
+str input,[taddr,#terminalStop-terminalStart]
+str view,[taddr,#terminalView-terminalStart]
+</code></pre>
+<p>7、写入当前的输入。由于下划线因此字符串长度加 1</p>
+<pre><code>mov r0,string
+mov r1,length
+add r1,#1
+bl Print
+</code></pre>
+<p>8、拷贝下一个文本到屏幕</p>
+<pre><code>bl TerminalDisplay
+</code></pre>
+<p>9、获取最近一次键盘输入</p>
+<pre><code>bl KeyboardUpdate
+</code></pre>
+<p>10、检索键盘输入键值</p>
+<pre><code>bl KeyboardGetChar
+</code></pre>
+<p>11、如果我们有一个回车键，循环中断。如果有结束符和一个退格键也会同样跳出循环。</p>
+<pre><code>teq r0,#&#39;\n&#39;
+beq readLoopBreak$
+teq r0,#0
+beq cursor$
+teq r0,#&#39;\b&#39;
+bne standard$
+</code></pre>
+<p>12、从 <code>length</code> 里面删除一个字符</p>
+<pre><code>delete$:
+cmp length,#0
+subgt length,#1
+b cursor$
+</code></pre>
+<p>13、写回一个普通字符</p>
+<pre><code>standard$:
+cmp length,maxLength
+bge cursor$
+strb r0,[string,length]
+add length,#1
+</code></pre>
+<p>14、加载最近的一个字符，如果不是下划线则修改为下换线，如果是则修改为空格</p>
+<pre><code>cursor$:
+ldrb r0,[string,length]
+teq r0,#&#39;_&#39;
+moveq r0,#&#39; &#39;
+movne r0,#&#39;_&#39;
+strb r0,[string,length]
+</code></pre>
+<p>15、循环执行值到用户输入按下</p>
+<pre><code>b readLoop$
+readLoopBreak$:
+</code></pre>
+<p>16、在字符串的结尾处存入一个新行字符</p>
+<pre><code>mov r0,#&#39;\n&#39;
+strb r0,[string,length]
+</code></pre>
+<p>17、重置 <code>terminalView</code> 和 <code>terminalStop</code> 然后调用 <code>Print</code> 和 <code>TerminalDisplay</code> 显示最终的输入</p>
+<pre><code>str input,[taddr,#terminalStop-terminalStart]
+str view,[taddr,#terminalView-terminalStart]
+mov r0,string
+mov r1,length
+add r1,#1
+bl Print
+bl TerminalDisplay
+</code></pre>
+<p>18、写入一个结束符</p>
+<pre><code>mov r0,#0
+strb r0,[string,length]
+</code></pre>
+<p>19、返回长度</p>
+<pre><code>mov r0,length
+pop {r4,r5,r6,r7,r8,r9,pc}
+.unreq string
+.unreq maxLength
+.unreq input
+.unreq taddr
+.unreq length
+.unreq view
+</code></pre>
+<h3 id="5终端机器进化">5、终端：机器进化</h3>
+<p>现在我们理论用终端和用户可以交互了。最显而易见的事情就是拿去测试了！删除 <code>main.s</code> 里 <code>bl UsbInitialise</code> 后面的代码后如下：</p>
+<pre><code>reset$:
+  mov sp,#0x8000
+  bl TerminalClear
+  
+  ldr r0,=welcome
+  mov r1,#welcomeEnd-welcome
+  bl Print
+
+loop$:
+  ldr r0,=prompt
+  mov r1,#promptEnd-prompt
+  bl Print
+  
+  ldr r0,=command
+  mov r1,#commandEnd-command
+  bl ReadLine
+  
+  teq r0,#0
+  beq loopContinue$
+  
+  mov r4,r0
+  
+  ldr r5,=command
+  ldr r6,=commandTable
+  
+  ldr r7,[r6,#0]
+  ldr r9,[r6,#4]
+  commandLoop$:
+    ldr r8,[r6,#8]
+    sub r1,r8,r7
+    
+    cmp r1,r4
+    bgt commandLoopContinue$
+    
+    mov r0,#0
+    commandName$:
+      ldrb r2,[r5,r0]
+      ldrb r3,[r7,r0]
+      teq r2,r3
+      bne commandLoopContinue$
+      add r0,#1
+      teq r0,r1
+      bne commandName$
+    
+    ldrb r2,[r5,r0]
+    teq r2,#0
+    teqne r2,#&#39; &#39;
+    bne commandLoopContinue$
+    
+    mov r0,r5
+    mov r1,r4
+    mov lr,pc
+    mov pc,r9
+    b loopContinue$
+  
+  commandLoopContinue$:
+    add r6,#8
+    mov r7,r8
+    ldr r9,[r6,#4]
+    teq r9,#0
+    bne commandLoop$
+  
+  ldr r0,=commandUnknown
+  mov r1,#commandUnknownEnd-commandUnknown
+  ldr r2,=formatBuffer
+  ldr r3,=command
+  bl FormatString
+  
+  mov r1,r0
+  ldr r0,=formatBuffer
+  bl Print
+
+loopContinue$:
+  bl TerminalDisplay
+  b loop$
+
+echo:
+  cmp r1,#5
+  movle pc,lr
+
+  add r0,#5
+  sub r1,#5
+  b Print
+
+ok:
+  teq r1,#5
+  beq okOn$
+  teq r1,#6
+  beq okOff$
+  mov pc,lr
+  
+  okOn$:
+    ldrb r2,[r0,#3]
+    teq r2,#&#39;o&#39;
+    ldreqb r2,[r0,#4]
+    teqeq r2,#&#39;n&#39;
+    movne pc,lr
+    mov r1,#0
+    b okAct$
+  
+  okOff$:
+    ldrb r2,[r0,#3]
+    teq r2,#&#39;o&#39;
+    ldreqb r2,[r0,#4]
+    teqeq r2,#&#39;f&#39;
+    ldreqb r2,[r0,#5]
+    teqeq r2,#&#39;f&#39;
+    movne pc,lr
+    mov r1,#1
+  
+  okAct$:
+  
+    mov r0,#16
+    b SetGpio
+
+.section .data
+.align 2
+welcome: .ascii &quot;Welcome to Alex&#39;s OS - Everyone&#39;s favourite OS&quot;
+welcomeEnd:
+.align 2
+prompt: .ascii &quot;\n&gt; &quot;
+promptEnd:
+.align 2
+command:
+  .rept 128
+    .byte 0
+  .endr
+commandEnd:
+.byte 0
+.align 2
+commandUnknown: .ascii &quot;Command `%s&#39; was not recognised.\n&quot;
+commandUnknownEnd:
+.align 2
+formatBuffer:
+  .rept 256
+    .byte 0
+  .endr
+formatEnd:
+
+.align 2
+commandStringEcho: .ascii &quot;echo&quot;
+commandStringReset: .ascii &quot;reset&quot;
+commandStringOk: .ascii &quot;ok&quot;
+commandStringCls: .ascii &quot;cls&quot;
+commandStringEnd:
+
+.align 2
+commandTable:
+.int commandStringEcho, echo
+.int commandStringReset, reset$
+.int commandStringOk, ok
+.int commandStringCls, TerminalClear
+.int commandStringEnd, 0
+</code></pre>
+<p>这块代码集成了一个简易的命令行操作系统。支持命令：<code>echo</code>、<code>reset</code>、<code>ok</code> 和 <code>cls</code>。<code>echo</code> 拷贝任意文本到终端，<code>reset</code> 命令会在系统出现问题的是复位操作系统，<code>ok</code> 有两个功能：设置 OK 灯亮灭，最后 <code>cls</code> 调用 TerminalClear 清空终端。</p>
+<p>试试树莓派的代码吧。如果遇到问题，请参照问题集锦页面吧。</p>
+<p>如果运行正常，祝贺你完成了一个操作系统基本终端和输入系列的课程。很遗憾这个教程先讲到这里，但是我希望将来能制作更多教程。有问题请反馈至 <a href="mailto:awc32@cam.ac.uk">awc32@cam.ac.uk</a>。</p>
+<p>你已经在建立了一个简易的终端操作系统。我们的代码在 commandTable 构造了一个可用的命令表格。每个表格的入口是一个整型数字，用来表示字符串的地址，和一个整型数字表格代码的执行入口。 最后一个入口是 为 0 的 <code>commandStringEnd</code>。尝试实现你自己的命令，可以参照已有的函数，建立一个新的。函数的参数 <code>r0</code> 是用户输入的命令地址，<code>r1</code> 是其长度。你可以用这个传递你输入值到你的命令。也许你有一个计算器程序，或许是一个绘图程序或国际象棋。不管你的什么点子，让它跑起来！</p>
+<hr>
+<p>via: <a href="https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/os/input02.html">https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/os/input02.html</a></p>
+<p>作者：<a href="https://www.cl.cam.ac.uk">Alex Chadwick</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/guevaraya">guevaraya</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1终端">1、终端</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2文本显示">2、文本显示</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3行打印">3、行打印</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4标志输入">4、标志输入</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5终端机器进化">5、终端：机器进化</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201904/20150616 Computer Laboratory - Raspberry Pi- Lesson 11 Input02","title":"计算机实验室之树莓派：课程 11 输入02"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

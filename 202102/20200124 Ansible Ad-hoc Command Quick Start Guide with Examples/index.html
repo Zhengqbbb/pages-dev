@@ -1,0 +1,257 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Ansible 点对点命令快速入门指南示例 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Ansible 点对点命令快速入门指南示例 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Ansible 点对点命令快速入门指南示例 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202102/20200124 Ansible Ad-hoc Command Quick Start Guide with Examples#page","@type":"TechArticle","headline":"Ansible 点对点命令快速入门指南示例","inLanguage":"en","name":"Ansible 点对点命令快速入门指南示例","url":"https://zhengqbbb.github.io/pages-dev/202102/20200124 Ansible Ad-hoc Command Quick Start Guide with Examples","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202102/20200124 Ansible Ad-hoc Command Quick Start Guide with Examples"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是点对点ad-hoc命令">什么是&lt;ruby&gt;点对点&lt;rt&gt;ad-hoc&lt;/rt&gt;&lt;/ruby&gt;命令？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1如何在-linux-上使用-ansible-列出目录的内容">1）如何在 Linux 上使用 Ansible 列出目录的内容</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2如何在-linux-使用-ansible-管理文件">2）如何在 Linux 使用 Ansible 管理文件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3用户管理">3）用户管理</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4管理包">4）管理包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5管理服务">5）管理服务</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Ansible 点对点命令快速入门指南示例</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202102/28/221449b8ldh7v4ll8dw774.jpg" alt=""></p>
+<p>之前，我们写了一篇有关 <a href="https://linux.cn/article-13142-1.html">Ansible 安装和配置</a> 的文章。在那个教程中只包含了一些使用方法的示例。如果你是 Ansible 新手，建议你阅读上篇文章。一旦你熟悉了，就可以继续阅读本文了。</p>
+<p>默认情况下，Ansible 仅使用 5 个并行进程。如果要在多个主机上执行任务，需要通过添加 <code>-f [进程数]</code> 选项来手动设置进程数。</p>
+<h3 id="什么是点对点ad-hoc命令">什么是<ruby>点对点<rt>ad-hoc</rt></ruby>命令？</h3>
+<p>点对点命令用于在一个或多个受控节点上自动执行任务。它非常简单，但是不可重用。它使用 <code>/usr/bin/ansible</code> 二进制文件执行所有操作。</p>
+<p>点对点命令最适合运行一次的任务。例如，如果要检查指定用户是否可用，你可以使用一行命令而无需编写剧本。</p>
+<h4 id="为什么你要了解点对点命令">为什么你要了解点对点命令？</h4>
+<p>点对点命令证明了 Ansible 的简单性和强大功能。从 2.9 版本开始，它支持 3389 个模块，因此你需要了解和学习要定期使用的 Ansible 模块列表。</p>
+<p>如果你是一个 Ansible 新手，可以借助点对点命令轻松地练习这些模块及参数。</p>
+<p>你在这里学习到的概念将直接移植到剧本中。</p>
+<p><strong>点对点命令的一般语法：</strong></p>
+<pre><code>ansible [模式] -m [模块] -a &quot;[模块选项]&quot;
+</code></pre>
+<p>点对点命令包含四个部分，详细信息如下：</p>
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ansible</code></td>
+<td>命令</td>
+</tr>
+<tr>
+<td>模式</td>
+<td>输入清单或指定组</td>
+</tr>
+<tr>
+<td>模块</td>
+<td>运行指定的模块名称</td>
+</tr>
+<tr>
+<td>模块选项</td>
+<td>指定模块参数</td>
+</tr>
+</tbody></table>
+<h4 id="如何使用-ansible-清单文件">如何使用 Ansible 清单文件</h4>
+<p>如果使用 Ansible 的默认清单文件 <code>/etc/ansible/hosts</code>，你可以直接调用它。否则你可以使用 <code>-i</code> 选项指定 Ansible 清单文件的路径。</p>
+<h4 id="什么是模式以及如何使用它">什么是模式以及如何使用它？</h4>
+<p>Ansible 模式可以代指某个主机、IP 地址、清单组、一组主机或者清单中的所有主机。它允许你对它们运行命令和剧本。模式非常灵活，你可以根据需要使用它们。</p>
+<p>例如，你可以排除主机、使用通配符或正则表达式等等。</p>
+<p>下表描述了常见的模式以及用法。但是，如果它不能满足你的需求，你可以在 <code>ansible-playbook</code> 中使用带有 <code>-e</code> 参数的模式中的变量。</p>
+<table>
+<thead>
+<tr>
+<th>描述</th>
+<th>模式</th>
+<th>目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>所有主机</td>
+<td><code>all</code>（或 <code>*</code>）</td>
+<td>对清单中的所有服务器运行 Ansible</td>
+</tr>
+<tr>
+<td>一台主机</td>
+<td><code>host1</code></td>
+<td>只针对给定主机运行 Ansible</td>
+</tr>
+<tr>
+<td>多台主机</td>
+<td><code>host1:host2</code>（或 <code>host1,host2</code>）</td>
+<td>对上述多台主机运行 Ansible</td>
+</tr>
+<tr>
+<td>一组</td>
+<td><code>webservers</code></td>
+<td>在 <code>webservers</code> 群组中运行 Ansible</td>
+</tr>
+<tr>
+<td>多组</td>
+<td><code>webservers:dbservers</code></td>
+<td><code>webservers</code> 中的所有主机加上 <code>dbservers</code> 中的所有主机</td>
+</tr>
+<tr>
+<td>排除组</td>
+<td><code>webservers:!atlanta</code></td>
+<td><code>webservers</code> 中除 <code>atlanta</code> 以外的所有主机</td>
+</tr>
+<tr>
+<td>组之间的交集</td>
+<td><code>webservers:&amp;staging</code></td>
+<td><code>webservers</code> 中也在 <code>staging</code> 的任何主机</td>
+</tr>
+</tbody></table>
+<h4 id="什么是-ansible-模块它干了什么">什么是 Ansible 模块，它干了什么？</h4>
+<p>模块，也称为“任务插件”或“库插件”，它是一组代码单元，可以直接或通过剧本在远程主机上执行指定任务。</p>
+<p>Ansible 在远程目标节点上执行指定模块并收集其返回值。</p>
+<p>每个模块都支持多个参数，可以满足用户的需求。除少数模块外，几乎所有模块都采用 <code>key=value</code> 参数。你可以一次添加带有空格的多个参数，而 <code>command</code> 或 <code>shell</code> 模块会直接运行你输入的字符串。</p>
+<p>我们将添加一个包含最常用的“模块选项”参数的表。</p>
+<p>列出所有可用的模块，运行以下命令：</p>
+<pre><code>$ ansible-doc -l
+</code></pre>
+<p>运行以下命令来阅读指定模块的文档：</p>
+<pre><code>$ ansible-doc [模块]
+</code></pre>
+<h3 id="1如何在-linux-上使用-ansible-列出目录的内容">1）如何在 Linux 上使用 Ansible 列出目录的内容</h3>
+<p>可以使用 Ansible <code>command</code> 模块来完成这项操作，如下所示。我们列出了 <code>node1.2g.lab</code> 和 <code>nod2.2g.lab</code>* 远程服务器上 <code>daygeek</code> 用户主目录的内容。</p>
+<pre><code>$ ansible web -m command -a &quot;ls -lh /home/daygeek&quot;
+
+node1.2g.lab | CHANGED | rc=0 &gt;&gt;
+total 12K
+drwxr-xr-x. 2 daygeek daygeek   6 Feb 15  2019 Desktop
+drwxr-xr-x. 2 daygeek daygeek   6 Feb 15  2019 Documents
+drwxr-xr-x. 2 daygeek daygeek   6 Feb 15  2019 Downloads
+drwxr-xr-x. 2 daygeek daygeek   6 Feb 15  2019 Music
+-rwxr-xr-x. 1 daygeek daygeek 159 Mar  4  2019 passwd-up.sh
+drwxr-xr-x. 2 daygeek daygeek   6 Feb 15  2019 Pictures
+drwxr-xr-x. 2 daygeek daygeek   6 Feb 15  2019 Public
+drwxr-xr-x. 2 daygeek daygeek   6 Feb 15  2019 Templates
+-rwxrwxr-x. 1 daygeek daygeek 138 Mar 10  2019 user-add.sh
+-rw-rw-r--. 1 daygeek daygeek  18 Mar 10  2019 user-list1.txt
+drwxr-xr-x. 2 daygeek daygeek   6 Feb 15  2019 Videos
+
+node2.2g.lab | CHANGED | rc=0 &gt;&gt;
+total 0
+drwxr-xr-x. 2 daygeek daygeek 6 Nov  9 09:55 Desktop
+drwxr-xr-x. 2 daygeek daygeek 6 Nov  9 09:55 Documents
+drwxr-xr-x. 2 daygeek daygeek 6 Nov  9 09:55 Downloads
+drwxr-xr-x. 2 daygeek daygeek 6 Nov  9 09:55 Music
+drwxr-xr-x. 2 daygeek daygeek 6 Nov  9 09:55 Pictures
+drwxr-xr-x. 2 daygeek daygeek 6 Nov  9 09:55 Public
+drwxr-xr-x. 2 daygeek daygeek 6 Nov  9 09:55 Templates
+drwxr-xr-x. 2 daygeek daygeek 6 Nov  9 09:55 Videos
+</code></pre>
+<h3 id="2如何在-linux-使用-ansible-管理文件">2）如何在 Linux 使用 Ansible 管理文件</h3>
+<p>Ansible 的 <code>copy</code> 模块将文件从本地系统复制到远程系统。使用 Ansible <code>command</code> 模块将文件移动或复制到远程计算机。</p>
+<pre><code>$ ansible web -m copy -a &quot;src=/home/daygeek/backup/CentOS7.2daygeek.com-20191025.tar dest=/home/u1&quot; --become
+
+node1.2g.lab | CHANGED =&gt; {
+    &quot;ansible_facts&quot;: {
+        &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot;
+    },
+    &quot;changed&quot;: true,
+    &quot;checksum&quot;: &quot;ad8aadc0542028676b5fe34c94347829f0485a8c&quot;,
+    &quot;dest&quot;: &quot;/home/u1/CentOS7.2daygeek.com-20191025.tar&quot;,
+    &quot;gid&quot;: 0,
+    &quot;group&quot;: &quot;root&quot;,
+    &quot;md5sum&quot;: &quot;ee8e778646e00456a4cedd5fd6458cf5&quot;,
+    &quot;mode&quot;: &quot;0644&quot;,
+    &quot;owner&quot;: &quot;root&quot;,
+    &quot;secontext&quot;: &quot;unconfined_u:object_r:user_home_t:s0&quot;,
+    &quot;size&quot;: 30720,
+    &quot;src&quot;: &quot;/home/daygeek/.ansible/tmp/ansible-tmp-1579726582.474042-118186643704900/source&quot;,
+    &quot;state&quot;: &quot;file&quot;,
+    &quot;uid&quot;: 0
+}
+
+node2.2g.lab | CHANGED =&gt; {
+    &quot;ansible_facts&quot;: {
+        &quot;discovered_interpreter_python&quot;: &quot;/usr/libexec/platform-python&quot;
+    },
+    &quot;changed&quot;: true,
+    &quot;checksum&quot;: &quot;ad8aadc0542028676b5fe34c94347829f0485a8c&quot;,
+    &quot;dest&quot;: &quot;/home/u1/CentOS7.2daygeek.com-20191025.tar&quot;,
+    &quot;gid&quot;: 0,
+    &quot;group&quot;: &quot;root&quot;,
+    &quot;md5sum&quot;: &quot;ee8e778646e00456a4cedd5fd6458cf5&quot;,
+    &quot;mode&quot;: &quot;0644&quot;,
+    &quot;owner&quot;: &quot;root&quot;,
+    &quot;secontext&quot;: &quot;unconfined_u:object_r:user_home_t:s0&quot;,
+    &quot;size&quot;: 30720,
+    &quot;src&quot;: &quot;/home/daygeek/.ansible/tmp/ansible-tmp-1579726582.4793239-237229399335623/source&quot;,
+    &quot;state&quot;: &quot;file&quot;,
+    &quot;uid&quot;: 0
+}
+</code></pre>
+<p>我们可以运行以下命令进行验证：</p>
+<pre><code>$ ansible web -m command -a &quot;ls -lh /home/u1&quot; --become
+
+node1.2g.lab | CHANGED | rc=0 &gt;&gt;
+total 36K
+-rw-r--r--. 1 root root 30K Jan 22 14:56 CentOS7.2daygeek.com-20191025.tar
+-rw-r--r--. 1 root root  25 Dec  9 03:31 user-add.sh
+
+node2.2g.lab | CHANGED | rc=0 &gt;&gt;
+total 36K
+-rw-r--r--. 1 root root 30K Jan 23 02:26 CentOS7.2daygeek.com-20191025.tar
+-rw-rw-r--. 1 u1   u1    18 Jan 23 02:21 magi.txt
+</code></pre>
+<p>要将文件从一个位置复制到远程计算机上的另一个位置，使用以下命令：</p>
+<pre><code>$ ansible web -m command -a &quot;cp /home/u2/magi/ansible-1.txt /home/u2/magi/2g&quot; --become
+</code></pre>
+<p>移动文件，使用以下命令：</p>
+<pre><code>$ ansible web -m command -a &quot;mv /home/u2/magi/ansible.txt /home/u2/magi/2g&quot; --become
+</code></pre>
+<p>在 <code>u1</code> 用户目录下创建一个名为 <code>ansible.txt</code> 的新文件，运行以下命令：</p>
+<pre><code>$ ansible web -m file -a &quot;dest=/home/u1/ansible.txt owner=u1 group=u1 state=touch&quot; --become
+</code></pre>
+<p>在 <code>u1</code> 用户目录下创建一个名为 <code>magi</code> 的新目录，运行以下命令：</p>
+<pre><code>$ ansible web -m file -a &quot;dest=/home/u1/magi mode=755 owner=u2 group=u2 state=directory&quot; --become
+</code></pre>
+<p>将 <code>u1</code> 用户目录下的 <code>ansible.txt</code>* 文件权限更改为 <code>777</code>，运行以下命令：</p>
+<pre><code>$ ansible web -m file -a &quot;dest=/home/u1/ansible.txt mode=777&quot; --become
+</code></pre>
+<p>删除 <code>u1</code> 用户目录下的 <code>ansible.txt</code> 文件，运行以下命令：</p>
+<pre><code>$ ansible web -m file -a &quot;dest=/home/u2/magi/ansible-1.txt state=absent&quot; --become
+</code></pre>
+<p>使用以下命令删除目录，它将递归删除指定目录：</p>
+<pre><code>$ ansible web -m file -a &quot;dest=/home/u2/magi/2g state=absent&quot; --become
+</code></pre>
+<h3 id="3用户管理">3）用户管理</h3>
+<p>你可以使用 Ansible 轻松执行用户管理活动。例如创建、删除用户以及向一个组添加用户。</p>
+<pre><code>$ ansible all -m user -a &quot;name=foo password=[crypted password here]&quot;
+</code></pre>
+<p>运行以下命令删除用户：</p>
+<pre><code>$ ansible all -m user -a &quot;name=foo state=absent&quot;
+</code></pre>
+<h3 id="4管理包">4）管理包</h3>
+<p>使用合适的 Ansible 包管理器模块可以轻松地管理安装包。例如，我们将使用 <code>yum</code> 模块来管理 CentOS 系统上的软件包。</p>
+<p>安装最新的 Apache（httpd）：</p>
+<pre><code>$ ansible web -m yum -a &quot;name=httpd state=latest&quot;
+</code></pre>
+<p>卸载 Apache（httpd） 包：</p>
+<pre><code>$ ansible web -m yum -a &quot;name=httpd state=absent&quot;
+</code></pre>
+<h3 id="5管理服务">5）管理服务</h3>
+<p>使用以下 Ansible 模块命令可以在 Linux 上管理任何服务。</p>
+<p>停止 httpd 服务：</p>
+<pre><code>$ ansible web -m service -a &quot;name=httpd state=stopped&quot;
+</code></pre>
+<p>启动 httpd 服务：</p>
+<pre><code>$ ansible web -m service -a &quot;name=httpd state=started&quot;
+</code></pre>
+<p>重启 httpd 服务：</p>
+<pre><code>$ ansible web -m service -a &quot;name=httpd state=restarted&quot;
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/ansible-ad-hoc-command-quick-start-guide-with-examples/">https://www.2daygeek.com/ansible-ad-hoc-command-quick-start-guide-with-examples/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/magesh/">Magesh Maruthamuthu</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/MjSeven">MjSeven</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是点对点ad-hoc命令">什么是&lt;ruby&gt;点对点&lt;rt&gt;ad-hoc&lt;/rt&gt;&lt;/ruby&gt;命令？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1如何在-linux-上使用-ansible-列出目录的内容">1）如何在 Linux 上使用 Ansible 列出目录的内容</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2如何在-linux-使用-ansible-管理文件">2）如何在 Linux 使用 Ansible 管理文件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3用户管理">3）用户管理</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4管理包">4）管理包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5管理服务">5）管理服务</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202102/20200124 Ansible Ad-hoc Command Quick Start Guide with Examples","title":"Ansible 点对点命令快速入门指南示例"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

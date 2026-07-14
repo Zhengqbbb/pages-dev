@@ -1,0 +1,591 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>无密码验证：服务器 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="无密码验证：服务器 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="无密码验证：服务器 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201806/20180418 Passwordless Auth Server#page","@type":"TechArticle","headline":"无密码验证：服务器","inLanguage":"en","name":"无密码验证：服务器","url":"https://zhengqbbb.github.io/pages-dev/201806/20180418 Passwordless Auth Server","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201806/20180418 Passwordless Auth Server"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#流程">流程</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#必需条件">必需条件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#数据库模式">数据库模式</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#环境配置">环境配置</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#go-依赖">Go 依赖</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#代码">代码</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>无密码验证：服务器</h1><p>无密码验证可以让你只输入一个 email 而无需输入密码即可登入系统。这是一种比传统的电子邮件/密码验证方式登入更安全的方法。</p>
+<p>下面我将为你展示，如何在 <a href="https://golang.org/">Go</a> 中实现一个 HTTP API 去提供这种服务。</p>
+<h3 id="流程">流程</h3>
+<ul>
+<li>用户输入他的电子邮件地址。</li>
+<li>服务器创建一个临时的一次性使用的代码（就像一个临时密码一样）关联到用户，然后给用户邮箱中发送一个“魔法链接”。</li>
+<li>用户点击魔法链接。</li>
+<li>服务器提取魔法链接中的代码，获取关联的用户，并且使用一个新的 JWT 重定向到客户端。</li>
+<li>在每次有新请求时，客户端使用 JWT 去验证用户。</li>
+</ul>
+<h3 id="必需条件">必需条件</h3>
+<ul>
+<li>数据库：我们为这个服务使用了一个叫 <a href="https://www.cockroachlabs.com/">CockroachDB</a> 的 SQL 数据库。它非常像 postgres，但它是用 Go 写的。</li>
+<li>SMTP 服务器：我们将使用一个第三方的邮件服务器去发送邮件。开发的时我们使用 <a href="https://mailtrap.io/">mailtrap</a>。Mailtrap 发送所有的邮件到它的收件箱，因此，你在测试时不需要创建多个假邮件帐户。</li>
+</ul>
+<p>从 <a href="https://golang.org/dl/">Go 的主页</a> 上安装它，然后使用 <code>go version</code>（1.10.1 atm）命令去检查它能否正常工作。</p>
+<p>从 <a href="https://www.cockroachlabs.com/docs/stable/install-cockroachdb.html">CockroachDB 的主页</a> 上下载它，展开它并添加到你的 <code>PATH</code> 变量中。使用 <code>cockroach version</code>（2.0 atm）命令检查它能否正常工作。</p>
+<h3 id="数据库模式">数据库模式</h3>
+<p>现在，我们在 <code>GOPATH</code> 目录下为这个项目创建一个目录，然后使用 <code>cockroach start</code> 启动一个新的 CockroachDB 节点：</p>
+<pre><code>cockroach start --insecure --host 127.0.0.1
+</code></pre>
+<p>它会输出一些内容，找到 SQL 地址行，它将显示像 <code>postgresql://root@127.0.0.1:26257?sslmode=disable</code> 这样的内容。稍后我们将使用它去连接到数据库。</p>
+<p>使用如下的内容去创建一个 <code>schema.sql</code> 文件。</p>
+<pre><code>DROP DATABASE IF EXISTS passwordless_demo CASCADE;
+CREATE DATABASE IF NOT EXISTS passwordless_demo;
+SET DATABASE = passwordless_demo;
+
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email STRING UNIQUE,
+    username STRING UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS verification_codes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+INSERT INTO users (email, username) VALUES
+    (&#39;john@passwordless.local&#39;, &#39;john_doe&#39;);
+</code></pre>
+<p>这个脚本创建了一个名为 <code>passwordless_demo</code> 的数据库、两个名为 <code>users</code> 和 <code>verification_codes</code> 的表，以及为了稍后测试而插入的一些假用户。每个验证代码都与用户关联并保存创建时间，以用于去检查验证代码是否过期。</p>
+<p>在另外的终端中使用 <code>cockroach sql</code> 命令去运行这个脚本：</p>
+<pre><code>cat schema.sql | cockroach sql --insecure
+</code></pre>
+<h3 id="环境配置">环境配置</h3>
+<p>需要配置两个环境变量：<code>SMTP_USERNAME</code> 和 <code>SMTP_PASSWORD</code>，你可以从你的 mailtrap 帐户中获得它们。将在我们的程序中用到它们。</p>
+<h3 id="go-依赖">Go 依赖</h3>
+<p>我们需要下列的 Go 包：</p>
+<ul>
+<li><a href="https://github.com/lib/pq">github.com/lib/pq</a>：它是 CockroachDB 使用的 postgres 驱动</li>
+<li><a href="https://github.com/matryer/way">github.com/matryer/way</a>: 路由器</li>
+<li><a href="https://github.com/dgrijalva/jwt-go">github.com/dgrijalva/jwt-go</a>: JWT 实现</li>
+</ul>
+<pre><code>go get -u github.com/lib/pq
+go get -u github.com/matryer/way
+go get -u github.com/dgrijalva/jwt-go
+</code></pre>
+<h3 id="代码">代码</h3>
+<h4 id="初始化函数">初始化函数</h4>
+<p>创建 <code>main.go</code> 并且通过 <code>init</code> 函数里的环境变量中取得一些配置来启动。</p>
+<pre><code>var config struct {
+    port        int
+    appURL      *url.URL
+    databaseURL string
+    jwtKey      []byte
+    smtpAddr    string
+    smtpAuth    smtp.Auth
+}
+
+func init() {
+    config.port, _ = strconv.Atoi(env(&quot;PORT&quot;, &quot;80&quot;))
+    config.appURL, _ = url.Parse(env(&quot;APP_URL&quot;, &quot;http://localhost:&quot;+strconv.Itoa(config.port)+&quot;/&quot;))
+    config.databaseURL = env(&quot;DATABASE_URL&quot;, &quot;postgresql://root@127.0.0.1:26257/passwordless_demo?sslmode=disable&quot;)
+    config.jwtKey = []byte(env(&quot;JWT_KEY&quot;, &quot;super-duper-secret-key&quot;))
+    smtpHost := env(&quot;SMTP_HOST&quot;, &quot;smtp.mailtrap.io&quot;)
+    config.smtpAddr = net.JoinHostPort(smtpHost, env(&quot;SMTP_PORT&quot;, &quot;25&quot;))
+    smtpUsername, ok := os.LookupEnv(&quot;SMTP_USERNAME&quot;)
+    if !ok {
+        log.Fatalln(&quot;could not find SMTP_USERNAME on environment variables&quot;)
+    }
+    smtpPassword, ok := os.LookupEnv(&quot;SMTP_PASSWORD&quot;)
+    if !ok {
+        log.Fatalln(&quot;could not find SMTP_PASSWORD on environment variables&quot;)
+    }
+    config.smtpAuth = smtp.PlainAuth(&quot;&quot;, smtpUsername, smtpPassword, smtpHost)
+}
+
+func env(key, fallbackValue string) string {
+    v, ok := os.LookupEnv(key)
+    if !ok {
+        return fallbackValue
+    }
+    return v
+}
+</code></pre>
+<ul>
+<li><code>appURL</code> 将去构建我们的 “魔法链接”。</li>
+<li><code>port</code> 将要启动的 HTTP 服务器。</li>
+<li><code>databaseURL</code> 是 CockroachDB 地址，我添加 <code>/passwordless_demo</code> 前面的数据库地址去表示数据库名字。</li>
+<li><code>jwtKey</code> 用于签名 JWT。</li>
+<li><code>smtpAddr</code> 是 <code>SMTP_HOST</code> + <code>SMTP_PORT</code> 的联合；我们将使用它去发送邮件。</li>
+<li><code>smtpUsername</code> 和 <code>smtpPassword</code> 是两个必需的变量。</li>
+<li><code>smtpAuth</code> 也是用于发送邮件。</li>
+</ul>
+<p><code>env</code> 函数允许我们去获得环境变量，不存在时返回一个回退值。</p>
+<h4 id="主函数">主函数</h4>
+<pre><code>var db *sql.DB
+
+func main() {
+    var err error
+    if db, err = sql.Open(&quot;postgres&quot;, config.databaseURL); err != nil {
+        log.Fatalf(&quot;could not open database connection: %v\n&quot;, err)
+    }
+    defer db.Close()
+    if err = db.Ping(); err != nil {
+        log.Fatalf(&quot;could not ping to database: %v\n&quot;, err)
+    }
+
+    router := way.NewRouter()
+    router.HandleFunc(&quot;POST&quot;, &quot;/api/users&quot;, jsonRequired(createUser))
+    router.HandleFunc(&quot;POST&quot;, &quot;/api/passwordless/start&quot;, jsonRequired(passwordlessStart))
+    router.HandleFunc(&quot;GET&quot;, &quot;/api/passwordless/verify_redirect&quot;, passwordlessVerifyRedirect)
+    router.Handle(&quot;GET&quot;, &quot;/api/auth_user&quot;, authRequired(getAuthUser))
+
+    addr := fmt.Sprintf(&quot;:%d&quot;, config.port)
+    log.Printf(&quot;starting server at %s \n&quot;, config.appURL)
+    log.Fatalf(&quot;could not start server: %v\n&quot;, http.ListenAndServe(addr, router))
+}
+</code></pre>
+<p>首先，打开数据库连接。记得要加载驱动。</p>
+<pre><code>import (
+    _ &quot;github.com/lib/pq&quot;
+)
+</code></pre>
+<p>然后，我们创建路由器并定义一些端点。对于无密码流程来说，我们使用两个端点：<code>/api/passwordless/start</code> 发送魔法链接，和 <code>/api/passwordless/verify_redirect</code> 用 JWT 响应。</p>
+<p>最后，我们启动服务器。</p>
+<p>你可以创建空处理程序和中间件去测试服务器启动。</p>
+<pre><code>func createUser(w http.ResponseWriter, r *http.Request) {
+    http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
+}
+
+func passwordlessStart(w http.ResponseWriter, r *http.Request) {
+    http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
+}
+
+func passwordlessVerifyRedirect(w http.ResponseWriter, r *http.Request) {
+    http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
+}
+
+func getAuthUser(w http.ResponseWriter, r *http.Request) {
+    http.Error(w, http.StatusText(http.StatusNotImplemented), http.StatusNotImplemented)
+}
+
+func jsonRequired(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        next(w, r)
+    }
+}
+
+func authRequired(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        next(w, r)
+    }
+}
+</code></pre>
+<p>接下来：</p>
+<pre><code>go build
+./passwordless-demo
+</code></pre>
+<p>我们在目录中有了一个 “passwordless-demo”，但是你的目录中可能与示例不一样，<code>go build</code> 将创建一个同名的可执行文件。如果你没有关闭前面的 cockroach 节点，并且你正确配置了 <code>SMTP_USERNAME</code> 和 <code>SMTP_PASSWORD</code> 变量，你将看到命令 <code>starting server at http://localhost/ </code> 没有错误输出。</p>
+<h4 id="请求-json-的中间件">请求 JSON 的中间件</h4>
+<p>端点需要从请求体中解码 JSON，因此要确保请求是 <code>application/json</code> 类型。因为它是一个通用的东西，我将它解耦到中间件。</p>
+<pre><code>func jsonRequired(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        ct := r.Header.Get(&quot;Content-Type&quot;)
+        isJSON := strings.HasPrefix(ct, &quot;application/json&quot;)
+        if !isJSON {
+            respondJSON(w, &quot;JSON body required&quot;, http.StatusUnsupportedMediaType)
+            return
+        }
+        next(w, r)
+    }
+}
+</code></pre>
+<p>实现很容易。首先它从请求头中获得内容的类型，然后检查它是否是以 “application/json” 开始，如果不是则以 <code>415 Unsupported Media Type</code> 提前返回。</p>
+<h4 id="响应-json-的函数">响应 JSON 的函数</h4>
+<p>以 JSON 响应是非常通用的做法，因此我把它提取到函数中。</p>
+<pre><code>func respondJSON(w http.ResponseWriter, payload interface{}, code int) {
+    switch value := payload.(type) {
+    case string:
+        payload = map[string]string{&quot;message&quot;: value}
+    case int:
+        payload = map[string]int{&quot;value&quot;: value}
+    case bool:
+        payload = map[string]bool{&quot;result&quot;: value}
+    }
+    b, err := json.Marshal(payload)
+    if err != nil {
+        respondInternalError(w, fmt.Errorf(&quot;could not marshal response payload: %v&quot;, err))
+        return
+    }
+    w.Header().Set(&quot;Content-Type&quot;, &quot;application/json; charset=utf-8&quot;)
+    w.WriteHeader(code)
+    w.Write(b)
+}
+</code></pre>
+<p>首先，对原始类型做一个类型判断，并将它们封装到一个 <code>map</code>。然后将它们编组到 JSON，设置响应内容类型和状态码，并写 JSON。如果 JSON 编组失败，则响应一个内部错误。</p>
+<h4 id="响应内部错误的函数">响应内部错误的函数</h4>
+<p><code>respondInternalError</code> 是一个响应 <code>500 Internal Server Error</code> 的函数，但是也同时将错误输出到控制台。</p>
+<pre><code>func respondInternalError(w http.ResponseWriter, err error) {
+    log.Println(err)
+    respondJSON(w,
+        http.StatusText(http.StatusInternalServerError),
+        http.StatusInternalServerError)
+}
+</code></pre>
+<h4 id="创建用户的处理程序">创建用户的处理程序</h4>
+<p>下面开始编写 <code>createUser</code> 处理程序，因为它非常容易并且是 REST 式的。</p>
+<pre><code>type User struct {
+    ID       string `json:&quot;id&quot;`
+    Email    string `json:&quot;email&quot;`
+    Username string `json:&quot;username&quot;`
+}
+</code></pre>
+<p><code>User</code> 类型和 <code>users</code> 表相似。</p>
+<pre><code>var (
+    rxEmail = regexp.MustCompile(&quot;^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$&quot;)
+    rxUsername = regexp.MustCompile(&quot;^[a-zA-Z][\\w|-]{1,17}$&quot;)
+)
+</code></pre>
+<p>这些正则表达式是分别用于去验证电子邮件和用户名的。这些都很简单，可以根据你的需要随意去适配。</p>
+<p>现在，在 <code>createUser</code> 函数内部，我们将开始解码请求体。</p>
+<pre><code>var user User
+if err := json.NewDecoder(r.Body).Decode(&amp;user); err != nil {
+    respondJSON(w, err.Error(), http.StatusBadRequest)
+    return
+}
+defer r.Body.Close()
+</code></pre>
+<p>我们将使用请求体去创建一个 JSON 解码器来解码出一个用户指针。如果发生错误则返回一个 <code>400 Bad Request</code>。不要忘记关闭请求体读取器。</p>
+<pre><code>errs := make(map[string]string)
+if user.Email == &quot;&quot; {
+    errs[&quot;email&quot;] = &quot;Email required&quot;
+} else if !rxEmail.MatchString(user.Email) {
+    errs[&quot;email&quot;] = &quot;Invalid email&quot;
+}
+if user.Username == &quot;&quot; {
+    errs[&quot;username&quot;] = &quot;Username required&quot;
+} else if !rxUsername.MatchString(user.Username) {
+    errs[&quot;username&quot;] = &quot;Invalid username&quot;
+}
+if len(errs) != 0 {
+    respondJSON(w, errs, http.StatusUnprocessableEntity)
+    return
+}
+</code></pre>
+<p>这是我如何做验证；一个简单的 <code>map</code> 并检查如果 <code>len(errs) != 0</code>，则使用 <code>422 Unprocessable Entity</code> 去返回。</p>
+<pre><code>err := db.QueryRowContext(r.Context(), `
+    INSERT INTO users (email, username) VALUES ($1, $2)
+    RETURNING id
+`, user.Email, user.Username).Scan(&amp;user.ID)
+
+if errPq, ok := err.(*pq.Error); ok &amp;&amp; errPq.Code.Name() == &quot;unique_violation&quot; {
+    if strings.Contains(errPq.Error(), &quot;email&quot;) {
+        errs[&quot;email&quot;] = &quot;Email taken&quot;
+    } else {
+        errs[&quot;username&quot;] = &quot;Username taken&quot;
+    }
+    respondJSON(w, errs, http.StatusForbidden)
+    return
+} else if err != nil {
+    respondInternalError(w, fmt.Errorf(&quot;could not insert user: %v&quot;, err))
+    return
+}
+</code></pre>
+<p>这个 SQL 查询使用一个给定的 email 和用户名去插入一个新用户，并返回自动生成的 id，每个 <code>$</code> 将被接下来传递给 <code>QueryRowContext</code> 的参数替换掉。</p>
+<p>因为 <code>users</code> 表在 <code>email</code> 和 <code>username</code> 字段上有唯一性约束，因此我将检查 “unique_violation” 错误并返回 <code>403 Forbidden</code> 或者返回一个内部错误。</p>
+<pre><code>respondJSON(w, user, http.StatusCreated)
+</code></pre>
+<p>最后使用创建的用户去响应。</p>
+<h4 id="无密码验证开始部分的处理程序">无密码验证开始部分的处理程序</h4>
+<pre><code>type PasswordlessStartRequest struct {
+    Email       string `json:&quot;email&quot;`
+    RedirectURI string `json:&quot;redirectUri&quot;`
+}
+</code></pre>
+<p>这个结构体含有 <code>passwordlessStart</code> 的请求体：希望去登入的用户 email、来自客户端的重定向 URI（这个应用中将使用我们的 API）如：<code>https://frontend.app/callback</code>。</p>
+<pre><code>var magicLinkTmpl = template.Must(template.ParseFiles(&quot;templates/magic-link.html&quot;))
+</code></pre>
+<p>我们将使用 golang 模板引擎去构建邮件，因此需要你在 <code>templates</code> 目录中，用如下的内容创建一个 <code>magic-link.html</code> 文件：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Magic Link&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    Click &lt;a href=&quot;{{ .MagicLink }}&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt; to login.
+    &lt;br&gt;
+    &lt;em&gt;This link expires in 15 minutes and can only be used once.&lt;/em&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>这个模板是给用户发送魔法链接邮件用的。你可以根据你的需要去随意调整它。</p>
+<p>现在， 进入 <code>passwordlessStart</code> 函数内部：</p>
+<pre><code>var input PasswordlessStartRequest
+if err := json.NewDecoder(r.Body).Decode(&amp;input); err != nil {
+    respondJSON(w, err.Error(), http.StatusBadRequest)
+    return
+}
+defer r.Body.Close()
+</code></pre>
+<p>首先，我们像前面一样解码请求体。</p>
+<pre><code>errs := make(map[string]string)
+if input.Email == &quot;&quot; {
+    errs[&quot;email&quot;] = &quot;Email required&quot;
+} else if !rxEmail.MatchString(input.Email) {
+    errs[&quot;email&quot;] = &quot;Invalid email&quot;
+}
+if input.RedirectURI == &quot;&quot; {
+    errs[&quot;redirectUri&quot;] = &quot;Redirect URI required&quot;
+} else if u, err := url.Parse(input.RedirectURI); err != nil || !u.IsAbs() {
+    errs[&quot;redirectUri&quot;] = &quot;Invalid redirect URI&quot;
+}
+if len(errs) != 0 {
+    respondJSON(w, errs, http.StatusUnprocessableEntity)
+    return
+}
+</code></pre>
+<p>我们使用 golang 的 URL 解析器去验证重定向 URI，检查那个 URI 是否为绝对地址。</p>
+<pre><code>var verificationCode string
+err := db.QueryRowContext(r.Context(), `
+    INSERT INTO verification_codes (user_id) VALUES
+        ((SELECT id FROM users WHERE email = $1))
+    RETURNING id
+`, input.Email).Scan(&amp;verificationCode)
+if errPq, ok := err.(*pq.Error); ok &amp;&amp; errPq.Code.Name() == &quot;not_null_violation&quot; {
+    respondJSON(w, &quot;No user found with that email&quot;, http.StatusNotFound)
+    return
+} else if err != nil {
+    respondInternalError(w, fmt.Errorf(&quot;could not insert verification code: %v&quot;, err))
+    return
+}
+</code></pre>
+<p>这个 SQL 查询将插入一个验证代码，这个代码通过给定的 email 关联到用户，并且返回一个自动生成的 id。因为有可能会出现用户不存在的情况，那样的话子查询可能解析为 <code>NULL</code>，这将导致在 <code>user_id</code> 字段上因违反 <code>NOT NULL</code> 约束而导致失败，因此需要对这种情况进行检查，如果用户不存在，则返回 <code>404 Not Found</code> 或者一个内部错误。</p>
+<pre><code>q := make(url.Values)
+q.Set(&quot;verification_code&quot;, verificationCode)
+q.Set(&quot;redirect_uri&quot;, input.RedirectURI)
+magicLink := *config.appURL
+magicLink.Path = &quot;/api/passwordless/verify_redirect&quot;
+magicLink.RawQuery = q.Encode()
+</code></pre>
+<p>现在，构建魔法链接并设置查询字符串中的 <code>verification_code</code> 和 <code>redirect_uri</code> 的值。如：<code>http://localhost/api/passwordless/verify_redirect?verification_code=some_code&amp;redirect_uri=https://frontend.app/callback</code>。</p>
+<pre><code>var body bytes.Buffer
+data := map[string]string{&quot;MagicLink&quot;: magicLink.String()}
+if err := magicLinkTmpl.Execute(&amp;body, data); err != nil {
+    respondInternalError(w, fmt.Errorf(&quot;could not execute magic link template: %v&quot;, err))
+    return
+}
+</code></pre>
+<p>我们将得到的魔法链接模板的内容保存到缓冲区中。如果发生错误则返回一个内部错误。</p>
+<pre><code>to := mail.Address{Address: input.Email}
+if err := sendMail(to, &quot;Magic Link&quot;, body.String()); err != nil {
+    respondInternalError(w, fmt.Errorf(&quot;could not mail magic link: %v&quot;, err))
+    return
+}
+</code></pre>
+<p>现在来写给用户发邮件的 <code>sendMail</code> 函数。如果发生错误则返回一个内部错误。</p>
+<pre><code>w.WriteHeader(http.StatusNoContent)
+</code></pre>
+<p>最后，设置响应状态码为 <code>204 No Content</code>。对于成功的状态码，客户端不需要很多数据。</p>
+<h4 id="发送邮件函数">发送邮件函数</h4>
+<pre><code>func sendMail(to mail.Address, subject, body string) error {
+    from := mail.Address{
+        Name:    &quot;Passwordless Demo&quot;,
+        Address: &quot;noreply@&quot; + config.appURL.Host,
+    }
+    headers := map[string]string{
+        &quot;From&quot;:         from.String(),
+        &quot;To&quot;:           to.String(),
+        &quot;Subject&quot;:      subject,
+        &quot;Content-Type&quot;: `text/html; charset=&quot;utf-8&quot;`,
+    }
+    msg := &quot;&quot;
+    for k, v := range headers {
+        msg += fmt.Sprintf(&quot;%s: %s\r\n&quot;, k, v)
+    }
+    msg += &quot;\r\n&quot;
+    msg += body
+
+    return smtp.SendMail(
+        config.smtpAddr,
+        config.smtpAuth,
+        from.Address,
+        []string{to.Address},
+        []byte(msg))
+}
+</code></pre>
+<p>这个函数创建一个基本的 HTML 邮件结构体并使用 SMTP 服务器去发送它。邮件的内容你可以随意定制，我喜欢使用比较简单的内容。</p>
+<h4 id="无密码验证重定向的处理程序">无密码验证重定向的处理程序</h4>
+<pre><code>var rxUUID = regexp.MustCompile(&quot;^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$&quot;)
+</code></pre>
+<p>首先，这个正则表达式去验证一个 UUID（即验证代码）。</p>
+<p>现在进入 <code>passwordlessVerifyRedirect</code> 函数内部：</p>
+<pre><code>q := r.URL.Query()
+verificationCode := q.Get(&quot;verification_code&quot;)
+redirectURI := q.Get(&quot;redirect_uri&quot;)
+</code></pre>
+<p><code>/api/passwordless/verify_redirect</code> 是一个 <code>GET</code> 端点，以便于我们从查询字符串中读取数据。</p>
+<pre><code>errs := make(map[string]string)
+if verificationCode == &quot;&quot; {
+    errs[&quot;verification_code&quot;] = &quot;Verification code required&quot;
+} else if !rxUUID.MatchString(verificationCode) {
+    errs[&quot;verification_code&quot;] = &quot;Invalid verification code&quot;
+}
+var callback *url.URL
+var err error
+if redirectURI == &quot;&quot; {
+    errs[&quot;redirect_uri&quot;] = &quot;Redirect URI required&quot;
+} else if callback, err = url.Parse(redirectURI); err != nil || !callback.IsAbs() {
+    errs[&quot;redirect_uri&quot;] = &quot;Invalid redirect URI&quot;
+}
+if len(errs) != 0 {
+    respondJSON(w, errs, http.StatusUnprocessableEntity)
+    return
+}
+</code></pre>
+<p>类似的验证，我们保存解析后的重定向 URI 到一个 <code>callback</code> 变量中。</p>
+<pre><code>var userID string
+if err := db.QueryRowContext(r.Context(), `
+    DELETE FROM verification_codes
+    WHERE id = $1
+        AND created_at &gt;= now() - INTERVAL &#39;15m&#39;
+    RETURNING user_id
+`, verificationCode).Scan(&amp;userID); err == sql.ErrNoRows {
+    respondJSON(w, &quot;Link expired or already used&quot;, http.StatusBadRequest)
+    return
+} else if err != nil {
+    respondInternalError(w, fmt.Errorf(&quot;could not delete verification code: %v&quot;, err))
+    return
+}
+</code></pre>
+<p>这个 SQL 查询通过给定的 id 去删除相应的验证代码，并且确保它创建之后时间不超过 15 分钟，它也返回关联的 <code>user_id</code>。如果没有检索到内容，意味着代码不存在或者已过期，我们返回一个响应信息，否则就返回一个内部错误。</p>
+<pre><code>expiresAt := time.Now().Add(time.Hour * 24 * 60)
+tokenString, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+    Subject:   userID,
+    ExpiresAt: expiresAt.Unix(),
+}).SignedString(config.jwtKey)
+if err != nil {
+    respondInternalError(w, fmt.Errorf(&quot;could not create JWT: %v&quot;, err))
+    return
+}
+</code></pre>
+<p>这些是如何去创建 JWT。我们为 JWT 设置一个 60 天的过期值，你也可以设置更短的时间（大约 2 周），并添加一个新端点去刷新令牌，但是不要搞的过于复杂。</p>
+<pre><code>expiresAtB, err := expiresAt.MarshalText()
+if err != nil {
+    respondInternalError(w, fmt.Errorf(&quot;could not marshal expiration date: %v&quot;, err))
+    return
+}
+f := make(url.Values)
+f.Set(&quot;jwt&quot;, tokenString)
+f.Set(&quot;expires_at&quot;, string(expiresAtB))
+callback.Fragment = f.Encode()
+</code></pre>
+<p>我们去规划重定向；你可使用查询字符串去添加 JWT，但是更常见的是使用一个哈希片段。如：<code>https://frontend.app/callback#jwt=token_here&amp;expires_at=some_date</code>.</p>
+<p>过期日期可以从 JWT 中提取出来，但是这样做的话，就需要在客户端上实现一个 JWT 库来解码它，因此为了简化，我将它加到这里。</p>
+<pre><code>http.Redirect(w, r, callback.String(), http.StatusFound)
+</code></pre>
+<p>最后我们使用一个 <code>302 Found</code> 重定向。</p>
+<hr>
+<p>无密码的流程已经完成。现在需要去写 <code>getAuthUser</code> 端点的代码了，它用于获取当前验证用户的信息。你应该还记得，这个端点使用了 <code>guard</code> 中间件。</p>
+<h4 id="使用-auth-中间件">使用 Auth 中间件</h4>
+<p>在编写 <code>guard</code> 中间件之前，我将编写一个不需要验证的分支。目的是，如果没有传递 JWT，它将不去验证用户。</p>
+<pre><code>type ContextKey struct {
+    Name string
+}
+
+var keyAuthUserID = ContextKey{&quot;auth_user_id&quot;}
+
+func withAuth(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        a := r.Header.Get(&quot;Authorization&quot;)
+        hasToken := strings.HasPrefix(a, &quot;Bearer &quot;)
+        if !hasToken {
+            next(w, r)
+            return
+        }
+        tokenString := a[7:]
+
+        p := jwt.Parser{ValidMethods: []string{jwt.SigningMethodHS256.Name}}
+        token, err := p.ParseWithClaims(
+            tokenString,
+            &amp;jwt.StandardClaims{},
+            func (*jwt.Token) (interface{}, error) { return config.jwtKey, nil },
+        )
+        if err != nil {
+            respondJSON(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+            return
+        }
+
+        claims, ok := token.Claims.(*jwt.StandardClaims)
+        if !ok || !token.Valid {
+            respondJSON(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+            return
+        }
+
+        ctx := r.Context()
+        ctx = context.WithValue(ctx, keyAuthUserID, claims.Subject)
+
+        next(w, r.WithContext(ctx))
+    }
+}
+</code></pre>
+<p>JWT 将在每次请求时以 <code>Bearer &lt;token_here&gt;</code> 格式包含在 <code>Authorization</code> 头中。因此，如果没有提供令牌，我们将直接通过，进入接下来的中间件。</p>
+<p>我们创建一个解析器来解析令牌。如果解析失败则返回 <code>401 Unauthorized</code>。</p>
+<p>然后我们从 JWT 中提取出要求的内容，并添加 <code>Subject</code>（就是用户 ID）到需要的地方。</p>
+<h4 id="guard-中间件">Guard 中间件</h4>
+<pre><code>func guard(next http.HandlerFunc) http.HandlerFunc {
+    return withAuth(func(w http.ResponseWriter, r *http.Request) {
+        _, ok := r.Context().Value(keyAuthUserID).(string)
+        if !ok {
+            respondJSON(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+            return
+        }
+        next(w, r)
+    })
+}
+</code></pre>
+<p>现在，<code>guard</code> 将使用 <code>withAuth</code> 并从请求内容中提取出验证用户的 ID。如果提取失败，它将返回 <code>401 Unauthorized</code>，提取成功则继续下一步。</p>
+<h4 id="获取-auth-用户">获取 Auth 用户</h4>
+<p>在 <code>getAuthUser</code> 处理程序内部：</p>
+<pre><code>ctx := r.Context()
+authUserID := ctx.Value(keyAuthUserID).(string)
+
+user, err := fetchUser(ctx, authUserID)
+if err == sql.ErrNoRows {
+    respondJSON(w, http.StatusText(http.StatusTeapot), http.StatusTeapot)
+    return
+} else if err != nil {
+    respondInternalError(w, fmt.Errorf(&quot;could not query auth user: %v&quot;, err))
+    return
+}
+
+respondJSON(w, user, http.StatusOK)
+</code></pre>
+<p>首先，我们从请求内容中提取验证用户的 ID，我们使用这个 ID 去获取用户。如果没有获取到内容，则发送一个 <code>418 I&#39;m a teapot</code>，或者一个内部错误。最后，我们将用这个用户去响应。</p>
+<h4 id="获取-user-函数">获取 User 函数</h4>
+<p>下面你看到的是 <code>fetchUser</code> 函数。</p>
+<pre><code>func fetchUser(ctx context.Context, id string) (User, error) {
+    user := User{ID: id}
+    err := db.QueryRowContext(ctx, `
+        SELECT email, username FROM users WHERE id = $1
+    `, id).Scan(&amp;user.Email, &amp;user.Username)
+    return user, err
+}
+</code></pre>
+<p>我将它解耦是因为通过 ID 来获取用户是个常做的事。</p>
+<hr>
+<p>以上就是全部的代码。你可以自己去构建它和测试它。<a href="https://go-passwordless-demo.herokuapp.com/">这里</a> 还有一个 demo 你可以试用一下。</p>
+<p>如果你在 mailtrap 上点击之后出现有关 <code>脚本运行被拦截，因为文档的框架是沙箱化的，并且没有设置 &#39;allow-scripts&#39; 权限</code> 的问题，你可以尝试右键点击 “在新标签中打开链接“。这样做是安全的，因为邮件内容是 <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox">沙箱化的</a>。我在 <code>localhost</code> 上有时也会出现这个问题，但是我认为你一旦以 <code>https://</code> 方式部署到服务器上应该不会出现这个问题了。</p>
+<p>如果有任何问题，请在我的 <a href="https://github.com/nicolasparada/go-passwordless-demo">GitHub repo</a> 留言或者提交 PRs </p>
+<p>以后，我为这个 API 写了一个客户端作为这篇文章的<a href="https://nicolasparada.netlify.com/posts/passwordless-auth-client/">第二部分</a>。</p>
+<hr>
+<p>via: <a href="https://nicolasparada.netlify.com/posts/passwordless-auth-server/">https://nicolasparada.netlify.com/posts/passwordless-auth-server/</a></p>
+<p>作者：<a href="https://nicolasparada.netlify.com/">Nicolás Parada</a>
+译者：<a href="https://github.com/qhwdw">qhwdw</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#流程">流程</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#必需条件">必需条件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#数据库模式">数据库模式</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#环境配置">环境配置</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#go-依赖">Go 依赖</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#代码">代码</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201806/20180418 Passwordless Auth Server","title":"无密码验证：服务器"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

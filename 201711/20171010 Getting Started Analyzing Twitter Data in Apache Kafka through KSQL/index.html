@@ -1,0 +1,283 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 Apache Kafka 中通过 KSQL 分析 Twitter 数据 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 Apache Kafka 中通过 KSQL 分析 Twitter 数据 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 Apache Kafka 中通过 KSQL 分析 Twitter 数据 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201711/20171010 Getting Started Analyzing Twitter Data in Apache Kafka through KSQL#page","@type":"TechArticle","headline":"如何在 Apache Kafka 中通过 KSQL 分析 Twitter 数据","inLanguage":"en","name":"如何在 Apache Kafka 中通过 KSQL 分析 Twitter 数据","url":"https://zhengqbbb.github.io/pages-dev/201711/20171010 Getting Started Analyzing Twitter Data in Apache Kafka through KSQL","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201711/20171010 Getting Started Analyzing Twitter Data in Apache Kafka through KSQL"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 Apache Kafka 中通过 KSQL 分析 Twitter 数据</h1><p><a href="https://github.com/confluentinc/ksql/">KSQL</a> 是 Apache Kafka 中的开源的流式 SQL 引擎。它可以让你在 Kafka <ruby>主题<rt>topic</rt></ruby>上，使用一个简单的并且是交互式的 SQL 接口，很容易地做一些复杂的流处理。在这个短文中，我们将看到如何轻松地配置并运行在一个沙箱中去探索它，并使用大家都喜欢的演示数据库源： Twitter。我们将从推文的原始流中获取，通过使用 KSQL 中的条件去过滤它，来构建一个聚合，如统计每个用户每小时的推文数量。</p>
+<p><img src="https://www.confluent.io/wp-content/uploads/tweet_kafka-1024x617.png" alt=""></p>
+<p>首先， <a href="https://www.confluent.io/download/">获取一个 Confluent 平台的副本</a>。我使用的是 RPM 包，但是，如果你需要的话，你也可以使用 <a href="https://docs.confluent.io/current/installation.html?">tar、 zip 等等</a> 。启动 Confluent 系统：</p>
+<pre><code>$ confluent start
+</code></pre>
+<p>（如果你感兴趣，这里有一个 <a href="https://www.youtube.com/watch?v=ZKqBptBHZTg">Confluent 命令行的快速教程</a>）</p>
+<p>我们将使用 Kafka Connect 从 Twitter 上拉取数据。 这个 Twitter 连接器可以在 <a href="https://github.com/jcustenborder/kafka-connect-twitter">GitHub</a> 上找到。要安装它，像下面这样操作：</p>
+<pre><code># Clone the git repo
+cd /home/rmoff
+git clone https://github.com/jcustenborder/kafka-connect-twitter.git
+</code></pre>
+<pre><code># Compile the code
+cd kafka-connect-twitter
+mvn clean package
+</code></pre>
+<p>要让 Kafka Connect 去使用我们构建的<a href="https://docs.confluent.io/current/connect/userguide.html#connect-installing-plugins">连接器</a>， 你要去修改配置文件。因为我们使用 Confluent 命令行，真实的配置文件是在 <code>etc/schema-registry/connect-avro-distributed.properties</code>，因此去修改它并增加如下内容：</p>
+<pre><code>plugin.path=/home/rmoff/kafka-connect-twitter/target/kafka-connect-twitter-0.2-SNAPSHOT.tar.gz
+</code></pre>
+<p>重启动 Kafka Connect：</p>
+<pre><code>confluent stop connect
+confluent start connect
+</code></pre>
+<p>一旦你安装好插件，你可以很容易地去配置它。你可以直接使用 Kafka Connect 的 REST API ，或者创建你的配置文件，这就是我要在这里做的。如果你需要全部的方法，请首先访问 Twitter 来获取你的 <a href="https://apps.twitter.com/">API 密钥</a>。</p>
+<pre><code>{
+ &quot;name&quot;: &quot;twitter_source_json_01&quot;,
+ &quot;config&quot;: {
+   &quot;connector.class&quot;: &quot;com.github.jcustenborder.kafka.connect.twitter.TwitterSourceConnector&quot;,
+   &quot;twitter.oauth.accessToken&quot;: &quot;xxxx&quot;,
+   &quot;twitter.oauth.consumerSecret&quot;: &quot;xxxxx&quot;,
+   &quot;twitter.oauth.consumerKey&quot;: &quot;xxxx&quot;,
+   &quot;twitter.oauth.accessTokenSecret&quot;: &quot;xxxxx&quot;,
+   &quot;kafka.delete.topic&quot;: &quot;twitter_deletes_json_01&quot;,
+   &quot;value.converter&quot;: &quot;org.apache.kafka.connect.json.JsonConverter&quot;,
+   &quot;key.converter&quot;: &quot;org.apache.kafka.connect.json.JsonConverter&quot;,
+   &quot;value.converter.schemas.enable&quot;: false,
+   &quot;key.converter.schemas.enable&quot;: false,
+   &quot;kafka.status.topic&quot;: &quot;twitter_json_01&quot;,
+   &quot;process.deletes&quot;: true,
+   &quot;filter.keywords&quot;: &quot;rickastley,kafka,ksql,rmoff&quot;
+ }
+}
+</code></pre>
+<p>假设你写这些到 <code>/home/rmoff/twitter-source.json</code>，你可以现在运行：</p>
+<pre><code>$ confluent load twitter_source -d /home/rmoff/twitter-source.json
+</code></pre>
+<p>然后推文就从大家都喜欢的网络明星 [rick] 滚滚而来……</p>
+<pre><code>$ kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --topic twitter_json_01|jq &#39;.Text&#39;
+{
+  &quot;string&quot;: &quot;RT @rickastley: 30 years ago today I said I was Never Gonna Give You Up. I am a man of my word - Rick x https://t.co/VmbMQA6tQB&quot;
+}
+{
+  &quot;string&quot;: &quot;RT @mariteg10: @rickastley @Carfestevent Wonderful Rick!!\nDo not forget Chile!!\nWe hope you get back someday!!\nHappy weekend for you!!\n❤…&quot;
+}
+</code></pre>
+<p>现在我们从 KSQL 开始 ! 马上去下载并构建它：</p>
+<pre><code>cd /home/rmoff
+git clone https://github.com/confluentinc/ksql.git
+cd /home/rmoff/ksql
+mvn clean compile install -DskipTests
+</code></pre>
+<p>构建完成后，让我们来运行它：</p>
+<pre><code>./bin/ksql-cli local --bootstrap-server localhost:9092
+</code></pre>
+<pre><code>                       ======================================
+                       =      _  __ _____  ____  _          =
+                       =     | |/ // ____|/ __ \| |         =
+                       =     | &#39; /| (___ | |  | | |         =
+                       =     |  &lt;  \___ \| |  | | |         =
+                       =     | . \ ____) | |__| | |____     =
+                       =     |_|\_\_____/ \___\_\______|    =
+                       =                                    =
+                       =   Streaming SQL Engine for Kafka   =
+Copyright 2017 Confluent Inc.
+
+CLI v0.1, Server v0.1 located at http://localhost:9098
+
+Having trouble? Type &#39;help&#39; (case-insensitive) for a rundown of how things work!
+
+ksql&gt; 
+</code></pre>
+<p>使用 KSQL， 我们可以让我们的数据保留在 Kafka 主题上并可以查询它。首先，我们需要去告诉 KSQL 主题上的<ruby>数据模式<rt>schema</rt></ruby>是什么，一个 twitter 消息实际上是一个非常巨大的 JSON 对象， 但是，为了简洁，我们只选出其中几行：</p>
+<pre><code>ksql&gt; CREATE STREAM twitter_raw (CreatedAt BIGINT, Id BIGINT, Text VARCHAR) WITH (KAFKA_TOPIC=&#39;twitter_json_01&#39;, VALUE_FORMAT=&#39;JSON&#39;);
+
+Message  
+----------------
+Stream created
+</code></pre>
+<p>在定义的模式中，我们可以查询这些流。要让 KSQL 从该主题的开始展示数据（而不是默认的当前时间点），运行如下命令：</p>
+<pre><code>ksql&gt; SET &#39;auto.offset.reset&#39; = &#39;earliest&#39;;  
+Successfully changed local property &#39;auto.offset.reset&#39; from &#39;null&#39; to &#39;earliest&#39;
+</code></pre>
+<p>现在，让我们看看这些数据，我们将使用 LIMIT 从句仅检索一行：</p>
+<pre><code>ksql&gt; SELECT text FROM twitter_raw LIMIT 1;  
+RT @rickastley: 30 years ago today I said I was Never Gonna Give You Up. I am a man of my word - Rick x https://t.co/VmbMQA6tQB
+LIMIT reached for the partition.  
+Query terminated
+ksql&gt;
+</code></pre>
+<p>现在，让我们使用刚刚定义和可用的推文内容的全部数据重新定义该流：</p>
+<pre><code>ksql&gt; DROP stream twitter_raw;
+Message
+--------------------------------
+Source TWITTER_RAW was dropped
+
+ksql&gt; CREATE STREAM twitter_raw (CreatedAt bigint,Id bigint, Text VARCHAR, SOURCE VARCHAR, Truncated VARCHAR, InReplyToStatusId VARCHAR, InReplyToUserId VARCHAR, InReplyToScreenName VARCHAR, GeoLocation VARCHAR, Place VARCHAR, Favorited VARCHAR, Retweeted VARCHAR, FavoriteCount VARCHAR, User VARCHAR, Retweet VARCHAR, Contributors VARCHAR, RetweetCount VARCHAR, RetweetedByMe VARCHAR, CurrentUserRetweetId VARCHAR, PossiblySensitive VARCHAR, Lang VARCHAR, WithheldInCountries VARCHAR, HashtagEntities VARCHAR, UserMentionEntities VARCHAR, MediaEntities VARCHAR, SymbolEntities VARCHAR, URLEntities VARCHAR) WITH (KAFKA_TOPIC=&#39;twitter_json_01&#39;,VALUE_FORMAT=&#39;JSON&#39;);
+Message
+----------------
+Stream created
+
+ksql&gt;
+</code></pre>
+<p>现在，我们可以操作和检查更多的最近的数据，使用一般的 SQL 查询：</p>
+<pre><code>ksql&gt; SELECT TIMESTAMPTOSTRING(CreatedAt, &#39;yyyy-MM-dd HH:mm:ss.SSS&#39;) AS CreatedAt,\
+EXTRACTJSONFIELD(user,&#39;$.ScreenName&#39;) as ScreenName,Text \
+FROM twitter_raw \
+WHERE LCASE(hashtagentities) LIKE &#39;%oow%&#39; OR \
+LCASE(hashtagentities) LIKE &#39;%ksql%&#39;;  
+
+2017-09-29 13:59:58.000 | rmoff | Looking forward to talking all about @apachekafka &amp; @confluentinc’s #KSQL at #OOW17 on Sunday 13:45 https://t.co/XbM4eIuzeG
+</code></pre>
+<p>注意这里没有 LIMIT 从句，因此，你将在屏幕上看到  “continuous query” 的结果。不像关系型数据表中返回一个确定数量结果的查询，一个持续查询会运行在无限的流式数据上， 因此，它总是可能返回更多的记录。点击 Ctrl-C 去中断然后返回到 KSQL 提示符。在以上的查询中我们做了一些事情：</p>
+<ul>
+<li><strong>TIMESTAMPTOSTRING</strong> 将时间戳从 epoch 格式转换到人类可读格式。（LCTT 译注： epoch 指的是一个特定的时间 1970-01-01 00:00:00 UTC）</li>
+<li><strong>EXTRACTJSONFIELD</strong> 来展示数据源中嵌套的用户域中的一个字段，它看起来像：</li>
+</ul>
+<pre><code>{
+    &quot;CreatedAt&quot;: 1506570308000,
+    &quot;Text&quot;: &quot;RT @gwenshap: This is the best thing since partitioned bread :) https://t.co/1wbv3KwRM6&quot;,
+    [...]
+    &quot;User&quot;: {
+        &quot;Id&quot;: 82564066,
+        &quot;Name&quot;: &quot;Robin Moffatt \uD83C\uDF7B\uD83C\uDFC3\uD83E\uDD53&quot;,
+        &quot;ScreenName&quot;: &quot;rmoff&quot;,
+        [...]
+</code></pre>
+<ul>
+<li>应用断言去展示内容，对 #（hashtag）使用模式匹配， 使用 LCASE 去强制小写字母。（LCTT 译注：hashtag 是twitter 中用来标注线索主题的标签）</li>
+</ul>
+<p>关于支持的函数列表，请查看 <a href="https://github.com/confluentinc/ksql/blob/0.1.x/docs/syntax-reference.md">KSQL 文档</a>。</p>
+<p>我们可以创建一个从这个数据中得到的流：</p>
+<pre><code>ksql&gt; CREATE STREAM twitter AS \
+SELECT TIMESTAMPTOSTRING(CreatedAt, &#39;yyyy-MM-dd HH:mm:ss.SSS&#39;) AS CreatedAt,\
+EXTRACTJSONFIELD(user,&#39;$.Name&#39;) AS user_Name,\
+EXTRACTJSONFIELD(user,&#39;$.ScreenName&#39;) AS user_ScreenName,\
+EXTRACTJSONFIELD(user,&#39;$.Location&#39;) AS user_Location,\
+EXTRACTJSONFIELD(user,&#39;$.Description&#39;) AS  user_Description,\
+Text,hashtagentities,lang \
+FROM twitter_raw ;
+
+Message  
+----------------------------  
+Stream created and running  
+
+ksql&gt; DESCRIBE twitter;
+Field            | Type  
+------------------------------------  
+ROWTIME          | BIGINT  
+ROWKEY           | VARCHAR(STRING)  
+CREATEDAT        | VARCHAR(STRING)  
+USER_NAME        | VARCHAR(STRING)  
+USER_SCREENNAME  | VARCHAR(STRING)  
+USER_LOCATION    | VARCHAR(STRING)  
+USER_DESCRIPTION | VARCHAR(STRING)  
+TEXT             | VARCHAR(STRING)  
+HASHTAGENTITIES  | VARCHAR(STRING)  
+LANG             | VARCHAR(STRING)  
+ksql&gt;
+</code></pre>
+<p>并且查询这个得到的流：</p>
+<pre><code>ksql&gt; SELECT CREATEDAT, USER_NAME, TEXT \
+FROM TWITTER \
+WHERE TEXT LIKE &#39;%KSQL%&#39;;  
+
+2017-10-03 23:39:37.000 | Nicola Ferraro | RT @flashdba: Again, I&#39;m really taken with the possibilities opened up by @confluentinc&#39;s KSQL engine #Kafka https://t.co/aljnScgvvs
+</code></pre>
+<p>在我们结束之前，让我们去看一下怎么去做一些聚合。</p>
+<pre><code>ksql&gt; SELECT user_screenname, COUNT(*) \
+FROM twitter WINDOW TUMBLING (SIZE 1 HOUR) \
+GROUP BY user_screenname HAVING COUNT(*) &gt; 1;  
+
+oracleace | 2  
+rojulman | 2
+smokeinpublic | 2  
+ArtFlowMe | 2  
+[...]
+</code></pre>
+<p>你将可能得到满屏幕的结果；这是因为 KSQL 在每次给定的时间窗口更新时实际发出聚合值。因为我们设置 KSQL 去读取在主题上的全部消息（<code>SET &#39;auto.offset.reset&#39; = &#39;earliest&#39;;</code>），它是一次性读取这些所有的消息并计算聚合更新。这里有一个微妙之处值得去深入研究。我们的入站推文流正好就是一个流。但是，现有它不能创建聚合，我们实际上是创建了一个表。一个表是在给定时间点的给定键的值的一个快照。 KSQL 聚合数据基于消息的事件时间，并且如果它更新了，通过简单的相关窗口重申去操作后面到达的数据。困惑了吗？ 我希望没有，但是，让我们看一下，如果我们可以用这个例子去说明。 我们将申明我们的聚合作为一个真实的表：</p>
+<pre><code>ksql&gt; CREATE TABLE user_tweet_count AS \
+SELECT user_screenname, count(*) AS  tweet_count \
+FROM twitter WINDOW TUMBLING (SIZE 1 HOUR) \
+GROUP BY user_screenname ;
+
+Message  
+---------------------------  
+Table created and running
+</code></pre>
+<p>看表中的列，这里除了我们要求的外，还有两个隐含列：</p>
+<pre><code>ksql&gt; DESCRIBE user_tweet_count;
+
+Field           | Type  
+-----------------------------------  
+ROWTIME         | BIGINT  
+ROWKEY          | VARCHAR(STRING)  
+USER_SCREENNAME | VARCHAR(STRING)  
+TWEET_COUNT     | BIGINT  
+ksql&gt;
+</code></pre>
+<p>我们看一下这些是什么：</p>
+<pre><code>ksql&gt; SELECT TIMESTAMPTOSTRING(ROWTIME, &#39;yyyy-MM-dd HH:mm:ss.SSS&#39;) , \
+ROWKEY, USER_SCREENNAME, TWEET_COUNT \
+FROM user_tweet_count \
+WHERE USER_SCREENNAME= &#39;rmoff&#39;;  
+
+2017-09-29 11:00:00.000 | rmoff : Window{start=1506708000000 end=-} | rmoff | 2  
+2017-09-29 12:00:00.000 | rmoff : Window{start=1506711600000 end=-} | rmoff | 4  
+2017-09-28 22:00:00.000 | rmoff : Window{start=1506661200000 end=-} | rmoff | 2  
+2017-09-29 09:00:00.000 | rmoff : Window{start=1506700800000 end=-} | rmoff | 4  
+2017-09-29 15:00:00.000 | rmoff : Window{start=1506722400000 end=-} | rmoff | 2  
+2017-09-29 13:00:00.000 | rmoff : Window{start=1506715200000 end=-} | rmoff | 6
+</code></pre>
+<p><code>ROWTIME</code> 是窗口开始时间，  <code>ROWKEY</code> 是 <code>GROUP BY</code>（<code>USER_SCREENNAME</code>）加上窗口的组合。因此，我们可以通过创建另外一个衍生的表来整理一下：</p>
+<pre><code>ksql&gt; CREATE TABLE USER_TWEET_COUNT_DISPLAY AS \
+SELECT TIMESTAMPTOSTRING(ROWTIME, &#39;yyyy-MM-dd HH:mm:ss.SSS&#39;) AS WINDOW_START ,\
+USER_SCREENNAME, TWEET_COUNT \
+FROM user_tweet_count;
+
+Message  
+---------------------------  
+Table created and running
+</code></pre>
+<p>现在它更易于查询和查看我们感兴趣的数据：</p>
+<pre><code>ksql&gt; SELECT WINDOW_START ,  USER_SCREENNAME, TWEET_COUNT \
+FROM USER_TWEET_COUNT_DISPLAY WHERE TWEET_COUNT&gt; 20;  
+
+2017-09-29 12:00:00.000 | VikasAatOracle | 22  
+2017-09-28 14:00:00.000 | Throne_ie | 50  
+2017-09-28 14:00:00.000 | pikipiki_net | 22  
+2017-09-29 09:00:00.000 | johanlouwers | 22  
+2017-09-28 09:00:00.000 | yvrk1973 | 24  
+2017-09-28 13:00:00.000 | cmosoares | 22  
+2017-09-29 11:00:00.000 | ypoirier | 24  
+2017-09-28 14:00:00.000 | pikisec | 22  
+2017-09-29 07:00:00.000 | Throne_ie | 22  
+2017-09-29 09:00:00.000 | ChrisVoyance | 24  
+2017-09-28 11:00:00.000 | ChrisVoyance | 28
+</code></pre>
+<h3 id="结论">结论</h3>
+<p>所以我们有了它！ 我们可以从 Kafka 中取得数据， 并且很容易使用 KSQL 去探索它。 而不仅是去浏览和转换数据，我们可以很容易地使用 KSQL 从流和表中建立流处理。</p>
+<p><img src="https://www.confluent.io/wp-content/uploads/user_tweet-1024x569.png" alt=""></p>
+<p>如果你对 KSQL 能够做什么感兴趣，去查看：</p>
+<ul>
+<li><a href="https://www.confluent.io/blog/ksql-open-source-streaming-sql-for-apache-kafka/">KSQL 公告</a></li>
+<li><a href="https://www.confluent.io/online-talk/ksql-streaming-sql-for-apache-kafka/">我们最近的 KSQL 在线研讨会</a> 和 <a href="https://www.confluent.io/kafka-summit-sf17/Databases-and-Stream-Processing-1">Kafka 峰会讲演</a></li>
+<li><a href="https://www.youtube.com/watch?v=A45uRzJiv7I">clickstream 演示</a>，它是 <a href="https://github.com/confluentinc/ksql">KSQL 的 GitHub 仓库</a> 的一部分</li>
+<li><a href="https://speakerdeck.com/rmoff/look-ma-no-code-building-streaming-data-pipelines-with-apache-kafka">我最近做的演讲</a> 展示了 KSQL 如何去支持基于流的 ETL 平台</li>
+</ul>
+<p>记住，KSQL 现在正处于开发者预览阶段。 欢迎在 KSQL 的 GitHub 仓库上提出任何问题， 或者去我们的 <a href="https://slackpass.io/confluentcommunity">community Slack group</a> 的 #KSQL 频道。</p>
+<hr>
+<p>via: <a href="https://www.confluent.io/blog/using-ksql-to-analyse-query-and-transform-data-in-kafka">https://www.confluent.io/blog/using-ksql-to-analyse-query-and-transform-data-in-kafka</a></p>
+<p>作者：<a href="https://www.confluent.io/blog/author/robin/">Robin Moffatt</a>
+译者：<a href="https://github.com/qhwdw">qhwdw</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201711/20171010 Getting Started Analyzing Twitter Data in Apache Kafka through KSQL","title":"如何在 Apache Kafka 中通过 KSQL 分析 Twitter 数据"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

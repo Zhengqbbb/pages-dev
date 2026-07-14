@@ -1,0 +1,274 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用 Python 和 GNU Octave 绘制数据 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用 Python 和 GNU Octave 绘制数据 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用 Python 和 GNU Octave 绘制数据 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202002/20200220 Using Python and GNU Octave to plot data#page","@type":"TechArticle","headline":"使用 Python 和 GNU Octave 绘制数据","inLanguage":"en","name":"使用 Python 和 GNU Octave 绘制数据","url":"https://zhengqbbb.github.io/pages-dev/202002/20200220 Using Python and GNU Octave to plot data","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202002/20200220 Using Python and GNU Octave to plot data"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#选择-python-和-gnu-octave-做数据科学工作">选择 Python 和 GNU Octave 做数据科学工作</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#编程任务">编程任务</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#python-方式">Python 方式</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#gnu-octave-方式">GNU Octave 方式</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用 Python 和 GNU Octave 绘制数据</h1><blockquote>
+<p>了解如何使用 Python 和 GNU Octave 完成一项常见的数据科学任务。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202002/29/114750tr7qykssk90yrvyz.jpg" alt=""></p>
+<p>数据科学是跨越编程语言的知识领域。有些语言以解决这一领域的问题而闻名，而另一些则鲜为人知。这篇文章将帮助你熟悉用一些流行的语言完成数据科学的工作。</p>
+<h3 id="选择-python-和-gnu-octave-做数据科学工作">选择 Python 和 GNU Octave 做数据科学工作</h3>
+<p>我经常尝试学习一种新的编程语言。为什么？这既有对旧方式的厌倦，也有对新方式的好奇。当我开始学习编程时，我唯一知道的语言是 C 语言。那些年的编程生涯既艰难又危险，因为我必须手动分配内存、管理指针、并记得释放内存。</p>
+<p>后来一个朋友建议我试试 Python，现在我的编程生活变得轻松多了。虽然程序运行变得慢多了，但我不必通过编写分析软件来受苦了。然而，我很快就意识到每种语言都有比其它语言更适合自己的应用场景。后来我学习了一些其它语言，每种语言都给我带来了一些新的启发。发现新的编程风格让我可以将一些解决方案移植到其他语言中，这样一切都变得有趣多了。</p>
+<p>为了对一种新的编程语言（及其文档）有所了解，我总是从编写一些执行我熟悉的任务的示例程序开始。为此，我将解释如何用 Python 和 GNU Octave 编写一个程序来完成一个你可以归类为数据科学的特殊任务。如果你已经熟悉其中一种语言，从它开始，然后通过其他语言寻找相似之处和不同之处。这篇文章并不是对编程语言的详尽比较，只是一个小小的展示。</p>
+<p>所有的程序都应该在<a href="https://en.wikipedia.org/wiki/Command-line_interface">命令行</a>上运行，而不是用<a href="https://en.wikipedia.org/wiki/Graphical_user_interface">图形用户界面</a>（GUI）。完整的例子可以在 <a href="https://gitlab.com/cristiano.fontana/polyglot_fit">polyglot_fit 存储库</a>中找到。</p>
+<h3 id="编程任务">编程任务</h3>
+<p>你将在本系列中编写的程序:</p>
+<ul>
+<li>从 <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV 文件</a>中读取数据</li>
+<li>用直线插入数据（例如 <code>f(x)=m ⋅ x + q</code>）</li>
+<li>将结果生成图像文件</li>
+</ul>
+<p>这是许多数据科学家遇到的常见情况。示例数据是 <a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Anscombe 的四重奏</a>的第一组，如下表所示。这是一组人工构建的数据，当用直线拟合时会给出相同的结果，但是它们的曲线非常不同。数据文件是一个文本文件，以制表符作为列分隔符，开头几行作为标题。此任务将仅使用第一组（即前两列）。</p>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202002/29/122805h3yrs1dkrgysssxk.png" alt=""></p>
+<h3 id="python-方式">Python 方式</h3>
+<p><a href="https://www.python.org/">Python</a> 是一种通用编程语言，是当今最流行的语言之一（依据 <a href="https://www.tiobe.com/tiobe-index/">TIOBE 指数</a>、<a href="https://redmonk.com/sogrady/2019/07/18/language-rankings-6-19/">RedMonk 编程语言排名</a>、<a href="http://pypl.github.io/PYPL.html">编程语言流行指数</a>、<a href="https://octoverse.github.com/">GitHub Octoverse 状态</a>和其他来源的调查结果）。它是一种<a href="https://en.wikipedia.org/wiki/Interpreted_language">解释型语言</a>；因此，源代码由执行该指令的程序读取和评估。它有一个全面的<a href="https://docs.python.org/3/library/">标准库</a>并且总体上非常好用（我对这最后一句话没有证据；这只是我的拙见）。</p>
+<h4 id="安装">安装</h4>
+<p>要使用 Python 开发，你需要解释器和一些库。最低要求是：</p>
+<ul>
+<li><a href="https://numpy.org/">NumPy</a> 用于简化数组和矩阵的操作</li>
+<li><a href="https://www.scipy.org/">SciPy</a> 用于数据科学</li>
+<li><a href="https://matplotlib.org/">Matplotlib</a> 用于绘图</li>
+</ul>
+<p>在 <a href="https://getfedora.org/">Fedora</a> 安装它们是很容易的：</p>
+<pre><code>sudo dnf install python3 python3-numpy python3-scipy python3-matplotlib
+</code></pre>
+<h4 id="代码注释">代码注释</h4>
+<p>在 Python中，<a href="https://en.wikipedia.org/wiki/Comment_(computer_programming)">注释</a>是通过在行首添加一个 <code>#</code> 来实现的，该行的其余部分将被解释器丢弃：</p>
+<pre><code># 这是被解释器忽略的注释。
+</code></pre>
+<p><a href="https://gitlab.com/cristiano.fontana/polyglot_fit/-/blob/master/fitting_python.py">fitting_python.py</a> 示例使用注释在源代码中插入许可证信息，第一行是<a href="https://en.wikipedia.org/wiki/Shebang_(Unix)">特殊注释</a>，它允许该脚本在命令行上执行:</p>
+<pre><code>#!/usr/bin/env python3
+</code></pre>
+<p>这一行通知命令行解释器，该脚本需要由程序 <code>python3</code> 执行。</p>
+<h4 id="需要的库">需要的库</h4>
+<p>在 Python 中，库和模块可以作为一个对象导入（如示例中的第一行），其中包含库的所有函数和成员。可以通过使用 <code>as</code> 方式用自定义标签重命名它们：</p>
+<pre><code>import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+</code></pre>
+<p>你也可以决定只导入一个子模块（如第二行和第三行）。语法有两个（基本上）等效的方式：<code>import module.submodule</code> 和 <code>from module import submodule</code>。</p>
+<h4 id="定义变量">定义变量</h4>
+<p>Python 的变量是在第一次赋值时被声明的：</p>
+<pre><code>input_file_name = &quot;anscombe.csv&quot;
+delimiter = &quot;\t&quot;
+skip_header = 3
+column_x = 0
+column_y = 1
+</code></pre>
+<p>变量类型由分配给变量的值推断。没有具有常量值的变量，除非它们在模块中声明并且只能被读取。习惯上，不应被修改的变量应该用大写字母命名。</p>
+<h4 id="打印输出">打印输出</h4>
+<p>通过命令行运行程序意味着输出只能打印在终端上。Python 有 <a href="https://docs.python.org/3/library/functions.html#print">print()</a> 函数，默认情况下，该函数打印其参数，并在输出的末尾添加一个换行符：</p>
+<pre><code>print(&quot;#### Anscombe&#39;s first set with Python ####&quot;)
+</code></pre>
+<p>在 Python 中，可以将 <code>print()</code> 函数与<a href="https://docs.python.org/3/library/string.html">字符串类</a>的<a href="https://docs.python.org/3/library/string.html#string-formatting">格式化能力</a>相结合。字符串具有<code>format</code> 方法，可用于向字符串本身添加一些格式化文本。例如，可以添加格式化的浮点数，例如:</p>
+<pre><code>print(&quot;Slope: {:f}&quot;.format(slope))
+</code></pre>
+<h4 id="读取数据">读取数据</h4>
+<p>使用 NumPy 和函数 <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.genfromtxt.html">genfromtxt()</a> 读取 CSV 文件非常容易，该函数生成 <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html">NumPy 数组</a>：</p>
+<pre><code>data = np.genfromtxt(input_file_name, delimiter = delimiter, skip_header = skip_header)
+</code></pre>
+<p>在 Python 中，一个函数可以有数量可变的参数，你可以通过指定所需的参数来传递一个参数的子集。数组是非常强大的矩阵状对象，可以很容易地分割成更小的数组：</p>
+<pre><code>x = data[:, column_x]
+y = data[:, column_y]
+</code></pre>
+<p>冒号选择整个范围，也可以用来选择子范围。例如，要选择数组的前两行，可以使用：</p>
+<pre><code>first_two_rows = data[0:1, :]
+</code></pre>
+<h4 id="拟合数据">拟合数据</h4>
+<p>SciPy 提供了方便的数据拟合功能，例如 <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html">linregress()</a> 功能。该函数提供了一些与拟合相关的重要值，如斜率、截距和两个数据集的相关系数:</p>
+<pre><code>slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+print(&quot;Slope: {:f}&quot;.format(slope))
+print(&quot;Intercept: {:f}&quot;.format(intercept))
+print(&quot;Correlation coefficient: {:f}&quot;.format(r_value))
+</code></pre>
+<p>因为 <code>linregress()</code> 提供了几条信息，所以结果可以同时保存到几个变量中。</p>
+<h4 id="绘图">绘图</h4>
+<p>Matplotlib 库仅仅绘制数据点，因此，你应该定义要绘制的点的坐标。已经定义了 <code>x</code> 和 <code>y</code> 数组，所以你可以直接绘制它们，但是你还需要代表直线的数据点。</p>
+<pre><code>fit_x = np.linspace(x.min() - 1, x.max() + 1, 100)
+</code></pre>
+<p><a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.linspace.html">linspace()</a> 函数可以方便地在两个值之间生成一组等距值。利用强大的 NumPy 数组可以轻松计算纵坐标，该数组可以像普通数值变量一样在公式中使用：</p>
+<pre><code>fit_y = slope * fit_x + intercept
+</code></pre>
+<p>该公式在数组中逐元素应用；因此，结果在初始数组中具有相同数量的条目。</p>
+<p>要绘图，首先，定义一个包含所有图形的<a href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure">图形对象</a>：</p>
+<pre><code>fig_width = 7 #inch
+fig_height = fig_width / 16 * 9 #inch
+fig_dpi = 100
+
+fig = plt.figure(figsize = (fig_width, fig_height), dpi = fig_dpi)
+</code></pre>
+<p>一个图形可以画几个图；在 Matplotlib 中，这些图被称为<a href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes">轴</a>。本示例定义一个单轴对象来绘制数据点：</p>
+<pre><code>ax = fig.add_subplot(111)
+
+ax.plot(fit_x, fit_y, label = &quot;Fit&quot;, linestyle = &#39;-&#39;)
+ax.plot(x, y, label = &quot;Data&quot;, marker = &#39;.&#39;, linestyle = &#39;&#39;)
+
+ax.legend()
+ax.set_xlim(min(x) - 1, max(x) + 1)
+ax.set_ylim(min(y) - 1, max(y) + 1)
+ax.set_xlabel(&#39;x&#39;)
+ax.set_ylabel(&#39;y&#39;)
+</code></pre>
+<p>将该图保存到 <a href="https://en.wikipedia.org/wiki/Portable_Network_Graphics">PNG 图形文件</a>中，有:</p>
+<pre><code>fig.savefig(&#39;fit_python.png&#39;)
+</code></pre>
+<p>如果要显示（而不是保存）该绘图，请调用：</p>
+<pre><code>plt.show()
+</code></pre>
+<p>此示例引用了绘图部分中使用的所有对象：它定义了对象 <code>fig</code> 和对象 <code>ax</code>。这在技术上是不必要的，因为 <code>plt</code> 对象可以直接用于绘制数据集。《<a href="https://matplotlib.org/tutorials/introductory/pyplot.html#sphx-glr-tutorials-introductory-pyplot-py">Matplotlib 教程</a>》展示了这样一个接口：</p>
+<pre><code>plt.plot(fit_x, fit_y)
+</code></pre>
+<p>坦率地说，我不喜欢这种方法，因为它隐藏了各种对象之间发生的重要交互。不幸的是，有时<a href="https://matplotlib.org/gallery/index.html">官方的例子</a>有点令人困惑，因为他们倾向于使用不同的方法。在这个简单的例子中，引用图形对象是不必要的，但是在更复杂的例子中（例如在图形用户界面中嵌入图形时），引用图形对象就变得很重要了。</p>
+<h4 id="结果">结果</h4>
+<p>命令行输入：</p>
+<pre><code>#### Anscombe&#39;s first set with Python ####
+Slope: 0.500091
+Intercept: 3.000091
+Correlation coefficient: 0.816421
+</code></pre>
+<p>这是 Matplotlib 产生的图像：</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/fit_python.png" alt="Plot and fit of the dataset obtained with Python" title="Plot and fit of the dataset obtained with Python"></p>
+<h3 id="gnu-octave-方式">GNU Octave 方式</h3>
+<p><a href="https://www.gnu.org/software/octave/">GNU Octave</a> 语言主要用于数值计算。它提供了一个简单的操作向量和矩阵的语法，并且有一些强大的绘图工具。这是一种像 Python 一样的解释语言。由于 Octave 的语法<a href="https://wiki.octave.org/FAQ#Differences_between_Octave_and_Matlab">几乎兼容</a> <a href="https://en.wikipedia.org/wiki/MATLAB">MATLAB</a>，它经常被描述为一个替代 MATLAB 的免费方案。Octave 没有被列为最流行的编程语言，而 MATLAB 则是，所以 Octave 在某种意义上是相当流行的。MATLAB 早于 NumPy，我觉得它是受到了前者的启发。当你看这个例子时，你会看到相似之处。</p>
+<h4 id="安装">安装</h4>
+<p><a href="https://gitlab.com/cristiano.fontana/polyglot_fit/-/blob/master/fitting_octave.m">fitting_octave.m</a> 的例子只需要基本的 Octave 包，在 Fedora 中安装相当简单：</p>
+<pre><code>sudo dnf install octave
+</code></pre>
+<h4 id="代码注释">代码注释</h4>
+<p>在 Octave 中，你可以用百分比符号（<code>%</code>）为代码添加注释，如果不需要与 MATLAB 兼容，你也可以使用 <code>#</code>。使用 <code>#</code> 的选项允许你编写像 Python 示例一样的特殊注释行，以便直接在命令行上执行脚本。</p>
+<h4 id="必要的库">必要的库</h4>
+<p>本例中使用的所有内容都包含在基本包中，因此你不需要加载任何新的库。如果你需要一个库，<a href="https://octave.org/doc/v5.1.0/Using-Packages.html#Using-Packages">语法</a>是 <code>pkg load module</code>。该命令将模块的功能添加到可用功能列表中。在这方面，Python 具有更大的灵活性。</p>
+<h4 id="定义变量">定义变量</h4>
+<p>变量的定义与 Python 的语法基本相同：</p>
+<pre><code>input_file_name = &quot;anscombe.csv&quot;;
+delimiter = &quot;\t&quot;;
+skip_header = 3;
+column_x = 1;
+column_y = 2;
+</code></pre>
+<p>请注意，行尾有一个分号；这不是必需的，但是它会抑制该行结果的输出。如果没有分号，解释器将打印表达式的结果：</p>
+<pre><code>octave:1&gt; input_file_name = &quot;anscombe.csv&quot;
+input_file_name = anscombe.csv
+octave:2&gt; sqrt(2)
+ans =  1.4142
+</code></pre>
+<h4 id="打印输出结果">打印输出结果</h4>
+<p>强大的函数 <a href="https://octave.org/doc/v5.1.0/Formatted-Output.html#XREFprintf">printf()</a> 是用来在终端上打印的。与 Python 不同，<code>printf()</code> 函数不会自动在打印字符串的末尾添加换行，因此你必须添加它。第一个参数是一个字符串，可以包含要传递给函数的其他参数的格式信息，例如：</p>
+<pre><code>printf(&quot;Slope: %f\n&quot;, slope);
+</code></pre>
+<p>在 Python 中，格式是内置在字符串本身中的，但是在 Octave 中，它是特定于 <code>printf()</code> 函数。</p>
+<h4 id="读取数据">读取数据</h4>
+<p><a href="https://octave.org/doc/v5.1.0/Simple-File-I_002fO.html#XREFdlmread">dlmread()</a> 函数可以读取类似 CSV 文件的文本内容：</p>
+<pre><code>data = dlmread(input_file_name, delimiter, skip_header, 0);
+</code></pre>
+<p>结果是一个<a href="https://octave.org/doc/v5.1.0/Matrices.html">矩阵</a>对象，这是 Octave 中的基本数据类型之一。矩阵可以用类似于 Python 的语法进行切片：</p>
+<pre><code>x = data(:, column_x);
+y = data(:, column_y);
+</code></pre>
+<p>根本的区别是索引从 1 开始，而不是从 0 开始。因此，在该示例中，<code>x</code> 列是第一列。</p>
+<h4 id="拟合数据">拟合数据</h4>
+<p>要用直线拟合数据，可以使用 <a href="https://octave.org/doc/v5.1.0/Polynomial-Interpolation.html">polyfit()</a> 函数。它用一个多项式拟合输入数据，所以你只需要使用一阶多项式：</p>
+<pre><code>p = polyfit(x, y, 1);
+
+slope = p(1);
+intercept = p(2);
+</code></pre>
+<p>结果是具有多项式系数的矩阵；因此，它选择前两个索引。要确定相关系数，请使用 <a href="https://octave.org/doc/v5.1.0/Correlation-and-Regression-Analysis.html#XREFcorr">corr()</a> 函数：</p>
+<pre><code>r_value = corr(x, y);
+</code></pre>
+<p>最后，使用 <code>printf()</code> 函数打印结果：</p>
+<pre><code>printf(&quot;Slope: %f\n&quot;, slope);
+printf(&quot;Intercept: %f\n&quot;, intercept);
+printf(&quot;Correlation coefficient: %f\n&quot;, r_value);
+</code></pre>
+<h4 id="绘图">绘图</h4>
+<p>与 Matplotlib 示例一样，首先需要创建一个表示拟合直线的数据集:</p>
+<pre><code>fit_x = linspace(min(x) - 1, max(x) + 1, 100);
+fit_y = slope * fit_x + intercept;
+</code></pre>
+<p>与 NumPy 的相似性也很明显，因为它使用了 <a href="https://octave.sourceforge.io/octave/function/linspace.html">linspace()</a> 函数，其行为就像 Python 的等效版本一样。</p>
+<p>同样，与 Matplotlib 一样，首先创建一个<a href="https://octave.org/doc/v5.1.0/Multiple-Plot-Windows.html">图</a>对象，然后创建一个<a href="https://octave.org/doc/v5.1.0/Graphics-Objects.html#XREFaxes">轴</a>对象来保存这些图：</p>
+<pre><code>fig_width = 7; %inch
+fig_height = fig_width / 16 * 9; %inch
+fig_dpi = 100;
+
+fig = figure(&quot;units&quot;, &quot;inches&quot;,
+             &quot;position&quot;, [1, 1, fig_width, fig_height]);
+
+ax = axes(&quot;parent&quot;, fig);
+
+set(ax, &quot;fontsize&quot;, 14);
+set(ax, &quot;linewidth&quot;, 2);
+</code></pre>
+<p>要设置轴对象的属性，请使用 <a href="https://octave.org/doc/v5.1.0/Graphics-Objects.html#XREFset">set()</a> 函数。然而，该接口相当混乱，因为该函数需要一个逗号分隔的属性和值对列表。这些对只是代表属性名的一个字符串和代表该属性值的第二个对象的连续。还有其他设置各种属性的函数：</p>
+<pre><code>xlim(ax, [min(x) - 1, max(x) + 1]);
+ylim(ax, [min(y) - 1, max(y) + 1]);
+xlabel(ax, &#39;x&#39;);
+ylabel(ax, &#39;y&#39;);
+</code></pre>
+<p>绘图是用 <a href="https://octave.org/doc/v5.1.0/Two_002dDimensional-Plots.html#XREFplot">plot()</a> 功能实现的。默认行为是每次调用都会重置坐标轴，因此需要使用函数 <a href="https://octave.org/doc/v5.1.0/Manipulation-of-Plot-Windows.html#XREFhold">hold()</a>。</p>
+<pre><code>hold(ax, &quot;on&quot;);
+
+plot(ax, fit_x, fit_y,
+     &quot;marker&quot;, &quot;none&quot;,
+     &quot;linestyle&quot;, &quot;-&quot;,
+     &quot;linewidth&quot;, 2);
+plot(ax, x, y,
+     &quot;marker&quot;, &quot;.&quot;,
+     &quot;markersize&quot;, 20,
+     &quot;linestyle&quot;, &quot;none&quot;);
+
+hold(ax, &quot;off&quot;);
+</code></pre>
+<p>此外，还可以在 <code>plot()</code> 函数中添加属性和值对。<a href="https://octave.org/doc/v5.1.0/Plot-Annotations.html#XREFlegend">legend</a> 必须单独创建，标签应手动声明：</p>
+<pre><code>lg = legend(ax, &quot;Fit&quot;, &quot;Data&quot;);
+set(lg, &quot;location&quot;, &quot;northwest&quot;);
+</code></pre>
+<p>最后，将输出保存到 PNG 图像：</p>
+<pre><code>image_size = sprintf(&quot;-S%f,%f&quot;, fig_width * fig_dpi, fig_height * fig_dpi);
+image_resolution = sprintf(&quot;-r%f,%f&quot;, fig_dpi);
+
+print(fig, &#39;fit_octave.png&#39;,
+      &#39;-dpng&#39;,
+      image_size,
+      image_resolution);
+</code></pre>
+<p>令人困惑的是，在这种情况下，选项被作为一个字符串传递，带有属性名和值。因为在 Octave 字符串中没有 Python 的格式化工具，所以必须使用 <a href="https://octave.org/doc/v5.1.0/Formatted-Output.html#XREFsprintf">sprintf()</a> 函数。它的行为就像 <code>printf()</code> 函数，但是它的结果不是打印出来的，而是作为字符串返回的。</p>
+<p>在这个例子中，就像在 Python 中一样，图形对象很明显被引用以保持它们之间的交互。如果说 Python 在这方面的文档有点混乱，那么 <a href="https://octave.org/doc/v5.1.0/Two_002dDimensional-Plots.html#Two_002dDimensional-Plots">Octave 的文档</a>就更糟糕了。我发现的大多数例子都不关心引用对象；相反，它们依赖于绘图命令作用于当前活动图形。全局<a href="https://octave.org/doc/v5.1.0/Graphics-Objects.html#XREFgroot">根图形对象</a>跟踪现有的图形和轴。</p>
+<h4 id="结果">结果</h4>
+<p>命令行上的结果输出是：</p>
+<pre><code>#### Anscombe&#39;s first set with Octave ####
+Slope: 0.500091
+Intercept: 3.000091
+Correlation coefficient: 0.816421
+</code></pre>
+<p>它显示了用 Octave 生成的结果图像。</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/fit_octave.png" alt="Plot and fit of the dataset obtained with Octave" title="Plot and fit of the dataset obtained with Octave"></p>
+<p>###接下来</p>
+<p>Python 和 GNU Octave 都可以绘制出相同的信息，尽管它们的实现方式不同。如果你想探索其他语言来完成类似的任务，我强烈建议你看看 <a href="http://www.rosettacode.org/">Rosetta Code</a>。这是一个了不起的资源，可以看到如何用多种语言解决同样的问题。</p>
+<p>你喜欢用什么语言绘制数据？在评论中分享你的想法。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/2/python-gnu-octave-data-science">https://opensource.com/article/20/2/python-gnu-octave-data-science</a></p>
+<p>作者：<a href="https://opensource.com/users/cristianofontana">Cristiano L. Fontana</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/heguangzhi">heguangzhi</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#选择-python-和-gnu-octave-做数据科学工作">选择 Python 和 GNU Octave 做数据科学工作</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#编程任务">编程任务</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#python-方式">Python 方式</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#gnu-octave-方式">GNU Octave 方式</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202002/20200220 Using Python and GNU Octave to plot data","title":"使用 Python 和 GNU Octave 绘制数据"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

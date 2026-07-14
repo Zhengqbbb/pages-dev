@@ -1,0 +1,342 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>LXD 2.0 系列（ 三）：你的第一个 LXD 容器 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="LXD 2.0 系列（ 三）：你的第一个 LXD 容器 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="LXD 2.0 系列（ 三）：你的第一个 LXD 容器 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/LXD/Part 3 - LXD 2.0--Your first LXD container#page","@type":"TechArticle","headline":"LXD 2.0 系列（ 三）：你的第一个 LXD 容器","inLanguage":"en","name":"LXD 2.0 系列（ 三）：你的第一个 LXD 容器","url":"https://zhengqbbb.github.io/pages-dev/LXD/Part 3 - LXD 2.0--Your first LXD container","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/LXD/Part 3 - LXD 2.0--Your first LXD container"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建并启动一个新的容器">创建并启动一个新的容器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建但不启动一个容器">创建但不启动一个容器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#关于你的容器的信息">关于你的容器的信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#生命周期管理命令">生命周期管理命令</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#容器的配置">容器的配置</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获得一个-shell">获得一个 shell</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#管理文件">管理文件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#快照管理">快照管理</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#克隆并重命名">克隆并重命名</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#更多信息">更多信息</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>LXD 2.0 系列（ 三）：你的第一个 LXD 容器</h1><p>这是 <a href="https://www.stgraber.org/2016/03/11/lxd-2-0-blog-post-series-012/">LXD 2.0 系列</a>的第三篇博客。</p>
+<p>由于在管理 LXD 容器时涉及到大量的命令，所以这篇文章的篇幅是比较长的，如果你更喜欢使用同样的命令来快速的一步步实现整个过程，你可以<a href="https://linuxcontainers.org/lxd/try-it">尝试我们的在线示例</a>！</p>
+<p><img src="https://linuxcontainers.org/static/img/containers.png" alt=""></p>
+<h3 id="创建并启动一个新的容器">创建并启动一个新的容器</h3>
+<p>正如我在先前的文章中提到的一样，LXD 命令行客户端预配置了几个镜像源。Ubuntu 的所有发行版和架构平台全都提供了官方镜像，但是对于其他的发行版也有大量的非官方镜像，那些镜像都是由社区制作并且被 LXC 上游贡献者所维护。</p>
+<h4 id="ubuntu">Ubuntu</h4>
+<p>如果你想要支持最为完善的 Ubuntu 版本，你可以按照下面的去做：</p>
+<pre><code>lxc launch ubuntu:
+</code></pre>
+<p>注意，这里意味着会随着 Ubuntu LTS 的发布而变化。因此，如果用于脚本，你需要指明你具体安装的版本（参见下面）。</p>
+<h4 id="ubuntu1404-lts">Ubuntu14.04 LTS</h4>
+<p>得到最新更新的、已经测试过的、稳定的 Ubuntu 14.04 LTS 镜像，你可以简单的执行：</p>
+<pre><code>lxc launch ubuntu:14.04
+</code></pre>
+<p>在该模式下，会指定一个随机的容器名。</p>
+<p>如果你更喜欢指定一个你自己的名字，你可以这样做：</p>
+<pre><code>lxc launch ubuntu:14.04 c1
+</code></pre>
+<p>如果你想要指定一个特定的体系架构（非主流平台），比如 32 位 Intel 镜像，你可以这样做：</p>
+<pre><code>lxc launch ubuntu:14.04/i386 c2
+</code></pre>
+<h4 id="当前的-ubuntu-开发版本">当前的 Ubuntu 开发版本</h4>
+<p>上面使用的“ubuntu:”远程仓库只会给你提供官方的并经过测试的 Ubuntu 镜像。但是如果你想要未经测试过的日常构建版本，开发版可能对你来说是合适的，你需要使用“ubuntu-daily:”远程仓库。</p>
+<pre><code>lxc launch ubuntu-daily:devel c3
+</code></pre>
+<p>在这个例子中，将会自动选中最新的 Ubuntu 开发版本。</p>
+<p>你也可以更加精确，比如你可以使用代号名：</p>
+<pre><code>lxc launch ubuntu-daily:xenial c4
+</code></pre>
+<h4 id="最新的alpine-linux">最新的Alpine Linux</h4>
+<p>Alpine 镜像可以在“Images:”远程仓库中找到，通过如下命令执行：</p>
+<pre><code>lxc launch images:alpine/3.3/amd64 c5
+</code></pre>
+<h4 id="其他">其他</h4>
+<p>全部的 Ubuntu 镜像列表可以这样获得：</p>
+<pre><code>lxc image list ubuntu:
+lxc image list ubuntu-daily:
+</code></pre>
+<p>全部的非官方镜像：</p>
+<pre><code>lxc image list images:
+</code></pre>
+<p>某个给定的原程仓库的全部别名（易记名称）可以这样获得（比如对于“ubuntu:”远程仓库）：</p>
+<pre><code>lxc image alias list ubuntu:
+</code></pre>
+<h3 id="创建但不启动一个容器">创建但不启动一个容器</h3>
+<p>如果你想创建一个容器或者一批容器，但是你不想马上启动它们，你可以使用<code>lxc init</code>替换掉<code>lxc launch</code>。所有的选项都是相同的，唯一的不同就是它并不会在你创建完成之后启动容器。</p>
+<pre><code>lxc init ubuntu:
+</code></pre>
+<h3 id="关于你的容器的信息">关于你的容器的信息</h3>
+<h4 id="列出所有的容器">列出所有的容器</h4>
+<p>要列出你的所有容器，你可以这样这做：</p>
+<pre><code>lxc list
+</code></pre>
+<p>有大量的选项供你选择来改变被显示出来的列。在一个拥有大量容器的系统上，默认显示的列可能会有点慢（因为必须获取容器中的网络信息），你可以这样做来避免这种情况：</p>
+<pre><code>lxc list --fast
+</code></pre>
+<p>上面的命令显示了另外一套列的组合，这个组合在服务器端需要处理的信息更少。</p>
+<p>你也可以基于名字或者属性来过滤掉一些东西：</p>
+<pre><code>stgraber@dakara:~$ lxc list security.privileged=true
++------+---------+---------------------+-----------------------------------------------+------------+-----------+
+| NAME |  STATE  |        IPV4         |                       IPV6                    |    TYPE    | SNAPSHOTS |
++------+---------+---------------------+-----------------------------------------------+------------+-----------+
+| suse | RUNNING | 172.17.0.105 (eth0) | 2607:f2c0:f00f:2700:216:3eff:fef2:aff4 (eth0) | PERSISTENT | 0         |
++------+---------+---------------------+-----------------------------------------------+------------+-----------+
+</code></pre>
+<p>在这个例子中，只有那些特权容器（禁用了用户命名空间）才会被列出来。</p>
+<pre><code>stgraber@dakara:~$ lxc list --fast alpine
++-------------+---------+--------------+----------------------+----------+------------+
+|    NAME     |  STATE  | ARCHITECTURE |      CREATED AT      | PROFILES |    TYPE    |
++-------------+---------+--------------+----------------------+----------+------------+
+| alpine      | RUNNING | x86_64       | 2016/03/20 02:11 UTC | default  | PERSISTENT |
++-------------+---------+--------------+----------------------+----------+------------+
+| alpine-edge | RUNNING | x86_64       | 2016/03/20 02:19 UTC | default  | PERSISTENT |
++-------------+---------+--------------+----------------------+----------+------------+
+</code></pre>
+<p>在这个例子中，只有在名字中带有“alpine”的容器才会被列出来（也支持复杂的正则表达式）。</p>
+<h4 id="获取容器的详细信息">获取容器的详细信息</h4>
+<p>由于 list 命令显然不能以一种友好的可读方式显示容器的所有信息，因此你可以使用如下方式来查询单个容器的信息：</p>
+<pre><code>lxc info &lt;container&gt;
+</code></pre>
+<p>例如：</p>
+<pre><code>stgraber@dakara:~$ lxc info zerotier
+Name: zerotier
+Architecture: x86_64
+Created: 2016/02/20 20:01 UTC
+Status: Running
+Type: persistent
+Profiles: default
+Pid: 31715
+Processes: 32
+Ips:
+ eth0: inet 172.17.0.101
+ eth0: inet6 2607:f2c0:f00f:2700:216:3eff:feec:65a8
+ eth0: inet6 fe80::216:3eff:feec:65a8
+ lo: inet 127.0.0.1
+ lo: inet6 ::1
+ lxcbr0: inet 10.0.3.1
+ lxcbr0: inet6 fe80::c0a4:ceff:fe52:4d51
+ zt0: inet 29.17.181.59
+ zt0: inet6 fd80:56c2:e21c:0:199:9379:e711:b3e1
+ zt0: inet6 fe80::79:e7ff:fe0d:5123
+Snapshots:
+ zerotier/blah (taken at 2016/03/08 23:55 UTC) (stateless)
+</code></pre>
+<h3 id="生命周期管理命令">生命周期管理命令</h3>
+<p>这些命令对于任何容器或者虚拟机管理器或许都是最普通的命令，但是它们仍然需要讲到。</p>
+<p>所有的这些命令在批量操作时都能接受多个容器名。</p>
+<h4 id="启动">启动</h4>
+<p>启动一个容器就向下面一样简单：</p>
+<pre><code>lxc start &lt;container&gt;
+</code></pre>
+<h4 id="停止">停止</h4>
+<p>停止一个容器可以这样来完成：</p>
+<pre><code>lxc stop &lt;container&gt;
+</code></pre>
+<p>如果容器不合作（即没有对发出的 SIGPWR 信号产生回应），这时候，你可以使用下面的方式强制执行：</p>
+<pre><code>lxc stop &lt;container&gt; --force
+</code></pre>
+<h4 id="重启">重启</h4>
+<p>通过下面的命令来重启一个容器：</p>
+<pre><code>lxc restart &lt;container&gt;
+</code></pre>
+<p>如果容器不合作（即没有对发出的 SIGINT 信号产生回应），你可以使用下面的方式强制执行：</p>
+<pre><code>lxc restart &lt;container&gt; --force
+</code></pre>
+<h4 id="暂停">暂停</h4>
+<p>你也可以“暂停”一个容器，在这种模式下，所有的容器任务将会被发送相同的 SIGSTOP 信号，这也意味着它们将仍然是可见的，并且仍然会占用内存，但是它们不会从调度程序中得到任何的 CPU 时间片。</p>
+<p>如果你有一个很占用 CPU 的容器，而这个容器需要一点时间来启动，但是你却并不会经常用到它。这时候，你可以先启动它，然后将它暂停，并在你需要它的时候再启动它。</p>
+<pre><code>lxc pause &lt;container&gt;
+</code></pre>
+<h4 id="删除">删除</h4>
+<p>最后，如果你不需要这个容器了，你可以用下面的命令删除它：</p>
+<pre><code>lxc delete &lt;container&gt;
+</code></pre>
+<p>注意，如果容器还处于运行状态时你将必须使用“-force”。</p>
+<h3 id="容器的配置">容器的配置</h3>
+<p>LXD 拥有大量的容器配置设定，包括资源限制，容器启动控制以及对各种设备是否允许访问的配置选项。完整的清单因为太长所以并没有在本文中列出，但是，你可以从[这里]获取它。</p>
+<p>就设备而言，LXD 当前支持下面列出的这些设备类型：</p>
+<ul>
+<li>磁盘 
+  既可以是一块物理磁盘，也可以只是一个被挂挂载到容器上的分区，还可以是一个来自主机的绑定挂载路径。</li>
+<li>网络接口卡
+  一块网卡。它可以是一块桥接的虚拟网卡，或者是一块点对点设备，还可以是一块以太局域网设备或者一块已经被连接到容器的真实物理接口。</li>
+<li>unix 块设备
+  一个 UNIX 块设备，比如 /dev/sda</li>
+<li>unix 字符设备
+  一个 UNIX 字符设备，比如 /dev/kvm</li>
+<li>none
+  这种特殊类型被用来隐藏那种可以通过配置文件被继承的设备。</li>
+</ul>
+<h4 id="配置-profile-文件">配置 profile 文件</h4>
+<p>所有可用的配置文件列表可以这样获取：</p>
+<pre><code>lxc profile list
+</code></pre>
+<p>为了看到给定配置文件的内容，最简单的方式是这样做：</p>
+<pre><code>lxc profile show &lt;profile&gt;
+</code></pre>
+<p>你可能想要改变文件里面的内容，可以这样做：</p>
+<pre><code>lxc profile edit &lt;profile&gt;
+</code></pre>
+<p>你可以使用如下命令来改变应用到给定容器的配置文件列表：</p>
+<pre><code>lxc profile apply &lt;container&gt; &lt;profile1&gt;,&lt;profile2&gt;,&lt;profile3&gt;,...
+</code></pre>
+<h4 id="本地配置">本地配置</h4>
+<p>有些配置是某个容器特定的，你并不想将它放到配置文件中，你可直接对容器设置它们：</p>
+<pre><code>lxc config edit &lt;container&gt;
+</code></pre>
+<p>上面的命令做的和“profile edit”命令是一样。</p>
+<p>如果不想在文本编辑器中打开整个文件的内容，你也可以像这样修改单独的配置：</p>
+<pre><code>lxc config set &lt;container&gt; &lt;key&gt; &lt;value&gt;
+</code></pre>
+<p>或者添加设备，例如：</p>
+<pre><code>lxc config device add my-container kvm unix-char path=/dev/kvm
+</code></pre>
+<p>上面的命令将会为名为“my-container”的容器设置一个 /dev/kvm 项。</p>
+<p>对一个配置文件使用<code>lxc profile set</code>和<code>lxc profile device add</code>命令也能实现上面的功能。</p>
+<h4 id="读取配置">读取配置</h4>
+<p>你可以使用如下命令来读取容器的本地配置：</p>
+<pre><code>lxc config show &lt;container&gt;
+</code></pre>
+<p>或者得到已经被展开了的配置（包含了所有的配置值）：</p>
+<pre><code>lxc config show --expanded &lt;container&gt;
+</code></pre>
+<p>例如：</p>
+<pre><code>stgraber@dakara:~$ lxc config show --expanded zerotier
+name: zerotier
+profiles:
+- default
+config:
+ security.nesting: &quot;true&quot;
+ user.a: b
+ volatile.base_image: a49d26ce5808075f5175bf31f5cb90561f5023dcd408da8ac5e834096d46b2d8
+ volatile.eth0.hwaddr: 00:16:3e:ec:65:a8
+ volatile.last_state.idmap: &#39;[{&quot;Isuid&quot;:true,&quot;Isgid&quot;:false,&quot;Hostid&quot;:100000,&quot;Nsid&quot;:0,&quot;Maprange&quot;:65536},{&quot;Isuid&quot;:false,&quot;Isgid&quot;:true,&quot;Hostid&quot;:100000,&quot;Nsid&quot;:0,&quot;Maprange&quot;:65536}]&#39;
+devices:
+ eth0:
+  name: eth0
+  nictype: macvlan
+  parent: eth0
+  type: nic
+  limits.ingress: 10Mbit
+  limits.egress: 10Mbit
+ root:
+  path: /
+  size: 30GB
+  type: disk
+ tun:
+  path: /dev/net/tun
+  type: unix-char
+ephemeral: false
+</code></pre>
+<p>这样做可以很方便的检查有哪些配置属性被应用到了给定的容器。</p>
+<h4 id="实时配置更新">实时配置更新</h4>
+<p>注意，除非在文档中已经被明确指出，否则所有的配置值和设备项的设置都会对容器实时发生影响。这意味着在不重启正在运行的容器的情况下，你可以添加和移除某些设备或者修改安全配置文件。</p>
+<h3 id="获得一个-shell">获得一个 shell</h3>
+<p>LXD 允许你直接在容器中执行任务。最常用的做法是在容器中得到一个 shell 或者执行一些管理员任务。</p>
+<p>和 SSH 相比，这样做的好处是你不需要容器是网络可达的，也不需要任何软件和特定的配置。</p>
+<h4 id="执行环境">执行环境</h4>
+<p>与 LXD 在容器内执行命令的方式相比，有一点是不同的，那就是 shell 并不是在容器中运行。这也意味着容器不知道使用的是什么样的 shell，以及设置了什么样的环境变量和你的家目录在哪里。</p>
+<p>通过 LXD 来执行命令总是使用最小的路径环境变量设置，并且 HOME 环境变量必定为 /root，以容器的超级用户身份来执行（即 uid 为 0，gid 为 0）。</p>
+<p>其他的环境变量可以通过命令行来设置，或者在 <code>environment.&lt;key&gt;</code> 配置中设置成永久环境变量。</p>
+<h4 id="执行命令">执行命令</h4>
+<p>在容器中获得一个 shell 可以简单的执行下列命令得到：</p>
+<pre><code>lxc exec &lt;container&gt; bash
+</code></pre>
+<p>当然，这样做的前提是容器内已经安装了 bash。</p>
+<p>更复杂的命令要求使用分隔符来合理分隔参数。</p>
+<pre><code>lxc exec &lt;container&gt; -- ls -lh /
+</code></pre>
+<p>如果想要设置或者重写变量，你可以使用“-env”参数，例如：</p>
+<pre><code>stgraber@dakara:~$ lxc exec zerotier --env mykey=myvalue env | grep mykey
+mykey=myvalue
+</code></pre>
+<h3 id="管理文件">管理文件</h3>
+<p>因为 LXD 可以直接访问容器的文件系统，因此，它可以直接读取和写入容器中的任意文件。当我们需要提取日志文件或者与容器传递文件时，这个特性是很有用的。</p>
+<h4 id="从容器中取回一个文件">从容器中取回一个文件</h4>
+<p>想要从容器中获得一个文件，简单的执行下列命令：</p>
+<pre><code>lxc file pull &lt;container&gt;/&lt;path&gt; &lt;dest&gt;
+</code></pre>
+<p>例如：</p>
+<pre><code>stgraber@dakara:~$ lxc file pull zerotier/etc/hosts hosts
+</code></pre>
+<p>或者将它读取到标准输出：</p>
+<pre><code>stgraber@dakara:~$ lxc file pull zerotier/etc/hosts -
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+</code></pre>
+<h4 id="向容器发送一个文件">向容器发送一个文件</h4>
+<p>发送以另一种简单的方式完成：</p>
+<pre><code>lxc file push &lt;source&gt; &lt;container&gt;/&lt;path&gt;
+</code></pre>
+<h4 id="直接编辑一个文件">直接编辑一个文件</h4>
+<p>编辑是一个方便的功能，其实就是简单的提取一个给定的路径，在你的默认文本编辑器中打开它，在你关闭编辑器时会自动将编辑的内容保存到容器。</p>
+<pre><code>lxc file edit &lt;container&gt;/&lt;path&gt;
+</code></pre>
+<h3 id="快照管理">快照管理</h3>
+<p>LXD 允许你对容器执行快照功能并恢复它。快照包括了容器在某一时刻的完整状态（如果<code>-stateful</code>被使用的话将会包括运行状态），这也意味着所有的容器配置，容器设备和容器文件系统也会被保存。</p>
+<h4 id="创建一个快照">创建一个快照</h4>
+<p>你可以使用下面的命令来执行快照功能：</p>
+<pre><code>lxc snapshot &lt;container&gt;
+</code></pre>
+<p>命令执行完成之后将会生成名为snapX（X 为一个自动增长的数）的记录。</p>
+<p>除此之外，你还可以使用如下命令命名你的快照：</p>
+<pre><code>lxc snapshot &lt;container&gt; &lt;snapshot name&gt;
+</code></pre>
+<h4 id="列出所有的快照">列出所有的快照</h4>
+<p>一个容器的所有快照的数量可以使用<code>lxc list</code>来得到，但是具体的快照列表只能执行<code>lxc info</code>命令才能看到。</p>
+<pre><code>lxc info &lt;container&gt;
+</code></pre>
+<h4 id="恢复快照">恢复快照</h4>
+<p>为了恢复快照，你可以简单的执行下面的命令：</p>
+<pre><code>lxc restore &lt;container&gt; &lt;snapshot name&gt;
+</code></pre>
+<h4 id="给快照重命名">给快照重命名</h4>
+<p>可以使用如下命令来给快照重命名：</p>
+<pre><code>lxc move &lt;container&gt;/&lt;snapshot name&gt; &lt;container&gt;/&lt;new snapshot name&gt;
+</code></pre>
+<h4 id="从快照中创建一个新的容器">从快照中创建一个新的容器</h4>
+<p>你可以使用快照来创建一个新的容器，而这个新的容器除了一些可变的信息将会被重置之外（例如 MAC 地址）其余所有信息都将和快照完全相同。</p>
+<pre><code>lxc copy &lt;source container&gt;/&lt;snapshot name&gt; &lt;destination container&gt;
+</code></pre>
+<h4 id="删除一个快照">删除一个快照</h4>
+<p>最后，你可以执行下面的命令来删除一个快照：</p>
+<pre><code>lxc delete &lt;container&gt;/&lt;snapshot name&gt;
+</code></pre>
+<h3 id="克隆并重命名">克隆并重命名</h3>
+<p>得到一个纯净的发行版镜像总是让人感到愉悦，但是，有时候你想要安装一系列的软件到你的容器中，这时，你需要配置它然后将它分支成多个其他的容器。</p>
+<h4 id="复制一个容器">复制一个容器</h4>
+<p>为了复制一个容器并有效的将它克隆到一个新的容器中，你可以执行下面的命令：</p>
+<pre><code>lxc copy &lt;source container&gt; &lt;destination container&gt;
+</code></pre>
+<p>目标容器在所有方面将会完全和源容器等同。除了新的容器没有任何源容器的快照以及一些可变值将会被重置之外（例如 MAC 地址）。</p>
+<h4 id="移动一个快照">移动一个快照</h4>
+<p>LXD 允许你复制容器并在主机之间移动它。但是，关于这一点将在后面的文章中介绍。</p>
+<p>现在，“move”命令将会被用作给容器重命名。</p>
+<pre><code>lxc move &lt;old name&gt; &lt;new name&gt;
+</code></pre>
+<p>唯一的要求就是当容器应该被停止，容器内的任何事情都会被保存成它本来的样子，包括可变化的信息（类似 MAC 地址等）。</p>
+<h3 id="结论">结论</h3>
+<p>这篇如此长的文章介绍了大多数你可能会在日常操作中使用到的命令。</p>
+<p>很显然，这些如此之多的命令都会有不少选项，可以让你的命令更加有效率或者可以让你指定你的 LXD 容器的某个具体方面的参数。最好的学习这些命令的方式就是深入学习它们的帮助文档（ --help）。</p>
+<h3 id="更多信息">更多信息</h3>
+<ul>
+<li>LXD 的主要网站是：<a href="https://linuxcontainers.org/lxd">https://linuxcontainers.org/lxd</a></li>
+<li>Github 上的开发动态： <a href="https://github.com/lxc/lxd">https://github.com/lxc/lxd</a></li>
+<li>邮件列表支持：<a href="https://lists.linuxcontainers.org">https://lists.linuxcontainers.org</a></li>
+<li>IRC 支持： #lxcontainers on irc.freenode.net</li>
+</ul>
+<p>如果你不想或者不能在你的机器上安装 LXD，你可以<a href="https://linuxcontainers.org/lxd/try-it">试试在线版本</a>!</p>
+<hr>
+<p>via：<a href="https://www.stgraber.org/2016/03/19/lxd-2-0-your-first-lxd-container-312/">https://www.stgraber.org/2016/03/19/lxd-2-0-your-first-lxd-container-312/</a>
+作者：<a href="https://www.stgraber.org/author/stgraber/">Stéphane Graber</a>
+译者：<a href="https://github.com/kylepeng93">kylepeng93</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建并启动一个新的容器">创建并启动一个新的容器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建但不启动一个容器">创建但不启动一个容器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#关于你的容器的信息">关于你的容器的信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#生命周期管理命令">生命周期管理命令</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#容器的配置">容器的配置</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#获得一个-shell">获得一个 shell</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#管理文件">管理文件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#快照管理">快照管理</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#克隆并重命名">克隆并重命名</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#更多信息">更多信息</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/LXD/Part 3 - LXD 2.0--Your first LXD container","title":"LXD 2.0 系列（ 三）：你的第一个 LXD 容器"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

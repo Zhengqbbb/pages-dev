@@ -1,0 +1,196 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>用 PGP 保护代码完整性（五）：将子密钥移到一个硬件设备中 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="用 PGP 保护代码完整性（五）：将子密钥移到一个硬件设备中 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="用 PGP 保护代码完整性（五）：将子密钥移到一个硬件设备中 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201901/20180314 Protecting Code Integrity with PGP - Part 5- Moving Subkeys to a Hardware Device#page","@type":"TechArticle","headline":"用 PGP 保护代码完整性（五）：将子密钥移到一个硬件设备中","inLanguage":"en","name":"用 PGP 保护代码完整性（五）：将子密钥移到一个硬件设备中","url":"https://zhengqbbb.github.io/pages-dev/201901/20180314 Protecting Code Integrity with PGP - Part 5- Moving Subkeys to a Hardware Device","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201901/20180314 Protecting Code Integrity with PGP - Part 5- Moving Subkeys to a Hardware Device"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>用 PGP 保护代码完整性（五）：将子密钥移到一个硬件设备中</h1><blockquote>
+<p>在这个系列教材中，将为你提供使用 PGP 和保护你的私钥的最佳体验。</p>
+</blockquote>
+<p><img src="https://www.linux.com/sites/lcom/files/styles/rendered_file/public/pgp-keys.jpg?itok=aS6IWGpq" alt=""></p>
+<p>在本系列教程中，我们将提供一个使用 PGP 的实用指南。如果你没有看过前面的文章，你可以通过下面的链接去查看。在这篇文章中，我们将继续讨论如何保护你的密钥，谈一谈将你的子密钥移到一个专门的硬件设备中的一些技巧。</p>
+<ul>
+<li><a href="https://linux.cn/article-9524-1.html">第一部分：基本概念和工具</a></li>
+<li><a href="https://linux.cn/article-9529-1.html">第二部分：生成你的主密钥</a></li>
+<li><a href="https://linux.cn/article-9607-1.html">第三部分：生成 PGP 子密钥</a></li>
+<li><a href="https://linux.cn/article-10402-1.html">第四部分：将主密钥移到离线存储中</a></li>
+</ul>
+<h4 id="清单">清单</h4>
+<ul>
+<li>取得一个 GnuPG 兼容的硬件设备（必要）</li>
+<li>配置 GnuPG 在设备上工作（必要）</li>
+<li>设置用户和管理员的 PIN（必要）</li>
+<li>移动子密钥到设备中（必要）</li>
+</ul>
+<h4 id="考虑事项">考虑事项</h4>
+<p>虽然现在主密钥已经不用担心泄露或失窃了，但子密钥仍然在你的家目录中。任何得到它的人都能够解密你的通讯或假冒你的签名（如果他们知道密钥的密码）。并且，每次执行一个 GnuPG 操作都要将密钥加载到操作系统内存中，这将使一些更高级的恶意软件有机会得到你的密钥（想想 Meltdown 和 Spectre）。</p>
+<p>完全保护密钥的最好方式就是，将它移到一个专门的硬件设备中，这种硬件设备是一个可操作的智能卡。</p>
+<h5 id="智能卡的好处">智能卡的好处</h5>
+<p>一个智能卡包含一个加密芯片，它能够存储私钥，并且直接在智能卡内部执行秘密操作。因为密钥内容从来没有离开过智能卡，计算机操作系统并不能检索你插入的智能卡上的私钥。这与前面用于备份目的的加密 USB 存储是不同的 —— 虽然 USB 设备也是插入并解密的，但操作系统是能够去访问私钥内容的。使用外置的加密 USB 介质并不能代替智能卡设备的功能。</p>
+<p>智能卡的一些其它好处：</p>
+<ul>
+<li>它们很便宜且易于获得</li>
+<li>它们小巧且易于携带</li>
+<li>它们可以用于多种设备上</li>
+<li>它们中的很多都具有防篡改功能（取决于制造商）</li>
+</ul>
+<h4 id="可用的智能卡设备">可用的智能卡设备</h4>
+<p>智能卡最初是嵌入到真实钱包大小的卡中，故而得名智能卡。你肯定可以买到并使用 GnuPG 功能的智能卡，并且它们是你能得到的最便宜的可用设备之一。但是，事实上智能卡有一个很重要的缺点：它们需要一个智能卡读卡器，只有极小数的笔记本电脑上有这种读卡器。</p>
+<p>由于这个原因，制造商开始推出小型 USB 设备，它的大小和 U 盘类似，内置有微型智能卡，并且在芯片上简单地实现了智能卡协议特性。下面推荐几个这样的设备：</p>
+<ul>
+<li><a href="https://shop.nitrokey.com/shop/product/nitrokey-start-6">Nitrokey Start</a>：开源硬件和自由软件，可用于 GnuPG 的最便宜的选择之一，但是额外的安全特性很少。</li>
+<li><a href="https://shop.nitrokey.com/shop/product/nitrokey-pro-3">Nitrokey Pro</a>：类似于 Nitrokey Start，它提供防篡改及更多的安全特性（但没有 U2F，具体查看指南的 U2F 节）。</li>
+<li><a href="https://www.yubico.com/product/yubikey-4-series/">Yubikey 4</a>：专利硬件和软件，但比 Nitrokey Pro 便宜，并且可以用在最新的笔记本电脑上的 USB-C 接口；也提供像 U2F 这样的额外的安全特性。</li>
+</ul>
+<p>我们推荐选一个同时具备智能卡功能和 U2F 的设备，在写这篇文章时，只能选择 Yubikey 4。</p>
+<h4 id="配置智能卡设备">配置智能卡设备</h4>
+<p>你的智能卡设备插入任何一台现代的 Linux 或 Mac 工作站上都应该能正常工作。你可以通过运行如下的命令去验证它：</p>
+<pre><code>$ gpg --card-status
+</code></pre>
+<p>如果你没有收到错误，有一个完整的卡列表，就表示一切正常。不幸的是，排除为什么设备不能正常工作的所有可能原因，已经超出了本指南的范围。如果你的智能卡使用 GnuPG 时有问题，请通过你的操作系统的常见支持通道寻求支持。</p>
+<h5 id="pin-不一定是数字">PIN 不一定是数字</h5>
+<p>注意，尽管名为 “PIN”（暗示你它必须是一个“数字”），不论是用户 PIN 还是管理员 PIN 都不必非要是数字。</p>
+<p>当你收到一个新设备时，它可能设置有一个默认的用户和管理员 PIN，对于 Yubikey，它分别是 <code>123456</code> 和 <code>12345678</code>。如果它们的 PIN 不是默认的，请查看设备附带的说明书。</p>
+<h5 id="快速设置">快速设置</h5>
+<p>为配置你的智能卡，你需要使用 GnuPG 菜单系统，因此这里并没有更方便的命令行开关：</p>
+<pre><code>$ gpg --card-edit
+[...omitted...]
+gpg/card&gt; admin
+Admin commands are allowed
+gpg/card&gt; passwd
+</code></pre>
+<p>你应该去设置用户 PIN (1)、管理员 PIN (3)、和重置码 (4)。请确保把它们记录并保存到一个安全的地方 —— 尤其是管理员 PIN 和重置码（它允许你去擦除整个智能卡内容）。你很少使用到管理员 PIN，因此如果你不记录下来，很可能会忘掉它。</p>
+<p>返回到智能卡主菜单，你也可以设置其它值（比如名字、性别、登入日期、等等），但是这些都不是必需的，一旦你的智能卡丢失了，将导致额外的信息泄露。</p>
+<h4 id="将子密钥移到你的智能卡中">将子密钥移到你的智能卡中</h4>
+<p>退出卡菜单（使用 <code>q</code> 命令）保存所有更改。接下来，我们将你的子密钥移到智能卡中。将需要用到你的 PGP 密钥的密码，在大多数的智能卡操作中都将用到管理员 PIN。记住，那个 <code>[fpr]</code> 表示你的密钥的完整的 40 个字符的指纹。</p>
+<pre><code>$ gpg --edit-key [fpr]
+
+Secret subkeys are available.
+
+pub  rsa4096/AAAABBBBCCCCDDDD
+    created: 2017-12-07  expires: 2019-12-07 usage: C
+    trust: ultimate      validity: ultimate
+ssb  rsa2048/1111222233334444
+    created: 2017-12-07  expires: never usage: E
+ssb  rsa2048/5555666677778888
+    created: 2017-12-07  expires: never usage: S
+[ultimate] (1). Alice Engineer &lt;alice@example.org&gt;
+[ultimate] (2)  Alice Engineer &lt;allie@example.net&gt;
+
+gpg&gt;
+</code></pre>
+<p>使用 <code>--edit-key</code> 再次进入到菜单模式，你将注意到那个密钥清单有一点小差别。从现在开始，所有的命令都是在这个菜单模式下运行，它用 <code>gpg&gt;</code> 提示符来表示。</p>
+<p>首先，我们来选择移到智能卡中的密钥 —— 你可以通过键入 <code>key 1</code>（它表示选择清单中的第一个密钥）来实现：</p>
+<pre><code>gpg&gt; key 1
+</code></pre>
+<p>这个输出会有一点细微的差别：</p>
+<pre><code>pub  rsa4096/AAAABBBBCCCCDDDD
+    created: 2017-12-07  expires: 2019-12-07 usage: C
+    trust: ultimate      validity: ultimate
+ssb* rsa2048/1111222233334444
+    created: 2017-12-07  expires: never usage: E
+ssb  rsa2048/5555666677778888
+    created: 2017-12-07  expires: never usage: S
+[ultimate] (1). Alice Engineer &lt;alice@example.org&gt;
+[ultimate] (2)  Alice Engineer &lt;allie@example.net&gt;
+</code></pre>
+<p>注意与密钥对应的 <code>ssb</code> 行旁边的 <code>*</code> —— 它表示这是当前选定的密钥。它是可切换的，意味着如果你再次输入 <code>key 1</code>，这个 <code>*</code> 将消失，这个密钥将不再被选中。</p>
+<p>现在，我们来将密钥移到智能卡中：</p>
+<pre><code>gpg&gt; keytocard
+Please select where to store the key:
+  (2) Encryption key
+Your selection? 2
+</code></pre>
+<p>由于它是我们的 [E] 密钥，把它移到加密区中是有很有意义的。当你提交了你的选择之后，将会被提示输入你的 PGP 密钥的保护密码，接下来输入智能卡的管理员 PIN。如果命令没有返回错误，表示你的密钥已经被移到智能卡中了。</p>
+<p><strong>重要：</strong> 现在再次输入 <code>key 1</code> 去取消选中第一个密钥，并输入 <code>key 2</code> 去选择 [S] 密钥：</p>
+<pre><code>gpg&gt; key 1
+gpg&gt; key 2
+gpg&gt; keytocard
+Please select where to store the key:
+  (1) Signature key
+  (3) Authentication key
+Your selection? 1
+</code></pre>
+<p>你可以使用 [S] 密钥同时做签名和验证，但是我们希望确保它在签名区，因此，我们选择 (<code>1</code>)。完成后，如果你的命令没有返回错误，表示操作已成功。</p>
+<p>最后，如果你创建了一个 <a href="https://www.linux.com/users/mricon">A</a> 密钥，你也可以将它移到智能卡中，但是你需要先取消选中 <code>key 2</code>。完成后，选择 <code>q</code>：</p>
+<pre><code>gpg&gt; q
+Save changes? (y/N) y
+</code></pre>
+<p>保存变更将把你的子密钥移到智能卡后，把你的家目录中的相应子密钥删除（没有关系，因为我们的备份中还有，如果更换了智能卡，你需要再做一遍）。</p>
+<h5 id="验证移动后的密钥">验证移动后的密钥</h5>
+<p>现在，如果你执行一个<code> --list-secret-keys</code> 操作，你将看到一个稍有不同的输出：</p>
+<pre><code>$ gpg --list-secret-keys
+sec#  rsa4096 2017-12-06 [C] [expires: 2019-12-06]
+     111122223333444455556666AAAABBBBCCCCDDDD
+uid           [ultimate] Alice Engineer &lt;alice@example.org&gt;
+uid           [ultimate] Alice Engineer &lt;allie@example.net&gt;
+ssb&gt;  rsa2048 2017-12-06 [E]
+ssb&gt;  rsa2048 2017-12-06 [S]
+</code></pre>
+<p>在 <code>ssb&gt;</code> 的输出中的 <code>&gt;</code> 表示子密钥仅在智能卡上有效。如果你进入到你的密钥目录中，查看目录的内容，你将会看到那个 <code>.key</code> 文件已经被存根替换：</p>
+<pre><code>$ cd ~/.gnupg/private-keys-v1.d
+$ strings *.key
+</code></pre>
+<p>这个输出将包含一个影子私钥，它表示那个文件仅是个存根，真正的内容在智能卡中。</p>
+<h4 id="验证智能卡的功能">验证智能卡的功能</h4>
+<p>验证智能卡能否如期正常运行，你可以通过创建一个签名来验证：</p>
+<pre><code>$ echo &quot;Hello world&quot; | gpg --clearsign &gt; /tmp/test.asc
+$ gpg --verify /tmp/test.asc
+</code></pre>
+<p>首次运行这个命令时将询问你智能卡的 PIN，在你运行 <code>gpg —verify</code> 之后，它将显示 “Good signature”。</p>
+<p>祝贺你，你已经成功将窃取你的开发者数字身份变得更加困难了！</p>
+<h4 id="其它常见-gnupg-操作">其它常见 GnuPG 操作</h4>
+<p>下面是使用你的 PGP 密钥需要做的一些常见操作的快速指南。</p>
+<p>在下面的所有命令中，<code>[fpr]</code> 表示你的密钥指纹。</p>
+<h5 id="挂载主密钥离线存储">挂载主密钥离线存储</h5>
+<p>下面的一些操作将需要你的主密钥，因此首先需要去挂载你的主密钥离线存储，并告诉 GnuPG 去使用它。首先，找出介质挂载路径，可以通过查看 <code>mount</code> 命令的输出找到它。接着，设置你的 GnuPG 目录为你的介质上备份的目录，并告诉 GnuPG 将那个目录做为它的家目录：</p>
+<pre><code>$ export GNUPGHOME=/media/disk/name/gnupg-backup
+$ gpg --list-secret-keys
+</code></pre>
+<p>确保你在输出中看到的是 <code>sec</code> 而不是 <code>sec#</code>（这个 <code>#</code> 表示密钥不可用，仍然使用的是惯常的那个 Home 目录）。</p>
+<h5 id="更新你惯常使用的那个-gnupg-工作目录">更新你惯常使用的那个 GnuPG 工作目录</h5>
+<p>在你的离线存储上做了任何更改之后，你应该将这些更改同步应用到你惯常使用的工作目录中：</p>
+<pre><code>$ gpg --export | gpg --homedir ~/.gnupg --import
+$ unset GNUPGHOME
+</code></pre>
+<h5 id="延长密钥过期日期">延长密钥过期日期</h5>
+<p>我们创建的主密钥的默认过期日期是自创建之日起两年后。这样做都是为安全考虑，这样将使淘汰密钥最终从密钥服务器上消失。</p>
+<p>延长你的密钥过期日期，从当前日期延长一年，只需要运行如下命令：</p>
+<pre><code>$ gpg --quick-set-expire [fpr] 1y
+</code></pre>
+<p>如果为了好记住，你也可以使用一个特定日期（比如，你的生日、1 月 1 日、或加拿大国庆日）：</p>
+<pre><code>$ gpg --quick-set-expire [fpr] 2020-07-01
+</code></pre>
+<p>记得将更新后的密钥发送到密钥服务器：</p>
+<pre><code>$ gpg --send-key [fpr]
+</code></pre>
+<h5 id="吊销身份">吊销身份</h5>
+<p>如果你需要吊销一个身份（比如，你换了雇主并且旧的邮件地址不再有效了），你可以使用一行命令搞定：</p>
+<pre><code>$ gpg --quick-revoke-uid [fpr] &#39;Alice Engineer &lt;aengineer@example.net&gt;&#39;
+</code></pre>
+<p>你也可以通过使用 <code>gpg --edit-key [fpr]</code> 在菜单模式下完成同样的事情。</p>
+<p>完成后，记得将更新后的密钥发送到密钥服务器上：</p>
+<pre><code>$ gpg --send-key [fpr]
+</code></pre>
+<p>下一篇文章中，我们将谈谈 Git 如何支持 PGP 的多级别集成。</p>
+<p>通过来自 Linux 基金会和 edX 的免费课程 <a href="https://training.linuxfoundation.org/linux-courses/system-administration-training/introduction-to-linux">“Linux 入门”</a>学习更多 Linux 知识。</p>
+<hr>
+<p>via: <a href="https://www.linux.com/blog/learn/pgp/2018/3/protecting-code-integrity-pgp-part-5-moving-subkeys-hardware-device">https://www.linux.com/blog/learn/pgp/2018/3/protecting-code-integrity-pgp-part-5-moving-subkeys-hardware-device</a></p>
+<p>作者：<a href="https://www.linux.com/users/mricon">KONSTANTIN RYABITSEV</a>
+译者：<a href="https://github.com/qhwdw">qhwdw</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201901/20180314 Protecting Code Integrity with PGP - Part 5- Moving Subkeys to a Hardware Device","title":"用 PGP 保护代码完整性（五）：将子密钥移到一个硬件设备中"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Shell脚本编程初体验 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Shell脚本编程初体验 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Shell脚本编程初体验 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201506/20150506 First Step Guide for Learning Shell Scripting#page","@type":"TechArticle","headline":"Shell脚本编程初体验","inLanguage":"en","name":"Shell脚本编程初体验","url":"https://zhengqbbb.github.io/pages-dev/201506/20150506 First Step Guide for Learning Shell Scripting","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201506/20150506 First Step Guide for Learning Shell Scripting"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#shell脚本流">Shell脚本流</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在shell中显示自定义信息">在shell中显示自定义信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何运行执行脚本">如何运行/执行脚本？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#读取输入">读取输入</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用流重定向">使用流重定向</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#循环">循环</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用管道重定向">使用管道重定向</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Shell脚本编程初体验</h1><p><img src="http://blog.linoxide.com/wp-content/uploads/2015/04/myfirstshellscript.jpg" alt=""></p>
+<p>通常，当人们提到“shell脚本语言”时，浮现在他们脑海中是bash，ksh，sh或者其它相类似的linux/unix脚本语言。脚本语言是与计算机交流的另外一种途径。使用图形化窗口界面（不管是windows还是linux都无所谓）用户可以移动鼠标并点击各种对象，比如按钮、列表、选框等等。但这种方式在每次用户想要计算机/服务器完成相同任务时（比如说批量转换照片，或者下载新的电影、mp3等）却是十分不方便。要想让所有这些事情变得简单并且自动化，我们可以使用shell脚本。</p>
+<p>某些编程语言，像pascal、foxpro、C、java之类，在执行前需要先进行编译。它们需要合适的编译器来让我们的代码完成某个任务。</p>
+<p>而其它一些编程语言，像php、javascript、visualbasic之类，则不需要编译器，因此它们需要解释器，而我们不需要编译代码就可以运行程序。</p>
+<p>shell脚本也像解释器一样，但它通常用于调用外部已编译的程序。然后，它会捕获输出结果、退出代码并根据情况进行处理。</p>
+<p>Linux世界中最为流行的shell脚本语言之一，就是bash。而我认为（这是我自己的看法）原因在于，默认情况下bash shell可以让用户便捷地通过历史命令（先前执行过的）导航，与之相反的是，ksh则要求对.profile进行一些调整，或者记住一些“魔术”组合键来查阅历史并修正命令。</p>
+<p>好了，我想这些介绍已经足够了，剩下来哪个环境最适合你，就留给你自己去判断吧。从现在开始，我将只讲bash及其脚本。在下面的例子中，我将使用CentOS 6.6和bash-4.1.2。请确保你有相同版本，或者更高版本。</p>
+<h3 id="shell脚本流">Shell脚本流</h3>
+<p>shell脚本语言就跟和几个人聊天类似。你只需把所有命令想象成能帮你做事的那些人，只要你用正确的方式来请求他们去做。比如说，你想要写文档。首先，你需要纸。然后，你需要把内容说给某个人听，让他帮你写。最后，你想要把它存放到某个地方。或者说，你想要造一所房子，因而你需要请合适的人来清空场地。在他们说“事情干完了”，那么另外一些工程师就可以帮你来砌墙。最后，当这些工程师们也告诉你“事情干完了”的时候，你就可以叫油漆工来给房子粉饰了。如果你让油漆工在墙砌好前就来粉饰，会发生什么呢？我想，他们会开始发牢骚了。几乎所有这些像人一样的命令都会说话，如果它们完成了工作而没有发生什么问题，那么它们就会告诉“标准输出”。如果它们不能做你叫它们做的事——它们会告诉“标准错误”。这样，最后，所有的命令都通过“标准输入”来听你的话。</p>
+<p>快速实例——当你打开linux终端并写一些文本时——你正通过“标准输入”和bash说话。那么，让我们来问问bash shell **who am i（我是谁？）**吧。</p>
+<pre><code>root@localhost ~]# who am i                                &lt;--- 你通过标准输入对 bash shell 说
+root     pts/0        2015-04-22 20:17 (192.168.1.123)          &lt;--- bash shell通过标准输出回答你
+</code></pre>
+<p>现在，让我们说一些bash听不懂的问题：</p>
+<pre><code>[root@localhost ~]# blablabla           &lt;--- 哈，你又在和标准输入说话了
+-bash: blablabla: command not found     &lt;--- bash通过标准错误在发牢骚了
+</code></pre>
+<p>“:”之前的第一个单词通常是向你发牢骚的命令。实际上，这些流中的每一个都有它们自己的索引号（LCTT 译注：文件句柄号）：</p>
+<ul>
+<li>标准输入（<strong>stdin</strong>） - 0</li>
+<li>标准输出（<strong>stdout</strong>） - 1</li>
+<li>标准错误（<strong>stderr</strong>） - 2</li>
+</ul>
+<p>如果你真的想要知道哪个输出命令说了些什么——你需要将那次发言重定向到（在命令后使用大于号“&gt;”和流索引）文件：</p>
+<pre><code>[root@localhost ~]# blablabla 1&gt; output.txt
+-bash: blablabla: command not found
+</code></pre>
+<p>在本例中，我们试着重定向流1（<strong>stdout</strong>）到名为output.txt的文件。让我们来看对该文件内容所做的事情吧，使用cat命令可以做这事：</p>
+<pre><code>[root@localhost ~]# cat output.txt
+[root@localhost ~]#
+</code></pre>
+<p>看起来似乎是空的。好吧，现在让我们来重定向流2（<strong>stderr</strong>）：</p>
+<pre><code>[root@localhost ~]# blablabla 2&gt; error.txt
+[root@localhost ~]#
+</code></pre>
+<p>好吧，我们看到牢骚话没了。让我们检查一下那个文件：</p>
+<pre><code>[root@localhost ~]# cat error.txt
+-bash: blablabla: command not found
+[root@localhost ~]#
+</code></pre>
+<p>果然如此！我们看到，所有牢骚话都被记录到errors.txt文件里头去了。</p>
+<p>有时候，命令会同时产生<strong>stdout</strong>和<strong>stderr</strong>。要重定向它们到不同的文件，我们可以使用以下语句：</p>
+<pre><code>command 1&gt;out.txt 2&gt;err.txt
+</code></pre>
+<p>要缩短一点语句，我们可以忽略“1”，因为默认情况下<strong>stdout</strong>会被重定向：</p>
+<pre><code>command &gt;out.txt 2&gt;err.txt
+</code></pre>
+<p>好吧，让我们试试做些“坏事”。让我们用rm命令把file1和folder1给删了吧：</p>
+<pre><code>[root@localhost ~]# rm -vf folder1 file1 &gt; out.txt 2&gt;err.txt
+</code></pre>
+<p>现在来检查以下输出文件：</p>
+<pre><code>[root@localhost ~]# cat out.txt
+removed `file1&#39;
+[root@localhost ~]# cat err.txt
+rm: cannot remove `folder1&#39;: Is a directory
+[root@localhost ~]#
+</code></pre>
+<p>正如我们所看到的，不同的流被分离到了不同的文件。有时候，这也不是很方便，因为我们想要查看出现错误时，在某些操作前面或后面所连续发生的事情。要实现这一目的，我们可以重定向两个流到同一个文件：</p>
+<pre><code>command &gt;&gt;out_err.txt 2&gt;&gt;out_err.txt
+</code></pre>
+<p>注意：请注意，我使用“&gt;&gt;”替代了“&gt;”。它允许我们附加到文件，而不是覆盖文件。</p>
+<p>我们也可以重定向一个流到另一个：</p>
+<pre><code>command &gt;out_err.txt 2&gt;&amp;1
+</code></pre>
+<p>让我来解释一下吧。所有命令的标准输出将被重定向到out_err.txt，错误输出将被重定向到流1（上面已经解释过了），而该流会被重定向到同一个文件。让我们看这个实例：</p>
+<pre><code>[root@localhost ~]# rm -fv folder2 file2 &gt;out_err.txt 2&gt;&amp;1
+[root@localhost ~]# cat out_err.txt
+rm: cannot remove `folder2&#39;: Is a directory
+removed `file2&#39;
+[root@localhost ~]#
+</code></pre>
+<p>看着这些组合的输出，我们可以将其说明为：首先，<strong>rm</strong>命令试着将folder2删除，而它不会成功，因为linux要求**-r<strong>键来允许</strong>rm<strong>命令删除文件夹，而第二个file2会被删除。通过为</strong>rm<strong>提供</strong>-v**（详情）键，我们让rm命令告诉我们每个被删除的文件或文件夹。</p>
+<p>这些就是你需要知道的，关于重定向的几乎所有内容了。我是说几乎，因为还有一个更为重要的重定向工具，它称之为“管道”。通过使用|（管道）符号，我们通常重定向<strong>stdout</strong>流。</p>
+<p>比如说，我们有这样一个文本文件：</p>
+<pre><code>[root@localhost ~]# cat text_file.txt
+This line does not contain H e l l o  word
+This lilne contains Hello
+This also containd Hello
+This one no due to HELLO all capital
+Hello bash world!
+</code></pre>
+<p>而我们需要找到其中某些带有“Hello”的行，Linux中有个<strong>grep</strong>命令可以完成该工作：</p>
+<pre><code>[root@localhost ~]# grep Hello text_file.txt
+This lilne contains Hello
+This also containd Hello
+Hello bash world!
+[root@localhost ~]#
+</code></pre>
+<p>当我们有个文件，想要在里头搜索的时候，这用起来很不错。当如果我们需要在另一个命令的输出中查找某些东西，这又该怎么办呢？是的，当然，我们可以重定向输出到文件，然后再在文件里头查找：</p>
+<pre><code>[root@localhost ~]# fdisk -l&gt;fdisk.out
+[root@localhost ~]# grep &quot;Disk /dev&quot; fdisk.out
+Disk /dev/sda: 8589 MB, 8589934592 bytes
+Disk /dev/mapper/VolGroup-lv_root: 7205 MB, 7205814272 bytes
+Disk /dev/mapper/VolGroup-lv_swap: 855 MB, 855638016 bytes
+[root@localhost ~]#
+</code></pre>
+<p>如果你打算grep一些双引号引起来带有空格的内容呢！</p>
+<p>注意：fdisk命令显示关于Linux操作系统磁盘驱动器的信息。</p>
+<p>就像我们看到的，这种方式很不方便，因为我们不一会儿就把临时文件空间给搞乱了。要完成该任务，我们可以使用管道。它们允许我们重定向一个命令的<strong>stdout</strong>到另一个命令的<strong>stdin</strong>流：</p>
+<pre><code>[root@localhost ~]# fdisk -l | grep &quot;Disk /dev&quot;
+Disk /dev/sda: 8589 MB, 8589934592 bytes
+Disk /dev/mapper/VolGroup-lv_root: 7205 MB, 7205814272 bytes
+Disk /dev/mapper/VolGroup-lv_swap: 855 MB, 855638016 bytes
+[root@localhost ~]#
+</code></pre>
+<p>如你所见，我们不需要任何临时文件就获得了相同的结果。我们把<strong>fdisk stdout</strong>重定向到了<strong>grep stdin</strong>。</p>
+<p><strong>注意</strong> ： 管道重定向总是从左至右的。</p>
+<p>还有几个其它重定向，但是我们将把它们放在后面讲。</p>
+<h3 id="在shell中显示自定义信息">在shell中显示自定义信息</h3>
+<p>正如我们所知道的，通常，与shell的交流以及shell内的交流是以对话的方式进行的。因此，让我们创建一些真正的脚本吧，这些脚本也会和我们讲话。这会让你学到一些简单的命令，并对脚本的概念有一个更好的理解。</p>
+<p>假设我们是某个公司的总服务台经理，我们想要创建某个shell脚本来注册呼叫信息：电话号码、用户名以及问题的简要描述。我们打算把这些信息存储到普通文本文件data.txt中，以便今后统计。脚本它自己就是以对话的方式工作，这会让总服务台的工作人员的小日子过得轻松点。那么，首先我们需要显示提问。对于显示信息，我们可以用echo和printf命令。这两个都是用来显示信息的，但是printf更为强大，因为我们可以通过它很好地格式化输出，我们可以让它右对齐、左对齐或者为信息留出专门的空间。让我们从一个简单的例子开始吧。要创建文件，请使用你惯用的文本编辑器（kate，nano，vi，……），然后创建名为note.sh的文件，里面写入这些命令：</p>
+<pre><code>echo &quot;Phone number ?&quot;
+</code></pre>
+<h3 id="如何运行执行脚本">如何运行/执行脚本？</h3>
+<p>在保存文件后，我们可以使用bash命令来运行，把我们的文件作为它的参数：</p>
+<pre><code>[root@localhost ~]# bash note.sh
+Phone number ?
+</code></pre>
+<p>实际上，这样来执行脚本是很不方便的。如果不使用<strong>bash</strong>命令作为前缀来执行，会更舒服一些。要让脚本可执行，我们可以使用<strong>chmod</strong>命令：</p>
+<pre><code>[root@localhost ~]# ls -la note.sh
+-rw-r--r--. 1 root root 22 Apr 23 20:52 note.sh
+[root@localhost ~]# chmod +x note.sh
+[root@localhost ~]# ls -la note.sh
+-rwxr-xr-x. 1 root root 22 Apr 23 20:52 note.sh
+[root@localhost ~]#
+</code></pre>
+<p><img src="http://blog.linoxide.com/wp-content/uploads/2015/04/Capture.png" alt="set permission script file"></p>
+<p><strong>注意</strong> ： ls命令显示了当前文件夹内的文件。通过添加-la键，它会显示更多文件信息。</p>
+<p>如我们所见，在<strong>chmod</strong>命令执行前，脚本只有读（r）和写（w）权限。在执行<strong>chmod +x</strong>后，它就获得了执行（x）权限。（关于权限的更多细节，我会在下一篇文章中讲述。）现在，我们只需这么来运行：</p>
+<pre><code>[root@localhost ~]# ./note.sh
+Phone number ?
+</code></pre>
+<p>在脚本名前，我添加了 ./ 组合。.(点）在unix世界中意味着当前位置（当前文件夹），/（斜线）是文件夹分隔符。（在Windows系统中，我们使用反斜线 \ 表示同样功能）所以，这整个组合的意思是说：“从当前文件夹执行note.sh脚本”。我想，如果我用完整路径来运行这个脚本的话，你会更加清楚一些：</p>
+<pre><code>[root@localhost ~]# /root/note.sh
+Phone number ?
+[root@localhost ~]#
+</code></pre>
+<p>它也能工作。</p>
+<p>如果所有linux用户都有相同的默认shell，那就万事OK。如果我们只是执行该脚本，默认的用户shell就会用于解析脚本内容并运行命令。不同的shell的语法、内部命令等等有着一丁点不同，所以，为了保证我们的脚本会使用<strong>bash</strong>，我们应该添加**#!/bin/bash<strong>到文件首行。这样，默认的用户shell将调用</strong>/bin/bash**，而只有在那时候，脚本中的命令才会被执行：</p>
+<pre><code>[root@localhost ~]# cat note.sh
+#!/bin/bash
+echo &quot;Phone number ?&quot;
+</code></pre>
+<p>直到现在，我们才100%确信<strong>bash</strong>会用来解析我们的脚本内容。让我们继续。</p>
+<h3 id="读取输入">读取输入</h3>
+<p>在显示信息后，脚本会等待用户回答。有个<strong>read</strong>命令用来接收用户的回答：</p>
+<pre><code>#!/bin/bash
+echo &quot;Phone number ?&quot;
+read phone
+</code></pre>
+<p>在执行后，脚本会等待用户输入，直到用户按[ENTER]键结束输入：</p>
+<pre><code>[root@localhost ~]# ./note.sh
+Phone number ?
+12345                               &lt;--- 这儿是我输入的内容
+[root@localhost ~]#
+</code></pre>
+<p>你输入的所有东西都会被存储到变量<strong>phone</strong>中，要显示变量的值，我们同样可以使用<strong>echo</strong>命令：</p>
+<pre><code>[root@localhost ~]# cat note.sh
+#!/bin/bash
+echo &quot;Phone number ?&quot;
+read phone
+echo &quot;You have entered $phone as a phone number&quot;
+[root@localhost ~]# ./note.sh
+Phone number ?
+123456
+You have entered 123456 as a phone number
+[root@localhost ~]#
+</code></pre>
+<p>在<strong>bash</strong> shell中，一般我们使用**$**（美元）符号来表明这是一个变量，除了读入到变量和其它为数不多的时候才不用这个$（将在今后说明）。</p>
+<p>好了，现在我们准备添加剩下的问题了：</p>
+<pre><code>#!/bin/bash
+echo &quot;Phone number?&quot;
+read phone
+echo &quot;Name?&quot;
+read name
+echo &quot;Issue?&quot;
+read issue
+[root@localhost ~]# ./note.sh
+Phone number?
+123
+Name?
+Jim
+Issue?
+script is not working.
+[root@localhost ~]#
+</code></pre>
+<h3 id="使用流重定向">使用流重定向</h3>
+<p>太完美了！剩下来就是重定向所有东西到文件data.txt了。作为字段分隔符，我们将使用/（斜线）符号。</p>
+<p><strong>注意</strong> ： 你可以选择任何你认为是最好的分隔符，但是确保文件内容不会包含这些符号在内，否则它会导致在文本行中产生额外字段。</p>
+<p>别忘了使用“&gt;&gt;”来代替“&gt;”，因为我们想要将输出内容附加到文件末！</p>
+<pre><code>[root@localhost ~]# tail -2 note.sh
+read issue
+echo &quot;$phone/$name/$issue&quot;&gt;&gt;data.txt
+[root@localhost ~]# ./note.sh
+Phone number?
+987
+Name?
+Jimmy
+Issue?
+Keybord issue.
+[root@localhost ~]# cat data.txt
+987/Jimmy/Keybord issue.
+[root@localhost ~]#
+</code></pre>
+<p><strong>注意</strong> ： <strong>tail</strong>命令显示了文件的最后的<strong>n</strong>行。</p>
+<p>搞定。让我们再来运行一次看看：</p>
+<pre><code>[root@localhost ~]# ./note.sh
+Phone number?
+556
+Name?
+Janine
+Issue?
+Mouse was broken.
+[root@localhost ~]# cat data.txt
+987/Jimmy/Keybord issue.
+556/Janine/Mouse was broken.
+[root@localhost ~]#
+</code></pre>
+<p>我们的文件在增长，让我们在每行前面加个日期吧，这对于今后摆弄这些统计数据时会很有用。要实现这功能，我们可以使用date命令，并指定某种格式，因为我不喜欢默认格式：</p>
+<pre><code>[root@localhost ~]# date
+Thu Apr 23 21:33:14 EEST 2015                      &lt;---- date命令的默认输出
+[root@localhost ~]# date &quot;+%Y.%m.%d %H:%M:%S&quot;
+2015.04.23 21:33:18                               &lt;---- 格式化后的输出
+</code></pre>
+<p>有几种方式可以读取命令的输出到变量，在这种简单的情况下，我们将使用`（是反引号，不是单引号，和波浪号~在同一个键位）：</p>
+<pre><code>[root@localhost ~]# cat note.sh
+#!/bin/bash
+now=`date &quot;+%Y.%m.%d %H:%M:%S&quot;`
+echo &quot;Phone number?&quot;
+read phone
+echo &quot;Name?&quot;
+read name
+echo &quot;Issue?&quot;
+read issue
+echo &quot;$now/$phone/$name/$issue&quot;&gt;&gt;data.txt
+[root@localhost ~]# ./note.sh
+Phone number?
+123
+Name?
+Jim
+Issue?
+Script hanging.
+[root@localhost ~]# cat data.txt
+2015.04.23 21:38:56/123/Jim/Script hanging.
+[root@localhost ~]#
+</code></pre>
+<p>嗯…… 我们的脚本看起来有点丑啊，让我们来美化一下。如果你要手动读取<strong>read</strong>命令，你会发现read命令也可以显示一些信息。要实现该功能，我们应该使用-p键加上信息：</p>
+<pre><code>[root@localhost ~]# cat note.sh
+#!/bin/bash
+now=`date &quot;+%Y.%m.%d %H:%M:%S&quot;`
+read -p &quot;Phone number: &quot; phone
+read -p &quot;Name: &quot; name
+read -p &quot;Issue: &quot; issue
+echo &quot;$now/$phone/$name/$issue&quot;&gt;&gt;data.txt
+</code></pre>
+<p>你可以直接从控制台查找到各个命令的大量有趣的信息，只需输入：<strong>man read, man echo, man date, man ……</strong></p>
+<p>同意吗？它看上去是舒服多了！</p>
+<pre><code>[root@localhost ~]# ./note.sh
+Phone number: 321
+Name: Susane
+Issue: Mouse was stolen
+[root@localhost ~]# cat data.txt
+2015.04.23 21:38:56/123/Jim/Script hanging.
+2015.04.23 21:43:50/321/Susane/Mouse was stolen
+[root@localhost ~]#
+</code></pre>
+<p>光标在消息的后面（不是在新的一行中），这有点意思。（LCTT 译注：如果用 echo 命令输出显示的话，可以用 -n 参数来避免换行。）</p>
+<h3 id="循环">循环</h3>
+<p>是时候来改进我们的脚本了。如果用户一整天都在接电话，如果每次都要去运行，这岂不是很麻烦？让我们让这些活动都永无止境地循环去吧：</p>
+<pre><code>[root@localhost ~]# cat note.sh
+#!/bin/bash
+while true
+do
+        read -p &quot;Phone number: &quot; phone
+        now=`date &quot;+%Y.%m.%d %H:%M:%S&quot;`
+        read -p &quot;Name: &quot; name
+        read -p &quot;Issue: &quot; issue
+        echo &quot;$now/$phone/$name/$issue&quot;&gt;&gt;data.txt
+done
+</code></pre>
+<p>我已经交换了<strong>read phone</strong>和**now=<code>date</code>**行的位置。这是因为我想要在输入电话号码后再获得时间。如果我把它放在循环的首行，那么循环一次后，变量 now 就会在数据存储到文件中后马上获得时间。而这并不好，因为下一次呼叫可能在20分钟后，甚至更晚。</p>
+<pre><code>[root@localhost ~]# ./note.sh
+Phone number: 123
+Name: Jim
+Issue: Script still not works.
+Phone number: 777
+Name: Daniel
+Issue: I broke my monitor
+Phone number: ^C
+[root@localhost ~]# cat data.txt
+2015.04.23 21:38:56/123/Jim/Script hanging.
+2015.04.23 21:43:50/321/Susane/Mouse was stolen
+2015.04.23 21:47:55/123/Jim/Script still not works.
+2015.04.23 21:48:16/777/Daniel/I broke my monitor
+[root@localhost ~]#
+</code></pre>
+<p>注意： 要从无限循环中退出，你可以按[Ctrl]+[C]键。Shell会显示^表示Ctrl键。</p>
+<h3 id="使用管道重定向">使用管道重定向</h3>
+<p>让我们添加更多功能到我们的“弗兰肯斯坦（Frankenstein）”，我想要脚本在每次呼叫后显示某个统计数据。比如说，我想要查看各个号码呼叫了我几次。对于这个，我们应该cat文件data.txt：</p>
+<pre><code>[root@localhost ~]# cat data.txt
+2015.04.23 21:38:56/123/Jim/Script hanging.
+2015.04.23 21:43:50/321/Susane/Mouse was stolen
+2015.04.23 21:47:55/123/Jim/Script still not works.
+2015.04.23 21:48:16/777/Daniel/I broke my monitor
+2015.04.23 22:02:14/123/Jimmy/New script also not working!!!
+[root@localhost ~]#
+</code></pre>
+<p>现在，所有输出我们都可以重定向到<strong>cut</strong>命令，让<strong>cut</strong>来把每行切成一块一块（我们使用分隔符“/”），然后打印第二个字段：</p>
+<pre><code>[root@localhost ~]# cat data.txt | cut -d&quot;/&quot; -f2
+123
+321
+123
+777
+123
+[root@localhost ~]#
+</code></pre>
+<p>现在，我们可以把这个输出重定向打另外一个命令<strong>sort</strong>：</p>
+<pre><code>[root@localhost ~]# cat data.txt | cut -d&quot;/&quot; -f2|sort
+123
+123
+123
+321
+777
+[root@localhost ~]#
+</code></pre>
+<p>然后只留下唯一的行。要统计唯一条目，只需添加**-c<strong>键到</strong>uniq**命令：</p>
+<pre><code>[root@localhost ~]# cat data.txt | cut -d&quot;/&quot; -f2 | sort | uniq -c
+    3 123
+    1 321
+    1 777
+[root@localhost ~]#
+</code></pre>
+<p>只要把这个添加到我们的循环的最后：</p>
+<pre><code>#!/bin/bash
+while true
+do
+        read -p &quot;Phone number: &quot; phone
+        now=`date &quot;+%Y.%m.%d %H:%M:%S&quot;`
+        read -p &quot;Name: &quot; name
+        read -p &quot;Issue: &quot; issue
+        echo &quot;$now/$phone/$name/$issue&quot;&gt;&gt;data.txt
+        echo &quot;===== We got calls from =====&quot;
+        cat data.txt | cut -d&quot;/&quot; -f2 | sort | uniq -c
+        echo &quot;--------------------------------&quot;
+done
+</code></pre>
+<p>运行：</p>
+<pre><code>[root@localhost ~]# ./note.sh
+Phone number: 454
+Name: Malini
+Issue: Windows license expired.
+===== We got calls from =====
+    3 123
+    1 321
+    1 454
+    1 777
+--------------------------------
+Phone number: ^C
+</code></pre>
+<p><img src="http://blog.linoxide.com/wp-content/uploads/2015/04/Capture11.png" alt="running script"></p>
+<p>当前场景贯穿了几个熟知的步骤：</p>
+<ul>
+<li>显示消息</li>
+<li>获取用户输入</li>
+<li>存储值到文件</li>
+<li>处理存储的数据</li>
+</ul>
+<p>但是，如果用户有点责任心，他有时候需要输入数据，有时候需要统计，或者可能要在存储的数据中查找一些东西呢？对于这些事情，我们需要使用switches/cases，并知道怎样来很好地格式化输出。这对于在shell中“画”表格的时候很有用。</p>
+<hr>
+<p>via: <a href="http://linoxide.com/linux-shell-script/guide-start-learning-shell-scripting-scratch/">http://linoxide.com/linux-shell-script/guide-start-learning-shell-scripting-scratch/</a></p>
+<p>作者：<a href="http://linoxide.com/author/petrasl/">Petras Liumparas</a>
+译者：<a href="https://github.com/GOLinux">GOLinux</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#shell脚本流">Shell脚本流</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在shell中显示自定义信息">在shell中显示自定义信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何运行执行脚本">如何运行/执行脚本？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#读取输入">读取输入</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用流重定向">使用流重定向</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#循环">循环</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用管道重定向">使用管道重定向</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201506/20150506 First Step Guide for Learning Shell Scripting","title":"Shell脚本编程初体验"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Ansible 起步指南 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Ansible 起步指南 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Ansible 起步指南 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201701/20161005  GETTING STARTED WITH ANSIBLE#page","@type":"TechArticle","headline":"Ansible 起步指南","inLanguage":"en","name":"Ansible 起步指南","url":"https://zhengqbbb.github.io/pages-dev/201701/20161005  GETTING STARTED WITH ANSIBLE","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201701/20161005  GETTING STARTED WITH ANSIBLE"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ansible-是什么为什么你该了解">Ansible 是什么，为什么你该了解？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#前置要求">前置要求</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#情景">情景</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#准备">准备</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装-ansible">安装 Ansible</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#清单">清单</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#剧本">剧本</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#放到一起">放到一起</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#放在你的环境中">放在你的环境中</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#部署新的代码">部署新的代码</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#接下来是什么">接下来是什么 ？！</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Ansible 起步指南</h1><p>这是一篇关于 Ansible 的速成课程，你可以用作小项目的模板，或者帮你深入了解这个神奇的工具。阅读了本指南之后，你将对自动化服务器配置、部署等有足够的了解。</p>
+<h3 id="ansible-是什么为什么你该了解">Ansible 是什么，为什么你该了解？</h3>
+<p>Ansible 简单的说是一个配置管理系统（configuration management system）。你只需要可以使用 ssh 访问你的服务器或设备就行。它也不同于其他工具，因为它使用推送的方式，而不是像 puppet 或 chef 那样使用拉取的方式。你可以将代码部署到任意数量的服务器上，配置网络设备或在基础架构中自动执行任何操作。</p>
+<h3 id="前置要求">前置要求</h3>
+<p>假设你使用 Mac 或 Linux 作为你的工作站，Ubuntu Trusty 作为你的服务器，并有一些安装软件包的经验。此外，你的计算机上将需要以下软件。所以，如果你还没有它们，请先安装：</p>
+<ul>
+<li><a href="https://www.virtualbox.org/">Virtualbox</a></li>
+<li><a href="https://www.vagrantup.com/downloads.html">Vagrant</a></li>
+<li>Mac 用户：<a href="http://brew.sh/">Homebrew</a></li>
+</ul>
+<h3 id="情景">情景</h3>
+<p>我们将模拟 2 个连接到 MySQL 数据库的 Web 应用程序服务器。Web 应用程序使用 Rails 5 和 Puma。</p>
+<h3 id="准备">准备</h3>
+<h4 id="vagrantfile">Vagrantfile</h4>
+<p>为这个项目创建一个文件夹，并将下面的内容保存到名为 <code>Vagrantfile</code> 的文件。</p>
+<pre><code>VMs = [
+    [ &quot;web1&quot;, &quot;10.1.1.11&quot;],
+    [ &quot;web2&quot;, &quot;10.1.1.12&quot;],
+    [ &quot;dbserver&quot;, &quot;10.1.1.21&quot;],
+  ]
+
+Vagrant.configure(2) do |config|
+  VMs.each { |vm|
+    config.vm.define vm[0] do |box|
+      box.vm.box = &quot;ubuntu/trusty64&quot;
+      box.vm.network &quot;private_network&quot;, ip: vm[1]
+      box.vm.hostname = vm[0]
+      box.vm.provider &quot;virtualbox&quot; do |vb|
+         vb.memory = &quot;512&quot;
+      end
+    end
+  }
+end
+</code></pre>
+<h4 id="配置你的虚拟网络">配置你的虚拟网络</h4>
+<p>我们希望我们的虚拟机能互相交互，但不要让流量流出到真实的网络，所以我们将在 Virtualbox 中创建一个仅主机（HOST-Only）的网络适配器。</p>
+<ol>
+<li>打开 Virtualbox</li>
+<li>转到 Preferences</li>
+<li>转到 Network</li>
+<li>单击 Host-Only</li>
+<li>单击添加网络</li>
+<li>单击 Adapter</li>
+<li>将 IPv4 设置为 <code>10.1.1.1</code>，IPv4 网络掩码：<code>255.255.255.0</code></li>
+<li>单击 “OK”</li>
+</ol>
+<h4 id="测试虚拟机及虚拟网络">测试虚拟机及虚拟网络</h4>
+<p>在终端中，在存放 <code>Vagrantfile</code> 的项目目录中，输入下面的命令：</p>
+<pre><code>vagrant up
+</code></pre>
+<p>它会创建你的虚拟机，因此会花费一会时间。输入下面的命令并验证输出内容以检查是否已经工作：</p>
+<pre><code>$ vagrant status
+Current machine states:
+
+web1                      running (virtualbox)
+web2                      running (virtualbox)
+master                    running (virtualbox)
+
+This environment represents multiple VMs. The VMs are all listed
+above with their current state. For more information about a specific
+VM, run `vagrant status NAME`.
+</code></pre>
+<p>现在使用 <code>vagrant</code> 的用户名和密码 ，按 <code>Vagrantfile</code> 中的 IP 登录其中一台虚拟机，这将验证虚拟机并将它们的密钥添加到你的已知主机（<code>known_hosts</code>）文件中。</p>
+<pre><code>ssh vagrant@10.1.1.11 # password is `vagrant`
+ssh vagrant@10.1.1.12
+ssh vagrant@10.1.1.21
+</code></pre>
+<p>恭喜你！现在你已经有可以实验的服务器了。下面的剩下的部分！</p>
+<h3 id="安装-ansible">安装 Ansible</h3>
+<p>对于 Mac 用户:</p>
+<pre><code>$ brew install ansible
+</code></pre>
+<p>对于 Ubuntu 用户:</p>
+<pre><code>$ sudo apt install ansible
+</code></pre>
+<p>确保你使用了ansible 最近的版本 2.1 或者更高的版本：</p>
+<pre><code>$ ansible --version
+ansible 2.1.1.0
+</code></pre>
+<h3 id="清单">清单</h3>
+<p>Ansible 使用清单文件来了解要使用的服务器，以及如何将它们分组以并行执行任务。让我们为这个项目创建我们的清单文件 <code>inventory</code>，并将它放在与 <code>Vagrantfile</code> 相同的文件夹中：</p>
+<pre><code>[all:children]
+webs
+db
+
+[all:vars]
+ansible_user=vagrant
+ansible_ssh_pass=vagrant
+
+[webs]
+web1 ansible_host=10.1.1.11
+web2 ansible_host=10.1.1.12
+
+[db]
+dbserver ansible_host=10.1.1.21
+</code></pre>
+<ul>
+<li><code>[all：children]</code> 定义一个组的组（<code>all</code>）</li>
+<li><code>[all：vars]</code> 定义属于组 <code>all</code> 的变量</li>
+<li><code>[webs]</code> 定义一个组，就像 <code>[db]</code> 一样</li>
+<li>文件的其余部分只是主机的声明，带有它们的名称和 IP</li>
+<li>空行表示声明结束</li>
+</ul>
+<p>现在我们有了一个清单，我们可以从命令行开始使用 ansible，指定一个主机或一个组来执行命令。以下是检查与服务器的连接的命令示例：</p>
+<pre><code>$ ansible -i inventory all -m ping
+</code></pre>
+<ul>
+<li><code>-i</code> 指定清单文件</li>
+<li><code>all</code> 指定要操作的服务器或服务器组</li>
+<li><code>-m</code> 指定一个 ansible 模块，在这种情况下为 <code>ping</code></li>
+</ul>
+<p>下面是命令输出：</p>
+<pre><code>dbserver | SUCCESS =&gt; {
+    &quot;changed&quot;: false,
+    &quot;ping&quot;: &quot;pong&quot;
+}
+web1 | SUCCESS =&gt; {
+    &quot;changed&quot;: false,
+    &quot;ping&quot;: &quot;pong&quot;
+}
+web2 | SUCCESS =&gt; {
+    &quot;changed&quot;: false,
+    &quot;ping&quot;: &quot;pong&quot;
+}
+</code></pre>
+<p>服务器以不同的顺序响应，这只取决于谁先响应，但是这个没有关系，因为 ansible 独立保持每台服务器的状态。</p>
+<p>你也可以使用另外一个选项来运行任何命令：</p>
+<ul>
+<li><code>-a &lt;command&gt;</code></li>
+</ul>
+<pre><code>$ ansible -i inventory all -a uptime
+web1 | SUCCESS | rc=0 &gt;&gt;
+ 21:43:27 up 25 min,  1 user,  load average: 0.00, 0.01, 0.05
+
+dbserver | SUCCESS | rc=0 &gt;&gt;
+ 21:43:27 up 24 min,  1 user,  load average: 0.00, 0.01, 0.05
+
+web2 | SUCCESS | rc=0 &gt;&gt;
+ 21:43:27 up 25 min,  1 user,  load average: 0.00, 0.01, 0.05
+</code></pre>
+<p>这是只有一台服务器的另外一个例子：</p>
+<pre><code>$ ansible -i inventory dbserver -a &quot;df -h /&quot;
+dbserver | SUCCESS | rc=0 &gt;&gt;
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        40G  1.4G   37G   4% /
+</code></pre>
+<h3 id="剧本">剧本</h3>
+<p>剧本（playbook）只是个 YAML 文件，它将清单文件中的服务器组与命令关联。在 ansible 中的对于关键字是 <code>tasks</code>，它可以是一个预期的状态、shell 命令或许多其它的选项。有关 ansible 可做的所有事情列表，可以查看<a href="http://docs.ansible.com/ansible/list_of_all_modules.html">所有模块的列表</a>。</p>
+<p>下面是一个运行 shell 命令的剧本示例，将其保存为 <code>playbook1.yml</code>：</p>
+<pre><code>---
+- hosts: all
+  tasks:
+    - shell: uptime
+</code></pre>
+<ul>
+<li><code>---</code> 是 YAML 文件的开始</li>
+<li><code> - hosts</code>：指定要使用的组</li>
+<li><code>tasks</code>：标记任务列表的开始</li>
+<li><code> - shell</code>：指定第一个任务使用 <a href="http://docs.ansible.com/ansible/shell_module.html">shell</a> 模块</li>
+<li><strong>记住：YAML 需要缩进结构，确保你始终遵循剧本中的正确结构</strong></li>
+</ul>
+<p>用下面的命令运行它：</p>
+<pre><code>$ ansible-playbook -i inventory playbook1.yml
+
+PLAY [all] *********************************************************************
+
+TASK [setup] *******************************************************************
+ok: [web1]
+ok: [web2]
+ok: [dbmaster]
+
+TASK [command] *****************************************************************
+changed: [web1]
+changed: [web2]
+changed: [dbmaster]
+
+PLAY RECAP *********************************************************************
+dbmaster                   : ok=2    changed=1    unreachable=0    failed=0
+web1                       : ok=2    changed=1    unreachable=0    failed=0
+web2                       : ok=2    changed=1    unreachable=0    failed=0
+</code></pre>
+<p>正如你所见，ansible 运行了 2 个任务，而不是只有剧本中的一个。<code>TASK [setup]</code> 是一个隐式任务，它会首先运行以捕获服务器的信息，如主机名、IP、发行版和更多详细信息，然后可以使用这些信息运行条件任务。</p>
+<p>还有最后的 <code>PLAY RECAP</code>，其中 ansible 显示了运行了多少个任务以及每个对应的状态。在我们的例子中，因为我们运行了一个 shell 命令，ansible 不知道结果的状态，它被认为是 <code>changed</code>。</p>
+<h4 id="安装软件">安装软件</h4>
+<p>我们将使用 <a href="http://docs.ansible.com/ansible/apt_module.html">apt</a> 在我们的服务器上安装软件，因为我们需要 root 权限，所以我们必须使用 <code>become</code> 语句，将这个内容保存在 <code>playbook2.yml</code> 中并运行它（<code>ansible-playbook playbook2.yml</code>）：</p>
+<pre><code>---
+- hosts: webs
+  become_user: root
+  become: true
+  tasks:
+    - apt: name=git state=present
+</code></pre>
+<p>有一些语句可以应用于 ansible 中所有模块；一个是 <code>name</code> 语句，可以让我们输出关于正在执行的任务的更具描述性的文本。要使用它，保持任务内容一样，但是添加 <code>name ：描述性文本</code> 作为第一行，所以我们以前的文本将改成：</p>
+<pre><code>---
+- hosts: webs
+  become_user: root
+  become: true
+  tasks:
+    - name: This task will make sure git is present on the system
+      apt: name=git state=present
+</code></pre>
+<h4 id="使用-with_items">使用 with_items</h4>
+<p>当你要处理一个列表时，比如要安装的项目和软件包、要创建的文件，可以用 ansible 提供的 <code>with_items</code>。下面是我们如何在 <code>playbook3.yml</code> 中使用它，同时添加一些我们已经知道的其他语句：</p>
+<pre><code>---
+- hosts: all
+  become_user: root
+  become: true
+  tasks:
+    - name: Installing dependencies
+      apt: name={{item}} state=present
+      with_items:
+        - git
+        - mysql-client
+        - libmysqlclient-dev
+        - build-essential
+        - python-software-properties
+</code></pre>
+<h4 id="使用-template-和-vars">使用 template 和 vars</h4>
+<p><code>vars</code> 是一个定义变量语句，可以在 <code>task</code> 语句或 <code>template</code> 文件中使用。 <a href="http://jinja.pocoo.org/docs/dev/">Jinja2</a> 是 Ansible 中使用的模板引擎，但是关于它你不需要学习很多。在你的剧本中定义变量，如下所示：</p>
+<pre><code>---
+- hosts: all
+  vars:
+    - secret_key: VqnzCLdCV9a3jK
+    - path_to_vault: /opt/very/deep/path
+  tasks:
+    - name: Setting a configuration file using template
+      template: src=myconfig.j2 dest={{path_to_vault}}/app.conf
+</code></pre>
+<p>正如你看到的，我可以使用 <code v-pre>{{path_to_vault}}</code> 作为剧本的一部分，但也因为我使用了 <code>template</code>语句，我可以使用 <code>myconfig.j2</code> 中的任何变量，该文件必须存在一个名为 <code>templates</code> 的子文件夹中。你项目树应该如下所示：</p>
+<pre><code>├── Vagrantfile
+├── inventory
+├── playbook1.yml
+├── playbook2.yml
+└── templates
+    └── myconfig.j2
+</code></pre>
+<p>当 ansible 找到一个 <code>template</code> 语句后它会在  <code>templates</code> 文件夹内查找，并将把被 <code v-pre>{{</code> 和 <code>}}</code> 括起来的变量展开来。</p>
+<p>示例模板：</p>
+<pre><code>this is just an example vault_dir: {{path_to_vault}} secret_password: {{secret_key}}
+</code></pre>
+<p>即使你不扩展变量你也可以使用  <code>template</code>。考虑到将来会添加所以我先做了。比如创建一个 <code>hosts.j2</code> 模板并加入主机名和 IP。</p>
+<pre><code>10.1.1.11 web1
+10.1.1.12 web2
+10.1.1.21 dbserver
+</code></pre>
+<p>这里要用像这样的语句：</p>
+<pre><code>  -  name: Installing the hosts file in all servers
+     template: src=hosts.j2 dest=/etc/hosts mode=644
+</code></pre>
+<h4 id="shell-命令">shell 命令</h4>
+<p>你应该尽量使用模块，因为 Ansible 可以跟踪任务的状态，并避免不必要的重复，但有时 shell 命令是不可避免的。 对于这些情况，Ansible 提供两个选项：</p>
+<ul>
+<li><a href="http://docs.ansible.com/ansible/command_module.html">command</a>：直接运行一个命令，没有环境变量或重定向（<code>|</code>，<code>&lt;</code>，<code>&gt;</code> 等）</li>
+<li><a href="http://docs.ansible.com/ansible/shell_module.html">shell</a>：运行 <code>/bin/sh</code> 并展开变量和支持重定向</li>
+</ul>
+<h4 id="其他有用的模块">其他有用的模块</h4>
+<ul>
+<li><a href="http://docs.ansible.com/ansible/apt_repository_module.html">apt_repository</a> - 在 Debian 系的发行版中添加/删除包仓库</li>
+<li><a href="https://docs.ansible.com/ansible/yum_repository_module.html">yum_repository</a> - 在 RedHat 系的发行版中添加/删除包仓库</li>
+<li><a href="http://docs.ansible.com/ansible/service_module.html">service</a> - 启动/停止/重新启动/启用/禁用服务</li>
+<li><a href="http://docs.ansible.com/ansible/git_module.html">git</a> - 从 git 服务器部署代码</li>
+<li><a href="http://docs.ansible.com/ansible/unarchive_module.html">unarchive</a> - 从 Web 或本地源解开软件包</li>
+</ul>
+<h4 id="只在一台服务器中运行任务">只在一台服务器中运行任务</h4>
+<p>Rails 使用 <a href="http://edgeguides.rubyonrails.org/active_record_migrations.html">migrations</a> 来逐步更改数据库，但由于你有多个应用程序服务器，因此这些迁移任务不能被分配为组任务，而我们只需要一个服务器来运行迁移。在这种情况下，当使用 <code>run_once</code> 时，<code>run_once</code> 将分派任务到一个服务器，并直到这个任务完成继续下一个任务。你只需要在你的任务中设置 <code>run_once：true</code>。</p>
+<pre><code>    - name: &#39;Run db:migrate&#39;
+      shell: cd {{appdir}};rails db:migrate
+      run_once: true
+</code></pre>
+<h4 id="会失败的任务">会失败的任务</h4>
+<p>通过指定 <code>ignore_errors：true</code>，你可以运行可能会失败的任务，但不会影响剧本中剩余的任务完成。这是非常有用的，例如，当删除最初并不存在的日志文件时。</p>
+<pre><code>    - name: &#39;Delete logs&#39;
+      shell: rm -f /var/log/nginx/errors.log
+      ignore_errors: true
+</code></pre>
+<h3 id="放到一起">放到一起</h3>
+<p>现在用我们先前学到的，这里是每个文件的最终版：</p>
+<p><code>Vagrantfile</code>：</p>
+<pre><code>VMs = [
+    [ &quot;web1&quot;, &quot;10.1.1.11&quot;],
+    [ &quot;web2&quot;, &quot;10.1.1.12&quot;],
+    [ &quot;dbserver&quot;, &quot;10.1.1.21&quot;],
+  ]
+
+Vagrant.configure(2) do |config|
+  VMs.each { |vm|
+    config.vm.define vm[0] do |box|
+      box.vm.box = &quot;ubuntu/trusty64&quot;
+      box.vm.network &quot;private_network&quot;, ip: vm[1]
+      box.vm.hostname = vm[0]
+      box.vm.provider &quot;virtualbox&quot; do |vb|
+         vb.memory = &quot;512&quot;
+      end
+    end
+  }
+end
+</code></pre>
+<p><code>inventory</code>：</p>
+<pre><code>[all:children]
+webs
+db
+
+[all:vars]
+ansible_user=vagrant
+ansible_ssh_pass=vagrant
+
+[webs]
+web1 ansible_host=10.1.1.11
+web2 ansible_host=10.1.1.12
+
+[db]
+dbserver ansible_host=10.1.1.21
+</code></pre>
+<p><code>templates/hosts.j2</code>:</p>
+<pre><code>10.1.1.11 web1
+10.1.1.12 web2
+10.1.1.21 dbserver
+</code></pre>
+<p><code>templates/my.cnf.j2</code>：</p>
+<pre><code>[client]
+port        = 3306
+socket      = /var/run/mysqld/mysqld.sock
+
+[mysqld_safe]
+socket      = /var/run/mysqld/mysqld.sock
+nice        = 0
+
+[mysqld]
+server-id   = 1
+user        = mysql
+pid-file    = /var/run/mysqld/mysqld.pid
+socket      = /var/run/mysqld/mysqld.sock
+port        = 3306
+basedir     = /usr
+datadir     = /var/lib/mysql
+tmpdir      = /tmp
+lc-messages-dir = /usr/share/mysql
+skip-external-locking
+bind-address        = 0.0.0.0
+key_buffer      = 16M
+max_allowed_packet  = 16M
+thread_stack        = 192K
+thread_cache_size       = 8
+myisam-recover         = BACKUP
+query_cache_limit   = 1M
+query_cache_size        = 16M
+log_error = /var/log/mysql/error.log
+expire_logs_days    = 10
+max_binlog_size         = 100M
+
+[mysqldump]
+quick
+quote-names
+max_allowed_packet  = 16M
+
+[mysql]
+
+[isamchk]
+key_buffer      = 16M
+
+!includedir /etc/mysql/conf.d/
+</code></pre>
+<p><code>final-playbook.yml</code>：</p>
+<pre><code>- hosts: all
+  become_user: root
+  become: true
+  tasks:
+    - name: &#39;Install common software on all servers&#39;
+      apt: name={{item}} state=present
+      with_items:
+        - git
+        - mysql-client
+        - libmysqlclient-dev
+        - build-essential
+        - python-software-properties
+    - name: &#39;Install hosts file&#39;
+      template: src=hosts.j2 dest=/etc/hosts mode=644
+
+- hosts: db
+  become_user: root
+  become: true
+  tasks:
+    - name: &#39;Software for DB server&#39;
+      apt: name={{item}} state=present
+      with_items:
+        - mysql-server
+        - percona-xtrabackup
+        - mytop
+        - mysql-utilities
+    - name: &#39;MySQL config file&#39;
+      template: src=my.cnf.j2 dest=/etc/mysql/my.cnf
+    - name: &#39;Restart MySQL&#39;
+      service: name=mysql state=restarted
+    - name: &#39;Grant access to web app servers&#39;
+      shell: echo &#39;GRANT ALL PRIVILEGES ON *.* TO &quot;root&quot;@&quot;%&quot; WITH GRANT OPTION;FLUSH PRIVILEGES;&#39;|mysql -u root mysql
+
+- hosts: webs
+  vars:
+    - appdir: /opt/dummyapp
+  become_user: root
+  become: true
+  tasks:
+    - name: &#39;Add ruby-ng repo&#39;
+      apt_repository: repo=&#39;ppa:brightbox/ruby-ng&#39;
+    - name: &#39;Install rails software&#39;
+      apt: name={{item}} state=present
+      with_items:
+        - ruby-dev
+        - ruby-all-dev
+        - ruby2.2
+        - ruby2.2-dev
+        - ruby-switch
+        - libcurl4-openssl-dev
+        - libssl-dev
+        - zlib1g-dev
+        - nodejs
+    - name: &#39;Set ruby to 2.2&#39;
+      shell: ruby-switch --set ruby2.2
+    - name: &#39;Install gems&#39;
+      shell: gem install bundler rails
+    - name: &#39;Kill puma if running&#39;
+      shell: file /run/puma.pid &gt;/dev/null &amp;&amp; kill `cat /run/puma.pid` 2&gt;/dev/null
+      ignore_errors: True
+    - name: &#39;Clone app repo&#39;
+      git:
+           repo=https://github.com/c0d5x/rails_dummyapp.git
+           dest={{appdir}}
+           version=staging
+           force=yes
+    - name: &#39;Run bundler&#39;
+      shell: cd {{appdir}};bundler
+    - name: &#39;Run db:setup&#39;
+      shell: cd {{appdir}};rails db:setup
+      run_once: true
+    - name: &#39;Run db:migrate&#39;
+      shell: cd {{appdir}};rails db:migrate
+      run_once: true
+    - name: &#39;Run rails server&#39;
+      shell: cd {{appdir}};rails server -b 0.0.0.0 -p 80 --pid /run/puma.pid -d
+</code></pre>
+<h3 id="放在你的环境中">放在你的环境中</h3>
+<p>将这些文件放在相同的目录，运行下面的命令打开你的开发环境：</p>
+<pre><code>vagrant up
+ansible-playbook -i inventory final-playbook.yml
+</code></pre>
+<h3 id="部署新的代码">部署新的代码</h3>
+<p>确保修改了代码并推送到了仓库中。接下来，确保你 git 语句中使用了正确的分支：</p>
+<pre><code>    - name: &#39;Clone app repo&#39;
+      git:
+           repo=https://github.com/c0d5x/rails_dummyapp.git
+           dest={{appdir}}
+           version=staging
+           force=yes
+</code></pre>
+<p>作为一个例子，你可以修改 <code>version</code> 字段为 <code>master</code>，再次运行剧本：</p>
+<pre><code>ansible-playbook -i inventory final-playbook.yml
+</code></pre>
+<p>检查所有的 web 服务器上的页面是否已更改：<code>http://10.1.1.11</code> 或 <code>http://10.1.1.12</code>。将其更改为 <code>version = staging</code> 并重新运行剧本并再次检查页面。</p>
+<p>你还可以创建只包含与部署相关的任务的替代剧本，以便其运行更快。</p>
+<h3 id="接下来是什么">接下来是什么 ？！</h3>
+<p>这只是可以做的很小一部分。我们没有接触角色（role）、过滤器（filter）、调试等许多其他很棒的功能，但我希望它给了你一个良好的开始！所以，请继续学习并使用它。如果你有任何问题，你可以在 <a href="https://twitter.com/c0d5x">twitter</a> 或评论栏联系我，让我知道你还想知道哪些关于 ansible 的东西！</p>
+<hr>
+<p>via: <a href="https://gorillalogic.com/blog/getting-started-with-ansible/?utm_source=webopsweekly&utm_medium=email">https://gorillalogic.com/blog/getting-started-with-ansible/?utm_source=webopsweekly&amp;utm_medium=email</a></p>
+<p>作者：<a href="https://gorillalogic.com/author/josehidalgo/">JOSE HIDALGO</a>
+译者：<a href="https://github.com/geekpi">geekpi</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 组织编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#ansible-是什么为什么你该了解">Ansible 是什么，为什么你该了解？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#前置要求">前置要求</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#情景">情景</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#准备">准备</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装-ansible">安装 Ansible</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#清单">清单</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#剧本">剧本</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#放到一起">放到一起</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#放在你的环境中">放在你的环境中</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#部署新的代码">部署新的代码</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#接下来是什么">接下来是什么 ？！</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201701/20161005  GETTING STARTED WITH ANSIBLE","title":"Ansible 起步指南"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

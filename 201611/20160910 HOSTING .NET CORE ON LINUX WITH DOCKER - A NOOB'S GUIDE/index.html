@@ -1,0 +1,301 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>新手指南 － 通过 Docker 在 Linux 上托管 .NET Core - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="新手指南 － 通过 Docker 在 Linux 上托管 .NET Core - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="新手指南 － 通过 Docker 在 Linux 上托管 .NET Core - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201611/20160910 HOSTING .NET CORE ON LINUX WITH DOCKER - A NOOB'S GUIDE#page","@type":"TechArticle","headline":"新手指南 － 通过 Docker 在 Linux 上托管 .NET Core","inLanguage":"en","name":"新手指南 － 通过 Docker 在 Linux 上托管 .NET Core","url":"https://zhengqbbb.github.io/pages-dev/201611/20160910 HOSTING .NET CORE ON LINUX WITH DOCKER - A NOOB'S GUIDE","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201611/20160910 HOSTING .NET CORE ON LINUX WITH DOCKER - A NOOB'S GUIDE"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装">安装</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#源代码">源代码</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#转换到-net-core-10">转换到 .NET CORE 1.0</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#通过-docker-运行">通过 Docker 运行</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在产品环境中运行-kestrel">在产品环境中运行 KESTREL</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在另一个容器中运行-nginx">在另一个容器中运行 NGINX</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#把-nginx-配置成一个反向代理服务器">把 NGINX 配置成一个反向代理服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在容器间进行通信">在容器间进行通信</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#docker-compose">DOCKER COMPOSE</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#books-service">BOOKS-SERVICE</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#reverse-proxy">REVERSE-PROXY</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎么做到的">怎么做到的？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>新手指南 － 通过 Docker 在 Linux 上托管 .NET Core</h1><p>这篇文章基于我之前的文章 <a href="http://blog.scottlogic.com/2016/01/20/restful-api-with-aspnet50.html">.NET Core 入门</a>。首先，我把 RESTful API 从 .NET Core RC1 升级到了 .NET Core 1.0，然后，我增加了对 Docker 的支持并描述了如何在 Linux 生产环境里托管它。</p>
+<p><img src="http://blog.scottlogic.com/nsoper/assets/noob.png" alt=""></p>
+<p>我是首次接触 Docker 并且距离成为一名 Linux 高手还有很远的一段路程。因此，这里的很多想法是来自一个新手。</p>
+<h3 id="安装">安装</h3>
+<p>按照 <a href="https://www.microsoft.com/net/core">https://www.microsoft.com/net/core</a> 上的介绍在你的电脑上安装 .NET Core 。这将会同时在 Windows 上安装 dotnet 命令行工具以及最新的 Visual Studio 工具。</p>
+<h3 id="源代码">源代码</h3>
+<p>你可以直接到 <a href="https://github.com/niksoper/aspnet5-books/tree/blog-docker">GitHub</a> 上找最到最新完整的源代码。</p>
+<h3 id="转换到-net-core-10">转换到 .NET CORE 1.0</h3>
+<p>自然地，当我考虑如何把 API 从 .NET Core RC1 升级到 .NET Core 1.0 时想到的第一个求助的地方就是谷歌搜索。我是按照下面这两条非常全面的指导来进行升级的：</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/articles/core/migrating-from-dnx">从 DNX 迁移到 .NET Core CLI</a></li>
+<li><a href="https://docs.asp.net/en/latest/migration/rc1-to-rtm.html">从 ASP.NET 5 RC1 迁移到 ASP.NET Core 1.0</a></li>
+</ul>
+<p>当你迁移代码的时候，我建议仔细阅读这两篇指导，因为我在没有阅读第一篇指导的情况下又尝试浏览第二篇，结果感到非常迷惑和沮丧。</p>
+<p>我不想描述细节上的改变因为你可以看 GitHub 上的<a href="https://github.com/niksoper/aspnet5-books/commit/b41ad38794c69a70a572be3ffad051fd2d7c53c0">提交</a>。这儿是我所作改变的总结：</p>
+<ul>
+<li>更新 <code>global.json</code> 和 <code>project.json</code> 上的版本号</li>
+<li>删除 <code>project.json</code> 上的废弃章节</li>
+<li>使用轻型 <code>ControllerBase</code> 而不是 <code>Controller</code>， 因为我不需要与 MVC 视图相关的方法（这是一个可选的改变）。</li>
+<li>从辅助方法中去掉 <code>Http</code> 前缀，比如：<code>HttpNotFound</code> -&gt; <code>NotFound</code></li>
+<li><code>LogVerbose</code> -&gt; <code>LogTrace</code></li>
+<li>名字空间改变： <code>Microsoft.AspNetCore.*</code></li>
+<li>在 <code>Startup</code> 中使用 <code>SetBasePath</code>（没有它 <code>appsettings.json</code> 将不会被发现）</li>
+<li>通过 <code>WebHostBuilder</code> 来运行而不是通过 <code>WebApplication.Run</code> 来运行</li>
+<li>删除 Serilog（在写文章的时候，它不支持 .NET Core 1.0）</li>
+</ul>
+<p>唯一令我真正头疼的事是需要移动 Serilog。我本可以实现自己的文件记录器，但是我删除了文件记录功能，因为我不想为了这次操作在这件事情上花费精力。</p>
+<p>不幸的是，将有大量的第三方开发者扮演追赶 .NET Core 1.0 的角色，我非常同情他们，因为他们通常在休息时间还坚持工作但却依旧根本无法接近靠拢微软的可用资源。我建议阅读 Travis Illig 的文章 <a href="http://www.paraesthesia.com/archive/2016/06/29/netcore-rtm-where-is-autofac/">.NET Core 1.0 发布了，但 Autofac 在哪儿</a>？这是一篇关于第三方开发者观点的文章。</p>
+<p>做了这些改变以后，我可以从 <code>project.json</code> 目录恢复、构建并运行 dotnet，可以看到 API 又像以前一样工作了。</p>
+<h3 id="通过-docker-运行">通过 Docker 运行</h3>
+<p>在我写这篇文章的时候， Docker 只能够在 Linux 系统上工作。在 <a href="https://docs.docker.com/engine/installation/windows/#/docker-for-windows">Windows</a> 系统和 <a href="https://docs.docker.com/engine/installation/mac/">OS X</a> 上有 beta 支持 Docker，但是它们都必须依赖于虚拟化技术，因此，我选择把 Ubuntu 14.04 当作虚拟机来运行。如果你还没有安装过 Docker，请按照<a href="https://docs.docker.com/engine/installation/linux/ubuntulinux/">指导</a>来安装。</p>
+<p>我最近阅读了一些关于 Docker 的东西，但我直到现在还没有真正用它来干任何事。我假设读者还没有关于 Docker 的知识，因此我会解释我所使用的所有命令。</p>
+<h4 id="hello-docker">HELLO DOCKER</h4>
+<p>在 Ubuntu 上安装好 Docker 之后，我所进行的下一步就是按照 <a href="https://www.microsoft.com/net/core#docker">https://www.microsoft.com/net/core#docker</a>　上的介绍来开始运行 .NET Core 和 Docker。</p>
+<p>首先启动一个已安装有 .NET Core 的容器。</p>
+<pre><code>docker run -it microsoft/dotnet:latest
+</code></pre>
+<p><code>-it</code> 选项表示交互，所以你执行这条命令之后，你就处于容器之内了，可以如你所希望的那样执行任何 bash 命令。</p>
+<p>然后我们可以执行下面这五条命令来在 Docker 内部运行起来微软 .NET Core 控制台应用程序示例。</p>
+<pre><code>mkdir hwapp
+cd hwapp
+dotnet new
+dotnet restore
+dotnet run
+</code></pre>
+<p>你可以通过运行 <code>exit</code> 来离开容器，然后运行 <code>Docker ps -a</code> 命令，这会显示你创建的那个已经退出的容器。你可以通过上运行命令 <code>Docker rm &lt;container_name&gt;</code> 来清除容器。</p>
+<h4 id="挂载源代码">挂载源代码</h4>
+<p>我的下一步骤是使用和上面相同的 microsoft/dotnet 镜像，但是将为我们的应用程序以<a href="https://docs.docker.com/engine/tutorials/dockervolumes/1">数据卷</a>的方式挂载上源代码。</p>
+<p>首先签出有相关提交的仓库：</p>
+<pre><code>git clone https://github.com/niksoper/aspnet5-books.git
+cd aspnet5-books/src/MvcLibrary
+git checkout dotnet-core-1.0
+</code></pre>
+<p>现在启动一个容器来运行 .NET Core 1.0，并将源代码放在 <code>/book</code> 下。注意更改 <code>/path/to/repo</code> 这部分文件来匹配你的电脑：</p>
+<pre><code>docker run -it \
+-v /path/to/repo/aspnet5-books/src/MvcLibrary:/books \
+microsoft/dotnet:latest
+</code></pre>
+<p>现在你可以在容器中运行应用程序了！</p>
+<pre><code>cd /books
+dotnet restore
+dotnet run
+</code></pre>
+<p>作为一个概念性展示这的确很棒，但是我们可不想每次运行一个程序都要考虑如何把源代码安装到容器里。</p>
+<h4 id="增加一个-dockerfile">增加一个 DOCKERFILE</h4>
+<p>我的下一步骤是引入一个 Dockerfile，这可以让应用程序很容易在自己的容器内启动。</p>
+<p>我的 Dockerfile 和 <code>project.json</code> 一样位于 <code>src/MvcLibrary</code> 目录下，看起来像下面这样：</p>
+<pre><code>FROM microsoft/dotnet:latest
+
+# 为应用程序源代码创建目录
+RUN mkdir -p /usr/src/books
+WORKDIR /usr/src/books
+
+# 复制源代码并恢复依赖关系
+
+COPY . /usr/src/books
+RUN dotnet restore
+
+# 暴露端口并运行应用程序
+EXPOSE 5000
+CMD [ &quot;dotnet&quot;, &quot;run&quot; ]
+</code></pre>
+<p>严格来说，<code>RUN mkdir -p /usr/src/books</code> 命令是不需要的，因为 <code>COPY</code> 会自动创建丢失的目录。</p>
+<p>Docker 镜像是按层建立的，我们从包含 .NET Core 的镜像开始，添加另一个从源代码生成应用程序，然后运行这个应用程序的层。</p>
+<p>添加了 Dockerfile 以后，我通过运行下面的命令来生成一个镜像，并使用生成的镜像启动一个容器（确保在和 Dockerfile 相同的目录下进行操作，并且你应该使用自己的用户名）。</p>
+<pre><code>docker build -t niksoper/netcore-books .
+docker run -it niksoper/netcore-books
+</code></pre>
+<p>你应该看到程序能够和之前一样的运行，不过这一次我们不需要像之前那样安装源代码，因为源代码已经包含在 docker 镜像里面了。</p>
+<h4 id="暴露并发布端口">暴露并发布端口</h4>
+<p>这个 API 并不是特别有用，除非我们需要从容器外面和它进行通信。 Docker 已经有了暴露和发布端口的概念，但这是两件完全不同的事。</p>
+<p>据 Docker <a href="https://docs.docker.com/engine/reference/builder/#/expose">官方文档</a>：</p>
+<blockquote>
+<p><code>EXPOSE</code> 指令通知 Docker 容器在运行时监听特定的网络端口。<code>EXPOSE</code> 指令不能够让容器的端口可被主机访问。要使可被访问，你必须通过 <code>-p</code> 标志来发布一个端口范围或者使用 <code>-P</code> 标志来发布所有暴露的端口</p>
+</blockquote>
+<p><code>EXPOSE</code> 指令只是将元数据添加到镜像上，所以你可以如文档中说的认为它是镜像消费者。从技术上讲，我本应该忽略 <code>EXPOSE 5000</code> 这行指令，因为我知道 API 正在监听的端口，但把它们留下很有用的，并且值得推荐。</p>
+<p>在这个阶段，我想直接从主机访问这个 API ，因此我需要通过 <code>-p</code> 指令来发布这个端口，这将允许请求从主机上的端口 5000 转发到容器上的端口 5000，无论这个端口是不是之前通过 Dockerfile 暴露的。</p>
+<pre><code>docker run -d -p 5000:5000 niksoper/netcore-books
+</code></pre>
+<p>通过 <code>-d</code> 指令告诉 docker 在分离模式下运行容器，因此我们不能看到它的输出，但是它依旧会运行并监听端口 5000。你可以通过 <code>docker ps</code> 来证实这件事。</p>
+<p>因此，接下来我准备从主机向容器发起一个请求来庆祝一下：</p>
+<pre><code>curl http://localhost:5000/api/books
+</code></pre>
+<p>它不工作。</p>
+<p>重复进行相同 <code>curl</code> 请求，我看到了两个错误：要么是 <code>curl: (56) Recv failure: Connection reset by peer</code>，要么是 <code>curl: (52) Empty reply from server</code>。</p>
+<p>我返回去看 docker run 的<a href="https://docs.docker.com/engine/reference/run/#/expose-incoming-ports">文档</a>，然后再次检查我所使用的 <code>-p</code> 选项以及 Dockerfile 中的 <code>EXPOSE</code> 指令是否正确。我没有发现任何问题，这让我开始有些沮丧。</p>
+<p>重新振作起来以后，我决定去咨询当地的一个 Scott Logic DevOps 大师 - Dave Wybourn（也在<a href="http://blog.scottlogic.com/2016/08/30/docker-1-12-swarm-mode-round-robin.html">这篇  Docker Swarm 的文章</a>里提到过），他的团队也曾遇到这个实际问题。这个问题是我没有配置过 <a href="https://docs.asp.net/en/latest/fundamentals/servers.html#kestrel">Kestral</a>，这是一个全新的轻量级、跨平台 web 服务器，用于 .NET Core 。</p>
+<p>默认情况下， Kestrel 会监听 <a href="http://localhost:5000%E3%80%82%E4%BD%86%E9%97%AE%E9%A2%98%E6%98%AF%EF%BC%8C%E8%BF%99%E5%84%BF%E7%9A%84">http://localhost:5000。但问题是，这儿的</a> <code>localhost</code> 是一个回路接口。</p>
+<p>据<a href="https://en.wikipedia.org/wiki/Localhost">维基百科</a>：</p>
+<blockquote>
+<p>在计算机网络中，localhost 是一个代表本机的主机名。本地主机可以通过网络回路接口访问在主机上运行的网络服务。通过使用回路接口可以绕过任何硬件网络接口。</p>
+</blockquote>
+<p>当运行在容器内时这是一个问题，因为 <code>localhost</code> 只能够在容器内访问。解决方法是更新 <code>Startup.cs</code> 里的 <code>Main</code> 方法来配置 Kestral 监听的 URL：</p>
+<pre><code>public static void Main(string[] args)
+{
+  var host = new WebHostBuilder()
+    .UseKestrel()
+    .UseContentRoot(Directory.GetCurrentDirectory())
+    .UseUrls(&quot;http://*:5000&quot;) // 在所有网络接口上监听端口 5000
+    .UseIISIntegration()
+    .UseStartup&lt;Startup&gt;()
+    .Build();
+
+  host.Run();
+}
+</code></pre>
+<p>通过这些额外的配置，我可以重建镜像，并在容器中运行应用程序，它将能够接收来自主机的请求：</p>
+<pre><code>docker build -t niksoper/netcore-books .
+docker run -d -p 5000:5000 niksoper/netcore-books
+curl -i http://localhost:5000/api/books
+</code></pre>
+<p>我现在得到下面这些相应：</p>
+<pre><code>HTTP/1.1 200 OK
+Date: Tue, 30 Aug 2016 15:25:43 GMT
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=utf-8
+Server: Kestrel
+
+[{&quot;id&quot;:&quot;1&quot;,&quot;title&quot;:&quot;RESTful API with ASP.NET Core MVC 1.0&quot;,&quot;author&quot;:&quot;Nick Soper&quot;}]
+</code></pre>
+<h3 id="在产品环境中运行-kestrel">在产品环境中运行 KESTREL</h3>
+<p><a href="https://docs.asp.net/en/latest/publishing/linuxproduction.html#why-use-a-reverse-proxy-server">微软的介绍</a>：</p>
+<blockquote>
+<p>Kestrel 可以很好的处理来自 ASP.NET 的动态内容，然而，网络服务部分的特性没有如 IIS，Apache 或者 Nginx 那样的全特性服务器那么好。反向代理服务器可以让你不用去做像处理静态内容、缓存请求、压缩请求、SSL 端点这样的来自 HTTP 服务器的工作。</p>
+</blockquote>
+<p>因此我需要在我的 Linux 机器上把 Nginx 设置成一个反向代理服务器。微软介绍了如何<a href="https://docs.asp.net/en/latest/publishing/linuxproduction.html">发布到 Linux 生产环境下</a>的指导教程。我把说明总结在这儿：</p>
+<ol>
+<li>通过 <code>dotnet publish</code> 来给应用程序产生一个自包含包。</li>
+<li>把已发布的应用程序复制到服务器上</li>
+<li>安装并配置 Nginx（作为反向代理服务器） </li>
+<li>安装并配置 <a href="http://supervisord.org/">supervisor</a>（用于确保 Nginx 服务器处于运行状态中）</li>
+<li>安装并配置 <a href="https://wiki.ubuntu.com/AppArmor">AppArmor</a>（用于限制应用的资源使用）</li>
+<li>配置服务器防火墙</li>
+<li>安全加固 Nginx（从源代码构建和配置 SSL）</li>
+</ol>
+<p>这些内容已经超出了本文的范围，因此我将侧重于如何把 Nginx 配置成一个反向代理服务器。自然地，我通过 Docker 来完成这件事。</p>
+<h3 id="在另一个容器中运行-nginx">在另一个容器中运行 NGINX</h3>
+<p>我的目标是在第二个 Docker 容器中运行 Nginx 并把它配置成我们的应用程序容器的反向代理服务器。</p>
+<p>我使用的是<a href="https://hub.docker.com/_/nginx/">来自 Docker Hub 的官方 Nginx 镜像</a>。首先我尝试这样做：</p>
+<pre><code>docker run -d -p 8080:80 --name web nginx
+</code></pre>
+<p>这启动了一个运行 Nginx 的容器并把主机上的 8080 端口映射到了容器的 80 端口上。现在在浏览器中打开网址 <code>http://localhost:8080</code> 会显示出 Nginx 的默认登录页面。</p>
+<p>现在我们证实了运行 Nginx 是多么的简单，我们可以关闭这个容器。</p>
+<pre><code>docker rm -f web
+</code></pre>
+<h3 id="把-nginx-配置成一个反向代理服务器">把 NGINX 配置成一个反向代理服务器</h3>
+<p>可以通过像下面这样编辑位于 <code>/etc/nginx/conf.d/default.conf</code> 的配置文件，把 Nginx 配置成一个反向代理服务器：</p>
+<pre><code>server {
+  listen 80;
+
+  location / {
+    proxy_pass http://localhost:6666;
+  }
+}
+</code></pre>
+<p>通过上面的配置可以让 Nginx 将所有对根目录的访问请求代理到 <code>http://localhost:6666</code>。记住这里的 <code>localhost</code> 指的是运行 Nginx 的容器。我们可以在 Nginx容器内部利用卷来使用我们自己的配置文件：</p>
+<pre><code>docker run -d -p 8080:80 \
+-v /path/to/my.conf:/etc/nginx/conf.d/default.conf \
+nginx
+</code></pre>
+<p>注意：这把一个单一文件从主机映射到容器中，而不是一个完整目录。</p>
+<h3 id="在容器间进行通信">在容器间进行通信</h3>
+<p>Docker 允许内部容器通过共享虚拟网络进行通信。默认情况下，所有通过 Docker 守护进程启动的容器都可以访问一种叫做“桥”的虚拟网络。这使得一个容器可以被另一个容器在相同的网络上通过 IP 地址和端口来引用。</p>
+<p>你可以通过监测（inspect）容器来找到它的 IP 地址。我将从之前创建的 <code>niksoper/netcore-books</code> 镜像中启动一个容器并监测（inspect）它：</p>
+<pre><code>docker run -d -p 5000:5000 --name books niksoper/netcore-books
+docker inspect books
+</code></pre>
+<p><img src="http://blog.scottlogic.com/nsoper/assets/docker-inspect-ip.PNG" alt=""></p>
+<p>我们可以看到这个容器的 IP 地址是 <code>&quot;IPAddress&quot;: &quot;172.17.0.3&quot;</code>。</p>
+<p>所以现在如果我创建下面的 Nginx 配置文件，并使用这个文件启动一个 Nginx容器， 它将代理请求到我的 API ：</p>
+<pre><code>server {
+  listen 80;
+
+  location / {
+    proxy_pass http://172.17.0.3:5000;
+  }
+}
+</code></pre>
+<p>现在我可以使用这个配置文件启动一个 Nginx 容器（注意我把主机上的 8080 端口映射到了 Nginx 容器上的 80 端口）：</p>
+<pre><code>docker run -d -p 8080:80 \
+-v ~/dev/nginx/my.nginx.conf:/etc/nginx/conf.d/default.conf \
+nginx
+</code></pre>
+<p>一个到 <code>http://localhost:8080</code> 的请求将被代理到应用上。注意下面 <code>curl</code> 响应的 <code>Server</code> 响应头：</p>
+<p><img src="http://blog.scottlogic.com/nsoper/assets/nginx-proxy-response.PNG" alt=""></p>
+<h3 id="docker-compose">DOCKER COMPOSE</h3>
+<p>在这个地方，我为自己的进步而感到高兴，但我认为一定还有更好的方法来配置 Nginx，可以不需要知道应用程序容器的确切 IP 地址。另一个当地的 Scott Logic DevOps 大师 Jason Ebbin 在这个地方进行了改进，并建议使用 <a href="https://docs.docker.com/compose/">Docker Compose</a>。 </p>
+<p>概况描述一下，Docker Compose 使得一组通过声明式语法互相连接的容器很容易启动。我不想再细说 Docker Compose 是如何工作的，因为你可以在<a href="http://blog.scottlogic.com/2016/01/25/playing-with-docker-compose-and-erlang.html">之前的文章</a>中找到。</p>
+<p>我将通过一个我所使用的 <code>docker-compose.yml</code> 文件来启动：</p>
+<pre><code>version: &#39;2&#39;
+services:
+    books-service:
+        container_name: books-api
+        build: .
+
+    reverse-proxy:
+        container_name: reverse-proxy
+        image: nginx
+        ports:
+         - &quot;9090:8080&quot;
+        volumes:
+         - ./proxy.conf:/etc/nginx/conf.d/default.conf
+</code></pre>
+<p><em>这是版本 2 语法，所以为了能够正常工作，你至少需要 1.6 版本的 Docker Compose。</em></p>
+<p>这个文件告诉 Docker 创建两个服务：一个是给应用的，另一个是给 Nginx 反向代理服务器的。</p>
+<h3 id="books-service">BOOKS-SERVICE</h3>
+<p>这个与 docker-compose.yml 相同目录下的 Dockerfile 构建的容器叫做 <code>books-api</code>。注意这个容器不需要发布任何端口，因为只要能够从反向代理服务器访问它就可以，而不需要从主机操作系统访问它。</p>
+<h3 id="reverse-proxy">REVERSE-PROXY</h3>
+<p>这将基于 nginx 镜像启动一个叫做 <code>reverse-proxy</code> 的容器，并将位于当前目录下的 <code>proxy.conf</code> 文件挂载为配置。它把主机上的 9090 端口映射到容器中的 8080 端口，这将允许我们在 <code>http://localhost:9090</code> 上通过主机访问容器。</p>
+<p><code>proxy.conf</code> 文件看起来像下面这样：</p>
+<pre><code>server {
+    listen 8080;
+
+    location / {
+      proxy_pass http://books-service:5000;
+    }
+}
+</code></pre>
+<p>这儿的关键点是我们现在可以通过名字引用 <code>books-service</code>，因此我们不需要知道 <code>books-api</code> 这个容器的 IP 地址！</p>
+<p>现在我们可以通过一个运行着的反向代理启动两个容器（<code>-d</code> 意味着这是独立的，因此我们不能看到来自容器的输出）：</p>
+<pre><code>docker compose up -d
+</code></pre>
+<p>验证我们所创建的容器：</p>
+<pre><code>docker ps
+</code></pre>
+<p>最后来验证我们可以通过反向代理来控制该 API ：</p>
+<pre><code>curl -i http://localhost:9090/api/books
+</code></pre>
+<h3 id="怎么做到的">怎么做到的？</h3>
+<p>Docker Compose 通过创建一个新的叫做 <code>mvclibrary_default</code> 的虚拟网络来实现这件事，这个虚拟网络同时用于 <code>books-api</code> 和 <code>reverse-proxy</code> 容器（名字是基于 <code>docker-compose.yml</code> 文件的父目录）。</p>
+<p>通过 <code>docker network ls</code> 来验证网络已经存在：</p>
+<p><img src="http://blog.scottlogic.com/nsoper/assets/docker-network-ls.PNG" alt=""></p>
+<p>你可以使用 <code>docker network inspect mvclibrary_default</code> 来看到新的网络的细节：</p>
+<p><img src="http://blog.scottlogic.com/nsoper/assets/network-inspect.PNG" alt=""></p>
+<p>注意 Docker 已经给网络分配了子网：<code>&quot;Subnet&quot;: &quot;172.18.0.0/16&quot;</code>。/16 部分是无类域内路由选择（CIDR），完整的解释已经超出了本文的范围，但  CIDR 只是表示 IP 地址范围。运行 <code>docker network inspect bridge</code> 显示子网：<code>&quot;Subnet&quot;: &quot;172.17.0.0/16&quot;</code>，因此这两个网络是不重叠的。</p>
+<p>现在用 <code>docker inspect books-api</code> 来确认应用程序的容器正在使用该网络：</p>
+<p><img src="http://blog.scottlogic.com/nsoper/assets/docker-inspect-books-api.PNG" alt=""></p>
+<p>注意容器的两个别名（<code>&quot;Aliases&quot;</code>）是容器标识符（<code>3c42db680459</code>）和由 <code>docker-compose.yml</code> 给出的服务名（<code>books-service</code>）。我们通过 <code>books-service</code> 别名在自定义 Nginx 配置文件中来引用应用程序的容器。这本可以通过 <code>docker network create</code> 手动创建，但是我喜欢用 Docker Compose，因为它可以干净简洁地将容器创建和依存捆绑在一起。</p>
+<h3 id="结论">结论</h3>
+<p>所以现在我可以通过几个简单的步骤在 Linux 系统上用 Nginx 运行应用程序，不需要对主机操作系统做任何长期的改变：</p>
+<pre><code>git clone https://github.com/niksoper/aspnet5-books.git
+cd aspnet5-books/src/MvcLibrary
+git checkout blog-docker
+docker-compose up -d
+curl -i http://localhost:9090/api/books
+</code></pre>
+<p>我知道我在这篇文章中所写的内容不是一个真正的生产环境就绪的设备，因为我没有写任何有关下面这些的内容，绝大多数下面的这些主题都需要用单独一篇完整的文章来叙述。</p>
+<ul>
+<li>安全考虑比如防火墙和 SSL 配置</li>
+<li>如何确保应用程序保持运行状态</li>
+<li>如何选择需要包含的 Docker 镜像（我把所有的都放入了 Dockerfile 中）</li>
+<li>数据库 - 如何在容器中管理它们</li>
+</ul>
+<p>对我来说这是一个非常有趣的学习经历，因为有一段时间我对探索 ASP.NET Core 的跨平台支持非常好奇，使用 “Configuratin as Code” 的 Docker Compose 方法来探索一下 DevOps 的世界也是非常愉快并且很有教育意义的。</p>
+<p>如果你对 Docker 很好奇，那么我鼓励你来尝试学习它 或许这会让你离开舒适区，不过，有可能你会喜欢它？</p>
+<hr>
+<p>via: <a href="http://blog.scottlogic.com/2016/09/05/hosting-netcore-on-linux-with-docker.html">http://blog.scottlogic.com/2016/09/05/hosting-netcore-on-linux-with-docker.html</a></p>
+<p>作者：<a href="http://blog.scottlogic.com/nsoper">Nick Soper</a>
+译者：<a href="https://github.com/ucasFL">ucasFL</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#安装">安装</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#源代码">源代码</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#转换到-net-core-10">转换到 .NET CORE 1.0</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#通过-docker-运行">通过 Docker 运行</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在产品环境中运行-kestrel">在产品环境中运行 KESTREL</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在另一个容器中运行-nginx">在另一个容器中运行 NGINX</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#把-nginx-配置成一个反向代理服务器">把 NGINX 配置成一个反向代理服务器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在容器间进行通信">在容器间进行通信</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#docker-compose">DOCKER COMPOSE</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#books-service">BOOKS-SERVICE</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#reverse-proxy">REVERSE-PROXY</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#怎么做到的">怎么做到的？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201611/20160910 HOSTING .NET CORE ON LINUX WITH DOCKER - A NOOB'S GUIDE","title":"新手指南 － 通过 Docker 在 Linux 上托管 .NET Core"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

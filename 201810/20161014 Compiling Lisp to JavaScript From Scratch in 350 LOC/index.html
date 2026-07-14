@@ -1,0 +1,492 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>用 350 行代码从零开始，将 Lisp 编译成 JavaScript - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="用 350 行代码从零开始，将 Lisp 编译成 JavaScript - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="用 350 行代码从零开始，将 Lisp 编译成 JavaScript - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201810/20161014 Compiling Lisp to JavaScript From Scratch in 350 LOC#page","@type":"TechArticle","headline":"用 350 行代码从零开始，将 Lisp 编译成 JavaScript","inLanguage":"en","name":"用 350 行代码从零开始，将 Lisp 编译成 JavaScript","url":"https://zhengqbbb.github.io/pages-dev/201810/20161014 Compiling Lisp to JavaScript From Scratch in 350 LOC","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201810/20161014 Compiling Lisp to JavaScript From Scratch in 350 LOC"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1定义语言">1、定义语言</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2实现一个简单的解析器组合库">2、实现一个简单的解析器组合库</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3为我们的语言实现解析器">3、为我们的语言实现解析器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4为这门语言实现一个更好看的输出器">4、为这门语言实现一个更好看的输出器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5根据需求定义-javascript-的子集">5、根据需求定义 JavaScript 的子集</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6实现到我们定义的-javascript-子集的代码转译器">6、实现到我们定义的 JavaScript 子集的代码转译器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7把所有东西整合到一起">7、把所有东西整合到一起</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>用 350 行代码从零开始，将 Lisp 编译成 JavaScript</h1><p>我们将会在本篇文章中看到从零开始实现的编译器，将简单的类 LISP 计算语言编译成 JavaScript。完整的源代码在 <a href="https://gist.github.com/soupi/d4ff0727ccb739045fad6cdf533ca7dd">这里</a>。</p>
+<p>我们将会：</p>
+<ol>
+<li>自定义语言，并用它编写一个简单的程序</li>
+<li>实现一个简单的解析器组合器</li>
+<li>为该语言实现一个解析器</li>
+<li>为该语言实现一个美观的打印器</li>
+<li>为我们的用途定义 JavaScript 的一个子集</li>
+<li>实现代码转译器，将代码转译成我们定义的 JavaScript 子集</li>
+<li>把所有东西整合在一起</li>
+</ol>
+<p>开始吧！</p>
+<h3 id="1定义语言">1、定义语言</h3>
+<p>Lisp 族语言最迷人的地方在于，它们的语法就是树状表示的，这就是这门语言很容易解析的原因。我们很快就能接触到它。但首先让我们把自己的语言定义好。关于我们语言的语法的范式（BNF）描述如下：</p>
+<pre><code>program ::= expr
+expr ::= &lt;integer&gt; | &lt;name&gt; | ([&lt;expr&gt;])
+</code></pre>
+<p>基本上，我们可以在该语言的最顶层定义表达式并对其进行运算。表达式由一个整数（比如 <code>5</code>）、一个变量（比如 <code>x</code>）或者一个表达式列表（比如 <code>(add x 1)</code>）组成。</p>
+<p>整数对应它本身的值，变量对应它在当前环境中绑定的值，表达式列表对应一个函数调用，该列表的第一个参数是相应的函数，剩下的表达式是传递给这个函数的参数。</p>
+<p>该语言中，我们保留一些内建的特殊形式，这样我们就能做一些更有意思的事情：</p>
+<ul>
+<li><code>let</code> 表达式使我们可以在它的 <code>body</code> 环境中引入新的变量。语法如下：</li>
+</ul>
+<pre><code>let ::= (let ([&lt;letarg&gt;]) &lt;body&gt;)
+letargs ::= (&lt;name&gt; &lt;expr&gt;)
+body ::= &lt;expr&gt;
+</code></pre>
+<ul>
+<li><code>lambda</code> 表达式：也就是匿名函数定义。语法如下：</li>
+</ul>
+<pre><code>lambda ::= (lambda ([&lt;name&gt;]) &lt;body&gt;)
+</code></pre>
+<p>还有一些内建函数： <code>add</code>、<code>mul</code>、<code>sub</code>、<code>div</code> 和 <code>print</code>。</p>
+<p>让我们看看用我们这门语言编写的入门示例程序：</p>
+<pre><code>(let
+  ((compose
+    (lambda (f g)
+      (lambda (x) (f (g x)))))
+  (square
+    (lambda (x) (mul x x)))
+  (add1
+    (lambda (x) (add x 1))))
+  (print ((compose square add1) 5)))
+</code></pre>
+<p>这个程序定义了 3 个函数：<code>compose</code>、<code>square</code> 和 <code>add1</code>。然后将计算结果的值 <code>((compose square add1) 5)</code> 输出出来。</p>
+<p>我相信了解这门语言，这些信息就足够了。开始实现它吧。</p>
+<p>在 Haskell 中，我们可以这样定义语言：</p>
+<pre><code>type Name = String
+
+data Expr
+  = ATOM Atom
+  | LIST [Expr]
+    deriving (Eq, Read, Show)
+
+data Atom
+  = Int Int
+  | Symbol Name
+    deriving (Eq, Read, Show)
+</code></pre>
+<p>我们可以解析用该语言用 <code>Expr</code> 定义的程序。而且，这里我们添加了新数据类型 <code>Eq</code>、<code>Read</code> 和 <code>Show</code> 等实例用于测试和调试。你能够在 REPL 中使用这些数据类型，验证它们确实有用。</p>
+<p>我们不在语法中定义 <code>lambda</code>、<code>let</code> 或其它的内建函数，原因在于，当前情况下我们没必要用到这些东西。这些函数仅仅是 <code>LIST</code> （表达式列表）的更加特殊的用例。所以我决定将它放到后面的部分。</p>
+<p>一般来说你想要在抽象语法中定义这些特殊用例 —— 用于改进错误信息、禁用静态分析和优化等等，但在这里我们不会这样做，对我们来说这些已经足够了。</p>
+<p>另一件你想做的事情可能是在语法中添加一些注释信息。比如定位：<code>Expr</code> 是来自哪个文件的，具体到这个文件的哪一行哪一列。你可以在后面的阶段中使用这一特性，打印出错误定位，即使它们不是处于解析阶段。</p>
+<ul>
+<li><em>练习 1</em>：添加一个 <code>Program</code> 数据类型，可以按顺序包含多个 <code>Expr</code></li>
+<li><em>练习 2</em>：向语法树中添加一个定位注解。</li>
+</ul>
+<h3 id="2实现一个简单的解析器组合库">2、实现一个简单的解析器组合库</h3>
+<p>我们要做的第一件事情是定义一个<ruby>嵌入式领域专用语言<rt>Embedded Domain Specific Language</rt></ruby>（EDSL），我们会用它来定义我们的语言解析器。这常常被称为解析器组合库。我们做这件事完全是出于学习的目的，Haskell 里有很好的解析库，在实际构建软件或者进行实验时，你应该使用它们。<a href="https://mrkkrp.github.io/megaparsec/">megaparsec</a> 就是这样的一个库。</p>
+<p>首先我们来谈谈解析库的实现的思路。本质上，我们的解析器就是一个函数，接受一些输入，可能会读取输入的一些或全部内容，然后返回解析出来的值和无法解析的输入部分，或者在解析失败时抛出异常。我们把它写出来。</p>
+<pre><code>newtype Parser a
+  = Parser (ParseString -&gt; Either ParseError (a, ParseString))
+
+data ParseString
+  = ParseString Name (Int, Int) String
+
+data ParseError
+  = ParseError ParseString Error
+
+type Error = String
+</code></pre>
+<p>这里我们定义了三个主要的新类型。</p>
+<p>第一个，<code>Parser a</code> 是之前讨论的解析函数。</p>
+<p>第二个，<code>ParseString</code> 是我们的输入或携带的状态。它有三个重要的部分：</p>
+<ul>
+<li><code>Name</code>: 这是源的名字</li>
+<li><code>(Int, Int)</code>: 这是源的当前位置</li>
+<li><code>String</code>: 这是等待解析的字符串</li>
+</ul>
+<p>第三个，<code>ParseError</code> 包含了解析器的当前状态和一个错误信息。</p>
+<p>现在我们想让这个解析器更灵活，我们将会定义一些常用类型的实例。这些实例让我们能够将小巧的解析器和复杂的解析器结合在一起（因此它的名字叫做 “解析器组合器”）。</p>
+<p>第一个是 <code>Functor</code> 实例。我们需要 <code>Functor</code> 实例，因为我们要能够对解析值应用函数从而使用不同的解析器。当我们定义自己语言的解析器时，我们将会看到关于它的示例。</p>
+<pre><code>instance Functor Parser where
+  fmap f (Parser parser) =
+    Parser (\str -&gt; first f &lt;$&gt; parser str)
+</code></pre>
+<p>第二个是 <code>Applicative</code> 实例。该实例的常见用例是在多个解析器中实现一个纯函数。</p>
+<pre><code>instance Applicative Parser where
+  pure x = Parser (\str -&gt; Right (x, str))
+  (Parser p1) &lt;*&gt; (Parser p2) =
+    Parser $
+      \str -&gt; do
+        (f, rest)  &lt;- p1 str
+        (x, rest&#39;) &lt;- p2 rest
+        pure (f x, rest&#39;)
+</code></pre>
+<p>（注意：<em>我们还会实现一个 Monad 实例，这样我们才能使用符号</em>）</p>
+<p>第三个是 <code>Alternative</code> 实例。万一前面的解析器解析失败了，我们要能够提供一个备用的解析器。</p>
+<pre><code>instance Alternative Parser where
+  empty = Parser (`throwErr` &quot;Failed consuming input&quot;)
+  (Parser p1) &lt;|&gt; (Parser p2) =
+    Parser $
+      \pstr -&gt; case p1 pstr of
+        Right result -&gt; Right result
+        Left  _      -&gt; p2 pstr
+</code></pre>
+<p>第四个是 <code>Monad</code> 实例。这样我们就能链接解析器。</p>
+<pre><code>instance Monad Parser where
+  (Parser p1) &gt;&gt;= f =
+    Parser $
+     \str -&gt; case p1 str of
+       Left err -&gt; Left err
+       Right (rs, rest) -&gt;
+         case f rs of
+           Parser parser -&gt; parser rest
+</code></pre>
+<p>接下来，让我们定义一种的方式，用于运行解析器和防止失败的助手函数：</p>
+<pre><code>runParser :: String -&gt; String -&gt; Parser a -&gt; Either ParseError (a, ParseString)
+runParser name str (Parser parser) = parser $ ParseString name (0,0) str
+
+throwErr :: ParseString -&gt; String -&gt; Either ParseError a
+throwErr ps@(ParseString name (row,col) _) errMsg =
+  Left $ ParseError ps $ unlines
+    [ &quot;*** &quot; ++ name ++ &quot;: &quot; ++ errMsg
+    , &quot;* On row &quot; ++ show row ++ &quot;, column &quot; ++ show col ++ &quot;.&quot;
+    ]
+</code></pre>
+<p>现在我们将会开始实现组合器，这是 EDSL 的 API，也是它的核心。</p>
+<p>首先，我们会定义 <code>oneOf</code>。如果输入列表中的字符后面还有字符的话，<code>oneOf</code> 将会成功，否则就会失败。</p>
+<pre><code>oneOf :: [Char] -&gt; Parser Char
+oneOf chars =
+  Parser $ \case
+    ps@(ParseString name (row, col) str) -&gt;
+      case str of
+        []     -&gt; throwErr ps &quot;Cannot read character of empty string&quot;
+        (c:cs) -&gt;
+          if c `elem` chars
+          then Right (c, ParseString name (row, col+1) cs)
+          else throwErr ps $ unlines [&quot;Unexpected character &quot; ++ [c], &quot;Expecting one of: &quot; ++ show chars]
+</code></pre>
+<p><code>optional</code> 将会抛出异常，停止解析器。失败时它仅仅会返回 <code>Nothing</code>。</p>
+<pre><code>optional :: Parser a -&gt; Parser (Maybe a)
+optional (Parser parser) =
+  Parser $
+    \pstr -&gt; case parser pstr of
+      Left _ -&gt; Right (Nothing, pstr)
+      Right (x, rest) -&gt; Right (Just x, rest)
+</code></pre>
+<p><code>many</code> 将会试着重复运行解析器，直到失败。当它完成的时候，会返回成功运行的解析器列表。<code>many1</code> 做的事情是一样的，但解析失败时它至少会抛出一次异常。</p>
+<pre><code>many :: Parser a -&gt; Parser [a]
+many parser = go []
+  where go cs = (parser &gt;&gt;= \c -&gt; go (c:cs)) &lt;|&gt; pure (reverse cs)
+
+many1 :: Parser a -&gt; Parser [a]
+many1 parser =
+  (:) &lt;$&gt; parser &lt;*&gt; many parser
+</code></pre>
+<p>下面的这些解析器通过我们定义的组合器来实现一些特殊的解析器：</p>
+<pre><code>char :: Char -&gt; Parser Char
+char c = oneOf [c]
+
+string :: String -&gt; Parser String
+string = traverse char
+
+space :: Parser Char
+space = oneOf &quot; \n&quot;
+
+spaces :: Parser String
+spaces = many space
+
+spaces1 :: Parser String
+spaces1 = many1 space
+
+withSpaces :: Parser a -&gt; Parser a
+withSpaces parser =
+  spaces *&gt; parser &lt;* spaces
+
+parens :: Parser a -&gt; Parser a
+parens parser =
+     (withSpaces $ char &#39;(&#39;)
+  *&gt; withSpaces parser
+  &lt;* (spaces *&gt; char &#39;)&#39;)
+
+sepBy :: Parser a -&gt; Parser b -&gt; Parser [b]
+sepBy sep parser = do
+  frst &lt;- optional parser
+  rest &lt;- many (sep *&gt; parser)
+  pure $ maybe rest (:rest) frst
+</code></pre>
+<p>现在为该门语言定义解析器所需要的所有东西都有了。</p>
+<ul>
+<li><em>练习</em> ：实现一个 EOF（end of file/input，即文件或输入终止符）解析器组合器。</li>
+</ul>
+<h3 id="3为我们的语言实现解析器">3、为我们的语言实现解析器</h3>
+<p>我们会用自顶而下的方法定义解析器。</p>
+<pre><code>parseExpr :: Parser Expr
+parseExpr = fmap ATOM parseAtom &lt;|&gt; fmap LIST parseList
+
+parseList :: Parser [Expr]
+parseList = parens $ sepBy spaces1 parseExpr
+
+parseAtom :: Parser Atom
+parseAtom = parseSymbol &lt;|&gt; parseInt
+
+parseSymbol :: Parser Atom
+parseSymbol = fmap Symbol parseName
+</code></pre>
+<p>注意到这四个函数是在我们这门语言中属于高阶描述。这解释了为什么 Haskell 执行解析工作这么棒。在定义完高级部分后，我们还需要定义低级别的 <code>parseName</code> 和 <code>parseInt</code>。</p>
+<p>我们能在这门语言中用什么字符作为名字呢？用小写的字母、数字和下划线吧，而且名字的第一个字符必须是字母。</p>
+<pre><code>parseName :: Parser Name
+parseName = do
+  c  &lt;- oneOf [&#39;a&#39;..&#39;z&#39;]
+  cs &lt;- many $ oneOf $ [&#39;a&#39;..&#39;z&#39;] ++ &quot;0123456789&quot; ++ &quot;_&quot;
+  pure (c:cs)
+</code></pre>
+<p>整数是一系列数字，数字前面可能有负号 <code>-</code>：</p>
+<pre><code>parseInt :: Parser Atom
+parseInt = do
+  sign &lt;- optional $ char &#39;-&#39;
+  num  &lt;- many1 $ oneOf &quot;0123456789&quot;
+  let result = read $ maybe num (:num) sign of
+  pure $ Int result
+</code></pre>
+<p>最后，我们会定义用来运行解析器的函数，返回值可能是一个 <code>Expr</code> 或者是一条错误信息。</p>
+<pre><code>runExprParser :: Name -&gt; String -&gt; Either String Expr
+runExprParser name str =
+  case runParser name str (withSpaces parseExpr) of
+    Left (ParseError _ errMsg) -&gt; Left errMsg
+    Right (result, _) -&gt; Right result
+</code></pre>
+<ul>
+<li><em>练习 1</em> ：为第一节中定义的 <code>Program</code> 类型编写一个解析器</li>
+<li><em>练习 2</em> ：用 Applicative 的形式重写 <code>parseName</code></li>
+<li><em>练习 3</em> ：<code>parseInt</code> 可能出现溢出情况，找到处理它的方法，不要用 <code>read</code>。</li>
+</ul>
+<h3 id="4为这门语言实现一个更好看的输出器">4、为这门语言实现一个更好看的输出器</h3>
+<p>我们还想做一件事，将我们的程序以源代码的形式打印出来。这对完善错误信息很有用。</p>
+<pre><code>printExpr :: Expr -&gt; String
+printExpr = printExpr&#39; False 0
+
+printAtom :: Atom -&gt; String
+printAtom = \case
+  Symbol s -&gt; s
+  Int i -&gt; show i
+
+printExpr&#39; :: Bool -&gt; Int -&gt; Expr -&gt; String
+printExpr&#39; doindent level = \case
+  ATOM a -&gt; indent (bool 0 level doindent) (printAtom a)
+  LIST (e:es) -&gt;
+    indent (bool 0 level doindent) $
+      concat
+        [ &quot;(&quot;
+        , printExpr&#39; False (level + 1) e
+        , bool &quot;\n&quot; &quot;&quot; (null es)
+        , intercalate &quot;\n&quot; $ map (printExpr&#39; True (level + 1)) es
+        , &quot;)&quot;
+        ]
+
+indent :: Int -&gt; String -&gt; String
+indent tabs e = concat (replicate tabs &quot;  &quot;) ++ e
+</code></pre>
+<ul>
+<li><em>练习</em> ：为第一节中定义的 <code>Program</code> 类型编写一个美观的输出器</li>
+</ul>
+<p>好，目前为止我们写了近 200 行代码，这些代码一般叫做编译器的前端。我们还要写大概 150 行代码，用来执行三个额外的任务：我们需要根据需求定义一个 JS 的子集，定义一个将我们的语言转译成这个子集的转译器，最后把所有东西整合在一起。开始吧。</p>
+<h3 id="5根据需求定义-javascript-的子集">5、根据需求定义 JavaScript 的子集</h3>
+<p>首先，我们要定义将要使用的 JavaScript 的子集：</p>
+<pre><code>data JSExpr
+  = JSInt Int
+  | JSSymbol Name
+  | JSBinOp JSBinOp JSExpr JSExpr
+  | JSLambda [Name] JSExpr
+  | JSFunCall JSExpr [JSExpr]
+  | JSReturn JSExpr
+    deriving (Eq, Show, Read)
+
+type JSBinOp = String
+</code></pre>
+<p>这个数据类型表示 JavaScript 表达式。我们有两个原子类型 <code>JSInt</code> 和 <code>JSSymbol</code>，它们是由我们这个语言中的 <code>Atom</code> 转译来的，我们用 <code>JSBinOp</code> 来表示二元操作，比如 <code>+</code> 或 <code>*</code>，用 <code>JSLambda</code> 来表示匿名函数，和我们语言中的 <code>lambda expression（lambda 表达式）</code> 一样，我们将会用 <code>JSFunCall</code> 来调用函数，用 <code>let</code> 来引入新名字，用 <code>JSReturn</code> 从函数中返回值，在 JavaScript 中是需要返回值的。</p>
+<p><code>JSExpr</code> 类型是对 JavaScript 表达式的 <strong>抽象表示</strong>。我们会把自己语言中表达式的抽象表示 <code>Expr</code> 转译成 JavaScript 表达式的抽象表示 <code>JSExpr</code>。但为了实现这个功能，我们需要实现 <code>JSExpr</code> ，并从这个抽象表示中生成 JavaScript 代码。我们将通过递归匹配 <code>JSExpr</code> 实现，将 JS 代码当作 <code>String</code> 来输出。这和我们在 <code>printExpr</code> 中做的基本上是一样的。我们还会追踪元素的作用域，这样我们才可以用合适的方式缩进生成的代码。</p>
+<pre><code>printJSOp :: JSBinOp -&gt; String
+printJSOp op = op
+
+printJSExpr :: Bool -&gt; Int -&gt; JSExpr -&gt; String
+printJSExpr doindent tabs = \case
+  JSInt    i     -&gt; show i
+  JSSymbol name  -&gt; name
+  JSLambda vars expr -&gt; (if doindent then indent tabs else id) $ unlines
+    [&quot;function(&quot; ++ intercalate &quot;, &quot; vars ++ &quot;) {&quot;
+    ,indent (tabs+1) $ printJSExpr False (tabs+1) expr
+    ] ++ indent tabs &quot;}&quot;
+  JSBinOp  op e1 e2  -&gt; &quot;(&quot; ++ printJSExpr False tabs e1 ++ &quot; &quot; ++ printJSOp op ++ &quot; &quot; ++ printJSExpr False tabs e2 ++ &quot;)&quot;
+  JSFunCall f exprs  -&gt; &quot;(&quot; ++ printJSExpr False tabs f ++ &quot;)(&quot; ++ intercalate &quot;, &quot; (fmap (printJSExpr False tabs) exprs) ++ &quot;)&quot;
+  JSReturn expr      -&gt; (if doindent then indent tabs else id) $ &quot;return &quot; ++ printJSExpr False tabs expr ++ &quot;;&quot;
+</code></pre>
+<ul>
+<li><em>练习 1</em> ：添加 <code>JSProgram</code> 类型，它可以包含多个 <code>JSExpr</code> ，然后创建一个叫做 <code>printJSExprProgram</code> 的函数来生成代码。</li>
+<li><em>练习 2</em> ：添加 <code>JSExpr</code> 的新类型：<code>JSIf</code>，并为其生成代码。</li>
+</ul>
+<h3 id="6实现到我们定义的-javascript-子集的代码转译器">6、实现到我们定义的 JavaScript 子集的代码转译器</h3>
+<p>我们快做完了。这一节将会创建函数，将 <code>Expr</code> 转译成 <code>JSExpr</code>。</p>
+<p>基本思想很简单，我们会将 <code>ATOM</code> 转译成 <code>JSSymbol</code> 或者 <code>JSInt</code>，然后会将 <code>LIST</code> 转译成一个函数调用或者转译的特例。</p>
+<pre><code>type TransError = String
+
+translateToJS :: Expr -&gt; Either TransError JSExpr
+translateToJS = \case
+  ATOM (Symbol s) -&gt; pure $ JSSymbol s
+  ATOM (Int i)    -&gt; pure $ JSInt i
+  LIST xs -&gt; translateList xs
+
+translateList :: [Expr] -&gt; Either TransError JSExpr
+translateList = \case
+  []     -&gt; Left &quot;translating empty list&quot;
+  ATOM (Symbol s):xs
+    | Just f &lt;- lookup s builtins -&gt;
+      f xs
+  f:xs -&gt;
+    JSFunCall &lt;$&gt; translateToJS f &lt;*&gt; traverse translateToJS xs
+</code></pre>
+<p><code>builtins</code> 是一系列要转译的特例，就像 <code>lambada</code> 和 <code>let</code>。每一种情况都可以获得一系列参数，验证它是否合乎语法规范，然后将其转译成等效的 <code>JSExpr</code>。</p>
+<pre><code>type Builtin  = [Expr] -&gt; Either TransError JSExpr
+type Builtins = [(Name, Builtin)]
+
+builtins :: Builtins
+builtins =
+  [(&quot;lambda&quot;, transLambda)
+  ,(&quot;let&quot;, transLet)
+  ,(&quot;add&quot;, transBinOp &quot;add&quot; &quot;+&quot;)
+  ,(&quot;mul&quot;, transBinOp &quot;mul&quot; &quot;*&quot;)
+  ,(&quot;sub&quot;, transBinOp &quot;sub&quot; &quot;-&quot;)
+  ,(&quot;div&quot;, transBinOp &quot;div&quot; &quot;/&quot;)
+  ,(&quot;print&quot;, transPrint)
+  ]
+</code></pre>
+<p>我们这种情况，会将内建的特殊形式当作特殊的、非第一类的进行对待，因此不可能将它们当作第一类函数。</p>
+<p>我们会把 Lambda 表达式转译成一个匿名函数：</p>
+<pre><code>transLambda :: [Expr] -&gt; Either TransError JSExpr
+transLambda = \case
+  [LIST vars, body] -&gt; do
+    vars&#39; &lt;- traverse fromSymbol vars
+    JSLambda vars&#39; &lt;$&gt; (JSReturn &lt;$&gt; translateToJS body)
+
+  vars -&gt;
+    Left $ unlines
+      [&quot;Syntax error: unexpected arguments for lambda.&quot;
+      ,&quot;expecting 2 arguments, the first is the list of vars and the second is the body of the lambda.&quot;
+      ,&quot;In expression: &quot; ++ show (LIST $ ATOM (Symbol &quot;lambda&quot;) : vars)
+      ]
+
+fromSymbol :: Expr -&gt; Either String Name
+fromSymbol (ATOM (Symbol s)) = Right s
+fromSymbol e = Left $ &quot;cannot bind value to non symbol type: &quot; ++ show e
+</code></pre>
+<p>我们会将 <code>let</code> 转译成带有相关名字参数的函数定义，然后带上参数调用函数，因此会在这一作用域中引入变量：</p>
+<pre><code>transLet :: [Expr] -&gt; Either TransError JSExpr
+transLet = \case
+  [LIST binds, body] -&gt; do
+    (vars, vals) &lt;- letParams binds
+    vars&#39; &lt;- traverse fromSymbol vars
+    JSFunCall . JSLambda vars&#39; &lt;$&gt; (JSReturn &lt;$&gt; translateToJS body) &lt;*&gt; traverse translateToJS vals
+   where
+    letParams :: [Expr] -&gt; Either Error ([Expr],[Expr])
+    letParams = \case
+      [] -&gt; pure ([],[])
+      LIST [x,y] : rest -&gt; ((x:) *** (y:)) &lt;$&gt; letParams rest
+      x : _ -&gt; Left (&quot;Unexpected argument in let list in expression:\n&quot; ++ printExpr x)
+
+  vars -&gt;
+    Left $ unlines
+      [&quot;Syntax error: unexpected arguments for let.&quot;
+      ,&quot;expecting 2 arguments, the first is the list of var/val pairs and the second is the let body.&quot;
+      ,&quot;In expression:\n&quot; ++ printExpr (LIST $ ATOM (Symbol &quot;let&quot;) : vars)
+      ]
+</code></pre>
+<p>我们会将可以在多个参数之间执行的操作符转译成一系列二元操作符。比如：<code>(add 1 2 3)</code> 将会变成 <code>1 + (2 + 3)</code>。</p>
+<pre><code>transBinOp :: Name -&gt; Name -&gt; [Expr] -&gt; Either TransError JSExpr
+transBinOp f _ []   = Left $ &quot;Syntax error: &#39;&quot; ++ f ++ &quot;&#39; expected at least 1 argument, got: 0&quot;
+transBinOp _ _ [x]  = translateToJS x
+transBinOp _ f list = foldl1 (JSBinOp f) &lt;$&gt; traverse translateToJS list
+</code></pre>
+<p>然后我们会将 <code>print</code> 转换成对 <code>console.log</code> 的调用。</p>
+<pre><code>transPrint :: [Expr] -&gt; Either TransError JSExpr
+transPrint [expr] = JSFunCall (JSSymbol &quot;console.log&quot;) . (:[]) &lt;$&gt; translateToJS expr
+transPrint xs     = Left $ &quot;Syntax error. print expected 1 arguments, got: &quot; ++ show (length xs)
+</code></pre>
+<p>注意，如果我们将这些代码当作 <code>Expr</code> 的特例进行解析，那我们就可能会跳过语法验证。</p>
+<ul>
+<li><em>练习 1</em> ：将 <code>Program</code> 转译成 <code>JSProgram</code></li>
+<li><em>练习 2</em> ：为 <code>if Expr Expr Expr</code> 添加一个特例，并将它转译成你在上一次练习中实现的 <code>JSIf</code> 条件语句。</li>
+</ul>
+<h3 id="7把所有东西整合到一起">7、把所有东西整合到一起</h3>
+<p>最终，我们将会把所有东西整合到一起。我们会：</p>
+<ol>
+<li>读取文件</li>
+<li>将文件解析成 <code>Expr</code></li>
+<li>将文件转译成 <code>JSExpr</code></li>
+<li>将 JavaScript 代码发送到标准输出流</li>
+</ol>
+<p>我们还会启用一些用于测试的标志位：</p>
+<ul>
+<li><code>--e</code> 将进行解析并打印出表达式的抽象表示（<code>Expr</code>）</li>
+<li><code>--pp</code> 将进行解析，美化输出</li>
+<li><code>--jse</code> 将进行解析、转译、并打印出生成的 JS 表达式（<code>JSExpr</code>）的抽象表示</li>
+<li><code>--ppc</code> 将进行解析，美化输出并进行编译</li>
+</ul>
+<pre><code>main :: IO ()
+main = getArgs &gt;&gt;= \case
+  [file] -&gt;
+    printCompile =&lt;&lt; readFile file
+  [&quot;--e&quot;,file] -&gt;
+    either putStrLn print . runExprParser &quot;--e&quot; =&lt;&lt; readFile file
+  [&quot;--pp&quot;,file] -&gt;
+    either putStrLn (putStrLn . printExpr) . runExprParser &quot;--pp&quot; =&lt;&lt; readFile file
+  [&quot;--jse&quot;,file] -&gt;
+    either print (either putStrLn print . translateToJS) . runExprParser &quot;--jse&quot; =&lt;&lt; readFile file
+  [&quot;--ppc&quot;,file] -&gt;
+    either putStrLn (either putStrLn putStrLn) . fmap (compile . printExpr) . runExprParser &quot;--ppc&quot; =&lt;&lt; readFile file
+  _ -&gt;
+    putStrLn $ unlines
+      [&quot;Usage: runghc Main.hs [ --e, --pp, --jse, --ppc ] &lt;filename&gt;&quot;
+      ,&quot;--e     print the Expr&quot;
+      ,&quot;--pp    pretty print Expr&quot;
+      ,&quot;--jse   print the JSExpr&quot;
+      ,&quot;--ppc   pretty print Expr and then compile&quot;
+      ]
+
+printCompile :: String -&gt; IO ()
+printCompile = either putStrLn putStrLn . compile
+
+compile :: String -&gt; Either Error String
+compile str = printJSExpr False 0 &lt;$&gt; (translateToJS =&lt;&lt; runExprParser &quot;compile&quot; str)
+</code></pre>
+<p>大功告成。将自己的语言编译到 JS 子集的编译器已经完成了。再说一次，你可以在 <a href="https://gist.github.com/soupi/d4ff0727ccb739045fad6cdf533ca7dd">这里</a> 看到完整的源文件。</p>
+<p>用我们的编译器运行第一节的示例，产生的 JavaScript 代码如下：</p>
+<pre><code>$ runhaskell Lisp.hs example.lsp
+(function(compose, square, add1) {
+  return (console.log)(((compose)(square, add1))(5));
+})(function(f, g) {
+  return function(x) {
+    return (f)((g)(x));
+  };
+}, function(x) {
+  return (x * x);
+}, function(x) {
+  return (x + 1);
+})
+</code></pre>
+<p>如果你在自己电脑上安装了 node.js，你可以用以下命令运行这段代码：</p>
+<pre><code>$ runhaskell Lisp.hs example.lsp | node -p
+36
+undefined
+</code></pre>
+<ul>
+<li><em>最终练习</em> : 编译有多个表达式的程序而非仅编译一个表达式。</li>
+</ul>
+<hr>
+<p>via: <a href="https://gilmi.me/blog/post/2016/10/14/lisp-to-js">https://gilmi.me/blog/post/2016/10/14/lisp-to-js</a></p>
+<p>作者：<a href="https://gilmi.me/home">Gil Mizrahi</a>
+选题：<a href="https://github.com/oska874">oska874</a>
+译者：<a href="https://github.com/BriFuture">BriFuture</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1定义语言">1、定义语言</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2实现一个简单的解析器组合库">2、实现一个简单的解析器组合库</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3为我们的语言实现解析器">3、为我们的语言实现解析器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4为这门语言实现一个更好看的输出器">4、为这门语言实现一个更好看的输出器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5根据需求定义-javascript-的子集">5、根据需求定义 JavaScript 的子集</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6实现到我们定义的-javascript-子集的代码转译器">6、实现到我们定义的 JavaScript 子集的代码转译器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7把所有东西整合到一起">7、把所有东西整合到一起</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201810/20161014 Compiling Lisp to JavaScript From Scratch in 350 LOC","title":"用 350 行代码从零开始，将 Lisp 编译成 JavaScript"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

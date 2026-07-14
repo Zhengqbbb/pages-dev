@@ -1,0 +1,280 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用 OpenCV 进行高动态范围（HDR）成像 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用 OpenCV 进行高动态范围（HDR）成像 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用 OpenCV 进行高动态范围（HDR）成像 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201806/20171002 High Dynamic Range Imaging using OpenCV Cpp python#page","@type":"TechArticle","headline":"使用 OpenCV 进行高动态范围（HDR）成像","inLanguage":"en","name":"使用 OpenCV 进行高动态范围（HDR）成像","url":"https://zhengqbbb.github.io/pages-dev/201806/20171002 High Dynamic Range Imaging using OpenCV Cpp python","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201806/20171002 High Dynamic Range Imaging using OpenCV Cpp python"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是高动态范围成像">什么是高动态范围成像？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#高动态范围hdr成像是如何工作的">高动态范围（HDR）成像是如何工作的？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-1-步捕获不同曝光度的多张图像">第 1 步：捕获不同曝光度的多张图像</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-2-步对齐图像">第 2 步：对齐图像</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-3-步提取相机响应函数">第 3 步：提取相机响应函数</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-4-步合并图像">第 4 步：合并图像</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-5-步色调映射">第 5 步：色调映射</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#订阅然后下载代码">订阅然后下载代码</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用 OpenCV 进行高动态范围（HDR）成像</h1><p>在本教程中，我们将学习如何使用由不同曝光设置拍摄的多张图像创建<ruby>高动态范围<rt>High Dynamic Range</rt></ruby>（HDR）图像。 我们将以 C++ 和 Python 两种形式分享代码。</p>
+<h3 id="什么是高动态范围成像">什么是高动态范围成像？</h3>
+<p>大多数数码相机和显示器都是按照 24 位矩阵捕获或者显示彩色图像。 每个颜色通道有 8 位，因此每个通道的像素值在 0-255 范围内。 换句话说，普通的相机或者显示器的动态范围是有限的。</p>
+<p>但是，我们周围世界动态范围极大。 在车库内关灯就会变黑，直接看着太阳就会变得非常亮。 即使不考虑这些极端，在日常情况下，8 位的通道勉强可以捕捉到现场场景。 因此，相机会尝试去评估光照并且自动设置曝光，这样图像的最关注区域就会有良好的动态范围，并且太暗和太亮的部分会被相应截取为 0 和 255。</p>
+<p>在下图中，左侧的图像是正常曝光的图像。 请注意，由于相机决定使用拍摄主体（我的儿子）的设置，所以背景中的天空已经完全流失了，但是明亮的天空也因此被刷掉了。 右侧的图像是由 iPhone 生成的HDR图像。</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/09/high-dynamic-range-hdr.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/09/high-dynamic-range-hdr.jpg" alt="High Dynamic Range (HDR)"></a> </p>
+<p>iPhone 是如何拍摄 HDR 图像的呢？ 它实际上采用三种不同的曝光度拍摄了 3 张图像，3 张图像拍摄非常迅速，在 3 张图像之间几乎没有产生位移。然后组合三幅图像来产生 HDR 图像。 我们将在下一节看到一些细节。</p>
+<blockquote>
+<p>将在不同曝光设置下获取的相同场景的不同图像组合的过程称为高动态范围（HDR）成像。</p>
+</blockquote>
+<h3 id="高动态范围hdr成像是如何工作的">高动态范围（HDR）成像是如何工作的？</h3>
+<p>在本节中，我们来看下使用 OpenCV 创建 HDR 图像的步骤。</p>
+<blockquote>
+<p>要想轻松学习本教程，请点击<a href="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr.zip">此处</a><a href="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr.zip">下载</a> C++ 和 Python 代码还有图像。 如果您有兴趣了解更多关于人工智能，计算机视觉和机器学习的信息，请<a href="https://bigvisionllc.leadpages.net/leadbox/143948b73f72a2%3A173c9390c346dc/5649050225344512/">订阅</a>我们的电子杂志。</p>
+</blockquote>
+<h3 id="第-1-步捕获不同曝光度的多张图像">第 1 步：捕获不同曝光度的多张图像</h3>
+<p>当我们使用相机拍照时，每个通道只有 8 位来表示场景的动态范围（亮度范围）。 但是，通过改变快门速度，我们可以在不同的曝光条件下拍摄多个场景图像。 大多数单反相机（SLR）有一个功能称为<ruby>自动包围式曝光<rt>Auto Exposure Bracketing</rt></ruby>（AEB），只需按一下按钮，我们就可以在不同的曝光下拍摄多张照片。 如果你正在使用 iPhone，你可以使用这个<a href="https://itunes.apple.com/us/app/autobracket-hdr/id923626339?mt=8&amp;amp;ign-mpt=uo%3D8">自动包围式 HDR 应用程序</a>，如果你是一个 Android 用户，你可以尝试一个<a href="https://play.google.com/store/apps/details?id=com.almalence.opencam&amp;amp;hl=en">更好的相机应用程序</a>。</p>
+<p>场景没有变化时，在相机上使用自动包围式曝光或在手机上使用自动包围式应用程序，我们可以一张接一张地快速拍摄多张照片。 当我们在 iPhone 中使用 HDR 模式时，会拍摄三张照片。</p>
+<ol>
+<li>曝光不足的图像：该图像比正确曝光的图像更暗。 目标是捕捉非常明亮的图像部分。</li>
+<li>正确曝光的图像：这是相机将根据其估计的照明拍摄的常规图像。</li>
+<li>曝光过度的图像：该图像比正确曝光的图像更亮。 目标是拍摄非常黑暗的图像部分。</li>
+</ol>
+<p>但是，如果场景的动态范围很大，我们可以拍摄三张以上的图片来合成 HDR 图像。 在本教程中，我们将使用曝光时间为1/30 秒，0.25 秒，2.5 秒和 15 秒的 4 张图像。 缩略图如下所示。</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-image-sequence.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-image-sequence.jpg" alt="Auto Exposure Bracketed  HDR image sequence"></a> </p>
+<p>单反相机或手机的曝光时间和其他设置的信息通常存储在 JPEG 文件的 EXIF 元数据中。 查看此<a href="https://www.howtogeek.com/289712/how-to-see-an-images-exif-data-in-windows-and-macos">链接</a>可在 Windows 和 Mac 中查看存储在 JPEG 文件中的 EXIF 元数据。 或者，您可以使用我最喜欢的名为 <a href="https://www.sno.phy.queensu.ca/~phil/exiftool">EXIFTOOL</a> 的查看 EXIF 的命令行工具。</p>
+<p>我们先从读取分配到不同曝光时间的图像开始。</p>
+<p><strong>C++</strong></p>
+<pre><code>void readImagesAndTimes(vector&lt;Mat&gt; &amp;images, vector&lt;float&gt; &amp;times)
+{
+   
+  int numImages = 4;
+ 
+  // 曝光时间列表
+  static const float timesArray[] = {1/30.0f,0.25,2.5,15.0};
+  times.assign(timesArray, timesArray + numImages);
+   
+  // 图像文件名称列表
+  static const char* filenames[] = {&quot;img_0.033.jpg&quot;, &quot;img_0.25.jpg&quot;, &quot;img_2.5.jpg&quot;, &quot;img_15.jpg&quot;};
+  for(int i=0; i &lt; numImages; i++)
+  {
+    Mat im = imread(filenames[i]);
+    images.push_back(im);
+  }
+ 
+}
+</code></pre>
+<p><strong>Python</strong></p>
+<pre><code>def readImagesAndTimes():
+  # 曝光时间列表
+  times = np.array([ 1/30.0, 0.25, 2.5, 15.0 ], dtype=np.float32)
+   
+  # 图像文件名称列表
+  filenames = [&quot;img_0.033.jpg&quot;, &quot;img_0.25.jpg&quot;, &quot;img_2.5.jpg&quot;, &quot;img_15.jpg&quot;]
+  images = []
+  for filename in filenames:
+    im = cv2.imread(filename)
+    images.append(im)
+   
+  return images, times
+</code></pre>
+<h3 id="第-2-步对齐图像">第 2 步：对齐图像</h3>
+<p>合成 HDR 图像时使用的图像如果未对齐可能会导致严重的伪影。 在下图中，左侧的图像是使用未对齐的图像组成的 HDR 图像，右侧的图像是使用对齐的图像的图像。 通过放大图像的一部分（使用红色圆圈显示的）我们会在左侧图像中看到严重的鬼影。</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/10/aligned-unaligned-hdr-comparison.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/10/aligned-unaligned-hdr-comparison.jpg" alt="Misalignment problem in HDR"></a> </p>
+<p>在拍摄照片制作 HDR 图像时，专业摄影师自然是将相机安装在三脚架上。 他们还使用称为<a href="https://www.slrlounge.com/workshop/using-mirror-up-mode-mirror-lockup">镜像锁定</a>功能来减少额外的振动。 即使如此，图像可能仍然没有完美对齐，因为没有办法保证无振动的环境。 使用手持相机或手机拍摄图像时，对齐问题会变得更糟。</p>
+<p>幸运的是，OpenCV 提供了一种简单的方法，使用 <code>AlignMTB</code> 对齐这些图像。 该算法将所有图像转换为<ruby>中值阈值位图<rt>median threshold bitmaps</rt></ruby>（MTB）。 图像的 MTB 生成方式为将比中值亮度的更亮的分配为 1，其余为 0。 MTB 不随曝光时间的改变而改变。 因此不需要我们指定曝光时间就可以对齐 MTB。</p>
+<p>基于 MTB 的对齐方式的代码如下。</p>
+<p><strong>C++</strong></p>
+<pre><code>// 对齐输入图像
+Ptr&lt;AlignMTB&gt; alignMTB = createAlignMTB();
+alignMTB-&gt;process(images, images);
+</code></pre>
+<p><strong>Python</strong></p>
+<pre><code># 对齐输入图像
+alignMTB = cv2.createAlignMTB()
+alignMTB.process(images, images)
+</code></pre>
+<h3 id="第-3-步提取相机响应函数">第 3 步：提取相机响应函数</h3>
+<p>典型相机的响应与场景亮度不成线性关系。 那是什么意思呢？ 假设有两个物体由同一个相机拍摄，在现实世界中其中一个物体是另一个物体亮度的两倍。 当您测量照片中两个物体的像素亮度时，较亮物体的像素值将不会是较暗物体的两倍。 在不估计<ruby>相机响应函数<rt>Camera Response Function</rt></ruby>（CRF）的情况下，我们将无法将图像合并到一个HDR图像中。</p>
+<p>将多个曝光图像合并为 HDR 图像意味着什么？</p>
+<p>只考虑图像的某个位置 <code>(x,y)</code> 一个像素。 如果 CRF 是线性的，则像素值将直接与曝光时间成比例，除非像素在特定图像中太暗（即接近 0）或太亮（即接近 255）。 我们可以过滤出这些不好的像素（太暗或太亮），并且将像素值除以曝光时间来估计像素的亮度，然后在像素不差的（太暗或太亮）所有图像上对亮度值取平均。我们可以对所有像素进行这样的处理，并通过对“好”像素进行平均来获得所有像素的单张图像。</p>
+<p>但是 CRF 不是线性的， 我们需要评估 CRF 把图像强度变成线性，然后才能合并或者平均它们。</p>
+<p>好消息是，如果我们知道每个图像的曝光时间，则可以从图像估计 CRF。 与计算机视觉中的许多问题一样，找到 CRF 的问题本质是一个最优解问题，其目标是使由数据项和平滑项组成的目标函数最小化。 这些问题通常会降维到线性最小二乘问题，这些问题可以使用<ruby>奇异值分解<rt>Singular Value Decomposition</rt></ruby>（SVD）来解决，奇异值分解是所有线性代数包的一部分。 CRF 提取算法的细节在<a href="http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf">从照片提取高动态范围辐射图</a>这篇论文中可以找到。</p>
+<p>使用 OpenCV 的 <code>CalibrateDebevec</code> 或者 <code>CalibrateRobertson</code> 就可以用 2 行代码找到 CRF。本篇教程中我们使用 <code>CalibrateDebevec</code></p>
+<p><strong>C++</strong></p>
+<pre><code>// 获取图像响应函数 (CRF)
+Mat responseDebevec;
+Ptr&lt;CalibrateDebevec&gt; calibrateDebevec = createCalibrateDebevec();
+calibrateDebevec-&gt;process(images, responseDebevec, times);
+</code></pre>
+<p><strong>Python</strong></p>
+<pre><code># 获取图像响应函数 (CRF)
+calibrateDebevec = cv2.createCalibrateDebevec()
+responseDebevec = calibrateDebevec.process(images, times)
+</code></pre>
+<p>下图显示了使用红绿蓝通道的图像提取的 CRF。</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/10/camera-response-function.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/10/camera-response-function.jpg" alt="Camera Response Function"></a> </p>
+<h3 id="第-4-步合并图像">第 4 步：合并图像</h3>
+<p>一旦 CRF 评估结束，我们可以使用 <code>MergeDebevec</code> 将曝光图像合并成一个HDR图像。 C++ 和 Python 代码如下所示。</p>
+<p><strong>C++</strong></p>
+<pre><code>// 将图像合并为HDR线性图像
+Mat hdrDebevec;
+Ptr&lt;MergeDebevec&gt; mergeDebevec = createMergeDebevec();
+mergeDebevec-&gt;process(images, hdrDebevec, times, responseDebevec);
+// 保存图像
+imwrite(&quot;hdrDebevec.hdr&quot;, hdrDebevec);
+</code></pre>
+<p><strong>Python</strong></p>
+<pre><code># 将图像合并为HDR线性图像
+mergeDebevec = cv2.createMergeDebevec()
+hdrDebevec = mergeDebevec.process(images, times, responseDebevec)
+# 保存图像
+cv2.imwrite(&quot;hdrDebevec.hdr&quot;, hdrDebevec)
+</code></pre>
+<p>上面保存的 HDR 图像可以在 Photoshop 中加载并进行色调映射。示例图像如下所示。</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Photoshop-Tonemapping.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Photoshop-Tonemapping-1024x770.jpg" alt="HDR Photoshop tone mapping"></a> </p>
+<p> <em>HDR Photoshop 色调映射</em></p>
+<h3 id="第-5-步色调映射">第 5 步：色调映射</h3>
+<p>现在我们已经将我们的曝光图像合并到一个 HDR 图像中。 你能猜出这个图像的最小和最大像素值吗？ 对于黑色条件，最小值显然为 0。 理论最大值是什么？ 无限大！ 在实践中，不同情况下的最大值是不同的。 如果场景包含非常明亮的光源，那么最大值就会非常大。</p>
+<p>尽管我们已经使用多个图像恢复了相对亮度信息，但是我们现在又面临了新的挑战：将这些信息保存为 24 位图像用于显示。</p>
+<p>将高动态范围（HDR）图像转换为 8 位单通道图像的过程称为色调映射。这个过程的同时还需要保留尽可能多的细节。</p>
+<p>有几种色调映射算法。 OpenCV 实现了其中的四个。 要记住的是没有一个绝对正确的方法来做色调映射。 通常，我们希望在色调映射图像中看到比任何一个曝光图像更多的细节。 有时色调映射的目标是产生逼真的图像，而且往往是产生超现实图像的目标。 在 OpenCV 中实现的算法倾向于产生现实的并不那么生动的结果。</p>
+<p>我们来看看各种选项。 以下列出了不同色调映射算法的一些常见参数。</p>
+<ol>
+<li><ruby>伽马<rt>gamma</rt></ruby>：该参数通过应用伽马校正来压缩动态范围。 当伽马等于 1 时，不应用修正。 小于 1 的伽玛会使图像变暗，而大于 1 的伽马会使图像变亮。</li>
+<li><ruby>饱和度<rt>saturation</rt></ruby>：该参数用于增加或减少饱和度。 饱和度高时，色彩更丰富，更浓。 饱和度值接近零，使颜色逐渐消失为灰度。</li>
+<li><ruby>对比度<rt>contrast</rt></ruby>：控制输出图像的对比度（即 <code>log(maxPixelValue/minPixelValue)</code>）。</li>
+</ol>
+<p>让我们来探索 OpenCV 中可用的四种色调映射算法。</p>
+<h4 id="drago-色调映射">Drago 色调映射</h4>
+<p>Drago 色调映射的参数如下所示：</p>
+<pre><code>createTonemapDrago
+(
+float   gamma = 1.0f,
+float   saturation = 1.0f,
+float   bias = 0.85f 
+)   
+</code></pre>
+<p>这里，<code>bias</code> 是 <code>[0, 1]</code> 范围内偏差函数的值。 从 0.7 到 0.9 的值通常效果较好。 默认值是 0.85。 有关更多技术细节，请参阅这篇<a href="http://resources.mpi-inf.mpg.de/tmo/logmap/logmap.pdf">论文</a>。</p>
+<p>C++ 和 Python 代码如下所示。 参数是通过反复试验获得的。 最后的结果乘以 3 只是因为它给出了最令人满意的结果。</p>
+<p><strong>C++</strong></p>
+<pre><code>// 使用Drago色调映射算法获得24位彩色图像
+Mat ldrDrago;
+Ptr&lt;TonemapDrago&gt; tonemapDrago = createTonemapDrago(1.0, 0.7);
+tonemapDrago-&gt;process(hdrDebevec, ldrDrago);
+ldrDrago = 3 * ldrDrago;
+imwrite(&quot;ldr-Drago.jpg&quot;, ldrDrago * 255);
+</code></pre>
+<p><strong>Python</strong></p>
+<pre><code># 使用Drago色调映射算法获得24位彩色图像
+tonemapDrago = cv2.createTonemapDrago(1.0, 0.7)
+ldrDrago = tonemapDrago.process(hdrDebevec)
+ldrDrago = 3 * ldrDrago
+cv2.imwrite(&quot;ldr-Drago.jpg&quot;, ldrDrago * 255)
+</code></pre>
+<p>结果如下：</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Drago.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Drago-1024x770.jpg" alt="HDR tone mapping using Drago&#39;s algorithm"></a> </p>
+<p><em>使用Drago算法的HDR色调映射</em></p>
+<h4 id="durand-色调映射">Durand 色调映射</h4>
+<p>Durand 色调映射的参数如下所示：</p>
+<pre><code>createTonemapDurand 
+(   
+  float     gamma = 1.0f, 
+  float     contrast = 4.0f,
+  float     saturation = 1.0f,
+  float     sigma_space = 2.0f,
+  float     sigma_color = 2.0f 
+); 
+</code></pre>
+<p>该算法基于将图像分解为基础层和细节层。 使用称为双边滤波器的边缘保留滤波器来获得基本层。 <code>sigma_space</code> 和<code>sigma_color</code> 是双边滤波器的参数，分别控制空间域和彩色域中的平滑量。</p>
+<p>有关更多详细信息，请查看这篇<a href="https://people.csail.mit.edu/fredo/PUBLI/Siggraph2002/DurandBilateral.pdf">论文</a>。</p>
+<p><strong>C++</strong></p>
+<pre><code>// 使用Durand色调映射算法获得24位彩色图像
+Mat ldrDurand;
+Ptr&lt;TonemapDurand&gt; tonemapDurand = createTonemapDurand(1.5,4,1.0,1,1);
+tonemapDurand-&gt;process(hdrDebevec, ldrDurand);
+ldrDurand = 3 * ldrDurand;
+imwrite(&quot;ldr-Durand.jpg&quot;, ldrDurand * 255);
+</code></pre>
+<p><strong>Python</strong></p>
+<pre><code># 使用Durand色调映射算法获得24位彩色图像
+ tonemapDurand = cv2.createTonemapDurand(1.5,4,1.0,1,1)
+ ldrDurand = tonemapDurand.process(hdrDebevec)
+ ldrDurand = 3 * ldrDurand
+ cv2.imwrite(&quot;ldr-Durand.jpg&quot;, ldrDurand * 255)
+</code></pre>
+<p>结果如下：</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Durand.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Durand-1024x770.jpg" alt="HDR tone mapping using Durand&#39;s algorithm"></a> </p>
+<p><em>使用Durand算法的HDR色调映射</em></p>
+<h4 id="reinhard-色调映射">Reinhard 色调映射</h4>
+<pre><code>
+createTonemapReinhard
+(
+float   gamma = 1.0f,
+float   intensity = 0.0f,
+float   light_adapt = 1.0f,
+float   color_adapt = 0.0f 
+)   
+</code></pre>
+<p><code>intensity</code> 参数应在 <code>[-8, 8]</code> 范围内。 更高的亮度值会产生更明亮的结果。 <code>light_adapt</code> 控制灯光，范围为 <code>[0, 1]</code>。 值 1 表示仅基于像素值的自适应，而值 0 表示全局自适应。 中间值可以用于两者的加权组合。 参数 <code>color_adapt</code> 控制色彩，范围为 <code>[0, 1]</code>。 如果值被设置为 1，则通道被独立处理，如果该值被设置为 0，则每个通道的适应级别相同。中间值可以用于两者的加权组合。</p>
+<p>有关更多详细信息，请查看这篇<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.106.8100&amp;amp;rep=rep1&amp;amp;type=pdf">论文</a>。</p>
+<p><strong>C++</strong></p>
+<pre><code>// 使用Reinhard色调映射算法获得24位彩色图像
+Mat ldrReinhard;
+Ptr&lt;TonemapReinhard&gt; tonemapReinhard = createTonemapReinhard(1.5, 0,0,0);
+tonemapReinhard-&gt;process(hdrDebevec, ldrReinhard);
+imwrite(&quot;ldr-Reinhard.jpg&quot;, ldrReinhard * 255);
+</code></pre>
+<p><strong>Python</strong></p>
+<pre><code># 使用Reinhard色调映射算法获得24位彩色图像
+tonemapReinhard = cv2.createTonemapReinhard(1.5, 0,0,0)
+ldrReinhard = tonemapReinhard.process(hdrDebevec)
+cv2.imwrite(&quot;ldr-Reinhard.jpg&quot;, ldrReinhard * 255)
+</code></pre>
+<p>结果如下：</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Reinhard.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Reinhard-1024x770.jpg" alt="HDR tone mapping using Reinhard&#39;s algorithm"></a></p>
+<p><em>使用Reinhard算法的HDR色调映射</em></p>
+<h4 id="mantiuk-色调映射">Mantiuk 色调映射</h4>
+<pre><code>createTonemapMantiuk
+(   
+float   gamma = 1.0f,
+float   scale = 0.7f,
+float   saturation = 1.0f 
+)   
+</code></pre>
+<p>参数 <code>scale</code> 是对比度比例因子。 从 0.7 到 0.9 的值通常效果较好</p>
+<p>有关更多详细信息，请查看这篇<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.60.4077&amp;amp;rep=rep1&amp;amp;type=pdf">论文</a>。</p>
+<p><strong>C++</strong></p>
+<pre><code>// 使用Mantiuk色调映射算法获得24位彩色图像
+Mat ldrMantiuk;
+Ptr&lt;TonemapMantiuk&gt; tonemapMantiuk = createTonemapMantiuk(2.2,0.85, 1.2);
+tonemapMantiuk-&gt;process(hdrDebevec, ldrMantiuk);
+ldrMantiuk = 3 * ldrMantiuk;
+imwrite(&quot;ldr-Mantiuk.jpg&quot;, ldrMantiuk * 255);
+</code></pre>
+<p><strong>Python</strong></p>
+<pre><code># 使用Mantiuk色调映射算法获得24位彩色图像
+tonemapMantiuk = cv2.createTonemapMantiuk(2.2,0.85, 1.2)
+ldrMantiuk = tonemapMantiuk.process(hdrDebevec)
+ldrMantiuk = 3 * ldrMantiuk
+cv2.imwrite(&quot;ldr-Mantiuk.jpg&quot;, ldrMantiuk * 255)
+</code></pre>
+<p>结果如下：</p>
+<p> <a href="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Mantiuk.jpg"><img src="http://www.learnopencv.com/wp-content/uploads/2017/10/hdr-Mantiuk-1024x770.jpg" alt="HDR tone mapping using Mantiuk&#39;s algorithm"></a>  </p>
+<p><em>使用Mantiuk算法的HDR色调映射</em></p>
+<h3 id="订阅然后下载代码">订阅然后下载代码</h3>
+<p>如果你喜欢这篇文章，并希望下载本文中使用的代码（C++ 和 Python）和示例图片，请<a href="https://bigvisionllc.leadpages.net/leadbox/143948b73f72a2%3A173c9390c346dc/5649050225344512/">订阅</a>我们的电子杂志。 您还将获得免费的<a href="https://bigvisionllc.leadpages.net/leadbox/143948b73f72a2%3A173c9390c346dc/5649050225344512/">计算机视觉资源</a>指南。 在我们的电子杂志中，我们分享了用 C++ 还有 Python 编写的 OpenCV 教程和例子，以及计算机视觉和机器学习的算法和新闻。</p>
+<p><a href="https://bigvisionllc.leadpages.net/leadbox/143948b73f72a2%3A173c9390c346dc/5649050225344512/">点此订阅</a></p>
+<p>图片致谢</p>
+<p>本文中使用的四个曝光图像获得 <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> 许可，并从<a href="https://en.wikipedia.org/wiki/High-dynamic-range_imaging">维基百科的 HDR 页面</a>下载。 图像由 Kevin McCoy拍摄。</p>
+<hr>
+<p>作者简介：</p>
+<p>我是一位热爱计算机视觉和机器学习的企业家，拥有十多年的实践经验（还有博士学位）。</p>
+<p>2007 年，在完成博士学位之后，我和我的顾问 David Kriegman 博士还有 Kevin Barnes 共同创办了 TAAZ 公司。 我们的计算机视觉和机器学习算法的可扩展性和鲁棒性已经经过了试用了我们产品的超过 1 亿的用户的严格测试。</p>
+<hr>
+<p>via: <a href="http://www.learnopencv.com/high-dynamic-range-hdr-imaging-using-opencv-cpp-python/">http://www.learnopencv.com/high-dynamic-range-hdr-imaging-using-opencv-cpp-python/</a></p>
+<p>作者：<a href="http://www.learnopencv.com/about/">SATYA MALLICK</a>
+译者：<a href="https://github.com/Flowsnow">Flowsnow</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是高动态范围成像">什么是高动态范围成像？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#高动态范围hdr成像是如何工作的">高动态范围（HDR）成像是如何工作的？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-1-步捕获不同曝光度的多张图像">第 1 步：捕获不同曝光度的多张图像</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-2-步对齐图像">第 2 步：对齐图像</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-3-步提取相机响应函数">第 3 步：提取相机响应函数</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-4-步合并图像">第 4 步：合并图像</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第-5-步色调映射">第 5 步：色调映射</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#订阅然后下载代码">订阅然后下载代码</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201806/20171002 High Dynamic Range Imaging using OpenCV Cpp python","title":"使用 OpenCV 进行高动态范围（HDR）成像"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

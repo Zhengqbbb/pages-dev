@@ -1,0 +1,304 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>日常 Python 编程优雅之道 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="日常 Python 编程优雅之道 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="日常 Python 编程优雅之道 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201807/20180430 3 practical Python tools- magic methods, iterators and generators, and method magic#page","@type":"TechArticle","headline":"日常 Python 编程优雅之道","inLanguage":"en","name":"日常 Python 编程优雅之道","url":"https://zhengqbbb.github.io/pages-dev/201807/20180430 3 practical Python tools- magic methods, iterators and generators, and method magic","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201807/20180430 3 practical Python tools- magic methods, iterators and generators, and method magic"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#魔术方法">魔术方法</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#自定义迭代器">自定义迭代器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#方法魔法">方法魔法</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#了解更多">了解更多</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>日常 Python 编程优雅之道</h1><blockquote>
+<p>3 个可以使你的 Python 代码更优雅、可读、直观和易于维护的工具。</p>
+</blockquote>
+<p><img src="https://opensource.com/sites/default/files/styles/image-full-size/public/lead-images/serving-bowl-forks-dinner.png?itok=a3YqPwr5" alt=""></p>
+<p>Python 提供了一组独特的工具和语言特性来使你的代码更加优雅、可读和直观。为正确的问题选择合适的工具，你的代码将更易于维护。在本文中，我们将研究其中的三个工具：魔术方法、迭代器和生成器，以及方法魔术。</p>
+<h3 id="魔术方法">魔术方法</h3>
+<p>魔术方法可以看作是 Python 的管道。它们被称为“底层”方法，用于某些内置的方法、符号和操作。你可能熟悉的常见魔术方法是 <code>__init__()</code>，当我们想要初始化一个类的新实例时，它会被调用。</p>
+<p>你可能已经看过其他常见的魔术方法，如 <code>__str__</code> 和 <code>__repr__</code>。Python 中有一整套魔术方法，通过实现其中的一些方法，我们可以修改一个对象的行为，甚至使其行为类似于内置数据类型，例如数字、列表或字典。</p>
+<p>让我们创建一个 <code>Money</code> 类来示例：</p>
+<pre><code>class Money:
+
+    currency_rates = {
+        &#39;$&#39;: 1,
+        &#39;€&#39;: 0.88,
+    }
+
+    def __init__(self, symbol, amount):
+        self.symbol = symbol
+        self.amount = amount
+
+    def __repr__(self):
+        return &#39;%s%.2f&#39; % (self.symbol, self.amount)
+
+    def convert(self, other):
+        &quot;&quot;&quot; Convert other amount to our currency &quot;&quot;&quot;
+        new_amount = (
+            other.amount / self.currency_rates[other.symbol]
+            * self.currency_rates[self.symbol])
+
+        return Money(self.symbol, new_amount)
+</code></pre>
+<p>该类定义为给定的货币符号和汇率定义了一个货币汇率，指定了一个初始化器（也称为构造函数），并实现 <code>__repr__</code>，因此当我们打印这个类时，我们会看到一个友好的表示，例如 <code>$2.00</code> ，这是一个带有货币符号和金额的 <code>Money(&#39;$&#39;, 2.00)</code> 实例。最重要的是，它定义了一种方法，允许你使用不同的汇率在不同的货币之间进行转换。</p>
+<p>打开 Python shell，假设我们已经定义了使用两种不同货币的食品的成本，如下所示：</p>
+<pre><code>&gt;&gt;&gt; soda_cost = Money(&#39;$&#39;, 5.25)
+&gt;&gt;&gt; soda_cost
+    $5.25
+
+&gt;&gt;&gt; pizza_cost = Money(&#39;€&#39;, 7.99)
+&gt;&gt;&gt; pizza_cost
+    €7.99
+</code></pre>
+<p>我们可以使用魔术方法使得这个类的实例之间可以相互交互。假设我们希望能够将这个类的两个实例一起加在一起，即使它们是不同的货币。为了实现这一点，我们可以在 <code>Money</code> 类上实现 <code>__add__</code> 这个魔术方法：</p>
+<pre><code>class Money:
+
+    # ... previously defined methods ...
+
+    def __add__(self, other):
+        &quot;&quot;&quot; Add 2 Money instances using &#39;+&#39; &quot;&quot;&quot;
+        new_amount = self.amount + self.convert(other).amount
+        return Money(self.symbol, new_amount)
+</code></pre>
+<p>现在我们可以以非常直观的方式使用这个类：</p>
+<pre><code>&gt;&gt;&gt; soda_cost = Money(&#39;$&#39;, 5.25)
+&gt;&gt;&gt; pizza_cost = Money(&#39;€&#39;, 7.99)
+&gt;&gt;&gt; soda_cost + pizza_cost
+    $14.33
+&gt;&gt;&gt; pizza_cost + soda_cost
+    €12.61
+</code></pre>
+<p>当我们将两个实例加在一起时，我们得到以第一个定义的货币符号所表示的结果。所有的转换都是在底层无缝完成的。如果我们想的话，我们也可以为减法实现 <code>__sub__</code>，为乘法实现 <code>__mul__</code> 等等。阅读<a href="https://docs.python.org/3/reference/datamodel.html#emulating-numeric-types">模拟数字类型</a>或<a href="https://rszalski.github.io/magicmethods/">魔术方法指南</a>来获得更多信息。</p>
+<p>我们学习到 <code>__add__</code> 映射到内置运算符 <code>+</code>。其他魔术方法可以映射到像 <code>[]</code> 这样的符号。例如，在字典中通过索引或键来获得一项，其实是使用了 <code>__getitem__</code> 方法：</p>
+<pre><code>&gt;&gt;&gt; d = {&#39;one&#39;: 1, &#39;two&#39;: 2}
+&gt;&gt;&gt; d[&#39;two&#39;]
+2
+&gt;&gt;&gt; d.__getitem__(&#39;two&#39;)
+2
+</code></pre>
+<p>一些魔术方法甚至映射到内置函数，例如 <code>__len__()</code> 映射到 <code>len()</code>。</p>
+<pre><code>class Alphabet:
+    letters = &#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;
+
+    def __len__(self):
+        return len(self.letters)
+
+&gt;&gt;&gt; my_alphabet = Alphabet()
+&gt;&gt;&gt; len(my_alphabet)
+    26
+</code></pre>
+<h3 id="自定义迭代器">自定义迭代器</h3>
+<p>对于新的和经验丰富的 Python 开发者来说，自定义迭代器是一个非常强大的但令人迷惑的主题。</p>
+<p>许多内置类型，例如列表、集合和字典，已经实现了允许它们在底层迭代的协议。这使我们可以轻松地遍历它们。</p>
+<pre><code>&gt;&gt;&gt; for food in [&#39;Pizza&#39;, &#39;Fries&#39;]:
+
+         print(food + &#39;. Yum!&#39;)
+
+Pizza. Yum!
+Fries. Yum!
+</code></pre>
+<p>我们如何迭代我们自己的自定义类？首先，让我们来澄清一些术语。</p>
+<ul>
+<li>要成为一个可迭代对象，一个类需要实现 <code>__iter__()</code></li>
+<li><code>__iter__()</code> 方法需要返回一个迭代器</li>
+<li>要成为一个迭代器，一个类需要实现 <code>__next__()</code>（或<a href="https://docs.python.org/2/library/stdtypes.html#iterator.next">在 Python 2</a>中是 <code>next()</code>），当没有更多的项要迭代时，必须抛出一个 <code>StopIteration</code> 异常。</li>
+</ul>
+<p>呼！这听起来很复杂，但是一旦你记住了这些基本概念，你就可以在任何时候进行迭代。</p>
+<p>我们什么时候想使用自定义迭代器？让我们想象一个场景，我们有一个 <code>Server</code> 实例在不同的端口上运行不同的服务，如 <code>http</code> 和 <code>ssh</code>。其中一些服务处于 <code>active</code> 状态，而其他服务则处于 <code>inactive</code> 状态。</p>
+<pre><code>class Server:
+
+    services = [
+        {&#39;active&#39;: False, &#39;protocol&#39;: &#39;ftp&#39;, &#39;port&#39;: 21},
+        {&#39;active&#39;: True, &#39;protocol&#39;: &#39;ssh&#39;, &#39;port&#39;: 22},
+        {&#39;active&#39;: True, &#39;protocol&#39;: &#39;http&#39;, &#39;port&#39;: 80},
+    ]
+</code></pre>
+<p>当我们遍历 <code>Server</code> 实例时，我们只想遍历那些处于 <code>active</code> 的服务。让我们创建一个 <code>IterableServer</code> 类：</p>
+<pre><code>class IterableServer:
+    def __init__(self):
+        self.current_pos = 0
+    def __next__(self):
+        pass  # TODO: 实现并记得抛出 StopIteration
+</code></pre>
+<p>首先，我们将当前位置初始化为 <code>0</code>。然后，我们定义一个 <code>__next__()</code> 方法来返回下一项。我们还将确保在没有更多项返回时抛出 <code>StopIteration</code>。到目前为止都很好！现在，让我们实现这个 <code>__next__()</code> 方法。</p>
+<pre><code>class IterableServer:
+    def __init__(self):
+        self.current_pos = 0.  # 我们初始化当前位置为 0
+    def __iter__(self):  # 我们可以在这里返回 self，因为实现了 __next__
+        return self
+    def __next__(self):
+        while self.current_pos &lt; len(self.services):
+            service = self.services[self.current_pos]
+            self.current_pos += 1
+            if service[&#39;active&#39;]:
+                return service[&#39;protocol&#39;], service[&#39;port&#39;]
+        raise StopIteration
+    next = __next__  # 可选的 Python2 兼容性
+</code></pre>
+<p>我们对列表中的服务进行遍历，而当前的位置小于服务的个数，但只有在服务处于活动状态时才返回。一旦我们遍历完服务，就会抛出一个 <code>StopIteration</code> 异常。</p>
+<p>因为我们实现了 <code>__next__()</code> 方法，当它耗尽时，它会抛出 <code>StopIteration</code>。我们可以从 <code>__iter__()</code> 返回 <code>self</code>，因为 <code>IterableServer</code> 类遵循 <code>iterable</code> 协议。</p>
+<p>现在我们可以遍历一个 <code>IterableServer</code> 实例，这将允许我们查看每个处于活动的服务，如下所示：</p>
+<pre><code>&gt;&gt;&gt; for protocol, port in IterableServer():
+
+        print(&#39;service %s is running on port %d&#39; % (protocol, port))
+
+service ssh is running on port 22
+
+service http is running on port 21
+</code></pre>
+<p>太棒了，但我们可以做得更好！在这样类似的实例中，我们的迭代器不需要维护大量的状态，我们可以简化代码并使用 <a href="https://docs.python.org/3/library/stdtypes.html#generator-types">generator（生成器）</a> 来代替。</p>
+<pre><code>class Server:
+    services = [
+        {&#39;active&#39;: False, &#39;protocol&#39;: &#39;ftp&#39;, &#39;port&#39;: 21},
+        {&#39;active&#39;: True, &#39;protocol&#39;: &#39;ssh&#39;, &#39;port&#39;: 22},
+        {&#39;active&#39;: True, &#39;protocol&#39;: &#39;http&#39;, &#39;port&#39;: 21},
+    ]
+    def __iter__(self):
+        for service in self.services:
+            if service[&#39;active&#39;]:
+                yield service[&#39;protocol&#39;], service[&#39;port&#39;]
+</code></pre>
+<p><code>yield</code> 关键字到底是什么？在定义生成器函数时使用 yield。这有点像 <code>return</code>，虽然 <code>return</code> 在返回值后退出函数，但 <code>yield</code> 会暂停执行直到下次调用它。这允许你的生成器的功能在它恢复之前保持状态。查看 <a href="https://docs.python.org/3/reference/expressions.html#yieldexpr">yield 的文档</a>以了解更多信息。使用生成器，我们不必通过记住我们的位置来手动维护状态。生成器只知道两件事：它现在需要做什么以及计算下一个项目需要做什么。一旦我们到达执行点，即 <code>yield</code> 不再被调用，我们就知道停止迭代。</p>
+<p>这是因为一些内置的 Python 魔法。在 <a href="https://docs.python.org/3/reference/datamodel.html#object.__iter__">Python 关于 <code>__iter__()</code> 的文档</a>中我们可以看到，如果 <code>__iter__()</code> 是作为一个生成器实现的，它将自动返回一个迭代器对象，该对象提供 <code>__iter__()</code> 和 <code>__next__()</code> 方法。阅读这篇很棒的文章，深入了解<a href="http://nvie.com/posts/iterators-vs-generators/">迭代器，可迭代对象和生成器</a>。</p>
+<h3 id="方法魔法">方法魔法</h3>
+<p>由于其独特的方面，Python 提供了一些有趣的方法魔法作为语言的一部分。</p>
+<p>其中一个例子是别名功能。因为函数只是对象，所以我们可以将它们赋值给多个变量。例如：</p>
+<pre><code>&gt;&gt;&gt; def foo():
+       return &#39;foo&#39;
+&gt;&gt;&gt; foo()
+&#39;foo&#39;
+&gt;&gt;&gt; bar = foo
+&gt;&gt;&gt; bar()
+&#39;foo&#39;
+</code></pre>
+<p>我们稍后会看到它的作用。</p>
+<p>Python 提供了一个方便的内置函数<a href="https://docs.python.org/3/library/functions.html#getattr">称为 <code>getattr()</code></a>，它接受 <code>object, name, default</code> 参数并在 <code>object</code> 上返回属性 <code>name</code>。这种编程方式允许我们访问实例变量和方法。例如：</p>
+<pre><code>&gt;&gt;&gt; class Dog:
+        sound = &#39;Bark&#39;
+        def speak(self):
+            print(self.sound + &#39;!&#39;, self.sound + &#39;!&#39;)
+
+&gt;&gt;&gt; fido = Dog()
+
+&gt;&gt;&gt; fido.sound
+&#39;Bark&#39;
+&gt;&gt;&gt; getattr(fido, &#39;sound&#39;)
+&#39;Bark&#39;
+
+&gt;&gt;&gt; fido.speak
+&lt;bound method Dog.speak of &lt;__main__.Dog object at 0x102db8828&gt;&gt;
+&gt;&gt;&gt; getattr(fido, &#39;speak&#39;)
+&lt;bound method Dog.speak of &lt;__main__.Dog object at 0x102db8828&gt;&gt;
+
+
+&gt;&gt;&gt; fido.speak()
+Bark! Bark!
+&gt;&gt;&gt; speak_method = getattr(fido, &#39;speak&#39;)
+&gt;&gt;&gt; speak_method()
+Bark! Bark!
+</code></pre>
+<p>这是一个很酷的技巧，但是我们如何在实际中使用 <code>getattr</code> 呢？让我们看一个例子，我们编写一个小型命令行工具来动态处理命令。</p>
+<pre><code>class Operations:
+    def say_hi(self, name):
+        print(&#39;Hello,&#39;, name)
+    def say_bye(self, name):
+        print (&#39;Goodbye,&#39;, name)
+    def default(self, arg):
+        print (&#39;This operation is not supported.&#39;)
+
+if __name__ == &#39;__main__&#39;:
+    operations = Operations()
+    # 假设我们做了错误处理
+    command, argument = input(&#39;&gt; &#39;).split()
+    func_to_call = getattr(operations, command, operations.default)
+    func_to_call(argument)
+</code></pre>
+<p>脚本的输出是：</p>
+<pre><code>$ python getattr.py
+&gt; say_hi Nina
+Hello, Nina
+&gt; blah blah
+This operation is not supported.
+</code></pre>
+<p>接下来，我们来看看 <code>partial</code>。例如，<code>functool.partial(func, *args, **kwargs)</code> 允许你返回一个新的 <a href="https://docs.python.org/3/library/functools.html#functools.partial">partial 对象</a>，它的行为类似 <code>func</code>，参数是 <code>args</code> 和 <code>kwargs</code>。如果传入更多的 <code>args</code>，它们会被附加到 <code>args</code>。如果传入更多的 <code>kwargs</code>，它们会扩展并覆盖 <code>kwargs</code>。让我们通过一个简短的例子来看看：</p>
+<pre><code>&gt;&gt;&gt; from functools import partial
+&gt;&gt;&gt; basetwo = partial(int, base=2)
+&gt;&gt;&gt; basetwo
+&lt;functools.partial object at 0x1085a09f0&gt;
+&gt;&gt;&gt; basetwo(&#39;10010&#39;)
+18
+
+# 这等同于
+&gt;&gt;&gt; int(&#39;10010&#39;, base=2)
+</code></pre>
+<p>让我们看看在我喜欢的一个<a href="https://github.com/mozilla/agithub">名为 <code>agithub</code></a> 的库中的一些示例代码中，这个方法魔术是如何结合在一起的，这是一个（名字起得很 low 的） REST API 客户端，它具有透明的语法，允许你以最小的配置快速构建任何 REST API 原型（不仅仅是 GitHub）。我发现这个项目很有趣，因为它非常强大，但只有大约 400 行 Python 代码。你可以在大约 30 行配置代码中添加对任何 REST API 的支持。<code>agithub</code> 知道协议所需的一切（<code>REST</code>、<code>HTTP</code>、<code>TCP</code>），但它不考虑上游 API。让我们深入到它的实现中。</p>
+<p>以下是我们如何为 GitHub API 和任何其他相关连接属性定义端点 URL 的简化版本。在这里查看<a href="https://github.com/mozilla/agithub/blob/master/agithub/GitHub.py">完整代码</a>。</p>
+<pre><code>class GitHub(API):
+    def __init__(self, token=None, *args, **kwargs):
+        props = ConnectionProperties(api_url = kwargs.pop(&#39;api_url&#39;, &#39;api.github.com&#39;))
+        self.setClient(Client(*args, **kwargs))
+        self.setConnectionProperties(props)
+</code></pre>
+<p>然后，一旦配置了<a href="https://github.com/settings/tokens">访问令牌</a>，就可以开始使用 <a href="https://developer.github.com/v3/repos/#list-your-repositories">GitHub API</a>。</p>
+<pre><code>&gt;&gt;&gt; gh = GitHub(&#39;token&#39;)
+&gt;&gt;&gt; status, data = gh.user.repos.get(visibility=&#39;public&#39;, sort=&#39;created&#39;)
+&gt;&gt;&gt; # ^ 映射到 GET /user/repos
+&gt;&gt;&gt; data
+... [&#39;tweeter&#39;, &#39;snipey&#39;, &#39;...&#39;]
+</code></pre>
+<p>请注意，你要确保 URL 拼写正确，因为我们没有验证 URL。如果 URL 不存在或出现了其他任何错误，将返回 API 抛出的错误。那么，这一切是如何运作的呢？让我们找出答案。首先，我们将查看一个 <a href="https://github.com/mozilla/agithub/blob/dbf7014e2504333c58a39153aa11bbbdd080f6ac/agithub/base.py#L30-L58"><code>API</code> 类</a>的简化示例：</p>
+<pre><code>class API:
+    # ... other methods ...
+    def __getattr__(self, key):
+        return IncompleteRequest(self.client).__getattr__(key)
+    __getitem__ = __getattr__
+</code></pre>
+<p>在 <code>API</code> 类上的每次调用都会调用 <a href="https://github.com/mozilla/agithub/blob/dbf7014e2504333c58a39153aa11bbbdd080f6ac/agithub/base.py#L60-L100"><code>IncompleteRequest</code> 类</a>作为指定的 <code>key</code>。</p>
+<pre><code>class IncompleteRequest:
+    # ... other methods ...
+    def __getattr__(self, key):
+        if key in self.client.http_methods:
+            htmlMethod = getattr(self.client, key)
+            return partial(htmlMethod, url=self.url)
+        else:
+            self.url += &#39;/&#39; + str(key)
+            return self
+    __getitem__ = __getattr__
+
+class Client:
+    http_methods = (&#39;get&#39;)  # 还有 post, put, patch 等等。
+    def get(self, url, headers={}, **params):
+        return self.request(&#39;GET&#39;, url, None, headers)
+</code></pre>
+<p>如果最后一次调用不是 HTTP 方法（如 <code>get</code>、<code>post</code> 等），则返回带有附加路径的 <code>IncompleteRequest</code>。否则，它从<a href="https://github.com/mozilla/agithub/blob/dbf7014e2504333c58a39153aa11bbbdd080f6ac/agithub/base.py#L102-L231"><code>Client</code> 类</a>获取 HTTP 方法对应的正确函数，并返回 <code>partial</code>。</p>
+<p>如果我们给出一个不存在的路径会发生什么？</p>
+<pre><code>&gt;&gt;&gt; status, data = this.path.doesnt.exist.get()
+&gt;&gt;&gt; status
+... 404
+</code></pre>
+<p>因为 <code>__getattr__</code> 别名为 <code>__getitem__</code>：</p>
+<pre><code>&gt;&gt;&gt; owner, repo = &#39;nnja&#39;, &#39;tweeter&#39;
+&gt;&gt;&gt; status, data = gh.repos[owner][repo].pulls.get()
+&gt;&gt;&gt; # ^ Maps to GET /repos/nnja/tweeter/pulls
+&gt;&gt;&gt; data
+.... # {....}
+</code></pre>
+<p>这真心是一些方法魔术！</p>
+<h3 id="了解更多">了解更多</h3>
+<p>Python 提供了大量工具，使你的代码更优雅，更易于阅读和理解。挑战在于找到合适的工具来完成工作，但我希望本文为你的工具箱添加了一些新工具。而且，如果你想更进一步，你可以在我的博客 <a href="http://nnja.io">nnja.io</a> 上阅读有关装饰器、上下文管理器、上下文生成器和命名元组的内容。随着你成为一名更好的 Python 开发人员，我鼓励你到那里阅读一些设计良好的项目的源代码。<a href="https://github.com/requests/requests">Requests</a> 和 <a href="https://github.com/pallets/flask">Flask</a> 是两个很好的起步的代码库。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/18/4/elegant-solutions-everyday-python-problems">https://opensource.com/article/18/4/elegant-solutions-everyday-python-problems</a></p>
+<p>作者：<a href="https://opensource.com/users/nnja">Nina Zakharenko</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/MjSeven">MjSeven</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#魔术方法">魔术方法</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#自定义迭代器">自定义迭代器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#方法魔法">方法魔法</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#了解更多">了解更多</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201807/20180430 3 practical Python tools- magic methods, iterators and generators, and method magic","title":"日常 Python 编程优雅之道"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

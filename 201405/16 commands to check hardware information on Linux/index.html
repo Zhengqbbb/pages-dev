@@ -1,0 +1,368 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Linux硬件信息命令大全 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Linux硬件信息命令大全 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Linux硬件信息命令大全 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201405/16 commands to check hardware information on Linux#page","@type":"TechArticle","headline":"Linux硬件信息命令大全","inLanguage":"en","name":"Linux硬件信息命令大全","url":"https://zhengqbbb.github.io/pages-dev/201405/16 commands to check hardware information on Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201405/16 commands to check hardware information on Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#硬件信息">硬件信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-lscpu">1. lscpu</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-lshw-显示硬件信息列表">2. lshw - 显示硬件信息列表</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-hwinfo-hardware-information">3. hwinfo - Hardware Information</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-lspci-显示pci总线相关信息">4. lspci - 显示pci总线相关信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-lsscsi-列出scsi设备信息">5. lsscsi - 列出scsi设备信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6-lsusb-列出usb总线信息及设备信息">6. lsusb - 列出usb总线信息，及设备信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7-inxi">7. Inxi</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#8-lsblk-列出块设备信息">8. lsblk - 列出块设备信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#9-df-显示文件系统的磁盘空间信息">9. df - 显示文件系统的磁盘空间信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#10-pydf-python版本的df">10. pydf - python版本的df</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#11-fdisk">11. fdisk</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#12-mount">12. mount</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#13-free-查看ram信息">13. free - 查看RAM信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#14-dmidecode">14. dmidecode</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#15-proc-文件系统">15. /proc 文件系统</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#16-hdparm">16. hdparm</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Linux硬件信息命令大全</h1><h3 id="硬件信息">硬件信息</h3>
+<p>在linux系统中，有很多命令可以用于查询主机的硬件信息，有些命令仅仅针对于特定的硬件部件，比如cpu，内存等，而有些命令可以查询很多的硬件信息。</p>
+<p>这篇帖子简单地带大家了解一下最常用的查询各种硬件信息的命令，其中包括lscpu,hwinfo,lshw,dmidecode,lspci等等。</p>
+<h3 id="1-lscpu">1. lscpu</h3>
+<p>lscpu命令可以用来查询处理器cpu的详细信息，只需要简单地输入lscpu即可，如下所示，它本身也没有提供更多选项和功能可供选择。</p>
+<pre><code>$ lscpu
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                4
+On-line CPU(s) list:   0-3
+Thread(s) per core:    1
+Core(s) per socket:    4
+Socket(s):             1
+NUMA node(s):          1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 23
+Stepping:              10
+CPU MHz:               1998.000
+BogoMIPS:              5302.48
+Virtualization:        VT-x
+L1d cache:             32K
+L1i cache:             32K
+L2 cache:              2048K
+NUMA node0 CPU(s):     0-3
+</code></pre>
+<h3 id="2-lshw-显示硬件信息列表">2. lshw - 显示硬件信息列表</h3>
+<p>这个命令用途广泛，它可以根据你的需求以详细或概要的形式列出许多个不同硬件的参数信息，其中包括cpu，内存，磁盘，usb控制器，网卡等等，lshw实质上是从/proc文件目录下的不同文件中提取对应的硬件信息。</p>
+<pre><code>$ sudo lshw -short
+
+H/W path        Device      Class       Description
+===================================================
+                        system      ()
+/0                          bus         DG35EC
+/0/0                        processor   Intel(R) Core(TM)2 Quad CPU    Q8400  @ 2.66GHz
+/0/0/1                      memory      2MiB L2 cache
+/0/0/3                      memory      32KiB L1 cache
+/0/2                        memory      32KiB L1 cache
+/0/4                        memory      64KiB BIOS
+/0/14                       memory      8GiB System Memory
+/0/14/0                     memory      2GiB DIMM DDR2 Synchronous 667 MHz (1.5 ns)
+/0/14/1                     memory      2GiB DIMM DDR2 Synchronous 667 MHz (1.5 ns)
+/0/14/2                     memory      2GiB DIMM DDR2 Synchronous 667 MHz (1.5 ns)
+/0/14/3                     memory      2GiB DIMM DDR2 Synchronous 667 MHz (1.5 ns)
+/0/100                      bridge      82G35 Express DRAM Controller
+/0/100/2                    display     82G35 Express Integrated Graphics Controller
+/0/100/2.1                  display     82G35 Express Integrated Graphics Controller
+/0/100/19       eth0        network     82566DC Gigabit Network Connection
+/0/100/1a                   bus         82801H (ICH8 Family) USB UHCI Controller #4
+/0/100/1a.1                 bus         82801H (ICH8 Family) USB UHCI Controller #5
+/0/100/1a.7                 bus         82801H (ICH8 Family) USB2 EHCI Controller #2
+/0/100/1b                   multimedia  82801H (ICH8 Family) HD Audio Controller
+/0/100/1c                   bridge      82801H (ICH8 Family) PCI Express Port 1
+/0/100/1c.1                 bridge      82801H (ICH8 Family) PCI Express Port 2
+/0/100/1c.2                 bridge      82801H (ICH8 Family) PCI Express Port 3
+/0/100/1c.2/0               storage     JMB368 IDE controller
+/0/100/1d                   bus         82801H (ICH8 Family) USB UHCI Controller #1
+/0/100/1d.1                 bus         82801H (ICH8 Family) USB UHCI Controller #2
+/0/100/1d.2                 bus         82801H (ICH8 Family) USB UHCI Controller #3
+/0/100/1d.7                 bus         82801H (ICH8 Family) USB2 EHCI Controller #1
+/0/100/1e                   bridge      82801 PCI Bridge
+/0/100/1e/5                 bus         FW322/323 [TrueFire] 1394a Controller
+/0/100/1f                   bridge      82801HB/HR (ICH8/R) LPC Interface Controller
+/0/100/1f.2                 storage     82801H (ICH8 Family) 4 port SATA Controller [IDE mode]
+/0/100/1f.3                 bus         82801H (ICH8 Family) SMBus Controller
+/0/100/1f.5                 storage     82801HR/HO/HH (ICH8R/DO/DH) 2 port SATA Controller [IDE m
+/0/1            scsi3       storage     
+/0/1/0.0.0      /dev/sda    disk        500GB ST3500418AS
+/0/1/0.0.0/1    /dev/sda1   volume      70GiB Windows NTFS volume
+/0/1/0.0.0/2    /dev/sda2   volume      395GiB Extended partition
+/0/1/0.0.0/2/5  /dev/sda5   volume      97GiB HPFS/NTFS partition
+/0/1/0.0.0/2/6  /dev/sda6   volume      97GiB Linux filesystem partition
+/0/1/0.0.0/2/7  /dev/sda7   volume      1952MiB Linux swap / Solaris partition
+/0/1/0.0.0/2/8  /dev/sda8   volume      198GiB Linux filesystem partition
+/0/3            scsi4       storage     
+/0/3/0.0.0      /dev/cdrom  disk        DVD RW DRU-190A
+</code></pre>
+<p>点击下面的帖子，可以对lshw有更多的了解。</p>
+<p><a href="http://www.binarytides.com/linux-lshw-command/">在Linux上使用lshw命令获取硬件信息</a></p>
+<h3 id="3-hwinfo-hardware-information">3. hwinfo - Hardware Information</h3>
+<p>hwinfo同样是一个使用非常广泛的硬件信息查询命令，类似于lshw，它同样可以详细或概要地报告多个部件的硬件信息，但不同的是，它有时可以给出比lshw更多的信息。</p>
+<pre><code>$ hwinfo --short
+cpu:                                                            
+                       Intel(R) Core(TM)2 Quad CPU    Q8400  @ 2.66GHz, 2000 MHz
+                       Intel(R) Core(TM)2 Quad CPU    Q8400  @ 2.66GHz, 2000 MHz
+                       Intel(R) Core(TM)2 Quad CPU    Q8400  @ 2.66GHz, 2666 MHz
+                       Intel(R) Core(TM)2 Quad CPU    Q8400  @ 2.66GHz, 2666 MHz
+keyboard:
+  /dev/input/event2    AT Translated Set 2 keyboard
+mouse:
+  /dev/input/mice      Microsoft Basic Optical Mouse v2.0
+graphics card:
+                       Intel 965G-1
+                       Intel 82G35 Express Integrated Graphics Controller
+sound:
+                       Intel 82801H (ICH8 Family) HD Audio Controller
+storage:
+                       Intel 82801H (ICH8 Family) 4 port SATA IDE Controller
+                       Intel 82801H (ICH8 Family) 2 port SATA IDE Controller
+                       JMicron JMB368 IDE controller
+network:
+  eth0                 Intel 82566DC Gigabit Network Connection
+network interface:
+  eth0                 Ethernet network interface
+  lo                   Loopback network interface
+disk:
+  /dev/sda             ST3500418AS
+partition:
+  /dev/sda1            Partition
+  /dev/sda2            Partition
+  /dev/sda5            Partition
+  /dev/sda6            Partition
+  /dev/sda7            Partition
+  /dev/sda8            Partition
+cdrom:
+  /dev/sr0             SONY DVD RW DRU-190A
+usb controller:
+                       Intel 82801H (ICH8 Family) USB UHCI Controller #4
+                       Intel 82801H (ICH8 Family) USB UHCI Controller #5
+                       Intel 82801H (ICH8 Family) USB2 EHCI Controller #2
+                       Intel 82801H (ICH8 Family) USB UHCI Controller #1
+                       Intel 82801H (ICH8 Family) USB UHCI Controller #2
+                       Intel 82801H (ICH8 Family) USB UHCI Controller #3
+                       Intel 82801H (ICH8 Family) USB2 EHCI Controller #1
+bios:
+                       BIOS
+
+... TRUNCATED ...
+</code></pre>
+<p>点击下面的链接可以查看更多关于hwinfo的信息。</p>
+<p><a href="http://www.binarytides.com/linux-hwinfo-command/">在Linux上使用hwinfo命令获取硬件信息</a></p>
+<h3 id="4-lspci-显示pci总线相关信息">4. lspci - 显示pci总线相关信息</h3>
+<p>lscpi命令可以列出pci总线上信息，以及所有连接到pci总线上的设备信息，比如VGA适配器，显卡，网卡，usb端口，sata控制器等等。</p>
+<pre><code>$ lspci
+00:00.0 Host bridge: Intel Corporation 82G35 Express DRAM Controller (rev 03)
+00:02.0 VGA compatible controller: Intel Corporation 82G35 Express Integrated Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation 82G35 Express Integrated Graphics Controller (rev 03)
+00:19.0 Ethernet controller: Intel Corporation 82566DC Gigabit Network Connection (rev 02)
+00:1a.0 USB controller: Intel Corporation 82801H (ICH8 Family) USB UHCI Controller #4 (rev 02)
+00:1a.1 USB controller: Intel Corporation 82801H (ICH8 Family) USB UHCI Controller #5 (rev 02)
+00:1a.7 USB controller: Intel Corporation 82801H (ICH8 Family) USB2 EHCI Controller #2 (rev 02)
+00:1b.0 Audio device: Intel Corporation 82801H (ICH8 Family) HD Audio Controller (rev 02)
+00:1c.0 PCI bridge: Intel Corporation 82801H (ICH8 Family) PCI Express Port 1 (rev 02)
+00:1c.1 PCI bridge: Intel Corporation 82801H (ICH8 Family) PCI Express Port 2 (rev 02)
+00:1c.2 PCI bridge: Intel Corporation 82801H (ICH8 Family) PCI Express Port 3 (rev 02)
+00:1d.0 USB controller: Intel Corporation 82801H (ICH8 Family) USB UHCI Controller #1 (rev 02)
+00:1d.1 USB controller: Intel Corporation 82801H (ICH8 Family) USB UHCI Controller #2 (rev 02)
+00:1d.2 USB controller: Intel Corporation 82801H (ICH8 Family) USB UHCI Controller #3 (rev 02)
+00:1d.7 USB controller: Intel Corporation 82801H (ICH8 Family) USB2 EHCI Controller #1 (rev 02)
+00:1e.0 PCI bridge: Intel Corporation 82801 PCI Bridge (rev f2)
+00:1f.0 ISA bridge: Intel Corporation 82801HB/HR (ICH8/R) LPC Interface Controller (rev 02)
+00:1f.2 IDE interface: Intel Corporation 82801H (ICH8 Family) 4 port SATA Controller [IDE mode] (rev 02)
+00:1f.3 SMBus: Intel Corporation 82801H (ICH8 Family) SMBus Controller (rev 02)
+00:1f.5 IDE interface: Intel Corporation 82801HR/HO/HH (ICH8R/DO/DH) 2 port SATA Controller [IDE mode] (rev 02)
+03:00.0 IDE interface: JMicron Technology Corp. JMB368 IDE controller
+04:05.0 FireWire (IEEE 1394): LSI Corporation FW322/323 [TrueFire] 1394a Controller (rev 70)
+</code></pre>
+<p>可以使用grep命令筛选出特定的设备信息。</p>
+<pre><code>$ lspci -v | grep &quot;VGA&quot; -A 12
+</code></pre>
+<h3 id="5-lsscsi-列出scsi设备信息">5. lsscsi - 列出scsi设备信息</h3>
+<p>列出scsi/sata设备信息，比如硬盘驱动器，光盘驱动器。</p>
+<pre><code>$ lsscsi
+[3:0:0:0]    disk    ATA      ST3500418AS      CC38  /dev/sda 
+[4:0:0:0]    cd/dvd  SONY     DVD RW DRU-190A  1.63  /dev/sr0
+</code></pre>
+<h3 id="6-lsusb-列出usb总线信息及设备信息">6. lsusb - 列出usb总线信息，及设备信息</h3>
+<p>该命令可以显示USB控制器及连接到控制的设备信息。默认情况下，只显示概要信息，可以通过-v选项指示其显示更多的硬件信息。</p>
+<pre><code>$ lsusb
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 007 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 006 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 005 Device 002: ID 045e:00cb Microsoft Corp. Basic Optical Mouse v2.0
+Bus 005 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+</code></pre>
+<p>上面信息显示，在该系统中，有一个usb端口正被鼠标占用。</p>
+<h3 id="7-inxi">7. Inxi</h3>
+<p>inxi命令是一个大的bash脚本文件，其通过从不同的信息来源和命令中获取硬件信息，最后能给出一个颜色高亮的，适合于非专业人员阅读的硬件信息报告。</p>
+<pre><code>$ inxi -Fx
+</code></pre>
+<p><img src="http://www.binarytides.com/blog/wp-content/uploads/2014/04/inxi-linux.png" alt=""></p>
+<h3 id="8-lsblk-列出块设备信息">8. lsblk - 列出块设备信息</h3>
+<p>列出所有块设备信息，其中包括硬盘分区信息，以及其他存储设备，如光盘，闪存等。</p>
+<pre><code>$ lsblk
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0 465.8G  0 disk 
+├─sda1   8:1    0    70G  0 part 
+├─sda2   8:2    0     1K  0 part 
+├─sda5   8:5    0  97.7G  0 part /media/4668484A68483B47
+├─sda6   8:6    0  97.7G  0 part /
+├─sda7   8:7    0   1.9G  0 part [SWAP]
+└─sda8   8:8    0 198.5G  0 part /media/13f35f59-f023-4d98-b06f-9dfaebefd6c1
+sr0     11:0    1  1024M  0 rom
+</code></pre>
+<h3 id="9-df-显示文件系统的磁盘空间信息">9. df - 显示文件系统的磁盘空间信息</h3>
+<p>报告各种挂载的文件系统信息，其中包括挂载点，已用的，可用的磁盘空间。</p>
+<pre><code>$ df -H
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda6       104G   26G   73G  26% /
+none            4.1k     0  4.1k   0% /sys/fs/cgroup
+udev            4.2G  4.1k  4.2G   1% /dev
+tmpfs           837M  1.6M  835M   1% /run
+none            5.3M     0  5.3M   0% /run/lock
+none            4.2G   13M  4.2G   1% /run/shm
+none            105M   21k  105M   1% /run/user
+/dev/sda8       210G  149G   51G  75% /media/13f35f59-f023-4d98-b06f-9dfaebefd6c1
+/dev/sda5       105G   31G   75G  30% /media/4668484A68483B47
+</code></pre>
+<h3 id="10-pydf-python版本的df">10. pydf - python版本的df</h3>
+<p>一个增强型的python版的df命令，可以以不同的颜色显示所查询的信息，看起来比df更好看。</p>
+<pre><code>$ pydf
+Filesystem Size Used Avail Use%          Mounted on                                 
+/dev/sda6   96G  23G   68G 24.4 [#.....] /                                          
+/dev/sda8  195G 138G   47G 70.6 [####..] /media/13f35f59-f023-4d98-b06f-9dfaebefd6c1
+/dev/sda5   98G  28G   69G 29.2 [##....] /media/4668484A68483B47
+</code></pre>
+<h3 id="11-fdisk">11. fdisk</h3>
+<p>fdisk命令可以用来修改硬盘分区表信息，也可以用来显示硬盘分区表信息</p>
+<pre><code>$ sudo fdisk -l
+
+Disk /dev/sda: 500.1 GB, 500107862016 bytes
+255 heads, 63 sectors/track, 60801 cylinders, total 976773168 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x30093008
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *          63   146801969    73400953+   7  HPFS/NTFS/exFAT
+/dev/sda2       146802031   976771071   414984520+   f  W95 Ext&#39;d (LBA)
+/dev/sda5       146802033   351614654   102406311    7  HPFS/NTFS/exFAT
+/dev/sda6       351614718   556427339   102406311   83  Linux
+/dev/sda7       556429312   560427007     1998848   82  Linux swap / Solaris
+/dev/sda8       560429056   976771071   208171008   83  Linux
+</code></pre>
+<h3 id="12-mount">12. mount</h3>
+<p>mount命令可以用来挂载设备，当然也可以用来查看系统中设备的挂载情况。</p>
+<pre><code>$ mount | column -t
+/dev/sda6    on  /                                            type  ext4             (rw,errors=remount-ro)
+proc         on  /proc                                        type  proc             (rw,noexec,nosuid,nodev)
+sysfs        on  /sys                                         type  sysfs            (rw,noexec,nosuid,nodev)
+none         on  /sys/fs/cgroup                               type  tmpfs            (rw)
+none         on  /sys/fs/fuse/connections                     type  fusectl          (rw)
+none         on  /sys/kernel/debug                            type  debugfs          (rw)
+none         on  /sys/kernel/security                         type  securityfs       (rw)
+udev         on  /dev                                         type  devtmpfs         (rw,mode=0755)
+devpts       on  /dev/pts                                     type  devpts           (rw,noexec,nosuid,gid=5,mode=0620)
+tmpfs        on  /run                                         type  tmpfs            (rw,noexec,nosuid,size=10%,mode=0755)
+none         on  /run/lock                                    type  tmpfs            (rw,noexec,nosuid,nodev,size=5242880)
+none         on  /run/shm                                     type  tmpfs            (rw,nosuid,nodev)
+none         on  /run/user                                    type  tmpfs            (rw,noexec,nosuid,nodev,size=104857600,mode=0755)
+none         on  /sys/fs/pstore                               type  pstore           (rw)
+/dev/sda8    on  /media/13f35f59-f023-4d98-b06f-9dfaebefd6c1  type  ext4             (rw,nosuid,nodev,errors=remount-ro)
+/dev/sda5    on  /media/4668484A68483B47                      type  fuseblk          (rw,nosuid,nodev,allow_other,blksize=4096)
+binfmt_misc  on  /proc/sys/fs/binfmt_misc                     type  binfmt_misc      (rw,noexec,nosuid,nodev)
+systemd      on  /sys/fs/cgroup/systemd                       type  cgroup           (rw,noexec,nosuid,nodev,none,name=systemd)
+gvfsd-fuse   on  /run/user/1000/gvfs                          type  fuse.gvfsd-fuse  (rw,nosuid,nodev,user=enlightened)
+</code></pre>
+<p>同样，可以使用grep命令来筛选出想看的文件系统信息。</p>
+<pre><code>$ mount | column -t | grep ext
+</code></pre>
+<h3 id="13-free-查看ram信息">13. free - 查看RAM信息</h3>
+<p>查看系统中RAM的使用情况，包括已使用空间，未使用空间，以及总空间。</p>
+<pre><code>$ free -m
+             total       used       free     shared    buffers     cached
+Mem:          7975       5865       2110          0         24        622
+-/+ buffers/cache:       5218       2757
+Swap:         1951        921       1030
+</code></pre>
+<h3 id="14-dmidecode">14. dmidecode</h3>
+<p>dmidecode命令不同于其他的命令，它是通过读取SMBOIS数据结构（也称为DMI表）中数据来提取硬件信息。</p>
+<pre><code># 显示处理器信息
+$ sudo dmidecode -t processor
+
+# 显示内存信息
+$ sudo dmidecode -t memory
+
+# 显示bios信息
+$ sudo dmidecode -t bios
+</code></pre>
+<p>查看man手册获取更多信息。</p>
+<h3 id="15-proc-文件系统">15. /proc 文件系统</h3>
+<p>在/proc目录下的许多虚拟文件包含了很多有关硬件参数及配置的信息。</p>
+<p>CPU、内存信息</p>
+<pre><code># cpu信息
+$ cat /proc/cpuinfo
+
+# 内存信息
+$ cat /proc/meminfo
+</code></pre>
+<p>Linux内核信息</p>
+<pre><code>$ cat /proc/version
+Linux version 3.11.0-12-generic (buildd@allspice) (gcc version 4.8.1 (Ubuntu/Linaro 4.8.1-10ubuntu7) ) #19-Ubuntu SMP Wed Oct 9 16:20:46 UTC 2013
+</code></pre>
+<p>SCSI/Sata设备信息</p>
+<pre><code>$ cat /proc/scsi/scsi 
+Attached devices:
+Host: scsi3 Channel: 00 Id: 00 Lun: 00
+  Vendor: ATA      Model: ST3500418AS      Rev: CC38
+  Type:   Direct-Access                    ANSI  SCSI revision: 05
+Host: scsi4 Channel: 00 Id: 00 Lun: 00
+  Vendor: SONY     Model: DVD RW DRU-190A  Rev: 1.63
+  Type:   CD-ROM                           ANSI  SCSI revision: 05
+</code></pre>
+<p>分区信息</p>
+<pre><code>$ cat /proc/partitions 
+major minor  #blocks  name
+
+   8        0  488386584 sda
+   8        1   73400953 sda1
+   8        2          1 sda2
+   8        5  102406311 sda5
+   8        6  102406311 sda6
+   8        7    1998848 sda7
+   8        8  208171008 sda8
+  11        0    1048575 sr0
+</code></pre>
+<h3 id="16-hdparm">16. hdparm</h3>
+<p>hdparm命令可以获取sata设备如硬盘等设备信息。</p>
+<pre><code>$ sudo hdparm -i /dev/sda
+
+/dev/sda:
+
+ Model=ST3500418AS, FwRev=CC38, SerialNo=9VMJXV1N
+ Config={ HardSect NotMFM HdSw&gt;15uSec Fixed DTR&gt;10Mbs RotSpdTol&gt;.5% }
+ RawCHS=16383/16/63, TrkSize=0, SectSize=0, ECCbytes=4
+ BuffType=unknown, BuffSize=16384kB, MaxMultSect=16, MultSect=16
+ CurCHS=16383/16/63, CurSects=16514064, LBA=yes, LBAsects=976773168
+ IORDY=on/off, tPIO={min:120,w/IORDY:120}, tDMA={min:120,rec:120}
+ PIO modes:  pio0 pio1 pio2 pio3 pio4 
+ DMA modes:  mdma0 mdma1 mdma2 
+ UDMA modes: udma0 udma1 udma2 udma3 udma4 udma5 *udma6 
+ AdvancedPM=no WriteCache=enabled
+ Drive conforms to: unknown:  ATA/ATAPI-4,5,6,7
+
+ * signifies the current active mode
+</code></pre>
+<h3 id="总结">总结</h3>
+<p>每一个命令在获取信息的方式会稍微有些不同，在查询某一设备时，你也有可能要结合多个命令才能获取你想要的硬件信息。不过，这些命令都可以在大多数的linux发行版中找到，可以很容易地从默认的仓库中获取安装。</p>
+<p>在桌面版系统中，还有一个便于使用的图形界面的工具，比如Hardinfo、I-nex就是其中非常流行的工具，他们可以提供多个硬件部件的详细信息。</p>
+<hr>
+<p>via: <a href="http://www.binarytides.com/linux-commands-hardware-info/">http://www.binarytides.com/linux-commands-hardware-info/</a></p>
+<p>译者：<a href="https://github.com/stallonederek">stallonederek</a> 校对：<a href="https://github.com/%E6%A0%A1wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="http://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#硬件信息">硬件信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-lscpu">1. lscpu</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-lshw-显示硬件信息列表">2. lshw - 显示硬件信息列表</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-hwinfo-hardware-information">3. hwinfo - Hardware Information</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-lspci-显示pci总线相关信息">4. lspci - 显示pci总线相关信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-lsscsi-列出scsi设备信息">5. lsscsi - 列出scsi设备信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6-lsusb-列出usb总线信息及设备信息">6. lsusb - 列出usb总线信息，及设备信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7-inxi">7. Inxi</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#8-lsblk-列出块设备信息">8. lsblk - 列出块设备信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#9-df-显示文件系统的磁盘空间信息">9. df - 显示文件系统的磁盘空间信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#10-pydf-python版本的df">10. pydf - python版本的df</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#11-fdisk">11. fdisk</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#12-mount">12. mount</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#13-free-查看ram信息">13. free - 查看RAM信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#14-dmidecode">14. dmidecode</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#15-proc-文件系统">15. /proc 文件系统</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#16-hdparm">16. hdparm</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201405/16 commands to check hardware information on Linux","title":"Linux硬件信息命令大全"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

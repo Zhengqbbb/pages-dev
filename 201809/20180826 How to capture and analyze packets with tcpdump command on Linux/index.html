@@ -1,0 +1,311 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 Linux 上使用 tcpdump 命令捕获和分析数据包 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 Linux 上使用 tcpdump 命令捕获和分析数据包 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 Linux 上使用 tcpdump 命令捕获和分析数据包 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201809/20180826 How to capture and analyze packets with tcpdump command on Linux#page","@type":"TechArticle","headline":"如何在 Linux 上使用 tcpdump 命令捕获和分析数据包","inLanguage":"en","name":"如何在 Linux 上使用 tcpdump 命令捕获和分析数据包","url":"https://zhengqbbb.github.io/pages-dev/201809/20180826 How to capture and analyze packets with tcpdump command on Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201809/20180826 How to capture and analyze packets with tcpdump command on Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例1从特定接口捕获数据包">示例：1）从特定接口捕获数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例2从特定接口捕获特定数量数据包">示例：2）从特定接口捕获特定数量数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例3显示-tcpdump-的所有可用接口">示例：3）显示 tcpdump 的所有可用接口</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例4捕获带有可读时间戳的数据包-tttt-选项">示例：4）捕获带有可读时间戳的数据包（-tttt 选项）</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例5捕获数据包并将其保存到文件-w-选项">示例：5）捕获数据包并将其保存到文件（-w 选项）</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例6从保存的文件中读取数据包-r-选项">示例：6）从保存的文件中读取数据包（-r 选项）</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例7仅捕获特定接口上的-ip-地址数据包-n-选项">示例：7）仅捕获特定接口上的 IP 地址数据包（-n 选项）</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例8仅捕获特定接口上的-tcp-数据包">示例：8）仅捕获特定接口上的 TCP 数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例9从特定接口上的特定端口捕获数据包">示例：9）从特定接口上的特定端口捕获数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例10在特定接口上捕获来自特定来源-ip-的数据包">示例：10）在特定接口上捕获来自特定来源 IP 的数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例11在特定接口上捕获来自特定目的-ip-的数据包">示例：11）在特定接口上捕获来自特定目的 IP 的数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例12捕获两台主机之间的-tcp-数据包通信">示例：12）捕获两台主机之间的 TCP 数据包通信</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例13捕获两台主机之间来回的-udp-网络数据包">示例：13）捕获两台主机之间（来回）的 UDP 网络数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例14捕获十六进制和-ascii-格式的数据包">示例：14）捕获十六进制和 ASCII 格式的数据包</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 Linux 上使用 tcpdump 命令捕获和分析数据包</h1><p><code>tcpdump</code> 是一个有名的命令行<strong>数据包分析</strong>工具。我们可以使用 <code>tcpdump</code> 命令捕获实时 TCP/IP 数据包，这些数据包也可以保存到文件中。之后这些捕获的数据包可以通过 <code>tcpdump</code> 命令进行分析。<code>tcpdump</code> 命令在网络层面进行故障排除时变得非常方便。</p>
+<p><img src="https://www.linuxtechi.com/wp-content/uploads/2018/08/tcpdump-command-examples-linux.jpg" alt=""></p>
+<p><code>tcpdump</code> 在大多数 Linux 发行版中都能用，对于基于 Debian 的Linux，可以使用 <code>apt</code> 命令安装它。</p>
+<pre><code># apt install tcpdump -y
+</code></pre>
+<p>在基于 RPM 的 Linux 操作系统上，可以使用下面的 <code>yum</code> 命令安装 <code>tcpdump</code>。</p>
+<pre><code># yum install tcpdump -y
+</code></pre>
+<p>当我们在没用任何选项的情况下运行 <code>tcpdump</code> 命令时，它将捕获所有接口的数据包。因此，要停止或取消 <code>tcpdump</code> 命令，请键入 <code>ctrl+c</code>。在本教程中，我们将使用不同的实例来讨论如何捕获和分析数据包。</p>
+<h3 id="示例1从特定接口捕获数据包">示例：1）从特定接口捕获数据包</h3>
+<p>当我们在没用任何选项的情况下运行 <code>tcpdump</code> 命令时，它将捕获所有接口上的数据包，因此，要从特定接口捕获数据包，请使用选项 <code>-i</code>，后跟接口名称。</p>
+<p>语法：</p>
+<pre><code># tcpdump -i {接口名}
+</code></pre>
+<p>假设我想从接口 <code>enp0s3</code> 捕获数据包。</p>
+<p>输出将如下所示，</p>
+<pre><code>tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+06:43:22.905890 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39374: Flags [P.], seq 21952160:21952540, ack 13537, win 291, options [nop,nop,TS val 26164373 ecr 6580205], length 380
+06:43:22.906045 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39374: Flags [P.], seq 21952540:21952760, ack 13537, win 291, options [nop,nop,TS val 26164373 ecr 6580205], length 220
+06:43:22.906150 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39374: Flags [P.], seq 21952760:21952980, ack 13537, win 291, options [nop,nop,TS val 26164373 ecr 6580205], length 220
+06:43:22.906291 IP 169.144.0.1.39374 &gt; compute-0-1.example.com.ssh: Flags [.], ack 21952980, win 13094, options [nop,nop,TS val 6580205 ecr 26164373], length 0
+06:43:22.906303 IP 169.144.0.1.39374 &gt; compute-0-1.example.com.ssh: Flags [P.], seq 13537:13609, ack 21952980, win 13094, options [nop,nop,TS val 6580205 ecr 26164373], length 72
+06:43:22.906322 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39374: Flags [P.], seq 21952980:21953200, ack 13537, win 291, options [nop,nop,TS val 26164373 ecr 6580205], length 220
+^C
+109930 packets captured
+110065 packets received by filter
+133 packets dropped by kernel
+[[email protected] ~]#
+</code></pre>
+<h3 id="示例2从特定接口捕获特定数量数据包">示例：2）从特定接口捕获特定数量数据包</h3>
+<p>假设我们想从特定接口（如 <code>enp0s3</code>）捕获 12 个数据包，这可以使用选项 <code>-c {数量} -I {接口名称}</code> 轻松实现。</p>
+<pre><code>root@compute-0-1 ~]# tcpdump -c 12 -i enp0s3
+</code></pre>
+<p>上面的命令将生成如下所示的输出，</p>
+<p><a href="https://www.linuxtechi.com/wp-content/uploads/2018/08/N-Number-Packsets-tcpdump-interface.jpg"><img src="https://www.linuxtechi.com/wp-content/uploads/2018/08/N-Number-Packsets-tcpdump-interface-1024x422.jpg" alt="N-Number-Packsets-tcpdump-interface"></a></p>
+<h3 id="示例3显示-tcpdump-的所有可用接口">示例：3）显示 tcpdump 的所有可用接口</h3>
+<p>使用 <code>-D</code> 选项显示 <code>tcpdump</code> 命令的所有可用接口，</p>
+<pre><code>[root@compute-0-1 ~]# tcpdump -D
+1.enp0s3
+2.enp0s8
+3.ovs-system
+4.br-int
+5.br-tun
+6.nflog (Linux netfilter log (NFLOG) interface)
+7.nfqueue (Linux netfilter queue (NFQUEUE) interface)
+8.usbmon1 (USB bus number 1)
+9.usbmon2 (USB bus number 2)
+10.qbra692e993-28
+11.qvoa692e993-28
+12.qvba692e993-28
+13.tapa692e993-28
+14.vxlan_sys_4789
+15.any (Pseudo-device that captures on all interfaces)
+16.lo [Loopback]
+[[email protected] ~]#
+</code></pre>
+<p>我正在我的一个 openstack 计算节点上运行 <code>tcpdump</code> 命令，这就是为什么在输出中你会看到数字接口、标签接口、网桥和 vxlan 接口</p>
+<h3 id="示例4捕获带有可读时间戳的数据包-tttt-选项">示例：4）捕获带有可读时间戳的数据包（-tttt 选项）</h3>
+<p>默认情况下，在 <code>tcpdump</code> 命令输出中，不显示可读性好的时间戳，如果您想将可读性好的时间戳与每个捕获的数据包相关联，那么使用 <code>-tttt</code> 选项，示例如下所示，</p>
+<pre><code>[[email protected] ~]# tcpdump -c 8 -tttt -i enp0s3
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+2018-08-25 23:23:36.954883 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1449206247:1449206435, ack 3062020950, win 291, options [nop,nop,TS val 86178422 ecr 21583714], length 188
+2018-08-25 23:23:36.955046 IP 169.144.0.1.39406 &gt; compute-0-1.example.com.ssh: Flags [.], ack 188, win 13585, options [nop,nop,TS val 21583717 ecr 86178422], length 0
+2018-08-25 23:23:37.140097 IP controller0.example.com.amqp &gt; compute-0-1.example.com.57818: Flags [P.], seq 814607956:814607964, ack 2387094506, win 252, options [nop,nop,TS val 86172228 ecr 86176695], length 8
+2018-08-25 23:23:37.140175 IP compute-0-1.example.com.57818 &gt; controller0.example.com.amqp: Flags [.], ack 8, win 237, options [nop,nop,TS val 86178607 ecr 86172228], length 0
+2018-08-25 23:23:37.355238 IP compute-0-1.example.com.57836 &gt; controller0.example.com.amqp: Flags [P.], seq 1080415080:1080417400, ack 1690909362, win 237, options [nop,nop,TS val 86178822 ecr 86163054], length 2320
+2018-08-25 23:23:37.357119 IP controller0.example.com.amqp &gt; compute-0-1.example.com.57836: Flags [.], ack 2320, win 1432, options [nop,nop,TS val 86172448 ecr 86178822], length 0
+2018-08-25 23:23:37.357545 IP controller0.example.com.amqp &gt; compute-0-1.example.com.57836: Flags [P.], seq 1:22, ack 2320, win 1432, options [nop,nop,TS val 86172449 ecr 86178822], length 21
+2018-08-25 23:23:37.357572 IP compute-0-1.example.com.57836 &gt; controller0.example.com.amqp: Flags [.], ack 22, win 237, options [nop,nop,TS val 86178825 ecr 86172449], length 0
+8 packets captured
+134 packets received by filter
+69 packets dropped by kernel
+[[email protected] ~]#
+</code></pre>
+<h3 id="示例5捕获数据包并将其保存到文件-w-选项">示例：5）捕获数据包并将其保存到文件（-w 选项）</h3>
+<p>使用 <code>tcpdump</code> 命令中的 <code>-w</code> 选项将捕获的 TCP/IP 数据包保存到一个文件中，以便我们可以在将来分析这些数据包以供进一步分析。</p>
+<p>语法：</p>
+<pre><code># tcpdump -w 文件名.pcap -i {接口名}
+</code></pre>
+<p>注意：文件扩展名必须为 <code>.pcap</code>。</p>
+<p>假设我要把 <code>enp0s3</code> 接口捕获到的包保存到文件名为 <code>enp0s3-26082018.pcap</code>。</p>
+<pre><code>[root@compute-0-1 ~]# tcpdump -w enp0s3-26082018.pcap -i enp0s3
+</code></pre>
+<p>上述命令将生成如下所示的输出，</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -w enp0s3-26082018.pcap -i enp0s3
+tcpdump: listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+^C841 packets captured
+845 packets received by filter
+0 packets dropped by kernel
+[root@compute-0-1  ~]# ls
+anaconda-ks.cfg enp0s3-26082018.pcap
+[root@compute-0-1  ~]#
+</code></pre>
+<p>捕获并保存大小<strong>大于 N 字节</strong>的数据包。</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -w enp0s3-26082018-2.pcap greater 1024
+</code></pre>
+<p>捕获并保存大小<strong>小于 N 字节</strong>的数据包。</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -w enp0s3-26082018-3.pcap less 1024
+</code></pre>
+<h3 id="示例6从保存的文件中读取数据包-r-选项">示例：6）从保存的文件中读取数据包（-r 选项）</h3>
+<p>在上面的例子中，我们已经将捕获的数据包保存到文件中，我们可以使用选项 <code>-r</code> 从文件中读取这些数据包，例子如下所示，</p>
+<pre><code>[root@compute-0-1 ~]# tcpdump -r enp0s3-26082018.pcap
+</code></pre>
+<p>用可读性高的时间戳读取包内容，</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -tttt -r enp0s3-26082018.pcap
+reading from file enp0s3-26082018.pcap, link-type EN10MB (Ethernet)
+2018-08-25 22:03:17.249648 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1426167803:1426167927, ack 3061962134, win 291, options
+[nop,nop,TS val 81358717 ecr 20378789], length 124
+2018-08-25 22:03:17.249840 IP 169.144.0.1.39406 &gt; compute-0-1.example.com.ssh: Flags [.], ack 124, win 564, options [nop,nop,TS val 20378791 ecr 81358
+717], length 0
+2018-08-25 22:03:17.454559 IP controller0.example.com.amqp &gt; compute-0-1.example.com.57836: Flags [.], ack 1079416895, win 1432, options [nop,nop,TS v
+al 81352560 ecr 81353913], length 0
+2018-08-25 22:03:17.454642 IP compute-0-1.example.com.57836 &gt; controller0.example.com.amqp: Flags [.], ack 1, win 237, options [nop,nop,TS val 8135892
+2 ecr 81317504], length 0
+2018-08-25 22:03:17.646945 IP compute-0-1.example.com.57788 &gt; controller0.example.com.amqp: Flags [.], seq 106760587:106762035, ack 688390730, win 237
+, options [nop,nop,TS val 81359114 ecr 81350901], length 1448
+2018-08-25 22:03:17.647043 IP compute-0-1.example.com.57788 &gt; controller0.example.com.amqp: Flags [P.], seq 1448:1956, ack 1, win 237, options [nop,no
+p,TS val 81359114 ecr 81350901], length 508
+2018-08-25 22:03:17.647502 IP controller0.example.com.amqp &gt; compute-0-1.example.com.57788: Flags [.], ack 1956, win 1432, options [nop,nop,TS val 813
+52753 ecr 81359114], length 0
+.........................................................................................................................
+</code></pre>
+<h3 id="示例7仅捕获特定接口上的-ip-地址数据包-n-选项">示例：7）仅捕获特定接口上的 IP 地址数据包（-n 选项）</h3>
+<p>使用 <code>tcpdump</code> 命令中的 <code>-n</code> 选项，我们能只捕获特定接口上的 IP 地址数据包，示例如下所示，</p>
+<pre><code>[root@compute-0-1 ~]# tcpdump -n -i enp0s3
+</code></pre>
+<p>上述命令输出如下，</p>
+<pre><code>tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+22:22:28.537904 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1433301395:1433301583, ack 3061976250, win 291, options [nop,nop,TS val 82510005 ecr 20666610], length 188
+22:22:28.538173 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 188, win 9086, options [nop,nop,TS val 20666613 ecr 82510005], length 0
+22:22:28.538573 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 188:552, ack 1, win 291, options [nop,nop,TS val 82510006 ecr 20666613], length 364
+22:22:28.538736 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 552, win 9086, options [nop,nop,TS val 20666613 ecr 82510006], length 0
+22:22:28.538874 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 552:892, ack 1, win 291, options [nop,nop,TS val 82510006 ecr 20666613], length 340
+22:22:28.539042 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 892, win 9086, options [nop,nop,TS val 20666613 ecr 82510006], length 0
+22:22:28.539178 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 892:1232, ack 1, win 291, options [nop,nop,TS val 82510006 ecr 20666613], length 340
+22:22:28.539282 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 1232, win 9086, options [nop,nop,TS val 20666614 ecr 82510006], length 0
+22:22:28.539479 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1232:1572, ack 1, win 291, options [nop,nop,TS val 82510006 ecr 20666614], length 340
+22:22:28.539595 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 1572, win 9086, options [nop,nop,TS val 20666614 ecr 82510006], length 0
+22:22:28.539760 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1572:1912, ack 1, win 291, options [nop,nop,TS val 82510007 ecr 20666614], length 340
+.........................................................................
+</code></pre>
+<p>您还可以使用 <code>tcpdump</code> 命令中的 <code>-c</code> 和 <code>-N</code> 选项捕获 N 个 IP 地址包，</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -c 25 -n -i enp0s3
+</code></pre>
+<h3 id="示例8仅捕获特定接口上的-tcp-数据包">示例：8）仅捕获特定接口上的 TCP 数据包</h3>
+<p>在 <code>tcpdump</code> 命令中，我们能使用 <code>tcp</code> 选项来只捕获 TCP 数据包，</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -i enp0s3 tcp
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+22:36:54.521053 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1433336467:1433336655, ack 3061986618, win 291, options [nop,nop,TS val 83375988 ecr 20883106], length 188
+22:36:54.521474 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 188, win 9086, options [nop,nop,TS val 20883109 ecr 83375988], length 0
+22:36:54.522214 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 188:552, ack 1, win 291, options [nop,nop,TS val 83375989 ecr 20883109], length 364
+22:36:54.522508 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 552, win 9086, options [nop,nop,TS val 20883109 ecr 83375989], length 0
+22:36:54.522867 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 552:892, ack 1, win 291, options [nop,nop,TS val 83375990 ecr 20883109], length 340
+22:36:54.523006 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 892, win 9086, options [nop,nop,TS val 20883109 ecr 83375990], length 0
+22:36:54.523304 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 892:1232, ack 1, win 291, options [nop,nop,TS val 83375990 ecr 20883109], length 340
+22:36:54.523461 IP 169.144.0.1.39406 &gt; 169.144.0.20.ssh: Flags [.], ack 1232, win 9086, options [nop,nop,TS val 20883110 ecr 83375990], length 0
+22:36:54.523604 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1232:1572, ack 1, win 291, options [nop,nop,TS val 83375991 ecr 20883110], length 340
+...................................................................................................................................................
+</code></pre>
+<h3 id="示例9从特定接口上的特定端口捕获数据包">示例：9）从特定接口上的特定端口捕获数据包</h3>
+<p>使用 <code>tcpdump</code> 命令，我们可以从特定接口 <code>enp0s3</code> 上的特定端口（例如 22）捕获数据包。</p>
+<p>语法：</p>
+<pre><code># tcpdump -i {interface-name} port {Port_Number}
+</code></pre>
+<pre><code>[root@compute-0-1  ~]# tcpdump -i enp0s3 port 22
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+22:54:45.032412 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1435010787:1435010975, ack 3061993834, win 291, options [nop,nop,TS val 84446499 ecr 21150734], length 188
+22:54:45.032631 IP 169.144.0.1.39406 &gt; compute-0-1.example.com.ssh: Flags [.], ack 188, win 9131, options [nop,nop,TS val 21150737 ecr 84446499], length 0
+22:54:55.037926 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 188:576, ack 1, win 291, options [nop,nop,TS val 84456505 ecr 21150737], length 388
+22:54:55.038106 IP 169.144.0.1.39406 &gt; compute-0-1.example.com.ssh: Flags [.], ack 576, win 9154, options [nop,nop,TS val 21153238 ecr 84456505], length 0
+22:54:55.038286 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 576:940, ack 1, win 291, options [nop,nop,TS val 84456505 ecr 21153238], length 364
+22:54:55.038564 IP 169.144.0.1.39406 &gt; compute-0-1.example.com.ssh: Flags [.], ack 940, win 9177, options [nop,nop,TS val 21153238 ecr 84456505], length 0
+22:54:55.038708 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 940:1304, ack 1, win 291, options [nop,nop,TS val 84456506 ecr 21153238], length 364
+............................................................................................................................
+</code></pre>
+<h3 id="示例10在特定接口上捕获来自特定来源-ip-的数据包">示例：10）在特定接口上捕获来自特定来源 IP 的数据包</h3>
+<p>在 <code>tcpdump</code> 命令中，使用 <code>src</code> 关键字后跟 IP 地址，我们可以捕获来自特定来源 IP 的数据包，</p>
+<p>语法：</p>
+<pre><code># tcpdump -n -i {接口名} src {IP 地址}
+</code></pre>
+<p>例子如下，</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -n -i enp0s3 src 169.144.0.10
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+23:03:45.912733 IP 169.144.0.10.amqp &gt; 169.144.0.20.57800: Flags [.], ack 526623844, win 243, options [nop,nop,TS val 84981008 ecr 84982372], length 0
+23:03:46.136757 IP 169.144.0.10.amqp &gt; 169.144.0.20.57796: Flags [.], ack 2535995970, win 252, options [nop,nop,TS val 84981232 ecr 84982596], length 0
+23:03:46.153398 IP 169.144.0.10.amqp &gt; 169.144.0.20.57798: Flags [.], ack 3623063621, win 243, options [nop,nop,TS val 84981248 ecr 84982612], length 0
+23:03:46.361160 IP 169.144.0.10.amqp &gt; 169.144.0.20.57802: Flags [.], ack 2140263945, win 252, options [nop,nop,TS val 84981456 ecr 84982821], length 0
+23:03:46.376926 IP 169.144.0.10.amqp &gt; 169.144.0.20.57808: Flags [.], ack 175946224, win 252, options [nop,nop,TS val 84981472 ecr 84982836], length 0
+23:03:46.505242 IP 169.144.0.10.amqp &gt; 169.144.0.20.57810: Flags [.], ack 1016089556, win 252, options [nop,nop,TS val 84981600 ecr 84982965], length 0
+23:03:46.616994 IP 169.144.0.10.amqp &gt; 169.144.0.20.57812: Flags [.], ack 832263835, win 252, options [nop,nop,TS val 84981712 ecr 84983076], length 0
+23:03:46.809344 IP 169.144.0.10.amqp &gt; 169.144.0.20.57814: Flags [.], ack 2781799939, win 252, options [nop,nop,TS val 84981904 ecr 84983268], length 0
+23:03:46.809485 IP 169.144.0.10.amqp &gt; 169.144.0.20.57816: Flags [.], ack 1662816815, win 252, options [nop,nop,TS val 84981904 ecr 84983268], length 0
+23:03:47.033301 IP 169.144.0.10.amqp &gt; 169.144.0.20.57818: Flags [.], ack 2387094362, win 252, options [nop,nop,TS val 84982128 ecr 84983492], length 0
+^C
+10 packets captured
+12 packets received by filter
+0 packets dropped by kernel
+</code></pre>
+<h3 id="示例11在特定接口上捕获来自特定目的-ip-的数据包">示例：11）在特定接口上捕获来自特定目的 IP 的数据包</h3>
+<p>语法：</p>
+<pre><code># tcpdump -n -i {接口名} dst {IP 地址}
+</code></pre>
+<pre><code>[root@compute-0-1  ~]# tcpdump -n -i enp0s3 dst 169.144.0.1
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+23:10:43.520967 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1439564171:1439564359, ack 3062005550, win 291, options [nop,nop,TS val 85404988 ecr 21390356], length 188
+23:10:43.521441 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 188:408, ack 1, win 291, options [nop,nop,TS val 85404988 ecr 21390359], length 220
+23:10:43.521719 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 408:604, ack 1, win 291, options [nop,nop,TS val 85404989 ecr 21390359], length 196
+23:10:43.521993 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 604:800, ack 1, win 291, options [nop,nop,TS val 85404989 ecr 21390359], length 196
+23:10:43.522157 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 800:996, ack 1, win 291, options [nop,nop,TS val 85404989 ecr 21390359], length 196
+23:10:43.522346 IP 169.144.0.20.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 996:1192, ack 1, win 291, options [nop,nop,TS val 85404989 ecr 21390359], length 196
+.........................................................................................
+</code></pre>
+<h3 id="示例12捕获两台主机之间的-tcp-数据包通信">示例：12）捕获两台主机之间的 TCP 数据包通信</h3>
+<p>假设我想捕获两台主机 169.144.0.1 和 169.144.0.20 之间的 TCP 数据包，示例如下所示，</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -w two-host-tcp-comm.pcap -i enp0s3 tcp and \(host 169.144.0.1 or host 169.144.0.20\)
+</code></pre>
+<p>使用 <code>tcpdump</code> 命令只捕获两台主机之间的 SSH 数据包流，</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -w ssh-comm-two-hosts.pcap -i enp0s3 src 169.144.0.1 and port 22 and dst 169.144.0.20 and port 22
+</code></pre>
+<h3 id="示例13捕获两台主机之间来回的-udp-网络数据包">示例：13）捕获两台主机之间（来回）的 UDP 网络数据包</h3>
+<p>语法：</p>
+<pre><code># tcpdump -w -s -i udp and \(host and host \)
+</code></pre>
+<pre><code>[root@compute-0-1  ~]# tcpdump -w two-host-comm.pcap -s 1000 -i enp0s3 udp and \(host 169.144.0.10 and host 169.144.0.20\)
+</code></pre>
+<h3 id="示例14捕获十六进制和-ascii-格式的数据包">示例：14）捕获十六进制和 ASCII 格式的数据包</h3>
+<p>使用 <code>tcpdump</code> 命令，我们可以以 ASCII 和十六进制格式捕获 TCP/IP 数据包，</p>
+<p>要使用 <code>-A</code> 选项捕获 ASCII 格式的数据包，示例如下所示:</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -c 10 -A -i enp0s3
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+00:37:10.520060 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1452637331:1452637519, ack 3062125586, win 333, options [nop,nop,TS val 90591987 ecr 22687106], length 188
+E...[root@compute-0-1 @...............V.|...T....MT......
+.fR..Z-....b.:..Z5...{.&#39;p....].&quot;}...Z..9.?.......&quot;root@compute-0-1 &lt;.....V..C.....{,...OKP.2.*...`..-sS..1S...........:.O[.....{G..%ze.Pn.T..N.... ....qB..5...n.....`...:=...[..0....k.....S.:..5!.9..G....!-..&#39;..
+00:37:10.520319 IP 169.144.0.1.39406 &gt; compute-0-1.example.com.ssh: Flags [.], ack 188, win 13930, options [nop,nop,TS val 22687109 ecr 90591987], length 0
+root@compute-0-1 @.|+..............T.V.}O..6j.d.....
+.Z-..fR.
+00:37:11.687543 IP controller0.example.com.amqp &gt; compute-0-1.example.com.57800: Flags [.], ack 526624548, win 243, options [nop,nop,TS val 90586768 ecr 90588146], length 0
+root@compute-0-1 @.!L...
+.....(..g....c.$...........
+.f&gt;..fC.
+00:37:11.687612 IP compute-0-1.example.com.57800 &gt; controller0.example.com.amqp: Flags [.], ack 1, win 237, options [nop,nop,TS val 90593155 ecr 90551716], length 0
+root@compute-0-1 @..........
+...(.c.$g.......Se.....
+.fW..e..
+..................................................................................................................................................
+</code></pre>
+<p>要同时以十六进制和 ASCII 格式捕获数据包，请使用 <code>-XX</code> 选项。</p>
+<pre><code>[root@compute-0-1  ~]# tcpdump -c 10 -XX -i enp0s3
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), capture size 262144 bytes
+00:39:15.124363 IP compute-0-1.example.com.ssh &gt; 169.144.0.1.39406: Flags [P.], seq 1452640859:1452641047, ack 3062126346, win 333, options [nop,nop,TS val 90716591 ecr 22718257], length 188
+0x0000: 0a00 2700 0000 0800 27f4 f935 0800 4510 ..&#39;.....&#39;..5..E.
+0x0010: 00f0 5bc6 4000 4006 8afc a990 0014 a990 ..[root@compute-0-1 @.........
+0x0020: 0001 0016 99ee 5695 8a5b b684 570a 8018 ......V..[..W...
+0x0030: 014d 5418 0000 0101 080a 0568 39af 015a .MT........h9..Z
+0x0040: a731 adb7 58b6 1a0f 2006 df67 c9b6 4479 .1..X......g..Dy
+0x0050: 19fd 2c3d 2042 3313 35b9 a160 fa87 d42c ..,=.B3.5..`...,
+0x0060: 89a9 3d7d dfbf 980d 2596 4f2a 99ba c92a ..=}....%.O*...*
+0x0070: 3e1e 7bf7 3af2 a5cc ee4f 10bc 7dfc 630d &gt;.{.:....O..}.c.
+0x0080: 898a 0e16 6825 56c7 b683 1de4 3526 ff04 ....h%V.....5&amp;..
+0x0090: 68d1 4f7d babd 27ba 84ae c5d3 750b 01bd h.O}..&#39;.....u...
+0x00a0: 9c43 e10a 33a6 8df2 a9f0 c052 c7ed 2ff5 .C..3......R../.
+0x00b0: bfb1 ce84 edfc c141 6dad fa19 0702 62a7 .......Am.....b.
+0x00c0: 306c db6b 2eea 824e eea5 acd7 f92e 6de3 0l.k...N......m.
+0x00d0: 85d0 222d f8bf 9051 2c37 93c8 506d 5cb5 ..&quot;-...Q,7..Pm\.
+0x00e0: 3b4a 2a80 d027 49f2 c996 d2d9 a9eb c1c4 ;J*..&#39;I.........
+0x00f0: 7719 c615 8486 d84c e42d 0ba3 698c w......L.-..i.
+00:39:15.124648 IP 169.144.0.1.39406 &gt; compute-0-1.example.com.ssh: Flags [.], ack 188, win 13971, options [nop,nop,TS val 22718260 ecr 90716591], length 0
+0x0000: 0800 27f4 f935 0a00 2700 0000 0800 4510 ..&#39;..5..&#39;.....E.
+0x0010: 0034 6b70 4000 4006 7c0e a990 0001 a990 root@compute-0-1 @.|.......
+0x0020: 0014 99ee 0016 b684 570a 5695 8b17 8010 ........W.V.....
+0x0030: 3693 7c0e 0000 0101 080a 015a a734 0568 6.|........Z.4.h
+0x0040: 39af
+.......................................................................
+</code></pre>
+<p>这就是本文的全部内容，我希望您能了解如何使用 <code>tcpdump</code> 命令捕获和分析 TCP/IP 数据包。请分享你的反馈和评论。</p>
+<hr>
+<p>via: <a href="https://www.linuxtechi.com/capture-analyze-packets-tcpdump-command-linux/">https://www.linuxtechi.com/capture-analyze-packets-tcpdump-command-linux/</a></p>
+<p>作者：<a href="http://www.linuxtechi.com/author/pradeep/">Pradeep Kumar</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/ypingcn">ypingcn</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例1从特定接口捕获数据包">示例：1）从特定接口捕获数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例2从特定接口捕获特定数量数据包">示例：2）从特定接口捕获特定数量数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例3显示-tcpdump-的所有可用接口">示例：3）显示 tcpdump 的所有可用接口</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例4捕获带有可读时间戳的数据包-tttt-选项">示例：4）捕获带有可读时间戳的数据包（-tttt 选项）</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例5捕获数据包并将其保存到文件-w-选项">示例：5）捕获数据包并将其保存到文件（-w 选项）</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例6从保存的文件中读取数据包-r-选项">示例：6）从保存的文件中读取数据包（-r 选项）</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例7仅捕获特定接口上的-ip-地址数据包-n-选项">示例：7）仅捕获特定接口上的 IP 地址数据包（-n 选项）</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例8仅捕获特定接口上的-tcp-数据包">示例：8）仅捕获特定接口上的 TCP 数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例9从特定接口上的特定端口捕获数据包">示例：9）从特定接口上的特定端口捕获数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例10在特定接口上捕获来自特定来源-ip-的数据包">示例：10）在特定接口上捕获来自特定来源 IP 的数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例11在特定接口上捕获来自特定目的-ip-的数据包">示例：11）在特定接口上捕获来自特定目的 IP 的数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例12捕获两台主机之间的-tcp-数据包通信">示例：12）捕获两台主机之间的 TCP 数据包通信</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例13捕获两台主机之间来回的-udp-网络数据包">示例：13）捕获两台主机之间（来回）的 UDP 网络数据包</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例14捕获十六进制和-ascii-格式的数据包">示例：14）捕获十六进制和 ASCII 格式的数据包</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201809/20180826 How to capture and analyze packets with tcpdump command on Linux","title":"如何在 Linux 上使用 tcpdump 命令捕获和分析数据包"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

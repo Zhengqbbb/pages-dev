@@ -1,0 +1,292 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>给初学者的 20 多个 FFmpeg 命令示例 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="给初学者的 20 多个 FFmpeg 命令示例 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="给初学者的 20 多个 FFmpeg 命令示例 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201906/20190527 20- FFmpeg Commands For Beginners#page","@type":"TechArticle","headline":"给初学者的 20 多个 FFmpeg 命令示例","inLanguage":"en","name":"给初学者的 20 多个 FFmpeg 命令示例","url":"https://zhengqbbb.github.io/pages-dev/201906/20190527 20- FFmpeg Commands For Beginners","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201906/20190527 20- FFmpeg Commands For Beginners"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#针对初学者的-20-多个-ffmpeg-命令">针对初学者的 20 多个 FFmpeg 命令</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>给初学者的 20 多个 FFmpeg 命令示例</h1><p><img src="https://img.linux.net.cn/data/attachment/album/201906/03/011553xu323dzu40pb03bx.jpg" alt="FFmpeg Commands"></p>
+<p>在这个指南中，我将用示例来阐明如何使用 FFmpeg 媒体框架来做各种各样的音频、视频转码和转换的操作。我已经为初学者汇集了最常用的 20 多个 FFmpeg 命令，我将不时地添加更多的示例来保持更新这个指南。请给这个指南加书签，以后回来检查更新。让我们开始吧，如果你还没有在你的 Linux 系统中安装 FFmpeg，参考下面的指南。</p>
+<ul>
+<li><a href="https://www.ostechnix.com/install-ffmpeg-linux/">在 Linux 中安装 FFmpeg</a></li>
+</ul>
+<h3 id="针对初学者的-20-多个-ffmpeg-命令">针对初学者的 20 多个 FFmpeg 命令</h3>
+<p>FFmpeg 命令的典型语法是：</p>
+<pre><code>ffmpeg [全局选项] {[输入文件选项] -i 输入_url_地址} ...
+ {[输出文件选项] 输出_url_地址} ...
+</code></pre>
+<p>现在我们将查看一些重要的和有用的 FFmpeg 命令。</p>
+<h4 id="1获取音频视频文件信息">1、获取音频/视频文件信息</h4>
+<p>为显示你的媒体文件细节，运行：</p>
+<pre><code>$ ffmpeg -i video.mp4
+</code></pre>
+<p>样本输出：</p>
+<pre><code>ffmpeg version n4.1.3 Copyright (c) 2000-2019 the FFmpeg developers
+built with gcc 8.2.1 (GCC) 20181127
+configuration: --prefix=/usr --disable-debug --disable-static --disable-stripping --enable-fontconfig --enable-gmp --enable-gnutls --enable-gpl --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libdrm --enable-libfreetype --enable-libfribidi --enable-libgsm --enable-libiec61883 --enable-libjack --enable-libmodplug --enable-libmp3lame --enable-libopencore_amrnb --enable-libopencore_amrwb --enable-libopenjpeg --enable-libopus --enable-libpulse --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libv4l2 --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxcb --enable-libxml2 --enable-libxvid --enable-nvdec --enable-nvenc --enable-omx --enable-shared --enable-version3
+libavutil 56. 22.100 / 56. 22.100
+libavcodec 58. 35.100 / 58. 35.100
+libavformat 58. 20.100 / 58. 20.100
+libavdevice 58. 5.100 / 58. 5.100
+libavfilter 7. 40.101 / 7. 40.101
+libswscale 5. 3.100 / 5. 3.100
+libswresample 3. 3.100 / 3. 3.100
+libpostproc 55. 3.100 / 55. 3.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from &#39;video.mp4&#39;:
+Metadata:
+major_brand : isom
+minor_version : 512
+compatible_brands: isomiso2avc1mp41
+encoder : Lavf58.20.100
+Duration: 00:00:28.79, start: 0.000000, bitrate: 454 kb/s
+Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, smpte170m/bt470bg/smpte170m), 1920x1080 [SAR 1:1 DAR 16:9], 318 kb/s, 30 fps, 30 tbr, 15360 tbn, 60 tbc (default)
+Metadata:
+handler_name : ISO Media file produced by Google Inc. Created on: 04/08/2019.
+Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 128 kb/s (default)
+Metadata:
+handler_name : ISO Media file produced by Google Inc. Created on: 04/08/2019.
+At least one output file must be specified
+</code></pre>
+<p>如你在上面的输出中看到的，FFmpeg 显示该媒体文件信息，以及 FFmpeg 细节，例如版本、配置细节、版权标记、构建参数和库选项等等。</p>
+<p>如果你不想看 FFmpeg 标语和其它细节，而仅仅想看媒体文件信息，使用 <code>-hide_banner</code> 标志，像下面。</p>
+<pre><code>$ ffmpeg -i video.mp4 -hide_banner
+</code></pre>
+<p>样本输出：</p>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/05/sk@sk_001.png" alt=""></p>
+<p><em>使用 FFMpeg 查看音频、视频文件信息。</em></p>
+<p>看见了吗？现在，它仅显示媒体文件细节。</p>
+<h4 id="2转换视频文件到不同的格式">2、转换视频文件到不同的格式</h4>
+<p>FFmpeg 是强有力的音频和视频转换器，因此，它能在不同格式之间转换媒体文件。举个例子，要转换 mp4 文件到 avi 文件，运行：</p>
+<pre><code>$ ffmpeg -i video.mp4 video.avi
+</code></pre>
+<p>类似地，你可以转换媒体文件到你选择的任何格式。</p>
+<p>例如，为转换 YouTube flv 格式视频为 mpeg 格式，运行：</p>
+<pre><code>$ ffmpeg -i video.flv video.mpeg
+</code></pre>
+<p>如果你想维持你的源视频文件的质量，使用 <code>-qscale 0</code> 参数：</p>
+<pre><code>$ ffmpeg -i input.webm -qscale 0 output.mp4
+</code></pre>
+<p>为检查 FFmpeg 的支持格式的列表，运行：</p>
+<pre><code>$ ffmpeg -formats
+</code></pre>
+<h4 id="3转换视频文件到音频文件">3、转换视频文件到音频文件</h4>
+<p>我转换一个视频文件到音频文件，只需具体指明输出格式，像 .mp3，或 .ogg，或其它任意音频格式。</p>
+<p>上面的命令将转换 input.mp4 视频文件到 output.mp3 音频文件。</p>
+<pre><code>$ ffmpeg -i input.mp4 -vn output.mp3
+</code></pre>
+<p>此外，你也可以对输出文件使用各种各样的音频转换编码选项，像下面演示。</p>
+<pre><code>$ ffmpeg -i input.mp4 -vn -ar 44100 -ac 2 -ab 320 -f mp3 output.mp3
+</code></pre>
+<p>在这里，</p>
+<ul>
+<li><code>-vn</code> – 表明我们已经在输出文件中禁用视频录制。</li>
+<li><code>-ar</code> – 设置输出文件的音频频率。通常使用的值是22050 Hz、44100 Hz、48000 Hz。</li>
+<li><code>-ac</code> – 设置音频通道的数目。</li>
+<li><code>-ab</code> – 表明音频比特率。</li>
+<li><code>-f</code> – 输出文件格式。在我们的实例中，它是 mp3 格式。</li>
+</ul>
+<h4 id="4更改视频文件的分辨率">4、更改视频文件的分辨率</h4>
+<p>如果你想设置一个视频文件为指定的分辨率，你可以使用下面的命令：</p>
+<pre><code>$ ffmpeg -i input.mp4 -filter:v scale=1280:720 -c:a copy output.mp4
+</code></pre>
+<p>或，</p>
+<pre><code>$ ffmpeg -i input.mp4 -s 1280x720 -c:a copy output.mp4
+</code></pre>
+<p>上面的命令将设置所给定视频文件的分辨率到 1280×720。</p>
+<p>类似地，为转换上面的文件到 640×480 大小，运行：</p>
+<pre><code>$ ffmpeg -i input.mp4 -filter:v scale=640:480 -c:a copy output.mp4
+</code></pre>
+<p>或者，</p>
+<pre><code>$ ffmpeg -i input.mp4 -s 640x480 -c:a copy output.mp4
+</code></pre>
+<p>这个技巧将帮助你缩放你的视频文件到较小的显示设备上，例如平板电脑和手机。</p>
+<h4 id="5压缩视频文件">5、压缩视频文件</h4>
+<p>减小媒体文件的大小到较小来节省硬件的空间总是一个好主意.</p>
+<p>下面的命令将压缩并减少输出文件的大小。</p>
+<pre><code>$ ffmpeg -i input.mp4 -vf scale=1280:-1 -c:v libx264 -preset veryslow -crf 24 output.mp4
+</code></pre>
+<p>请注意，如果你尝试减小视频文件的大小，你将损失视频质量。如果 24 太有侵略性，你可以降低 <code>-crf</code> 值到或更低值。</p>
+<p>你也可以通过下面的选项来转换编码音频降低比特率，使其有立体声感，从而减小大小。</p>
+<pre><code>-ac 2 -c:a aac -strict -2 -b:a 128k
+</code></pre>
+<h4 id="6压缩音频文件">6、压缩音频文件</h4>
+<p>正像压缩视频文件一样，为节省一些磁盘空间，你也可以使用 <code>-ab</code> 标志压缩音频文件。</p>
+<p>例如，你有一个 320 kbps 比特率的音频文件。你想通过更改比特率到任意较低的值来压缩它，像下面。</p>
+<pre><code>$ ffmpeg -i input.mp3 -ab 128 output.mp3
+</code></pre>
+<p>各种各样可用的音频比特率列表是：</p>
+<ol>
+<li>96kbps</li>
+<li>112kbps</li>
+<li>128kbps</li>
+<li>160kbps</li>
+<li>192kbps</li>
+<li>256kbps</li>
+<li>320kbps</li>
+</ol>
+<h4 id="7从一个视频文件移除音频流">7、从一个视频文件移除音频流</h4>
+<p>如果你不想要一个视频文件中的音频，使用 <code>-an</code> 标志。</p>
+<pre><code>$ ffmpeg -i input.mp4 -an output.mp4
+</code></pre>
+<p>在这里，<code>-an</code> 表示没有音频录制。</p>
+<p>上面的命令会撤销所有音频相关的标志，因为我们不要来自 input.mp4 的音频。</p>
+<h4 id="8从一个媒体文件移除视频流">8、从一个媒体文件移除视频流</h4>
+<p>类似地，如果你不想要视频流，你可以使用 <code>-vn</code> 标志从媒体文件中简单地移除它。<code>-vn</code> 代表没有视频录制。换句话说，这个命令转换所给定媒体文件为音频文件。</p>
+<p>下面的命令将从所给定媒体文件中移除视频。</p>
+<pre><code>$ ffmpeg -i input.mp4 -vn output.mp3
+</code></pre>
+<p>你也可以使用 <code>-ab</code> 标志来指出输出文件的比特率，如下面的示例所示。</p>
+<pre><code>$ ffmpeg -i input.mp4 -vn -ab 320 output.mp3
+</code></pre>
+<h4 id="9从视频中提取图像">9、从视频中提取图像</h4>
+<p>FFmpeg 的另一个有用的特色是我们可以从一个视频文件中轻松地提取图像。如果你想从一个视频文件中创建一个相册，这可能是非常有用的。</p>
+<p>为从一个视频文件中提取图像，使用下面的命令：</p>
+<pre><code>$ ffmpeg -i input.mp4 -r 1 -f image2 image-%2d.png
+</code></pre>
+<p>在这里，</p>
+<ul>
+<li><code>-r</code> – 设置帧速度。即，每秒提取帧到图像的数字。默认值是 25。</li>
+<li><code>-f</code> – 表示输出格式，即，在我们的实例中是图像。</li>
+<li><code>image-%2d.png</code> – 表明我们如何想命名提取的图像。在这个实例中，命名应该像这样image-01.png、image-02.png、image-03.png 等等开始。如果你使用 <code>%3d</code>，那么图像的命名像 image-001.png、image-002.png 等等开始。</li>
+</ul>
+<h4 id="10裁剪视频">10、裁剪视频</h4>
+<p>FFMpeg 允许以我们选择的任何范围裁剪一个给定的媒体文件。</p>
+<p>裁剪一个视频文件的语法如下给定：</p>
+<pre><code>ffmpeg -i input.mp4 -filter:v &quot;crop=w:h:x:y&quot; output.mp4
+</code></pre>
+<p>在这里，</p>
+<ul>
+<li><code>input.mp4</code> – 源视频文件。</li>
+<li><code>-filter:v</code> – 表示视频过滤器。</li>
+<li><code>crop</code> – 表示裁剪过滤器。</li>
+<li><code>w</code> – 我们想自源视频中裁剪的矩形的宽度。</li>
+<li><code>h</code> – 矩形的高度。</li>
+<li><code>x</code> – 我们想自源视频中裁剪的矩形的 x 坐标 。</li>
+<li><code>y</code> – 矩形的 y 坐标。</li>
+</ul>
+<p>比如说你想要一个来自视频的位置 (200,150)，且具有 640 像素宽度和 480 像素高度的视频，命令应该是：</p>
+<pre><code>$ ffmpeg -i input.mp4 -filter:v &quot;crop=640:480:200:150&quot; output.mp4
+</code></pre>
+<p>请注意，剪切视频将影响质量。除非必要，请勿剪切。</p>
+<h4 id="11转换一个视频的具体的部分">11、转换一个视频的具体的部分</h4>
+<p>有时，你可能想仅转换视频文件的一个具体的部分到不同的格式。以示例说明，下面的命令将转换所给定视频input.mp4 文件的开始 10 秒到视频 .avi 格式。</p>
+<pre><code>$ ffmpeg -i input.mp4 -t 10 output.avi
+</code></pre>
+<p>在这里，我们以秒具体说明时间。此外，以 <code>hh.mm.ss</code> 格式具体说明时间也是可以的。</p>
+<h4 id="12设置视频的屏幕高宽比">12、设置视频的屏幕高宽比</h4>
+<p>你可以使用 <code>-aspect</code> 标志设置一个视频文件的屏幕高宽比，像下面。</p>
+<pre><code>$ ffmpeg -i input.mp4 -aspect 16:9 output.mp4
+</code></pre>
+<p>通常使用的高宽比是：</p>
+<ul>
+<li>16:9</li>
+<li>4:3</li>
+<li>16:10</li>
+<li>5:4</li>
+<li>2:21:1</li>
+<li>2:35:1</li>
+<li>2:39:1</li>
+</ul>
+<h4 id="13添加海报图像到音频文件">13、添加海报图像到音频文件</h4>
+<p>你可以添加海报图像到你的文件，以便图像将在播放音频文件时显示。这对托管在视频托管主机或共享网站中的音频文件是有用的。</p>
+<pre><code>$ ffmpeg -loop 1 -i inputimage.jpg -i inputaudio.mp3 -c:v libx264 -c:a aac -strict experimental -b:a 192k -shortest output.mp4
+</code></pre>
+<h4 id="14使用开始和停止时间剪下一段媒体文件">14、使用开始和停止时间剪下一段媒体文件</h4>
+<p>可以使用开始和停止时间来剪下一段视频为小段剪辑，我们可以使用下面的命令。</p>
+<pre><code>$ ffmpeg -i input.mp4 -ss 00:00:50 -codec copy -t 50 output.mp4
+</code></pre>
+<p>在这里，</p>
+<ul>
+<li><code>–s</code> – 表示视频剪辑的开始时间。在我们的示例中，开始时间是第 50 秒。</li>
+<li><code>-t</code> – 表示总的持续时间。</li>
+</ul>
+<p>当你想使用开始和结束时间从一个音频或视频文件剪切一部分时，它是非常有用的。</p>
+<p>类似地，我们可以像下面剪下音频。</p>
+<pre><code>$ ffmpeg -i audio.mp3 -ss 00:01:54 -to 00:06:53 -c copy output.mp3
+</code></pre>
+<h4 id="15切分视频文件为多个部分">15、切分视频文件为多个部分</h4>
+<p>一些网站将仅允许你上传具体指定大小的视频。在这样的情况下，你可以切分大的视频文件到多个较小的部分，像下面。</p>
+<pre><code>$ ffmpeg -i input.mp4 -t 00:00:30 -c copy part1.mp4 -ss 00:00:30 -codec copy part2.mp4
+</code></pre>
+<p>在这里，</p>
+<ul>
+<li><code>-t 00:00:30</code> 表示从视频的开始到视频的第 30 秒创建一部分视频。</li>
+<li><code>-ss 00:00:30</code> 为视频的下一部分显示开始时间戳。它意味着第 2 部分将从第 30 秒开始，并将持续到原始视频文件的结尾。</li>
+</ul>
+<h4 id="16接合或合并多个视频部分到一个">16、接合或合并多个视频部分到一个</h4>
+<p>FFmpeg 也可以接合多个视频部分，并创建一个单个视频文件。</p>
+<p>创建包含你想接合文件的准确的路径的 <code>join.txt</code>。所有的文件都应该是相同的格式（相同的编码格式）。所有文件的路径应该逐个列出，像下面。</p>
+<pre><code>file /home/sk/myvideos/part1.mp4
+file /home/sk/myvideos/part2.mp4
+file /home/sk/myvideos/part3.mp4
+file /home/sk/myvideos/part4.mp4
+</code></pre>
+<p>现在，接合所有文件，使用命令：</p>
+<pre><code>$ ffmpeg -f concat -i join.txt -c copy output.mp4
+</code></pre>
+<p>如果你得到一些像下面的错误；</p>
+<pre><code>[concat @ 0x555fed174cc0] Unsafe file name &#39;/path/to/mp4&#39;
+join.txt: Operation not permitted
+</code></pre>
+<p>添加 <code>-safe 0</code> :</p>
+<pre><code>$ ffmpeg -f concat -safe 0 -i join.txt -c copy output.mp4
+</code></pre>
+<p>上面的命令将接合 part1.mp4、part2.mp4、part3.mp4 和 part4.mp4 文件到一个称为 output.mp4 的单个文件中。</p>
+<h4 id="17添加字幕到一个视频文件">17、添加字幕到一个视频文件</h4>
+<p>我们可以使用 FFmpeg 来添加字幕到视频文件。为你的视频下载正确的字幕，并如下所示添加它到你的视频。</p>
+<pre><code>$ fmpeg -i input.mp4 -i subtitle.srt -map 0 -map 1 -c copy -c:v libx264 -crf 23 -preset veryfast output.mp4
+</code></pre>
+<h4 id="18预览或测试视频或音频文件">18、预览或测试视频或音频文件</h4>
+<p>你可能希望通过预览来验证或测试输出的文件是否已经被恰当地转码编码。为完成预览，你可以从你的终端播放它，用命令：</p>
+<pre><code>$ ffplay video.mp4
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/05/Menu_004.png" alt=""></p>
+<p>类似地，你可以测试音频文件，像下面所示。</p>
+<pre><code>$ ffplay audio.mp3
+</code></pre>
+<p><img src="http://www.ostechnix.com/wp-content/uploads/2017/05/Menu_005-3.png" alt=""></p>
+<h4 id="19增加减少视频播放速度">19、增加/减少视频播放速度</h4>
+<p>FFmpeg 允许你调整视频播放速度。</p>
+<p>为增加视频播放速度，运行：</p>
+<pre><code>$ ffmpeg -i input.mp4 -vf &quot;setpts=0.5*PTS&quot; output.mp4
+</code></pre>
+<p>该命令将双倍视频的速度。</p>
+<p>为降低你的视频速度，你需要使用一个大于 1 的倍数。为减少播放速度，运行：</p>
+<pre><code>$ ffmpeg -i input.mp4 -vf &quot;setpts=4.0*PTS&quot; output.mp4
+</code></pre>
+<h4 id="20创建动画的-gif">20、创建动画的 GIF</h4>
+<p>出于各种目的，我们在几乎所有的社交和专业网络上使用 GIF 图像。使用 FFmpeg，我们可以简单地和快速地创建动画的视频文件。下面的指南阐释了如何在类 Unix 系统中使用 FFmpeg 和 ImageMagick 创建一个动画的 GIF 文件。</p>
+<ul>
+<li><a href="https://www.ostechnix.com/create-animated-gif-ubuntu-16-04/">在 Linux 中如何创建动画的 GIF</a></li>
+</ul>
+<h4 id="21从-pdf-文件中创建视频">21、从 PDF 文件中创建视频</h4>
+<p>我长年累月的收集了很多 PDF 文件，大多数是 Linux 教程，保存在我的平板电脑中。有时我懒得从平板电脑中阅读它们。因此，我决定从 PDF 文件中创建一个视频，在一个大屏幕设备（像一台电视机或一台电脑）中观看它们。如果你想知道如何从一批 PDF 文件中制作一个电影，下面的指南将帮助你。</p>
+<ul>
+<li><a href="https://www.ostechnix.com/create-video-pdf-files-linux/">在 Linux 中如何从 PDF 文件中创建一个视频</a></li>
+</ul>
+<h4 id="22获取帮助">22、获取帮助</h4>
+<p>在这个指南中，我已经覆盖大多数常常使用的 FFmpeg 命令。它有很多不同的选项来做各种各样的高级功能。要学习更多用法，请参考手册页。</p>
+<pre><code>$ man ffmpeg
+</code></pre>
+<p>这就是全部了。我希望这个指南将帮助你入门 FFmpeg。如果你发现这个指南有用，请在你的社交和专业网络上分享它。更多好东西将要来。敬请期待！</p>
+<p>谢谢！</p>
+<hr>
+<p>via: <a href="https://www.ostechnix.com/20-ffmpeg-commands-beginners/">https://www.ostechnix.com/20-ffmpeg-commands-beginners/</a></p>
+<p>作者：<a href="https://www.ostechnix.com/author/sk/">sk</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/robsean">robsean</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#针对初学者的-20-多个-ffmpeg-命令">针对初学者的 20 多个 FFmpeg 命令</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201906/20190527 20- FFmpeg Commands For Beginners","title":"给初学者的 20 多个 FFmpeg 命令示例"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

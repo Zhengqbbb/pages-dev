@@ -1,0 +1,326 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用微软的 ProcDump 调试 Linux 进程 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用微软的 ProcDump 调试 Linux 进程 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用微软的 ProcDump 调试 Linux 进程 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202008/20200717 Debug Linux using ProcDump#page","@type":"TechArticle","headline":"使用微软的 ProcDump 调试 Linux 进程","inLanguage":"en","name":"使用微软的 ProcDump 调试 Linux 进程","url":"https://zhengqbbb.github.io/pages-dev/202008/20200717 Debug Linux using ProcDump","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202008/20200717 Debug Linux using ProcDump"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#开始使用-linux-上的-procdump">开始使用 Linux 上的 ProcDump</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#运行-procdump">运行 ProcDump</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#用-gnu-项目调试器分析核心文件">用 GNU 项目调试器分析核心文件。</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#gcore-怎么样">gcore 怎么样？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#你应该使用-procdump-还是-gcore">你应该使用 ProcDump 还是 gcore？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用微软的 ProcDump 调试 Linux 进程</h1><blockquote>
+<p>用这个微软的开源工具，获取进程信息。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202008/20/095646k5wz7cd11vyc7lhr.jpg" alt=""></p>
+<p>微软越来越心仪 Linux 和开源，这并不是什么秘密。在过去几年中，该公司稳步地增加了对开源的贡献，包括将其部分软件和工具移植到 Linux。2018 年底，微软<a href="https://www.zdnet.com/article/microsoft-working-on-porting-sysinternals-to-linux/">宣布</a>将其 <a href="https://docs.microsoft.com/en-us/sysinternals/">Sysinternals</a> 的部分工具以开源的方式移植到 Linux，<a href="https://github.com/Microsoft/ProcDump-for-Linux">Linux 版的 ProcDump</a>是其中的第一个。</p>
+<p>如果你在 Windows 上从事过调试或故障排除工作，你可能听说过 Sysinternals，它是一个“瑞士军刀”工具集，可以帮助系统管理员、开发人员和 IT 安全专家监控和排除 Windows 环境的故障。</p>
+<p>Sysinternals 最受欢迎的工具之一是 <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/procdump">ProcDump</a>。顾名思义，它用于将正在运行的进程的内存转储到磁盘上的一个核心文件中。然后可以用调试器对这个核心文件进行分析，了解转储时进程的状态。因为之前用过 Sysinternals，所以我很想试试 ProcDump 的 Linux 移植版。</p>
+<h3 id="开始使用-linux-上的-procdump">开始使用 Linux 上的 ProcDump</h3>
+<p>要试用 Linux 上的 ProcDump，你需要下载该工具并编译它。（我使用的是 Red Hat Enterprise Linux，尽管这些步骤在其他 Linux 发行版上应该是一样的）：</p>
+<pre><code>$ cat /etc/redhat-release
+Red Hat Enterprise Linux release 8.2 (Ootpa)
+$
+$ uname -r
+4.18.0-193.el8.x86_64
+$
+</code></pre>
+<p>首先，克隆 Linux 版 ProcDump 的版本库。</p>
+<pre><code>$ git clone https://github.com/microsoft/ProcDump-for-Linux.git
+Cloning into &#39;ProcDump-for-Linux&#39;...
+remote: Enumerating objects: 40, done.
+remote: Counting objects: 100% (40/40), done.
+remote: Compressing objects: 100% (33/33), done.
+remote: Total 414 (delta 14), reused 14 (delta 6), pack-reused 374
+Receiving objects: 100% (414/414), 335.28 KiB | 265.00 KiB/s, done.
+Resolving deltas: 100% (232/232), done.
+$
+$ cd ProcDump-for-Linux/
+$
+$ ls
+azure-pipelines.yml  CONTRIBUTING.md  docs     INSTALL.md  Makefile    procdump.gif  src
+CODE_OF_CONDUCT.md   dist             include  LICENSE     procdump.1  README.md     tests
+$
+</code></pre>
+<p>接下来，使用 <code>make</code> 构建程序。它能准确地输出编译源文件所需的 <a href="https://gcc.gnu.org/">GCC</a> 命令行参数。</p>
+<pre><code>$ make
+rm -rf obj
+rm -rf bin
+rm -rf /root/ProcDump-for-Linux/pkgbuild
+gcc -c -g -o obj/Logging.o src/Logging.c -Wall -I ./include -pthread -std=gnu99
+gcc -c -g -o obj/Events.o src/Events.c -Wall -I ./include -pthread -std=gnu99
+gcc -c -g -o obj/ProcDumpConfiguration.o src/ProcDumpConfiguration.c -Wall -I ./include -pthread -std=gnu99
+gcc -c -g -o obj/Handle.o src/Handle.c -Wall -I ./include -pthread -std=gnu99
+gcc -c -g -o obj/Process.o src/Process.c -Wall -I ./include -pthread -std=gnu99
+gcc -c -g -o obj/Procdump.o src/Procdump.c -Wall -I ./include -pthread -std=gnu99
+gcc -c -g -o obj/TriggerThreadProcs.o src/TriggerThreadProcs.c -Wall -I ./include -pthread -std=gnu99
+gcc -c -g -o obj/CoreDumpWriter.o src/CoreDumpWriter.c -Wall -I ./include -pthread -std=gnu99
+gcc -o bin/procdump obj/Logging.o obj/Events.o obj/ProcDumpConfiguration.o obj/Handle.o obj/Process.o obj/Procdump.o obj/TriggerThreadProcs.o obj/CoreDumpWriter.o -Wall -I ./include -pthread -std=gnu99
+gcc -c -g -o obj/ProcDumpTestApplication.o tests/integration/ProcDumpTestApplication.c -Wall -I ./include -pthread -std=gnu99
+gcc -o bin/ProcDumpTestApplication obj/ProcDumpTestApplication.o -Wall -I ./include -pthread -std=gnu99
+$
+</code></pre>
+<p>编译过程中会创建两个新的目录。第一个是 <code>obj/</code> 目录，存放编译期间创建的对象文件。第二个（也是更重要的）目录是 <code>bin/</code>，它是存储编译出的 <code>procdump</code> 程序的地方。它还会编译另一个名为 <code>ProcDumpTestApplication</code> 的测试二进制文件：</p>
+<pre><code>$ ls obj/
+CoreDumpWriter.o  Handle.o   ProcDumpConfiguration.o  ProcDumpTestApplication.o  TriggerThreadProcs.o
+Events.o          Logging.o  Procdump.o               Process.o
+$
+$
+$ ls bin/
+procdump  ProcDumpTestApplication
+$
+$ file bin/procdump
+bin/procdump: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=6e8827db64835ea0d1f0941ac3ecff9ee8c06e6b, with debug_info, not stripped
+$
+$ file bin/ProcDumpTestApplication
+bin/ProcDumpTestApplication: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=c8fd86f53c07df142e52518815b2573d1c690e4e, with debug_info, not stripped
+$
+</code></pre>
+<p>在此情况下，每次运行 <code>procdump</code> 实用程序时，你都必须移动到 <code>bin/</code> 文件夹中。要使它在系统中的任何地方都可以使用，运行 <code>make install</code>。这将这个二进制文件复制到通常的 <code>bin/</code> 目录中，它是你的 shell <code>$PATH</code> 的一部分：</p>
+<pre><code>$ which procdump
+/usr/bin/which: no procdump in (/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin)
+$
+$ make install
+mkdir -p //usr/bin
+cp bin/procdump //usr/bin
+mkdir -p //usr/share/man/man1
+cp procdump.1 //usr/share/man/man1
+$
+$ which procdump
+/usr/bin/procdump
+$
+</code></pre>
+<p>安装时，ProcDump 提供了一个手册页，你可以用 <code>man procdump</code> 访问：</p>
+<pre><code>$ man procdump
+$
+</code></pre>
+<h3 id="运行-procdump">运行 ProcDump</h3>
+<p>要转储一个进程的内存，你需要向 ProcDump 提供它的进程 ID（PID）。你可以使用机器上任何正在运行的程序或守护进程。在这个例子中，我将使用一个永远循环的小 C 程序。编译程序并运行它（要退出程序，按 <code>Ctrl+C</code>，如果程序在后台运行，则使用 <code>kill</code> 命令并输入 PID）：</p>
+<pre><code>$ cat progxyz.c
+#include &lt;stdio.h&gt;
+
+int main() {
+        for (;;)
+        {
+                printf(&quot;.&quot;);
+                sleep(1);
+        }
+        return 0;
+}
+$
+$ gcc progxyz.c -o progxyz
+$
+$ ./progxyz &amp;
+[1] 350498
+$
+</code></pre>
+<p>运行该程序，你可以使用 <code>pgrep</code> 或 <code>ps</code> 找到它的 PID。记下 PID：</p>
+<pre><code>$ pgrep progxyz
+350498
+$
+$ ps -ef | grep progxyz
+root      350498  345445  0 03:29 pts/1    00:00:00 ./progxyz
+root      350508  347350  0 03:29 pts/0    00:00:00 grep --color=auto progxyz
+$
+</code></pre>
+<p>当测试进程正在运行时，调用 <code>procdump</code> 并提供 PID。下面的输出表明了该进程的名称和 PID，并报告它生成了一个核心转储文件，并显示其文件名：</p>
+<pre><code>$ procdump -p 350498
+
+ProcDump v1.1.1 - Sysinternals process dump utility
+Copyright (C) 2020 Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+Mark Russinovich, Mario Hewardt, John Salem, Javid Habibi
+Monitors a process and writes a dump file when the process exceeds the
+specified criteria.
+
+Process:                progxyz (350498)
+CPU Threshold:          n/a
+Commit Threshold:       n/a
+Polling interval (ms):  1000
+Threshold (s):  10
+Number of Dumps:        1
+
+Press Ctrl-C to end monitoring without terminating the process.
+
+[03:30:00 - INFO]: Timed:
+[03:30:01 - INFO]: Core dump 0 generated: progxyz_time_2020-06-24_03:30:00.350498
+$
+</code></pre>
+<p>列出当前目录的内容，你应该可以看到新的核心文件。文件名与 <code>procdump</code> 命令显示的文件名一致，日期、时间、PID 都会附加在文件名上：</p>
+<pre><code>$ ls -l progxyz_time_2020-06-24_03\:30\:00.350498
+-rw-r--r--. 1 root root 356848 Jun 24 03:30 progxyz_time_2020-06-24_03:30:00.350498
+$
+$ file progxyz_time_2020-06-24_03\:30\:00.350498
+progxyz_time_2020-06-24_03:30:00.350498: ELF 64-bit LSB core file, x86-64, version 1 (SYSV), SVR4-style, from &#39;./progxyz&#39;, real uid: 0, effective uid: 0, real gid: 0, effective gid: 0, execfn: &#39;./progxyz&#39;, platform: &#39;x86_64&#39;
+$
+</code></pre>
+<h3 id="用-gnu-项目调试器分析核心文件">用 GNU 项目调试器分析核心文件。</h3>
+<p>要查看是否可以读取该转储文件，调用 <a href="https://www.gnu.org/software/gdb/">GNU 项目调试器</a>（<code>gdb</code>）。记得提供测试二进制文件的路径，这样你就可以看到堆栈上所有的函数名。在这里，<code>bt</code>（回溯）表明，当转储被采集时，<code>sleep()</code> 函数正在执行：</p>
+<pre><code>$ gdb -q ./progxyz ./progxyz_time_2020-06-24_03\:30\:00.350498
+Reading symbols from ./progxyz...(no debugging symbols found)...done.
+[New LWP 350498]
+Core was generated by `./progxyz&#39;.
+#0  0x00007fb6947e9208 in nanosleep () from /lib64/libc.so.6
+Missing separate debuginfos, use: yum debuginfo-install glibc-2.28-101.el8.x86_64
+(gdb) bt
+#0  0x00007fb6947e9208 in nanosleep () from /lib64/libc.so.6
+#1  0x00007fb6947e913e in sleep () from /lib64/libc.so.6
+#2  0x00000000004005f3 in main ()
+(gdb)
+</code></pre>
+<h3 id="gcore-怎么样">gcore 怎么样？</h3>
+<p>Linux 用户会很快指出，Linux 已经有一个叫 <code>gcore</code> 的命令，大多数 Linux 发行版都有这个命令，它的作用和 ProcDump 完全一样。你说的对。如果你从来没有使用过它，可以尝试用 <code>gcore</code> 来转储一个进程的核心。再次运行测试程序，然后运行 <code>gcore</code>，并提供 PID 作为参数：</p>
+<pre><code>$ ./progxyz &amp;
+[1] 350664
+$
+$
+$ pgrep progxyz
+350664
+$
+$
+$ gcore 350664
+0x00007fefd3be2208 in nanosleep () from /lib64/libc.so.6
+Saved corefile core.350664
+[Inferior 1 (process 350664) detached]
+$
+</code></pre>
+<p><code>gcore</code> 打印一条消息，说它已将核心文件保存到一个特定的文件中。检查当前目录，找到这个核心文件，然后再次使用 <code>gdb</code> 加载它：</p>
+<pre><code>$
+$ ls -l  core.350664
+-rw-r--r--. 1 root root 356848 Jun 24 03:34 core.350664
+$
+$
+$ file core.350664
+core.350664: ELF 64-bit LSB core file, x86-64, version 1 (SYSV), SVR4-style, from &#39;./progxyz&#39;, real uid: 0, effective uid: 0, real gid: 0, effective gid: 0, execfn: &#39;./progxyz&#39;, platform: &#39;x86_64&#39;
+$
+$ gdb -q ./progxyz ./core.350664
+Reading symbols from ./progxyz...(no debugging symbols found)...done.
+[New LWP 350664]
+Core was generated by `./progxyz&#39;.
+#0  0x00007fefd3be2208 in nanosleep () from /lib64/libc.so.6
+Missing separate debuginfos, use: yum debuginfo-install glibc-2.28-101.el8.x86_64
+(gdb) bt
+#0  0x00007fefd3be2208 in nanosleep () from /lib64/libc.so.6
+#1  0x00007fefd3be213e in sleep () from /lib64/libc.so.6
+#2  0x00000000004005f3 in main ()
+(gdb) q
+$
+</code></pre>
+<p>为了使 <code>gcore</code> 可以工作，你需要确保以下设置到位。首先，确保为核心文件设置了 <code>ulimit</code>，如果设置为 <code>0</code>，核心文件将不会被生成。第二，确保 <code>/proc/sys/kernel/core_pattern</code> 有正确的设置来指定核心模式：</p>
+<pre><code>$ ulimit -c
+unlimited
+$
+</code></pre>
+<h3 id="你应该使用-procdump-还是-gcore">你应该使用 ProcDump 还是 gcore？</h3>
+<p>有几种情况下，你可能更喜欢使用 ProcDump 而不是 gcore，ProcDump 有一些内置的功能，在一些情况下可能很有用。</p>
+<h4 id="等待测试二进制文件的执行">等待测试二进制文件的执行</h4>
+<p>无论是使用 ProcDump 还是 gcore，测试进程必须被执行并处于运行状态，这样才能提供一个 PID 来生成核心文件。但 ProcDump 有一个功能，就是等待特定的二进制文件运行，一旦发现运行的测试二进制文件与给定的名称相匹配，它就会为该测试二进制文件生成一个核心文件。它可以使用 <code>-w</code> 参数和程序名称而不是 PID 来启用。这个功能在测试程序快速退出的情况下很有用。</p>
+<p>下面是它的工作原理。在这个例子中，没有名为 <code>progxyz</code> 的进程在运行：</p>
+<pre><code>$ pgrep progxyz
+$
+</code></pre>
+<p>用 <code>-w</code> 参数调用 <code>procdump</code>，让它保持等待。在另一个终端，调用测试二进制 <code>progxyz</code>：</p>
+<pre><code>$ procdump -w progxyz
+
+ProcDump v1.1.1 - Sysinternals process dump utility
+Copyright (C) 2020 Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+Mark Russinovich, Mario Hewardt, John Salem, Javid Habibi
+Monitors a process and writes a dump file when the process exceeds the
+specified criteria.
+
+Process:                progxyz (pending)
+CPU Threshold:          n/a
+Commit Threshold:       n/a
+Polling interval (ms):  1000
+Threshold (s):  10
+Number of Dumps:        1
+
+Press Ctrl-C to end monitoring without terminating the process.
+
+[03:39:23 - INFO]: Waiting for process &#39;progxyz&#39; to launch...
+</code></pre>
+<p>然后，从另一个终端调用测试二进制 <code>progxyz</code>：</p>
+<pre><code>$ ./progxyz &amp;
+[1] 350951
+$
+</code></pre>
+<p>ProcDump 立即检测到该二进制正在运行，并转储这个二进制的核心文件：</p>
+<pre><code>[03:39:23 - INFO]: Waiting for process &#39;progxyz&#39; to launch...
+[03:43:22 - INFO]: Found process with PID 350951
+[03:43:22 - INFO]: Timed:
+[03:43:23 - INFO]: Core dump 0 generated: progxyz_time_2020-06-24_03:43:22.350951
+$
+
+$ ls -l progxyz_time_2020-06-24_03\:43\:22.350951
+-rw-r--r--. 1 root root 356848 Jun 24 03:43 progxyz_time_2020-06-24_03:43:22.350951
+$
+$ file progxyz_time_2020-06-24_03\:43\:22.350951
+progxyz_time_2020-06-24_03:43:22.350951: ELF 64-bit LSB core file, x86-64, version 1 (SYSV), SVR4-style, from &#39;./progxyz&#39;, real uid: 0, effective uid: 0, real gid: 0, effective gid: 0, execfn: &#39;./progxyz&#39;, platform: &#39;x86_64&#39;
+$
+</code></pre>
+<h4 id="多个核心转储">多个核心转储</h4>
+<p>另一个重要的 ProcDump 功能是，你可以通过使用命令行参数 <code>-n &lt;count&gt;</code> 指定要生成多少个核心文件。核心转储之间的默认时间间隔是 <code>10</code> 秒，但你可以使用 <code>-s &lt;sec&gt;</code> 参数修改。这个例子使用 ProcDump 对测试二进制文件进行了三次核心转储：</p>
+<pre><code>$ ./progxyz &amp;
+[1] 351014
+$
+$ procdump -n 3 -p 351014
+
+ProcDump v1.1.1 - Sysinternals process dump utility
+Copyright (C) 2020 Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+Mark Russinovich, Mario Hewardt, John Salem, Javid Habibi
+Monitors a process and writes a dump file when the process exceeds the
+specified criteria.
+
+Process:                progxyz (351014)
+CPU Threshold:          n/a
+Commit Threshold:       n/a
+Polling interval (ms):  1000
+Threshold (s):  10
+Number of Dumps:        3
+
+Press Ctrl-C to end monitoring without terminating the process.
+
+[03:45:20 - INFO]: Timed:
+[03:45:21 - INFO]: Core dump 0 generated: progxyz_time_2020-06-24_03:45:20.351014
+[03:45:31 - INFO]: Timed:
+[03:45:32 - INFO]: Core dump 1 generated: progxyz_time_2020-06-24_03:45:31.351014
+[03:45:42 - INFO]: Timed:
+[03:45:44 - INFO]: Core dump 2 generated: progxyz_time_2020-06-24_03:45:42.351014
+$
+$ ls -l progxyz_time_2020-06-24_03\:45\:*
+-rw-r--r--. 1 root root 356848 Jun 24 03:45 progxyz_time_2020-06-24_03:45:20.351014
+-rw-r--r--. 1 root root 356848 Jun 24 03:45 progxyz_time_2020-06-24_03:45:31.351014
+-rw-r--r--. 1 root root 356848 Jun 24 03:45 progxyz_time_2020-06-24_03:45:42.351014
+$
+</code></pre>
+<h4 id="基于-cpu-和内存使用情况的核心转储">基于 CPU 和内存使用情况的核心转储</h4>
+<p>ProcDump 还可以让你在测试二进制或进程达到一定的 CPU 或内存阈值时触发核心转储。ProcDump 的手册页显示了调用 ProcDump 时使用的命令行参数：</p>
+<ul>
+<li><code>-C</code>：当 CPU 超过或等于指定值时，触发核心转储生成（0 到 100 * nCPU）。</li>
+<li><code>-c</code>：当 CPU 小于指定值时，触发核心转储生成（0 到 100 * nCPU）。 </li>
+<li><code>-M</code>：当内存提交超过或等于指定值（MB）时，触发核心转储生成。</li>
+<li><code>-m</code>：当内存提交小于指定值（MB）时，触发核心转储生成。</li>
+<li><code>-T</code>：当线程数超过或等于指定值时触发。</li>
+<li><code>-F</code>：当文件描述符数量超过或等于指定值时触发。</li>
+<li><code>-I</code>：轮询频率，单位为毫秒（默认为 1000）。</li>
+</ul>
+<p>例如，当给定 PID 的 CPU 使用率超过 70% 时，可以要求 ProcDump 转储核心：</p>
+<pre><code>procdump -C 70 -n 3 -p 351014
+</code></pre>
+<h3 id="结论">结论</h3>
+<p>ProcDump 是一长串被移植到 Linux 的 Windows 程序中的一个有趣的补充。它不仅为 Linux 用户提供了额外的工具选择，而且可以让 Windows 用户在 Linux 上工作时更有熟悉的感觉。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/7/procdump-linux">https://opensource.com/article/20/7/procdump-linux</a></p>
+<p>作者：<a href="https://opensource.com/users/gkamathe">Gaurav Kamathe</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#开始使用-linux-上的-procdump">开始使用 Linux 上的 ProcDump</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#运行-procdump">运行 ProcDump</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#用-gnu-项目调试器分析核心文件">用 GNU 项目调试器分析核心文件。</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#gcore-怎么样">gcore 怎么样？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#你应该使用-procdump-还是-gcore">你应该使用 ProcDump 还是 gcore？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202008/20200717 Debug Linux using ProcDump","title":"使用微软的 ProcDump 调试 Linux 进程"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

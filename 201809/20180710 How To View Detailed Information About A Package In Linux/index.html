@@ -1,0 +1,367 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 Linux 上检查一个软件包的详细信息 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 Linux 上检查一个软件包的详细信息 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 Linux 上检查一个软件包的详细信息 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201809/20180710 How To View Detailed Information About A Package In Linux#page","@type":"TechArticle","headline":"如何在 Linux 上检查一个软件包的详细信息","inLanguage":"en","name":"如何在 Linux 上检查一个软件包的详细信息","url":"https://zhengqbbb.github.io/pages-dev/201809/20180710 How To View Detailed Information About A Package In Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201809/20180710 How To View Detailed Information About A Package In Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#yum-命令在-rhel-和-centos-系统上获得包的信息">YUM 命令：在 RHEL 和 CentOS 系统上获得包的信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#yumdb-命令查看-rhel-和-centos-系统上的包信息">YUMDB 命令：查看 RHEL 和 CentOS 系统上的包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#rpm-命令在-rhelcentosfedora-系统上查看包的信息">RPM 命令：在 RHEL/CentOS/Fedora 系统上查看包的信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#dnf-命令在-fedora-系统上查看包信息">DNF 命令：在 Fedora 系统上查看包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#zypper-命令在-opensuse-系统上查看包信息">Zypper 命令：在 openSUSE 系统上查看包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#pacman-命令在-archlinux-及-manjaro-系统上查看包信息">Pacman 命令：在 ArchLinux 及 Manjaro 系统上查看包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#apt-cache-命令在-debianubuntumint-系统上查看包信息">apt-cache 命令：在 Debian/Ubuntu/Mint 系统上查看包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#apt-命令查看-debianubuntumint-系统上的包信息">APT 命令：查看 Debian/Ubuntu/Mint 系统上的包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#dpkg-命令查看debianubuntumint系统上的包信息">dpkg 命令：查看Debian/Ubuntu/Mint系统上的包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#aptitude-命令查看-debianubuntumint-系统上的包信息">aptitude 命令：查看 Debian/Ubuntu/Mint 系统上的包信息</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 Linux 上检查一个软件包的详细信息</h1><p>我们可以就这个已经被广泛讨论的话题写出大量的文章，大多数情况下，因为各种各样的原因，我们都愿意让<ruby>包管理器<rt>package manager</rt></ruby>来帮我们做这些事情。</p>
+<p>每个 Linux 发行版都有自己的包管理器，并且每个都有各自有不同的特性，这些特性包括允许用户执行安装新软件包，删除无用的软件包，更新现存的软件包，搜索某些具体的软件包，以及更新整个系统到其最新的状态之类的操作。</p>
+<p>习惯于命令行的用户大多数时间都会使用基于命令行方式的包管理器。对于 Linux 而言，这些基于命令行的包管理器有 <code>yum</code>、<code>dnf</code>、<code>rpm</code>、<code>apt</code>、<code>apt-get</code>、<code>dpkg</code>、<code>pacman</code> 和 <code>zypper</code>。</p>
+<p><strong>推荐阅读</strong></p>
+<ul>
+<li><a href="https://www.2daygeek.com/list-of-command-line-package-manager-for-linux/">Linux 命令行包管理器列表及其用法</a></li>
+<li><a href="https://www.2daygeek.com/list-of-graphical-frontend-tool-for-linux-package-manager/">一个图形化的 Linux 包管理器前端工具</a></li>
+<li><a href="https://www.2daygeek.com/how-to-search-if-a-package-is-available-on-your-linux-distribution-or-not/">如何搜索知道一个软件包是否存在于你的 Linux 发行版</a></li>
+<li><a href="https://www.2daygeek.com/how-to-add-enable-disable-a-repository-dnf-yum-config-manager-on-linux/">如何使用 dnf/yum 配置包管理器在 Linux 上来添加、启用和禁用软件仓库</a></li>
+</ul>
+<p>作为一个系统管理员你应该清楚地知道：安装包来自何方，具体来自哪个软件仓库，包的具体版本，包的大小，版本，包的源代码 URL，包的许可证信息，等等。</p>
+<p>这篇短文将用尽可能简单的方式帮你从随包自带的总结和描述中了解该包的用法。按你所使用的 Linux 发行版的不同，运行下面相应的命令，你能得到你所使用的发行版下的包的详细信息。</p>
+<h3 id="yum-命令在-rhel-和-centos-系统上获得包的信息">YUM 命令：在 RHEL 和 CentOS 系统上获得包的信息</h3>
+<p><a href="https://www.2daygeek.com/yum-command-examples-manage-packages-rhel-centos-systems/">YUM</a> 英文直译是“<ruby>黄狗更新器--修改版<rt>Yellowdog Updater, Modified</rt></ruby>”，它是一个开源的基于命令行的包管理器前端实用工具。它被广泛应用在基于 RPM 的系统上，例如：RHEL 和 CentOS。</p>
+<p>Yum 是用于在官方发行版仓库以及其他第三方发行版仓库下获取、安装、删除、查询 RPM 包的主要工具。</p>
+<p>（LCTT 译注：用 <code>yum info</code> 获取 python 包的信息）</p>
+<pre><code># yum info python
+Loaded plugins: fastestmirror, security
+Loading mirror speeds from cached hostfile
+ * epel: epel.mirror.constant.com
+Installed Packages
+Name        : python
+Arch        : x86_64
+Version     : 2.6.6
+Release     : 66.el6_8
+Size        : 78 k
+Repo        : installed
+From repo   : updates
+Summary     : An interpreted, interactive, object-oriented programming language
+URL         : http://www.python.org/
+License     : Python
+Description : Python is an interpreted, interactive, object-oriented programming
+            : language often compared to Tcl, Perl, Scheme or Java. Python includes
+            : modules, classes, exceptions, very high level dynamic data types and
+            : dynamic typing. Python supports interfaces to many system calls and
+            : libraries, as well as to various windowing systems (X11, Motif, Tk,
+            : Mac and MFC).
+            :
+            : Programmers can write new built-in modules for Python in C or C++.
+            : Python can be used as an extension language for applications that need
+            : a programmable interface.
+            :
+            : Note that documentation for Python is provided in the python-docs
+            : package.
+            :
+            : This package provides the &quot;python&quot; executable; most of the actual
+            : implementation is within the &quot;python-libs&quot; package.
+</code></pre>
+<h3 id="yumdb-命令查看-rhel-和-centos-系统上的包信息">YUMDB 命令：查看 RHEL 和 CentOS 系统上的包信息</h3>
+<p><code>yumdb info</code> 这个命令提供与 <code>yum info</code> 相类似的的信息，不过它还额外提供了诸如包校验值、包类型、用户信息（由何人安装）。从 yum 3.2.26 版本后，<code>yum</code> 开始在 rpm 数据库外储存额外的信息了（此处如显示 <code>user</code> 表明该包由用户安装，而 <code>dep</code> 说明该包是被作为被依赖的包而被安装的）。</p>
+<p>（LCTT 译注：用 <code>yumdb info</code> 来获取 python 包的信息）</p>
+<pre><code># yumdb info python
+Loaded plugins: fastestmirror
+python-2.6.6-66.el6_8.x86_64
+     changed_by = 4294967295
+     checksum_data = 53c75a1756e5b4f6564c5229a37948c9b4561e0bf58076bd7dab7aff85a417f2
+     checksum_type = sha256
+     command_line = update -y
+     from_repo = updates
+     from_repo_revision = 1488370672
+     from_repo_timestamp = 1488371100
+     installed_by = 4294967295
+     reason = dep
+     releasever = 6
+</code></pre>
+<h3 id="rpm-命令在-rhelcentosfedora-系统上查看包的信息">RPM 命令：在 RHEL/CentOS/Fedora 系统上查看包的信息</h3>
+<p><a href="https://www.2daygeek.com/rpm-command-examples/">RPM</a> 英文直译为“<ruby>红帽包管理器<rt>Red Hat Package Manager</rt></ruby>”，这是一个在 RedHat 以及其变种发行版（如RHEL、CentOS、Fedora、openSUSE、Megeia）下的功能强大的命令行包管理工具。它能让你轻松的安装、升级、删除、查询以及校验你的系统或服务器上的软件。RPM 文件以 <code>.rpm</code> 结尾。RPM 包由它所依赖的软件库以及其他依赖构成，它不会与系统上已经安装的包冲突。</p>
+<p>（LCTT 译注：用 <code>rpm -qi</code> 查询 nano 包的具体信息）</p>
+<pre><code># rpm -qi nano
+Name        : nano                         Relocations: (not relocatable)
+Version     : 2.0.9                             Vendor: CentOS
+Release     : 7.el6                         Build Date: Fri 12 Nov 2010 02:18:36 AM EST
+Install Date: Fri 03 Mar 2017 08:57:47 AM EST      Build Host: c5b2.bsys.dev.centos.org
+Group       : Applications/Editors          Source RPM: nano-2.0.9-7.el6.src.rpm
+Size        : 1588347                          License: GPLv3+
+Signature   : RSA/8, Sun 03 Jul 2011 12:46:50 AM EDT, Key ID 0946fca2c105b9de
+Packager    : CentOS BuildSystem 
+URL         : http://www.nano-editor.org
+Summary     : A small text editor
+Description :
+GNU nano is a small and friendly text editor.
+</code></pre>
+<h3 id="dnf-命令在-fedora-系统上查看包信息">DNF 命令：在 Fedora 系统上查看包信息</h3>
+<p><a href="https://www.2daygeek.com/dnf-command-examples-manage-packages-fedora-system/">DNF</a> 指“<ruby>时髦版的 Yum<rt>Dandified yum</rt></ruby>”，我们也可以认为 DNF 是下一代的 yum 包管理器（Yum 的一个分支），它在后台使用了 hawkey/libsolv 库。Aleš Kozumplík 在Fedora 18 上开始开发 DNF，在 Fedora 22 上正式最后发布。 <code>dnf</code> 命令用来在 Fedora 22 及以后的系统上安装、更新、搜索以及删除包。它能自动的解决包安装过程中的包依赖问题。</p>
+<p>（LCTT 译注： 用 <code>dnf info</code> 查看 tilix 包信息）</p>
+<pre><code>$ dnf info tilix
+Last metadata expiration check: 27 days, 10:00:23 ago on Wed 04 Oct 2017 06:43:27 AM IST.
+Installed Packages
+Name         : tilix
+Version      : 1.6.4
+Release      : 1.fc26
+Arch         : x86_64
+Size         : 3.6 M
+Source       : tilix-1.6.4-1.fc26.src.rpm
+Repo         : @System
+From repo    : @commandline
+Summary      : Tiling terminal emulator
+URL          : https://github.com/gnunn1/tilix
+License      : MPLv2.0 and GPLv3+ and CC-BY-SA
+Description  : Tilix is a tiling terminal emulator with the following features:
+             : 
+             :  - Layout terminals in any fashion by splitting them horizontally or vertically
+             :  - Terminals can be re-arranged using drag and drop both within and between
+             :    windows
+             :  - Terminals can be detached into a new window via drag and drop
+             :  - Input can be synchronized between terminals so commands typed in one
+             :    terminal are replicated to the others
+             :  - The grouping of terminals can be saved and loaded from disk
+             :  - Terminals support custom titles
+             :  - Color schemes are stored in files and custom color schemes can be created by
+             :    simply creating a new file
+             :  - Transparent background
+             :  - Supports notifications when processes are completed out of view
+             : 
+             : The application was written using GTK 3 and an effort was made to conform to
+             : GNOME Human Interface Guidelines (HIG).
+</code></pre>
+<h3 id="zypper-命令在-opensuse-系统上查看包信息">Zypper 命令：在 openSUSE 系统上查看包信息</h3>
+<p><a href="https://www.2daygeek.com/zypper-command-examples-manage-packages-opensuse-system/">zypper</a> 是一个使用 libzypp 库的命令行包管理器。<code>zypper</code> 提供诸如软件仓库访问，安装依赖解决，软件包安装等等功能。</p>
+<p>（LCTT 译注： 用 <code>zypper info</code> 查询 nano 包的信息）</p>
+<pre><code>$ zypper info nano
+
+Loading repository data...
+Reading installed packages...
+
+
+Information for package nano:
+-----------------------------
+Repository     : Main Repository (OSS)              
+Name           : nano                               
+Version        : 2.4.2-5.3                          
+Arch           : x86_64                             
+Vendor         : openSUSE                           
+Installed Size : 1017.8 KiB                         
+Installed      : No                                 
+Status         : not installed                      
+Source package : nano-2.4.2-5.3.src                 
+Summary        : Pico editor clone with enhancements
+Description    :                                    
+    GNU nano is a small and friendly text editor. It aims to emulate
+    the Pico text editor while also offering a few enhancements.
+</code></pre>
+<h3 id="pacman-命令在-archlinux-及-manjaro-系统上查看包信息">Pacman 命令：在 ArchLinux 及 Manjaro 系统上查看包信息</h3>
+<p><a href="https://www.2daygeek.com/pacman-command-examples-manage-packages-arch-linux-system/">Pacman</a> 意即<ruby>包管理器<rt>package manager</rt></ruby>实用工具。<code>pacman</code> 是一个用于安装、构建、删除、管理 Arch Linux 上包的命令行工具。它后端使用 libalpm（Arch Linux package Manager（ALPM）库）来完成所有功能。</p>
+<p>（LCTT 译注： 用 <code>pacman -Qi</code> 来查询 bash 包信息）</p>
+<pre><code>$ pacman -Qi bash
+Name            : bash
+Version         : 4.4.012-2
+Description     : The GNU Bourne Again shell
+Architecture    : x86_64
+URL             : http://www.gnu.org/software/bash/bash.html
+Licenses        : GPL
+Groups          : base
+Provides        : sh
+Depends On      : readline&gt;=7.0  glibc  ncurses
+Optional Deps   : bash-completion: for tab completion
+Required By     : autoconf  automake  bison  bzip2  ca-certificates-utils  db
+                  dhcpcd  diffutils  e2fsprogs  fakeroot  figlet  findutils
+                  flex  freetype2  gawk  gdbm  gettext  gmp  grub  gzip  icu
+                  iptables  keyutils  libgpg-error  libksba  libpcap  libpng
+                  libtool  lvm2  m4  man-db  mkinitcpio  nano  neofetch  nspr
+                  nss  openresolv  os-prober  pacman  pcre  pcre2  shadow
+                  systemd  texinfo  vte-common  which  xdg-user-dirs  xdg-utils
+                  xfsprogs  xorg-mkfontdir  xorg-xpr  xz
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 7.13 MiB
+Packager        : Jan Alexander Steffens (heftig) 
+Build Date      : Tue 14 Feb 2017 01:16:51 PM UTC
+Install Date    : Thu 24 Aug 2017 06:08:12 AM UTC
+Install Reason  : Explicitly installed
+Install Script  : No
+Validated By    : Signature
+</code></pre>
+<h3 id="apt-cache-命令在-debianubuntumint-系统上查看包信息">apt-cache 命令：在 Debian/Ubuntu/Mint 系统上查看包信息</h3>
+<p><a href="https://www.2daygeek.com/apt-get-apt-cache-command-examples-manage-packages-debian-ubuntu-systems/">apt-cache</a> 命令能显示 apt 内部数据库中的大量信息。这些信息是从 <code>sources.list</code> 中的不同的软件源中搜集而来，因此从某种意义上这些信息也可以被认为是某种缓存。这些信息搜集工作是在运行 <code>apt update</code> 命令时执行的。</p>
+<p>（LCTT 译注：用管理员权限查询 apache2 包的信息）</p>
+<pre><code>$ sudo apt-cache show apache2
+Package: apache2
+Priority: optional
+Section: web
+Installed-Size: 473
+Maintainer: Ubuntu Developers 
+Original-Maintainer: Debian Apache Maintainers 
+Architecture: amd64
+Version: 2.4.12-2ubuntu2
+Replaces: apache2.2-common
+Provides: httpd, httpd-cgi
+Depends: lsb-base, procps, perl, mime-support, apache2-bin (= 2.4.12-2ubuntu2), apache2-utils (&gt;= 2.4), apache2-data (= 2.4.12-2ubuntu2)
+Pre-Depends: dpkg (&gt;= 1.17.14)
+Recommends: ssl-cert
+Suggests: www-browser, apache2-doc, apache2-suexec-pristine | apache2-suexec-custom, ufw
+Conflicts: apache2.2-common (&lt;&lt; 2.3~)
+Filename: pool/main/a/apache2/apache2_2.4.12-2ubuntu2_amd64.deb
+Size: 91348
+MD5sum: ab0ee0b0d1c6b3d19bd87aa2a9537125
+SHA1: 350c9a1a954906088ed032aebb77de3d5bb24004
+SHA256: 03f515f7ebc3b67b050b06e82ebca34b5e83e34a528868498fce020bf1dbbe34
+Description-en: Apache HTTP Server
+ The Apache HTTP Server Project&#39;s goal is to build a secure, efficient and
+ extensible HTTP server as standards-compliant open source software. The
+ result has long been the number one web server on the Internet.
+ .
+ Installing this package results in a full installation, including the
+ configuration files, init scripts and support scripts.
+Description-md5: d02426bc360345e5acd45367716dc35c
+Homepage: http://httpd.apache.org/
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Origin: Ubuntu
+Supported: 9m
+Task: lamp-server, mythbuntu-frontend, mythbuntu-desktop, mythbuntu-backend-slave, mythbuntu-backend-master, mythbuntu-backend-master
+</code></pre>
+<h3 id="apt-命令查看-debianubuntumint-系统上的包信息">APT 命令：查看 Debian/Ubuntu/Mint 系统上的包信息</h3>
+<p><a href="https://www.2daygeek.com/apt-command-examples-manage-packages-debian-ubuntu-systems/">APT</a> 意为<ruby>高级打包工具<rt>Advanced Packaging Tool</rt></ruby>，就像 DNF 将如何替代 YUM 一样，APT 是 apt-get 的替代物。它功能丰富的命令行工具包括了如下所有命令的功能如 <code>apt-cache</code>、<code>apt-search</code>、<code>dpkg</code>、<code>apt-cdrom</code>、<code>apt-config</code>、<code>apt-key</code> 等等，我们可以方便的通过 <code>apt</code> 来安装 <code>.dpkg</code> 包，但是我们却不能通过 <code>apt-get</code> 来完成这一点，还有一些其他的类似的功能也不能用 <code>apt-get</code> 来完成，所以 <code>apt-get</code> 因为没有解决上述功能缺乏的原因而被 <code>apt</code> 所取代。</p>
+<p>（LCTT 译注： 用 <code>apt show</code> 查看 nano 包信息）</p>
+<pre><code>$ apt show nano
+Package: nano
+Version: 2.8.6-3
+Priority: standard
+Section: editors
+Origin: Ubuntu
+Maintainer: Ubuntu Developers 
+Original-Maintainer: Jordi Mallach 
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Installed-Size: 766 kB
+Depends: libc6 (&gt;= 2.14), libncursesw5 (&gt;= 6), libtinfo5 (&gt;= 6)
+Suggests: spell
+Conflicts: pico
+Breaks: nano-tiny (&lt;&lt; 2.8.6-2)
+Replaces: nano-tiny (&lt;&lt; 2.8.6-2), pico
+Homepage: https://www.nano-editor.org/
+Task: standard, ubuntu-touch-core, ubuntu-touch
+Supported: 9m
+Download-Size: 222 kB
+APT-Manual-Installed: yes
+APT-Sources: http://in.archive.ubuntu.com/ubuntu artful/main amd64 Packages
+Description: small, friendly text editor inspired by Pico
+ GNU nano is an easy-to-use text editor originally designed as a replacement
+ for Pico, the ncurses-based editor from the non-free mailer package Pine
+ (itself now available under the Apache License as Alpine).
+ .
+ However, GNU nano also implements many features missing in pico, including:
+  - undo/redo
+  - line numbering
+  - syntax coloring
+  - soft-wrapping of overlong lines
+  - selecting text by holding Shift
+  - interactive search and replace (with regular expression support)
+  - a go-to line (and column) command
+  - support for multiple file buffers
+  - auto-indentation
+  - tab completion of filenames and search terms
+  - toggling features while running
+  - and full internationalization support
+</code></pre>
+<h3 id="dpkg-命令查看debianubuntumint系统上的包信息">dpkg 命令：查看Debian/Ubuntu/Mint系统上的包信息</h3>
+<p><a href="https://www.2daygeek.com/dpkg-command-to-manage-packages-on-debian-ubuntu-linux-mint-systems/">dpkg</a> 意指 <ruby>Debian 包管理器<rt>Debian package manager</rt></ruby>。<code>dpkg</code> 是用于 Debian 系统上安装、构建、移除以及管理 Debian 包的命令行工具。<code>dpkg</code> 使用 <code>aptitude</code>（因为它更为主流及用户友好）作为前端工具来完成所有的功能。其他的工具如<code> dpkg-deb</code> 和 <code>dpkg-query</code> 使用 <code>dpkg</code> 做为前端来实现功能。尽管系统管理员还是时不时会在必要时使用 <code>dpkg</code> 来完成一些软件安装的任务，他大多数情况下还是会因为 <code>apt</code>、<code>apt-get</code> 以及 <code>aptitude</code> 的健壮性而使用后者。</p>
+<p>（LCTT 译注： 用 <code>dpkg -s</code> 查看 python 包的信息）</p>
+<pre><code>$ dpkg -s python
+Package: python
+Status: install ok installed
+Priority: optional
+Section: python
+Installed-Size: 626
+Maintainer: Ubuntu Developers 
+Architecture: amd64
+Multi-Arch: allowed
+Source: python-defaults
+Version: 2.7.14-2ubuntu1
+Replaces: python-dev (&lt;&lt; 2.6.5-2)
+Provides: python-ctypes, python-email, python-importlib, python-profiler, python-wsgiref
+Depends: python2.7 (&gt;= 2.7.14-1~), libpython-stdlib (= 2.7.14-2ubuntu1)
+Pre-Depends: python-minimal (= 2.7.14-2ubuntu1)
+Suggests: python-doc (= 2.7.14-2ubuntu1), python-tk (&gt;= 2.7.14-1~)
+Breaks: update-manager-core (&lt;&lt; 0.200.5-2)
+Conflicts: python-central (&lt;&lt; 0.5.5)
+Description: interactive high-level object-oriented language (default version)
+ Python, the high-level, interactive object oriented language,
+ includes an extensive class library with lots of goodies for
+ network programming, system administration, sounds and graphics.
+ .
+ This package is a dependency package, which depends on Debian&#39;s default
+ Python version (currently v2.7).
+Homepage: http://www.python.org/
+Original-Maintainer: Matthias Klose 
+</code></pre>
+<p>我们也可使用 <code>dpkg</code> 的 <code>-p</code> 选项，这个选项提供和 <code>dpkg -s</code> 相类似的信息，但是它还提供了包的校验值和包类型。</p>
+<p>（LCTT 译注： 用 <code>dpkg -p</code> 查看 python3 包的信息）</p>
+<pre><code>$ dpkg -p python3
+Package: python3
+Priority: important
+Section: python
+Installed-Size: 67
+Origin: Ubuntu
+Maintainer: Ubuntu Developers 
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Architecture: amd64
+Multi-Arch: allowed
+Source: python3-defaults
+Version: 3.6.3-0ubuntu2
+Replaces: python3-minimal (&lt;&lt; 3.1.2-2)
+Provides: python3-profiler
+Depends: python3.6 (&gt;= 3.6.3-1~), libpython3-stdlib (= 3.6.3-0ubuntu2), dh-python
+Pre-Depends: python3-minimal (= 3.6.3-0ubuntu2)
+Suggests: python3-doc (&gt;= 3.6.3-0ubuntu2), python3-tk (&gt;= 3.6.3-1~), python3-venv (&gt;= 3.6.3-0ubuntu2)
+Filename: pool/main/p/python3-defaults/python3_3.6.3-0ubuntu2_amd64.deb
+Size: 8712
+MD5sum: a8bae494c6e5d1896287675faf40d373
+Description: interactive high-level object-oriented language (default python3 version)
+Original-Maintainer: Matthias Klose 
+SHA1: 2daec885cea7d4dc83c284301c3bebf42b23e095
+SHA256: 865e509c91d2504a16c4b573dbe27e260c36fceec2add3fa43a30c1751d7e9bb
+Homepage: http://www.python.org/
+Task: minimal, ubuntu-core, ubuntu-core
+Description-md5: 950ebd8122c0a7340f0a740c295b9eab
+Supported: 9m
+</code></pre>
+<h3 id="aptitude-命令查看-debianubuntumint-系统上的包信息">aptitude 命令：查看 Debian/Ubuntu/Mint 系统上的包信息</h3>
+<p><code>aptitude</code> 是 Debian GNU/Linux 包管理系统的文本界面。它允许用户查看已安装的包的列表，以及完成诸如安装、升级、删除包之类的包管理任务。这些管理行为也能从图形接口来执行。</p>
+<p>（LCTT 译注： 用 <code>aptitude show</code> 查看 htop 包信息）</p>
+<pre><code>$ aptitude show htop
+Package: htop                     
+Version: 2.0.2-1
+State: installed
+Automatically installed: no
+Priority: optional
+Section: universe/utils
+Maintainer: Ubuntu Developers 
+Architecture: amd64
+Uncompressed Size: 216 k
+Depends: libc6 (&gt;= 2.15), libncursesw5 (&gt;= 6), libtinfo5 (&gt;= 6)
+Suggests: lsof, strace
+Conflicts: htop:i386
+Description: interactive processes viewer
+ Htop is an ncursed-based process viewer similar to top, but it allows one to scroll the list vertically and horizontally to see all processes and their full command lines. 
+ 
+ Tasks related to processes (killing, renicing) can be done without entering their PIDs.
+Homepage: http://hisham.hm/htop/
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/how-to-view-detailed-information-about-a-package-in-linux/">https://www.2daygeek.com/how-to-view-detailed-information-about-a-package-in-linux/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/prakash/">Prakash Subramanian</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/davidchenliang">DavidChenLiang</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#yum-命令在-rhel-和-centos-系统上获得包的信息">YUM 命令：在 RHEL 和 CentOS 系统上获得包的信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#yumdb-命令查看-rhel-和-centos-系统上的包信息">YUMDB 命令：查看 RHEL 和 CentOS 系统上的包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#rpm-命令在-rhelcentosfedora-系统上查看包的信息">RPM 命令：在 RHEL/CentOS/Fedora 系统上查看包的信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#dnf-命令在-fedora-系统上查看包信息">DNF 命令：在 Fedora 系统上查看包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#zypper-命令在-opensuse-系统上查看包信息">Zypper 命令：在 openSUSE 系统上查看包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#pacman-命令在-archlinux-及-manjaro-系统上查看包信息">Pacman 命令：在 ArchLinux 及 Manjaro 系统上查看包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#apt-cache-命令在-debianubuntumint-系统上查看包信息">apt-cache 命令：在 Debian/Ubuntu/Mint 系统上查看包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#apt-命令查看-debianubuntumint-系统上的包信息">APT 命令：查看 Debian/Ubuntu/Mint 系统上的包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#dpkg-命令查看debianubuntumint系统上的包信息">dpkg 命令：查看Debian/Ubuntu/Mint系统上的包信息</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#aptitude-命令查看-debianubuntumint-系统上的包信息">aptitude 命令：查看 Debian/Ubuntu/Mint 系统上的包信息</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201809/20180710 How To View Detailed Information About A Package In Linux","title":"如何在 Linux 上检查一个软件包的详细信息"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

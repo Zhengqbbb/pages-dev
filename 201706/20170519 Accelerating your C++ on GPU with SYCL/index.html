@@ -1,0 +1,272 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>通过 SYCL 在 GPU 上加速 C++ - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="通过 SYCL 在 GPU 上加速 C++ - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="通过 SYCL 在 GPU 上加速 C++ - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201706/20170519 Accelerating your C++ on GPU with SYCL#page","@type":"TechArticle","headline":"通过 SYCL 在 GPU 上加速 C++","inLanguage":"en","name":"通过 SYCL 在 GPU 上加速 C++","url":"https://zhengqbbb.github.io/pages-dev/201706/20170519 Accelerating your C++ on GPU with SYCL","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201706/20170519 Accelerating your C++ on GPU with SYCL"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#gpgpu-简介">GPGPU 简介</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#回到-sycl">回到 SYCL</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#sycl-并行-stl">SYCL 并行 STL</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>通过 SYCL 在 GPU 上加速 C++</h1><p>在机器学习、计算机视觉以及高性能计算领域，充分利用显卡计算应用程序的能力已成为当前的热门。类似 OpenCL 的技术通过硬件无关的编程模型展现了这种能力，使得你可以编写抽象于不同体系架构的代码。它的目标是“一次编写，到处运行”，不管它是 Intel CPU、AMD 独立显卡还是 DSP 等等。不幸的是，对于日常程序员，OpenCL 的学习曲线陡峭；一个简单的 Hello World 程序可能就需要上百行晦涩难懂的代码。因此，为了减轻这种痛苦，Khronos 组织已经开发了一个称为 <a href="https://www.khronos.org/sycl">SYCL</a> 的新标准，这是一个在 OpenCL 之上的 C++ 抽象层。通过 SYCL，你可以使用干净、现代的 C++ 开发出这些通用 GPU（GPGPU）应用程序，而无需拘泥于 OpenCL。下面是一个使用 SYCL 开发，通过并行 STL 实现的向量乘法事例：</p>
+<pre><code>#include &lt;vector&gt;
+#include &lt;iostream&gt;
+
+#include &lt;sycl/execution_policy&gt;
+#include &lt;experimental/algorithm&gt;
+#include &lt;sycl/helpers/sycl_buffers.hpp&gt;
+
+using namespace std::experimental::parallel;
+using namespace sycl::helpers;
+
+int main() {
+  constexpr size_t array_size = 1024*512;
+  std::array&lt;cl::sycl::cl_int, array_size&gt; a;
+  std::iota(begin(a),end(a),0);
+
+  {
+    cl::sycl::buffer&lt;int&gt; b(a.data(), cl::sycl::range&lt;1&gt;(a.size()));
+    cl::sycl::queue q;
+    sycl::sycl_execution_policy&lt;class Mul&gt; sycl_policy(q);
+    transform(sycl_policy, begin(b), end(b), begin(b),
+              [](int x) { return x*2; });
+  }
+}
+</code></pre>
+<p>为了作为对比，下面是一个通过 C++ API 使用 OpenCL 编写的大概对应版本（无需花过多时间阅读，只需注意到它看起来难看而且冗长）。</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;array&gt;
+#include &lt;numeric&gt;
+#include &lt;CL/cl.hpp&gt;
+
+int main(){
+    std::vector&lt;cl::Platform&gt; all_platforms;
+    cl::Platform::get(&amp;all_platforms);
+    if(all_platforms.size()==0){
+        std::cout&lt;&lt;&quot; No platforms found. Check OpenCL installation!\n&quot;;
+        exit(1);
+    }
+    cl::Platform default_platform=all_platforms[0];
+
+    std::vector&lt;cl::Device&gt; all_devices;
+    default_platform.getDevices(CL_DEVICE_TYPE_ALL, &amp;all_devices);
+    if(all_devices.size()==0){
+        std::cout&lt;&lt;&quot; No devices found. Check OpenCL installation!\n&quot;;
+        exit(1);
+    }
+
+    cl::Device default_device=all_devices[0];
+    cl::Context context({default_device});
+
+    cl::Program::Sources sources;
+    std::string kernel_code=
+        &quot;   void kernel mul2(global int* A){&quot;
+        &quot;       A[get_global_id(0)]=A[get_global_id(0)]*2;&quot;
+        &quot;   }&quot;;
+    sources.push_back({kernel_code.c_str(),kernel_code.length()});
+
+    cl::Program program(context,sources);
+    if(program.build({default_device})!=CL_SUCCESS){
+        std::cout&lt;&lt;&quot; Error building: &quot;&lt;&lt;program.getBuildInfo&lt;CL_PROGRAM_BUILD_LOG&gt;(default_device)&lt;&lt;&quot;\n&quot;;
+        exit(1);
+    }
+
+    constexpr size_t array_size = 1024*512;
+    std::array&lt;cl_int, array_size&gt; a;
+    std::iota(begin(a),end(a),0);
+
+    cl::Buffer buffer_A(context,CL_MEM_READ_WRITE,sizeof(int)*a.size());
+    cl::CommandQueue queue(context,default_device);
+
+    if (queue.enqueueWriteBuffer(buffer_A,CL_TRUE,0,sizeof(int)*a.size(),a.data()) != CL_SUCCESS) {
+        std::cout &lt;&lt; &quot;Failed to write memory;n&quot;;
+        exit(1);
+    }
+
+    cl::Kernel kernel_add = cl::Kernel(program,&quot;mul2&quot;);
+    kernel_add.setArg(0,buffer_A);
+
+    if (queue.enqueueNDRangeKernel(kernel_add,cl::NullRange,cl::NDRange(a.size()),cl::NullRange) != CL_SUCCESS) {
+        std::cout &lt;&lt; &quot;Failed to enqueue kernel\n&quot;;
+        exit(1);
+    }
+
+    if (queue.finish() != CL_SUCCESS) {
+        std::cout &lt;&lt; &quot;Failed to finish kernel\n&quot;;
+        exit(1);
+    }
+
+    if (queue.enqueueReadBuffer(buffer_A,CL_TRUE,0,sizeof(int)*a.size(),a.data()) != CL_SUCCESS) {
+        std::cout &lt;&lt; &quot;Failed to read result\n&quot;;
+        exit(1);
+    }
+}
+</code></pre>
+<p>在这篇博文中我会介绍使用 SYCL 加速你 GPU 上的 C++ 代码。</p>
+<h3 id="gpgpu-简介">GPGPU 简介</h3>
+<p>在我开始介绍如何使用 SYCL 之前，我首先给那些不熟悉这方面的人简要介绍一下为什么你可能想要在 GPU 上运行计算任务。如果已经使用过 OpenCL、CUDA 或类似的库，可以跳过这一节。 </p>
+<p>GPU 和 CPU 的一个关键不同就是 GPU 有大量小的、简单的处理单元，而不是少量（对于普通消费者桌面硬件通常是 1-8 个）复杂而强大的核。</p>
+<p><img src="https://blog.tartanllama.xyz/assets/cpu.png" alt="CPU 架构"></p>
+<p>上面是一个 4 核 CPU 的简单漫画示意图。每个核都有一组寄存器以及不同等级的缓存（有些是共享缓存、有些不是），然后是主内存。</p>
+<p><img src="https://blog.tartanllama.xyz/assets/gpu.png" alt="GPU 架构"></p>
+<p>在 GPU 上，多个小处理单元被组成一个执行单元。每个小处理单元都附有少量内存，每个执行单元都有一些共享内存用于它的处理单元。除此之外，还有一些 GPU 范围的内存，然后是 CPU 使用的主内存。执行单元内部的单元是 <em>lockstep</em> ，每个单元都在不同的数据片上执行相同的指令。</p>
+<p>这可以使 GPU 同时处理大量的数据。如果是在 CPU 上，也许你可以使用多线程和向量指令在给定时间内完成大量的工作，但是 GPU 所能处理的远多于此。在 GPU 上一次性能够处理的数据规模使得它非常适合于类似图形（duh）、数学处理、神经网络等等。</p>
+<p>GPGPU 编程的很多方面使得它和日常的 CPU 编程完全不同。例如，从主内存传输数据到 GPU 是_很慢的_。_真的_很慢。会完全干掉你的性能使你慢下来。因此，GPU 编程的权衡是尽可能多地利用加速器的高吞吐量来掩盖数据来往的延迟。</p>
+<p>这里还有一些不那么明显的问题，例如分支的开销。由于执行单元内的处理单元按照 lockstep 工作，使它们执行不同路径（不同的控制流）的嵌套分支就是个真正的问题。这通常通过在所有单元上执行所有分支并标记出无用结果来解决。这是一个基于嵌套级别的指数级的复杂度，这当然是坏事情。当然，有一些优化方法可以拯救该问题，但需要注意：你从 CPU 领域带来的简单假设和知识在 GPU 领域可能导致大问题。</p>
+<p>在我们回到 SYCL 之前，需要介绍一些术语。主机（host）是主 CPU 运行的机器，设备（device）是会运行你 OpenCL 代码的地方。设备可能就是主机，但也可能是你机器上的一些加速器、模拟器等。内核（kernel）是一个特殊函数，它是在你设备上运行代码的入口点。通常还会提供一些主机设置好的缓存给它用于输入和输出数据。</p>
+<h3 id="回到-sycl">回到 SYCL</h3>
+<p>这里有两个可用的 SYCL 实现：<a href="https://github.com/Xilinx/triSYCL">triSYCL</a>，由 Xilinx 开发的实验性开源版本（通常作为标准的试验台使用），以及 <a href="https://www.codeplay.com/products/computesuite/computecpp">ComputeCpp</a>，由 Codeplay（我在 Codeplay 工作，但这篇文章是在没有我雇主建议的情况下使用我自己时间编写的） 开发的工业级实现（当前处于开发测试版）。只有 ComputeCpp 支持在 GPU 上执行内核，因此在这篇文章中我们会使用它。</p>
+<p>第一步是在你的机器上配置以及运行 ComputeCpp。主要组件是一个实现了 SYCL API 的运行时库，以及一个基于 Clang 的编译器，它负责编译你的主机代码和设备代码。在本文写作时，已经在 Ubuntu 和 CentOS 上官方支持 Intel CPU 以及某些 AMD GPU。在其它 Linux 发行版上让它工作也非常简单（例如，我让它在我的 Arch 系统上运行）。对更多的硬件和操作系统的支持正在进行中，查看<a href="https://www.codeplay.com/products/computesuite/computecpp/reference/platform-support-notes">支持平台文档</a>获取最新列表。<a href="https://www.codeplay.com/products/computesuite/computecpp/reference/release-notes/">这里</a>列出了依赖和组件。你也可能想要下载 <a href="https://github.com/codeplaysoftware/computecpp-sdk">SDK</a>，其中包括了示例、文档、构建系统集成文件，以及其它。在这篇文章中我会使用 <a href="https://github.com/KhronosGroup/SyclParallelSTL">SYCL 并行 STL</a>，如果你想要自己在家学习的话也要下载它。</p>
+<p>一旦你设置好了一切，我们就可以开始通用 GPU 编程了！正如简介中提到的，我的第一个示例使用 SYCL 并行 STL 实现。我们现在来看看如何使用纯 SYCL 编写代码。</p>
+<pre><code>#include &lt;CL/sycl.hpp&gt;
+
+#include &lt;array&gt;
+#include &lt;numeric&gt;
+#include &lt;iostream&gt;
+
+int main() {
+      const size_t array_size = 1024*512;
+      std::array&lt;cl::sycl::cl_int, array_size&gt; in,out;
+      std::iota(begin(in),end(in),0);
+
+      {
+          cl::sycl::queue device_queue;
+          cl::sycl::range&lt;1&gt; n_items{array_size};
+          cl::sycl::buffer&lt;cl::sycl::cl_int, 1&gt; in_buffer(in.data(), n_items);
+          cl::sycl::buffer&lt;cl::sycl::cl_int, 1&gt; out_buffer(out.data(), n_items);
+
+          device_queue.submit([&amp;](cl::sycl::handler &amp;cgh) {
+              constexpr auto sycl_read = cl::sycl::access::mode::read;
+              constexpr auto sycl_write = cl::sycl::access::mode::write;
+
+              auto in_accessor = in_buffer.get_access&lt;sycl_read&gt;(cgh);
+              auto out_accessor = out_buffer.get_access&lt;sycl_write&gt;(cgh);
+
+              cgh.parallel_for&lt;class VecScalMul&gt;(n_items,
+                  [=](cl::sycl::id&lt;1&gt; wiID) {
+                      out_accessor[wiID] = in_accessor[wiID]*2;
+                  });
+         });
+     }
+}
+</code></pre>
+<p>我会把它划分为一个个片段。</p>
+<pre><code>#include &lt;CL/sycl.hpp&gt;
+</code></pre>
+<p>我们做的第一件事就是包含 SYCL 头文件，它会在我们的命令中添加 SYCL 运行时库。</p>
+<pre><code>const size_t array_size = 1024*512;
+std::array&lt;cl::sycl::cl_int, array_size&gt; in,out;
+std::iota(begin(in),end(in),0);
+</code></pre>
+<p>这里我们构造了一个很大的整型数组并用数字 <code>0</code> 到 <code>array_size-1</code> 初始化（这就是 <code>std::iota</code> 所做的）。注意我们使用 <code>cl::sycl::cl_int</code> 确保兼容性。</p>
+<pre><code>{
+    //...
+}
+</code></pre>
+<p>接着我们打开一个新的作用域，其目的为二：</p>
+<ol>
+<li><code>device_queue</code> 将在该作用域结束时解构，它将阻塞，直到内核完成。</li>
+<li><code>in_buffer</code> 和 <code>out_buffer</code> 也将解构，这将强制数据传输回主机并允许我们从 <code>in</code> 和 <code>out</code> 中访问数据。</li>
+</ol>
+<pre><code>cl::sycl::queue device_queue;
+</code></pre>
+<p>现在我们创建我们的命令队列。命令队列是所有工作（内核）在分发到设备之前需要入队的地方。有很多方法可以定制队列，例如说提供设备用于入队或者设置异步错误处理器，但对于这个例子默认构造器就可以了；它会查找兼容的 GPU，如果失败的话会回退到主机 CPU。</p>
+<pre><code>cl::sycl::range&lt;1&gt; n_items{array_size};
+</code></pre>
+<p>接下来我们创建一个范围，它描述了内核在上面执行的数据的形状。在我们简单的例子中，它是一个一维数组，因此我们使用 <code>cl::sycl::range&lt;1&gt;</code>。如果数据是二维的，我们就会使用 <code>cl::sycl::range&lt;2&gt;</code>，以此类推。除了 <code>cl::sycl::range</code>，还有 <code>cl::sycl::ndrange</code>，它允许你指定工作组大小以及越界范围，但在我们的例子中我们不需要使用它。</p>
+<pre><code>cl::sycl::buffer&lt;cl::sycl::cl_int, 1&gt; in_buffer(in.data(), n_items);
+cl::sycl::buffer&lt;cl::sycl::cl_int, 1&gt; out_buffer(out.data(), n_items);
+</code></pre>
+<p>为了控制主机和设备之间的数据共享和传输，SYCL 提供了一个 <code>buffer</code> 类。我们创建了两个 SYCL 缓存用于管理我们的输入和输出数组。</p>
+<pre><code>      device_queue.submit([&amp;](cl::sycl::handler &amp;cgh) {/*...*/});
+</code></pre>
+<p>设置好了我们所有数据之后，我们就可以入队真正的工作。有多种方法可以做到，但设置并行执行的一个简单方法是在我们的队列中调用 <code>.submit</code> 函数。对于这个函数我们传递了一个运行时调度该任务时会被执行的“命令组伪函数”（伪函数是规范，不是我创造的）。命令组处理器设置任何内核需要的余下资源并分发它。</p>
+<pre><code>constexpr auto sycl_read = cl::sycl::access::mode::read_write;
+constexpr auto sycl_write = cl::sycl::access::mode::write;
+
+auto in_accessor = in_buffer.get_access&lt;sycl_read&gt;(cgh);
+auto out_accessor = out_buffer.get_access&lt;sycl_write&gt;(cgh);
+</code></pre>
+<p>为了控制到我们缓存的访问并告诉该运行时环境我们会如何使用数据，我们需要创建访问器。很显然，我们创建了一个访问器用于从 <code>in_buffer</code> 读入，一个访问器用于写到 <code>out_buffer</code>。</p>
+<pre><code>cgh.parallel_for&lt;class VecScalMul&gt;(n_items,
+    [=](cl::sycl::id&lt;1&gt; wiID) {
+         out_accessor[wiID] = in_accessor[wiID]*2;
+    });
+</code></pre>
+<p>现在我们已经完成了所有设置，我们可以真正的在我们的设备上做一些计算了。这里我们根据范围 <code>n_items</code> 在命令组处理器 <code>cgh</code> 之上分发一个内核。实际内核自身是一个使用 work-item 标识符作为输入、输出我们计算结果的 lamda 表达式。在这种情况下，我们从 <code>in_accessor</code> 使用 work-item 标识符作为索引读入，将其乘以 <code>2</code>，然后将结果保存到 <code>out_accessor</code> 相应的位置。<code>&lt;class VecScalMul&gt;</code> 是一个为了在标准 C++ 范围内工作的不幸的副产品，因此我们需要给内核一个唯一的类名以便编译器能完成它的工作。</p>
+<pre><code>}
+</code></pre>
+<p>在此之后，我们现在可以访问 <code>out</code> 并期望看到正确的结果。</p>
+<p>这里有相当多的新概念在起作用，但使用这些技术你可以看到这些能力和所展现出来的东西。当然，如果你只是想在你的 GPU 上执行一些代码而不关心定制化，那么你就可以使用 SYCL 并行 STL 实现。</p>
+<h3 id="sycl-并行-stl">SYCL 并行 STL</h3>
+<p>SYCL 并行 STL 是一个 TS 的并行化实现，它分发你的算法函数对象作为 SYCL 内核。在这个页面前面我们已经看过这样的例子，让我们来快速过一遍。</p>
+<pre><code>#include &lt;vector&gt;
+#include &lt;iostream&gt;
+
+#include &lt;sycl/execution_policy&gt;
+#include &lt;experimental/algorithm&gt;
+#include &lt;sycl/helpers/sycl_buffers.hpp&gt;
+
+using namespace std::experimental::parallel;
+using namespace sycl::helpers;
+
+int main() {
+  constexpr size_t array_size = 1024*512;
+  std::array&lt;cl::sycl::cl_int, array_size&gt; in,out;
+  std::iota(begin(in),end(in),0);
+
+  {
+    cl::sycl::buffer&lt;int&gt; in_buffer(in.data(), cl::sycl::range&lt;1&gt;(in.size()));
+    cl::sycl::buffer&lt;int&gt; out_buffer(out.data(), cl::sycl::range&lt;1&gt;(out.size()));
+    cl::sycl::queue q;
+    sycl::sycl_execution_policy&lt;class Mul&gt; sycl_policy(q);
+    transform(sycl_policy, begin(in_buffer), end(in_buffer), begin(out_buffer),
+              [](int x) { return x*2; });
+  }
+}
+</code></pre>
+<pre><code>  constexpr size_t array_size = 1024*512;
+  std::array&lt;cl::sycl::cl_int, array_size&gt; in, out;
+  std::iota(begin(in),end(in),0);
+</code></pre>
+<p>到现在为止一切如此相似。我们再一次创建一组数组用于保存我们的输入输出数据。</p>
+<pre><code>cl::sycl::buffer&lt;int&gt; in_buffer(in.data(), cl::sycl::range&lt;1&gt;(in.size()));
+cl::sycl::buffer&lt;int&gt; out_buffer(out.data(), cl::sycl::range&lt;1&gt;(out.size()));
+cl::sycl::queue q;
+</code></pre>
+<p>这里我们创建类似上个例子的缓存和队列。</p>
+<pre><code>sycl::sycl_execution_policy&lt;class Mul&gt; sycl_policy(q);
+</code></pre>
+<p>这就是有趣的部分。我们从我们的队列中创建 <code>sycl_execution_policy</code>，给它一个名称让内核使用。这个执行策略然后可以像 <code>std::execution::par</code> 或 <code>std::execution::seq</code> 那样使用。</p>
+<pre><code>transform(sycl_policy, begin(in_buffer), end(in_buffer), begin(out_buffer),
+          [](int x) { return x*2; });
+</code></pre>
+<p>现在我们的内核分发看起来像提供了一个执行策略的 <code>std::transform</code> 调用。我们传递的闭包会被编译并在设备上执行，而不需要我们做其它更加复杂的设置。</p>
+<p>当然，除了 <code>transform</code> 你可以做更多。开发的时候，SYCL 并行 STL 支持以下算法：</p>
+<ul>
+<li><code>sort</code></li>
+<li><code>transform</code></li>
+<li><code>for_each</code></li>
+<li><code>for_each_n</code></li>
+<li><code>count_if</code></li>
+<li><code>reduce</code></li>
+<li><code>inner_product</code></li>
+<li><code>transform_reduce</code></li>
+</ul>
+<p>这就是这篇短文需要介绍的东西。如果你想和 SYCL 的开发保持同步，那就要看 <a href="http://sycl.tech/">sycl.tech</a>。最近重要的开发就是移植 <a href="https://github.com/ville-k/sycl_starter">Eigen</a> 和 <a href="http://deep-beta.co.uk/setting-up-tensorflow-with-opencl-using-sycl/">Tensorflow</a> 到 SYCL ，为 OpenCL 设备带来引入关注的人工智能编程。对我个人而言，我很高兴看到高级编程模型可以用于异构程序自动优化，以及它们是怎样支持类似 <a href="https://github.com/STEllAR-GROUP/hpx">HPX</a> 或 <a href="https://github.com/skelcl/skelcl">SkelCL</a> 等更高级的技术。</p>
+<hr>
+<p>via: <a href="https://blog.tartanllama.xyz/c++/2017/05/19/sycl/">https://blog.tartanllama.xyz/c++/2017/05/19/sycl/</a></p>
+<p>作者：<a href="https://www.twitter.com/TartanLlama">TartanLlama</a>
+译者：<a href="https://github.com/ictlyh">ictlyh</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#gpgpu-简介">GPGPU 简介</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#回到-sycl">回到 SYCL</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#sycl-并行-stl">SYCL 并行 STL</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201706/20170519 Accelerating your C++ on GPU with SYCL","title":"通过 SYCL 在 GPU 上加速 C++"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

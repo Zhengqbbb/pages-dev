@@ -1,0 +1,458 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>6 个方便的 Git 脚本 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="6 个方便的 Git 脚本 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="6 个方便的 Git 脚本 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202001/20200115 6 handy Bash scripts for Git#page","@type":"TechArticle","headline":"6 个方便的 Git 脚本","inLanguage":"en","name":"6 个方便的 Git 脚本","url":"https://zhengqbbb.github.io/pages-dev/202001/20200115 6 handy Bash scripts for Git","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202001/20200115 6 handy Bash scripts for Git"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1gitlog">1、gitlog</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2gitlogid">2、gitlog.id</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3gitlogid2">3、gitlog.id2</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4gitloggrep">4、gitlog.grep</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5gitbranchcmp3">5、gitbranchcmp3</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6gitlogfind">6、gitlog.find</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#源代码">源代码</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>6 个方便的 Git 脚本</h1><blockquote>
+<p>当使用 Git 存储库时，这六个 Bash 脚本将使你的生活更轻松。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202001/18/231713jegbk8fyek798gxb.jpg" alt=""></p>
+<p>我编写了许多 Bash 脚本，这些脚本使我在使用 Git 存储库时工作更加轻松。我的许多同事说没有必要：我所做的一切都可以用 Git 命令完成。虽然这可能是正确的，但我发现脚本远比尝试找出适当的 Git 命令来执行我想要的操作更加方便。</p>
+<h3 id="1gitlog">1、gitlog</h3>
+<p><code>gitlog</code> 打印针对 master 分支的当前补丁的简短列表。它从最旧到最新打印它们，并显示作者和描述，其中 <code>H</code> 代表 <code>HEAD</code>，<code>^</code> 代表 <code>HEAD^</code>，<code>2</code> 代表 <code>HEAD~2</code>，依此类推。例如：</p>
+<pre><code>$ gitlog
+-----------------------[ recovery25 ]-----------------------
+(snip)
+11 340d27a33895 Bob Peterson     gfs2: drain the ail2 list after io errors
+10 9b3c4e6efb10 Bob Peterson     gfs2: clean up iopen glock mess in gfs2_create_inode
+ 9 d2e8c22be39b Bob Peterson     gfs2: Do proper error checking for go_sync family of glops
+ 8 9563e31f8bfd Christoph Hellwig gfs2: use page_offset in gfs2_page_mkwrite
+ 7 ebac7a38036c Christoph Hellwig gfs2: don&#39;t use buffer_heads in gfs2_allocate_page_backing
+ 6 f703a3c27874 Andreas Gruenbacher gfs2: Improve mmap write vs. punch_hole consistency
+ 5 a3e86d2ef30e Andreas Gruenbacher gfs2: Multi-block allocations in gfs2_page_mkwrite
+ 4 da3c604755b0 Andreas Gruenbacher gfs2: Fix end-of-file handling in gfs2_page_mkwrite
+ 3 4525c2f5b46f Bob Peterson     Rafael Aquini&#39;s slab instrumentation
+ 2 a06a5b7dea02 Bob Peterson     GFS2: Add go_get_holdtime to gl_ops
+ ^ 8ba93c796d5c Bob Peterson     gfs2: introduce new function remaining_hold_time and use it in dq
+ H e8b5ff851bb9 Bob Peterson     gfs2: Allow rgrps to have a minimum hold time
+</code></pre>
+<p>如果我想查看其他分支上有哪些补丁，可以指定一个替代分支：</p>
+<pre><code>$ gitlog recovery24
+</code></pre>
+<h3 id="2gitlogid">2、gitlog.id</h3>
+<p><code>gitlog.id</code> 只是打印出补丁的 SHA1 ID：</p>
+<pre><code>$ gitlog.id
+-----------------------[ recovery25 ]-----------------------
+56908eeb6940 2ca4a6b628a1 fc64ad5d99fe 02031a00a251 f6f38da7dd18 d8546e8f0023 fc3cc1f98f6b 12c3e0cb3523 76cce178b134 6fc1dce3ab9c 1b681ab074ca 26fed8de719b 802ff51a5670 49f67a512d8c f04f20193bbb 5f6afe809d23 2030521dc70e dada79b3be94 9b19a1e08161 78a035041d3e f03da011cae2 0d2b2e068fcd 2449976aa133 57dfb5e12ccd 53abedfdcf72 6fbdda3474b3 49544a547188 187032f7a63c 6f75dae23d93 95fc2a261b00 ebfb14ded191 f653ee9e414a 0e2911cb8111 73968b76e2e3 8a3e4cb5e92c a5f2da803b5b 7c9ef68388ed 71ca19d0cba8 340d27a33895 9b3c4e6efb10 d2e8c22be39b 9563e31f8bfd ebac7a38036c f703a3c27874 a3e86d2ef30e da3c604755b0 4525c2f5b46f a06a5b7dea02 8ba93c796d5c e8b5ff851bb9
+</code></pre>
+<p>同样，它假定是当前分支，但是如果需要，我可以指定其他分支。</p>
+<h3 id="3gitlogid2">3、gitlog.id2</h3>
+<p><code>gitlog.id2</code> 与 <code>gitlog.id</code> 相同，但顶部没有显示分支的行。这对于从一个分支挑选所有补丁到当前分支很方便：</p>
+<pre><code>$ # 创建一个新分支
+$ git branch --track origin/master
+$ # 检出刚刚创建的新分支
+$ git checkout recovery26
+$ # 从旧的分支挑选所有补丁到新分支
+$ for i in `gitlog.id2 recovery25` ; do git cherry-pick $i ;done
+</code></pre>
+<h3 id="4gitloggrep">4、gitlog.grep</h3>
+<p><code>gitlog.grep</code> 会在该补丁集合中寻找一个字符串。例如，如果我发现一个错误并想修复引用了函数 <code>inode_go_sync</code> 的补丁，我可以简单地执行以下操作：</p>
+<pre><code>$ gitlog.grep inode_go_sync
+-----------------------[ recovery25 - 50 patches ]-----------------------
+(snip)
+11 340d27a33895 Bob Peterson     gfs2: drain the ail2 list after io errors
+10 9b3c4e6efb10 Bob Peterson     gfs2: clean up iopen glock mess in gfs2_create_inode
+ 9 d2e8c22be39b Bob Peterson     gfs2: Do proper error checking for go_sync family of glops
+152:-static void inode_go_sync(struct gfs2_glock *gl)
+153:+static int inode_go_sync(struct gfs2_glock *gl)
+163:@@ -296,6 +302,7 @@ static void inode_go_sync(struct gfs2_glock *gl)
+ 8 9563e31f8bfd Christoph Hellwig gfs2: use page_offset in gfs2_page_mkwrite
+ 7 ebac7a38036c Christoph Hellwig gfs2: don&#39;t use buffer_heads in gfs2_allocate_page_backing
+ 6 f703a3c27874 Andreas Gruenbacher gfs2: Improve mmap write vs. punch_hole consistency
+ 5 a3e86d2ef30e Andreas Gruenbacher gfs2: Multi-block allocations in gfs2_page_mkwrite
+ 4 da3c604755b0 Andreas Gruenbacher gfs2: Fix end-of-file handling in gfs2_page_mkwrite
+ 3 4525c2f5b46f Bob Peterson     Rafael Aquini&#39;s slab instrumentation
+ 2 a06a5b7dea02 Bob Peterson     GFS2: Add go_get_holdtime to gl_ops
+ ^ 8ba93c796d5c Bob Peterson     gfs2: introduce new function remaining_hold_time and use it in dq
+ H e8b5ff851bb9 Bob Peterson     gfs2: Allow rgrps to have a minimum hold time
+</code></pre>
+<p>因此，现在我知道补丁 <code>HEAD~9</code> 是需要修复的补丁。我使用 <code>git rebase -i HEAD~10</code> 编辑补丁 9，<code>git commit -a --amend</code>，然后 <code>git rebase --continue</code> 以进行必要的调整。</p>
+<h3 id="5gitbranchcmp3">5、gitbranchcmp3</h3>
+<p><code>gitbranchcmp3</code> 使我可以将当前分支与另一个分支进行比较，因此我可以将较旧版本的补丁与我的较新版本进行比较，并快速查看已更改和未更改的内容。它生成一个比较脚本（使用了 KDE 工具 <a href="https://kde.org/applications/development/org.kde.kompare">Kompare</a>，该工具也可在 GNOME3 上使用）以比较不太相同的补丁。如果除行号外没有其他差异，则打印 <code>[SAME]</code>。如果仅存在注释差异，则打印 <code>[same]</code>（小写）。例如：</p>
+<pre><code>$ gitbranchcmp3 recovery24
+Branch recovery24 has 47 patches
+Branch recovery25 has 50 patches
+
+(snip)
+38 87eb6901607a 340d27a33895 [same] gfs2: drain the ail2 list after io errors
+39 90fefb577a26 9b3c4e6efb10 [same] gfs2: clean up iopen glock mess in gfs2_create_inode
+40 ba3ae06b8b0e d2e8c22be39b [same] gfs2: Do proper error checking for go_sync family of glops
+41 2ab662294329 9563e31f8bfd [SAME] gfs2: use page_offset in gfs2_page_mkwrite
+42 0adc6d817b7a ebac7a38036c [SAME] gfs2: don&#39;t use buffer_heads in gfs2_allocate_page_backing
+43 55ef1f8d0be8 f703a3c27874 [SAME] gfs2: Improve mmap write vs. punch_hole consistency
+44 de57c2f72570 a3e86d2ef30e [SAME] gfs2: Multi-block allocations in gfs2_page_mkwrite
+45 7c5305fbd68a da3c604755b0 [SAME] gfs2: Fix end-of-file handling in gfs2_page_mkwrite
+46 162524005151 4525c2f5b46f [SAME] Rafael Aquini&#39;s slab instrumentation
+47              a06a5b7dea02 [    ] GFS2: Add go_get_holdtime to gl_ops
+48              8ba93c796d5c [    ] gfs2: introduce new function remaining_hold_time and use it in dq
+49              e8b5ff851bb9 [    ] gfs2: Allow rgrps to have a minimum hold time
+
+Missing from recovery25:
+The missing:
+Compare script generated at: /tmp/compare_mismatches.sh
+</code></pre>
+<h3 id="6gitlogfind">6、gitlog.find</h3>
+<p>最后，我有一个 <code>gitlog.find</code> 脚本，可以帮助我识别补丁程序的上游版本在哪里以及每个补丁的当前状态。它通过匹配补丁说明来实现。它还会生成一个比较脚本（再次使用了 Kompare），以将当前补丁与上游对应补丁进行比较：</p>
+<pre><code>$ gitlog.find
+-----------------------[ recovery25 - 50 patches ]-----------------------
+(snip)
+11 340d27a33895 Bob Peterson     gfs2: drain the ail2 list after io errors
+lo 5bcb9be74b2a Bob Peterson     gfs2: drain the ail2 list after io errors
+10 9b3c4e6efb10 Bob Peterson     gfs2: clean up iopen glock mess in gfs2_create_inode
+fn 2c47c1be51fb Bob Peterson     gfs2: clean up iopen glock mess in gfs2_create_inode
+ 9 d2e8c22be39b Bob Peterson     gfs2: Do proper error checking for go_sync family of glops
+lo feb7ea639472 Bob Peterson     gfs2: Do proper error checking for go_sync family of glops
+ 8 9563e31f8bfd Christoph Hellwig gfs2: use page_offset in gfs2_page_mkwrite
+ms f3915f83e84c Christoph Hellwig gfs2: use page_offset in gfs2_page_mkwrite
+ 7 ebac7a38036c Christoph Hellwig gfs2: don&#39;t use buffer_heads in gfs2_allocate_page_backing
+ms 35af80aef99b Christoph Hellwig gfs2: don&#39;t use buffer_heads in gfs2_allocate_page_backing
+ 6 f703a3c27874 Andreas Gruenbacher gfs2: Improve mmap write vs. punch_hole consistency
+fn 39c3a948ecf6 Andreas Gruenbacher gfs2: Improve mmap write vs. punch_hole consistency
+ 5 a3e86d2ef30e Andreas Gruenbacher gfs2: Multi-block allocations in gfs2_page_mkwrite
+fn f53056c43063 Andreas Gruenbacher gfs2: Multi-block allocations in gfs2_page_mkwrite
+ 4 da3c604755b0 Andreas Gruenbacher gfs2: Fix end-of-file handling in gfs2_page_mkwrite
+fn 184b4e60853d Andreas Gruenbacher gfs2: Fix end-of-file handling in gfs2_page_mkwrite
+ 3 4525c2f5b46f Bob Peterson     Rafael Aquini&#39;s slab instrumentation
+   Not found upstream
+ 2 a06a5b7dea02 Bob Peterson     GFS2: Add go_get_holdtime to gl_ops
+   Not found upstream
+ ^ 8ba93c796d5c Bob Peterson     gfs2: introduce new function remaining_hold_time and use it in dq
+   Not found upstream
+ H e8b5ff851bb9 Bob Peterson     gfs2: Allow rgrps to have a minimum hold time
+   Not found upstream
+Compare script generated: /tmp/compare_upstream.sh
+</code></pre>
+<p>补丁显示为两行，第一行是你当前的修补程序，然后是相应的上游补丁，以及 2 个字符的缩写，以指示其上游状态：</p>
+<ul>
+<li><code>lo</code> 表示补丁仅在本地（<code>local</code>）上游 Git 存储库中（即尚未推送到上游）。</li>
+<li><code>ms</code> 表示补丁位于 Linus Torvald 的主（<code>master</code>）分支中。</li>
+<li><code>fn</code> 意味着补丁被推送到我的 “for-next” 开发分支，用于下一个上游合并窗口。</li>
+</ul>
+<p>   
+我的一些脚本根据我通常使用 Git 的方式做出假设。例如，当搜索上游补丁时，它使用我众所周知的 Git 树的位置。因此，你需要调整或改进它们以适合你的条件。<code>gitlog.find</code> 脚本旨在仅定位 <a href="https://en.wikipedia.org/wiki/GFS2">GFS2</a> 和 <a href="https://en.wikipedia.org/wiki/Distributed_lock_manager">DLM</a> 补丁，因此，除非你是 GFS2 开发人员，否则你需要针对你感兴趣的组件对其进行自定义。</p>
+<h3 id="源代码">源代码</h3>
+<p>以下是这些脚本的源代码。</p>
+<h4 id="1gitlog">1、gitlog</h4>
+<pre><code>#!/bin/bash
+branch=$1
+
+if test &quot;x$branch&quot; = x; then
+    branch=`git branch -a | grep &quot;*&quot; | cut -d &#39; &#39; -f2`
+fi
+
+patches=0
+tracking=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+
+LIST=`git log --reverse --abbrev-commit --pretty=oneline $tracking..$branch | cut -d &#39; &#39; -f1 |paste -s -d &#39; &#39;`
+for i in $LIST; do patches=$(echo $patches + 1 | bc);done
+
+if [[ $branch =~ .*for-next.* ]]
+then
+    start=HEAD
+#    start=origin/for-next
+else
+    start=origin/master
+fi
+
+tracking=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+
+/usr/bin/echo &quot;-----------------------[&quot; $branch &quot;]-----------------------&quot;
+patches=$(echo $patches - 1 | bc);
+for i in $LIST; do
+    if [ $patches -eq 1 ]; then
+        cnt=&quot; ^&quot;
+    elif [ $patches -eq 0 ]; then
+        cnt=&quot; H&quot;
+    else
+        if [ $patches -lt 10 ]; then
+            cnt=&quot; $patches&quot;
+        else
+            cnt=&quot;$patches&quot;
+        fi
+    fi
+    /usr/bin/git show --abbrev-commit -s --pretty=format:&quot;$cnt %h %&lt;|(32)%an %s %n&quot; $i
+    patches=$(echo $patches - 1 | bc)
+done
+#git log --reverse --abbrev-commit --pretty=format:&quot;%h %&lt;|(32)%an %s&quot; $tracking..$branch
+#git log --reverse --abbrev-commit --pretty=format:&quot;%h %&lt;|(32)%an %s&quot; ^origin/master ^linux-gfs2/for-next $branch
+</code></pre>
+<h4 id="2gitlogid">2、gitlog.id</h4>
+<pre><code>#!/bin/bash
+branch=$1
+
+if test &quot;x$branch&quot; = x; then
+    branch=`git branch -a | grep &quot;*&quot; | cut -d &#39; &#39; -f2`
+fi
+
+tracking=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+
+/usr/bin/echo &quot;-----------------------[&quot; $branch &quot;]-----------------------&quot;
+git log --reverse --abbrev-commit --pretty=oneline $tracking..$branch | cut -d &#39; &#39; -f1 |paste -s -d &#39; &#39;
+</code></pre>
+<h4 id="3gitlogid2">3、gitlog.id2</h4>
+<pre><code>#!/bin/bash
+branch=$1
+
+if test &quot;x$branch&quot; = x; then
+    branch=`git branch -a | grep &quot;*&quot; | cut -d &#39; &#39; -f2`
+fi
+
+tracking=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+git log --reverse --abbrev-commit --pretty=oneline $tracking..$branch | cut -d &#39; &#39; -f1 |paste -s -d &#39; &#39;
+</code></pre>
+<h4 id="4gitloggrep">4、gitlog.grep</h4>
+<pre><code>#!/bin/bash
+param1=$1
+param2=$2
+
+if test &quot;x$param2&quot; = x; then
+    branch=`git branch -a | grep &quot;*&quot; | cut -d &#39; &#39; -f2`
+    string=$param1
+else
+    branch=$param1
+    string=$param2
+fi
+
+patches=0
+tracking=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+
+LIST=`git log --reverse --abbrev-commit --pretty=oneline $tracking..$branch | cut -d &#39; &#39; -f1 |paste -s -d &#39; &#39;`
+for i in $LIST; do patches=$(echo $patches + 1 | bc);done
+/usr/bin/echo &quot;-----------------------[&quot; $branch &quot;-&quot; $patches &quot;patches ]-----------------------&quot;
+patches=$(echo $patches - 1 | bc);
+for i in $LIST; do
+    if [ $patches -eq 1 ]; then
+        cnt=&quot; ^&quot;
+    elif [ $patches -eq 0 ]; then
+        cnt=&quot; H&quot;
+    else
+        if [ $patches -lt 10 ]; then
+            cnt=&quot; $patches&quot;
+        else
+            cnt=&quot;$patches&quot;
+        fi
+    fi
+    /usr/bin/git show --abbrev-commit -s --pretty=format:&quot;$cnt %h %&lt;|(32)%an %s&quot; $i
+    /usr/bin/git show --pretty=email --patch-with-stat $i | grep -n &quot;$string&quot;
+    patches=$(echo $patches - 1 | bc)
+done
+</code></pre>
+<h4 id="5gitbranchcmp3">5、gitbranchcmp3</h4>
+<pre><code>#!/bin/bash
+#
+# gitbranchcmp3 &lt;old branch&gt; [&lt;new_branch&gt;]
+#
+oldbranch=$1
+newbranch=$2
+script=/tmp/compare_mismatches.sh
+
+/usr/bin/rm -f $script
+echo &quot;#!/bin/bash&quot; &gt; $script
+/usr/bin/chmod 755 $script
+echo &quot;# Generated by gitbranchcmp3.sh&quot; &gt;&gt; $script
+echo &quot;# Run this script to compare the mismatched patches&quot; &gt;&gt; $script
+echo &quot; &quot; &gt;&gt; $script
+echo &quot;function compare_them()&quot; &gt;&gt; $script
+echo &quot;{&quot;  &gt;&gt; $script
+echo &quot;    git show --pretty=email --patch-with-stat \$1 &gt; /tmp/gronk1&quot; &gt;&gt; $script
+echo &quot;    git show --pretty=email --patch-with-stat \$2 &gt; /tmp/gronk2&quot; &gt;&gt; $script
+echo &quot;    kompare /tmp/gronk1 /tmp/gronk2&quot; &gt;&gt; $script
+echo &quot;}&quot; &gt;&gt; $script
+echo &quot; &quot; &gt;&gt; $script
+
+if test &quot;x$newbranch&quot; = x; then
+    newbranch=`git branch -a | grep &quot;*&quot; | cut -d &#39; &#39; -f2`
+fi
+
+tracking=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+
+declare -a oldsha1s=(`git log --reverse --abbrev-commit --pretty=oneline $tracking..$oldbranch | cut -d &#39; &#39; -f1 |paste -s -d &#39; &#39;`)
+declare -a newsha1s=(`git log --reverse --abbrev-commit --pretty=oneline $tracking..$newbranch | cut -d &#39; &#39; -f1 |paste -s -d &#39; &#39;`)
+
+#echo &quot;old: &quot; $oldsha1s
+oldcount=${#oldsha1s[@]}
+echo &quot;Branch $oldbranch has $oldcount patches&quot;
+oldcount=$(echo $oldcount - 1 | bc)
+#for o in `seq 0 ${#oldsha1s[@]}`; do
+#    echo -n ${oldsha1s[$o]} &quot; &quot;
+#    desc=`git show $i | head -5 | tail -1|cut -b5-`
+#done
+
+#echo &quot;new: &quot; $newsha1s
+newcount=${#newsha1s[@]}
+echo &quot;Branch $newbranch has $newcount patches&quot;
+newcount=$(echo $newcount - 1 | bc)
+#for o in `seq 0 ${#newsha1s[@]}`; do
+#    echo -n ${newsha1s[$o]} &quot; &quot;
+#    desc=`git show $i | head -5 | tail -1|cut -b5-`
+#done
+echo
+
+for new in `seq 0 $newcount`; do
+    newsha=${newsha1s[$new]}
+    newdesc=`git show $newsha | head -5 | tail -1|cut -b5-`
+    oldsha=&quot;            &quot;
+    same=&quot;[    ]&quot;
+    for old in `seq 0 $oldcount`; do
+        if test &quot;${oldsha1s[$old]}&quot; = &quot;match&quot;; then
+            continue;
+        fi
+        olddesc=`git show ${oldsha1s[$old]} | head -5 | tail -1|cut -b5-`
+        if test &quot;$olddesc&quot; = &quot;$newdesc&quot; ; then
+            oldsha=${oldsha1s[$old]}
+            #echo $oldsha
+            git show $oldsha |tail -n +2 |grep -v &quot;index.*\.\.&quot; |grep -v &quot;@@&quot; &gt; /tmp/gronk1
+            git show $newsha |tail -n +2 |grep -v &quot;index.*\.\.&quot; |grep -v &quot;@@&quot;  &gt; /tmp/gronk2
+            diff /tmp/gronk1 /tmp/gronk2 &amp;&gt; /dev/null
+            if [ $? -eq 0 ] ;then
+# No differences
+                same=&quot;[SAME]&quot;
+                oldsha1s[$old]=&quot;match&quot;
+                break
+            fi
+            git show $oldsha |sed -n &#39;/diff/,$p&#39; |grep -v &quot;index.*\.\.&quot; |grep -v &quot;@@&quot; &gt; /tmp/gronk1
+            git show $newsha |sed -n &#39;/diff/,$p&#39; |grep -v &quot;index.*\.\.&quot; |grep -v &quot;@@&quot; &gt; /tmp/gronk2
+            diff /tmp/gronk1 /tmp/gronk2 &amp;&gt; /dev/null
+            if [ $? -eq 0 ] ;then
+# Differences in comments only
+                same=&quot;[same]&quot;
+                oldsha1s[$old]=&quot;match&quot;
+                break
+            fi
+            oldsha1s[$old]=&quot;match&quot;
+            echo &quot;compare_them $oldsha $newsha&quot; &gt;&gt; $script
+        fi
+    done
+    echo &quot;$new $oldsha $newsha $same $newdesc&quot;
+done
+
+echo
+echo &quot;Missing from $newbranch:&quot;
+the_missing=&quot;&quot;
+# Now run through the olds we haven&#39;t matched up
+for old in `seq 0 $oldcount`; do
+    if test ${oldsha1s[$old]} != &quot;match&quot;; then
+        olddesc=`git show ${oldsha1s[$old]} | head -5 | tail -1|cut -b5-`
+        echo &quot;${oldsha1s[$old]} $olddesc&quot;
+        the_missing=`echo &quot;$the_missing ${oldsha1s[$old]}&quot;`
+    fi
+done
+
+echo &quot;The missing: &quot; $the_missing
+echo &quot;Compare script generated at: $script&quot;
+#git log --reverse --abbrev-commit --pretty=oneline $tracking..$branch | cut -d &#39; &#39; -f1 |paste -s -d &#39; &#39;
+</code></pre>
+<h4 id="6gitlogfind">6、gitlog.find</h4>
+<pre><code>#!/bin/bash
+#
+# Find the upstream equivalent patch
+#
+# gitlog.find
+#
+cwd=$PWD
+param1=$1
+ubranch=$2
+patches=0
+script=/tmp/compare_upstream.sh
+echo &quot;#!/bin/bash&quot; &gt; $script
+/usr/bin/chmod 755 $script
+echo &quot;# Generated by gitbranchcmp3.sh&quot; &gt;&gt; $script
+echo &quot;# Run this script to compare the mismatched patches&quot; &gt;&gt; $script
+echo &quot; &quot; &gt;&gt; $script
+echo &quot;function compare_them()&quot; &gt;&gt; $script
+echo &quot;{&quot;  &gt;&gt; $script
+echo &quot;    cwd=$PWD&quot; &gt;&gt; $script
+echo &quot;    git show --pretty=email --patch-with-stat \$2 &gt; /tmp/gronk2&quot; &gt;&gt; $script
+echo &quot;    cd ~/linux.git/fs/gfs2&quot; &gt;&gt; $script
+echo &quot;    git show --pretty=email --patch-with-stat \$1 &gt; /tmp/gronk1&quot; &gt;&gt; $script
+echo &quot;    cd $cwd&quot; &gt;&gt; $script
+echo &quot;    kompare /tmp/gronk1 /tmp/gronk2&quot; &gt;&gt; $script
+echo &quot;}&quot; &gt;&gt; $script
+echo &quot; &quot; &gt;&gt; $script
+
+#echo &quot;Gathering upstream patch info. Please wait.&quot;
+branch=`git branch -a | grep &quot;*&quot; | cut -d &#39; &#39; -f2`
+tracking=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+
+cd ~/linux.git
+if test &quot;X${ubranch}&quot; = &quot;X&quot;; then
+    ubranch=`git branch -a | grep &quot;*&quot; | cut -d &#39; &#39; -f2`
+fi
+utracking=`git rev-parse --abbrev-ref --symbolic-full-name @{u}`
+#
+# gather a list of gfs2 patches from master just in case we can&#39;t find it
+#
+#git log --abbrev-commit --pretty=format:&quot;   %h %&lt;|(32)%an %s&quot; master |grep -i -e &quot;gfs2&quot; -e &quot;dlm&quot; &gt; /tmp/gronk
+git log --reverse --abbrev-commit --pretty=format:&quot;ms %h %&lt;|(32)%an %s&quot; master fs/gfs2/ &gt; /tmp/gronk.gfs2
+# ms = in Linus&#39;s master
+git log --reverse --abbrev-commit --pretty=format:&quot;ms %h %&lt;|(32)%an %s&quot; master fs/dlm/ &gt; /tmp/gronk.dlm
+
+cd $cwd
+LIST=`git log --reverse --abbrev-commit --pretty=oneline $tracking..$branch | cut -d &#39; &#39; -f1 |paste -s -d &#39; &#39;`
+for i in $LIST; do patches=$(echo $patches + 1 | bc);done
+/usr/bin/echo &quot;-----------------------[&quot; $branch &quot;-&quot; $patches &quot;patches ]-----------------------&quot;
+patches=$(echo $patches - 1 | bc);
+for i in $LIST; do
+    if [ $patches -eq 1 ]; then
+        cnt=&quot; ^&quot;
+    elif [ $patches -eq 0 ]; then
+        cnt=&quot; H&quot;
+    else
+        if [ $patches -lt 10 ]; then
+            cnt=&quot; $patches&quot;
+        else
+            cnt=&quot;$patches&quot;
+        fi
+    fi
+    /usr/bin/git show --abbrev-commit -s --pretty=format:&quot;$cnt %h %&lt;|(32)%an %s&quot; $i
+    desc=`/usr/bin/git show --abbrev-commit -s --pretty=format:&quot;%s&quot; $i`
+    cd ~/linux.git
+    cmp=1
+    up_eq=`git log --reverse --abbrev-commit --pretty=format:&quot;lo %h %&lt;|(32)%an %s&quot; $utracking..$ubranch | grep &quot;$desc&quot;`
+# lo = in local for-next
+    if test &quot;X$up_eq&quot; = &quot;X&quot;; then
+        up_eq=`git log --reverse --abbrev-commit --pretty=format:&quot;fn %h %&lt;|(32)%an %s&quot; master..$utracking | grep &quot;$desc&quot;`
+# fn = in for-next for next merge window
+        if test &quot;X$up_eq&quot; = &quot;X&quot;; then
+            up_eq=`grep &quot;$desc&quot; /tmp/gronk.gfs2`
+            if test &quot;X$up_eq&quot; = &quot;X&quot;; then
+                up_eq=`grep &quot;$desc&quot; /tmp/gronk.dlm`
+                if test &quot;X$up_eq&quot; = &quot;X&quot;; then
+                    up_eq=&quot;   Not found upstream&quot;
+                    cmp=0
+                fi
+            fi
+        fi
+    fi
+    echo &quot;$up_eq&quot;
+    if [ $cmp -eq 1 ] ; then
+        UP_SHA1=`echo $up_eq|cut -d&#39; &#39; -f2`
+        echo &quot;compare_them $UP_SHA1 $i&quot; &gt;&gt; $script
+    fi
+    cd $cwd
+    patches=$(echo $patches - 1 | bc)
+done
+echo &quot;Compare script generated: $script&quot;
+</code></pre>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/1/bash-scripts-git">https://opensource.com/article/20/1/bash-scripts-git</a></p>
+<p>作者：<a href="https://opensource.com/users/bobpeterson">Bob Peterson</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/wxy">wxy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1gitlog">1、gitlog</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2gitlogid">2、gitlog.id</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3gitlogid2">3、gitlog.id2</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4gitloggrep">4、gitlog.grep</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5gitbranchcmp3">5、gitbranchcmp3</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6gitlogfind">6、gitlog.find</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#源代码">源代码</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202001/20200115 6 handy Bash scripts for Git","title":"6 个方便的 Git 脚本"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

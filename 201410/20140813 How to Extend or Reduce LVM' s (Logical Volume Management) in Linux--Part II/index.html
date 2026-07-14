@@ -1,0 +1,233 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>在Linux中扩展/缩减LVM（第二部分） - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="在Linux中扩展/缩减LVM（第二部分） - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="在Linux中扩展/缩减LVM（第二部分） - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201410/20140813 How to Extend or Reduce LVM' s (Logical Volume Management) in Linux--Part II#page","@type":"TechArticle","headline":"在Linux中扩展/缩减LVM（第二部分）","inLanguage":"en","name":"在Linux中扩展/缩减LVM（第二部分）","url":"https://zhengqbbb.github.io/pages-dev/201410/20140813 How to Extend or Reduce LVM' s (Logical Volume Management) in Linux--Part II","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201410/20140813 How to Extend or Reduce LVM' s (Logical Volume Management) in Linux--Part II"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#前置需求">前置需求</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何扩展卷组以及缩减逻辑卷">如何扩展卷组以及缩减逻辑卷</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>在Linux中扩展/缩减LVM（第二部分）</h1><p>前面我们已经了解了怎样使用LVM创建弹性的磁盘存储。这里，我们将了解怎样来扩展卷组，扩展和缩减逻辑卷。在这里，我们可以缩减或者扩展逻辑卷管理（LVM）中的分区，LVM也可称之为弹性卷文件系统。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/LVM_extend.jpg" alt="Extend/Reduce LVMs in Linux"></p>
+<h3 id="前置需求">前置需求</h3>
+<ul>
+<li><a href="http://linux.cn/article-3965-1.html">使用LVM创建弹性磁盘存储——第一部分</a></li>
+</ul>
+<h4 id="什么时候我们需要缩减卷">什么时候我们需要缩减卷？</h4>
+<p>或许我们需要创建一个独立的分区用于其它用途，或者我们需要扩展任何空间低的分区。遇到这种情况时，使用 LVM我们可以很容易地缩减大尺寸的分区，以及扩展空间低的分区，只要按下面几个简易的步骤来即可。</p>
+<h4 id="我的服务器设置-需求">我的服务器设置 —— 需求</h4>
+<ul>
+<li>操作系统 – 安装有LVM的CentOS 6.5</li>
+<li>服务器IP – 192.168.0.200</li>
+</ul>
+<h3 id="如何扩展卷组以及缩减逻辑卷">如何扩展卷组以及缩减逻辑卷</h3>
+<h4 id="逻辑卷扩展">逻辑卷扩展</h4>
+<p>目前，我们已经有一个PV，VG和2个LV。让我们用下面的命令来列出它们。</p>
+<pre><code># pvs
+# vgs
+# lvs
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Logical-Volume-Extending.jpg" alt="Logical Volume Extending"></p>
+<p>逻辑卷扩展</p>
+<p>在物理卷和卷组中没有空闲空间可用了，所以，现在我们不能扩展逻辑卷的大小。要扩展，我们需要添加一个物理卷（<strong>PV</strong>），然后通过扩展<strong>vg</strong>来扩展卷组，这样我们就会得到足够大的空间来扩展逻辑卷大小了。所以，首先我们应该去添加一个物理卷。</p>
+<p>要添加一个新<strong>PV</strong>，我们必须使用fdisk来创建一个LVM分区。</p>
+<pre><code># fdisk -cu /dev/sda
+</code></pre>
+<ul>
+<li>选择<strong>n</strong>来创建新分区。</li>
+<li>选择<strong>p</strong>来创建主分区。</li>
+<li>选择我们需要创建的分区号。</li>
+<li>如果有其它可用磁盘，请按<strong>1</strong>。</li>
+<li>使用<strong>t</strong>来修改分区类型。</li>
+<li>输入<strong>8e</strong>来将分区类型修改为Linux LVM。</li>
+<li>使用<strong>p</strong>来打印创建的分区（这里我们没有使用该选项）。</li>
+<li>按<strong>w</strong>写入修改。</li>
+</ul>
+<p>完成后重启系统。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Create-LVM-Partition.jpg" alt="Create LVM Partition">
+创建LVM分区</p>
+<p>使用fdisk列出并检查我们创建的分区。</p>
+<pre><code># fdisk -l /dev/sda
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Verify-LVM-Partition.jpg" alt="Verify LVM Partition">
+验证LVM分区</p>
+<p>接下来，使用下列命令来创建新<strong>PV</strong>（物理卷）。</p>
+<pre><code># pvcreate /dev/sda1
+</code></pre>
+<p>使用下面的命令来验证pv。</p>
+<pre><code># pvs
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Create-Physical-Volume.jpg" alt="Create Physical Volume"></p>
+<p>创建物理卷</p>
+<h4 id="扩展卷组">扩展卷组</h4>
+<p>添加该pv到<strong>vg_tecmint</strong>卷组来扩展卷组的大小，以获取更多空间来扩展<strong>lv</strong>。</p>
+<pre><code># vgextend vg_tecmint /dev/sda1
+</code></pre>
+<p>让我们检查现在正在使用的卷组的大小。</p>
+<pre><code># vgs
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Extend-Volume-Group.jpg" alt="Extend Volume Group"></p>
+<p>扩展卷组</p>
+<p>我们甚至可以看到哪个<strong>PV</strong>用于创建使用中的特定卷组。</p>
+<pre><code># pvscan
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Check-Volume-Group.jpg" alt="Check Volume Group">
+检查卷组</p>
+<p>这里，我们可以看到卷组所处的物理卷。我们已经添加了一个pv，而且它完全空着。在扩展逻辑卷之前，让我们先看看我们所拥有的各个卷组的大小。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Check-Each-Logical-Volume.jpg" alt="Check All Logical Volume"></p>
+<p>检查所有逻辑卷</p>
+<ul>
+<li>LogVol00用于Swap。</li>
+<li>LogVol01用于/。</li>
+<li>现在我们有16.50GB大小的空间用于/（root）。</li>
+<li>当前有4226物理扩展（PE）可用。</li>
+</ul>
+<p>现在，我们打算去扩展/分区<strong>LogVol01</strong>。在扩展后，我们可以像上面那样列出它的大小以确认。我们能可以使用GB或PE来扩展，这一点我已经在LVM第一部分解释过了，这里我使用PE来扩展。</p>
+<p>要获取可用的物理扩展大小，运行以下命令。</p>
+<pre><code># vgdisplay
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Check-Available-Physical-Extend.jpg" alt="Check Available Physical Size"></p>
+<p>检查可用的物理扩展</p>
+<p>总共有<strong>4607</strong>空闲PE可用，亦即有<strong>18GB</strong>空间空间可用。因此，我们可以将我们的逻辑卷扩展到<strong>18GB</strong>这么大。让我们使用PE大小来扩展。</p>
+<pre><code># lvextend -l +4607 /dev/vg_tecmint/LogVol01
+</code></pre>
+<p>使用**+**来添加更多空间。在扩展后，我们需要改变文件系统大小，使用以下命令。</p>
+<pre><code># resize2fs /dev/vg_tecmint/LogVol01
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Expand-Logical-Volume.jpg" alt="Expand Logical Volume">
+扩展逻辑卷</p>
+<ul>
+<li>用来使用物理扩展扩展逻辑卷的命令。</li>
+<li>这里我们可以看到它从16.51GB扩展到了34GB。</li>
+<li>如果文件系统已被挂载并处于使用中，改变文件系统大小。</li>
+<li>要扩展逻辑卷，我们不需要卸载文件系统</li>
+</ul>
+<p>现在，让我们看看当前使用的改变大小后的逻辑卷。</p>
+<pre><code># lvdisplay
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Resize-Logical-Volume.jpg" alt="Resize Logical Volume"></p>
+<p>改变逻辑卷大小</p>
+<ul>
+<li>LogVol01用于扩展的卷 /。</li>
+<li>扩展后，从16.50GB上升到了34.50GB。</li>
+<li>C当前扩展，在扩展前有4226，我们已经添加了4607个扩展，因此现在有8833。</li>
+</ul>
+<p>现在，如果我们检查可用的vg的话，空闲PE将会是0。</p>
+<pre><code># vgdisplay
+</code></pre>
+<p>查看扩展的结果。</p>
+<pre><code># pvs
+# vgs
+# lvs
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Verify-Resize-Partition.jpg" alt="Verify Resize Partition"></p>
+<p>验证分区大小改变</p>
+<ul>
+<li>添加的新物理卷。</li>
+<li>卷组vg_tecmint从17.51GB扩展到了35.50GB。</li>
+<li>逻辑卷LogVol01从16.51GB扩展到了34.50GB。</li>
+</ul>
+<p>这里，我们已经完成扩展卷组和逻辑卷的过程。让我们一起迈向逻辑卷管理中一些有趣的部分。</p>
+<h4 id="缩减逻辑卷lvm">缩减逻辑卷（LVM）</h4>
+<p>这里，我们将了解如何缩减逻辑卷。人人都说它很危险，在缩减lvm的时候可能会导致灾难。缩减lvm在逻辑卷管理中比其它部分要来得确实有趣得多。</p>
+<ul>
+<li>在开始之前，备份好数据总是对的，这样如果出错，就不会头痛了。</li>
+<li>要缩减逻辑卷，需要小心翼翼地完成5个步骤。</li>
+<li>在扩展一个卷的时候，我们可以在该卷挂载时扩展它（在线），但对于缩减，我们必须在缩减前卸载文件系统。</li>
+</ul>
+<p>让我们来了解一下下面这5个步骤。</p>
+<ul>
+<li>卸载文件系统以便缩减。</li>
+<li>在卸载后检查文件系统。</li>
+<li>缩减文件系统。</li>
+<li>5减少当前逻辑卷大小。</li>
+<li>再检查文件系统以防出错。</li>
+<li>将文件系统再次挂载回去。</li>
+</ul>
+<p>为了演示，我已经创建了独立的卷组和逻辑卷。这里，我将缩减逻辑卷<strong>tecmint_reduce_test</strong>。现在它有18GB大小，我们需要将它缩减到<strong>10GB</strong>而不丢失数据。也就是说，我们需要从<strong>18GB</strong>中减少<strong>8GB</strong>。卷中已经有<strong>4GB</strong>被使用。</p>
+<pre><code>18GB ---&gt; 10GB
+</code></pre>
+<p>在缩减大小的时候，我们只需要缩减8GB，所以在缩减后它总计会有10GB。</p>
+<pre><code># lvs
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Reduce-Logical-Volume.jpg" alt="Reduce Logical Volume">
+缩减逻辑卷</p>
+<p>这里，我们可以看到文件系统信息。</p>
+<pre><code># df -h
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Check-File-System-Size.jpg" alt="Check File System Size">
+检查文件系统大小</p>
+<ul>
+<li>卷大小是18GB。</li>
+<li>它已经使用了3.9GB。</li>
+<li>可用空间是13GB。</li>
+</ul>
+<p>首先，卸载挂载点。</p>
+<pre><code># umount -v /mnt/tecmint_reduce_test/
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Unmount-Parition.jpg" alt="Unmount Parition"></p>
+<p>卸载分区</p>
+<p>然后，使用以下命令来检查文件系统错误。</p>
+<pre><code># e2fsck -ff /dev/vg_tecmint_extra/tecmint_reduce_test
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Scan-Parition-for-Errors.jpg" alt="Scan Parition for Errors">
+扫描分区错误</p>
+<p><strong>注意</strong>：必须通过所有文件系统检查的5个步骤，若未完全通过，则你的文件系统可能存在问题。</p>
+<p>接下来，缩减文件系统。</p>
+<pre><code># resize2fs /dev/vg_tecmint_extra/tecmint_reduce_test 8GB
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Reduce-File-System.jpg" alt="Reduce File System">
+缩减文件系统</p>
+<p>使用GB来缩减逻辑卷。</p>
+<pre><code># lvreduce -L -8G /dev/vg_tecmint_extra/tecmint_reduce_test
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Reduce-Logical-Volume-Partition.jpg" alt="Reduce Logical Partition">
+缩减逻辑分区</p>
+<p>要使用PE来缩减逻辑卷，我们需要知道默认PE大小和卷组的总PE大小，以进行一次小小的计算来得出准确的缩减大小。</p>
+<pre><code># lvdisplay vg_tecmint_extra
+</code></pre>
+<p>这里，我们需要使用bc命令来做一些小计算来获得10GB的PE大小。</p>
+<pre><code>1024MB x 10GB = 10240MB or 10GB
+
+10240MB / 4PE = 2048PE
+</code></pre>
+<p>按<strong>CTRL+D</strong>来退出BC。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/bc-command.jpg" alt="Calculate PE Size"></p>
+<p>计算PE大小</p>
+<p>使用PE来缩减大小。</p>
+<pre><code># lvreduce -l -2048 /dev/vg_tecmint_extra/tecmint_reduce_test
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Reduce-Size-Using-PE.jpg" alt="Reduce Size Using PE">
+使用PE来缩减大小</p>
+<p>将文件系统大小调整回去。在这一步中，如果发生任何错误，这就意味着我们已经将文件系统搞乱了。</p>
+<pre><code># resize2fs /dev/vg_tecmint_extra/tecmint_reduce_test
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Resize-File-System.jpg" alt="Resize File System"></p>
+<p>将文件系统挂载回同样的挂载点。</p>
+<pre><code># mount /dev/vg_tecmint_extra/tecmint_reduce_test /mnt/tecmint_reduce_test/
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Mount-File-System.jpg" alt="Mount File System">
+挂载文件系统</p>
+<p>检查分区和文件的大小。</p>
+<pre><code># lvdisplay vg_tecmint_extra
+</code></pre>
+<p>这里，我们可以看到最后的结果，逻辑已经被缩减到10GB。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/08/Verify-Logical-Volume-Size.jpg" alt="Verify Logical Volume Size"></p>
+<p>在本文中，我们已经了解了如何来扩增卷组、逻辑卷以及缩减逻辑卷。在下一部分（第三部分）中，我们将了解如何为逻辑卷做快照并将它恢复到更早的状态。</p>
+<hr>
+<p>via: <a href="http://www.tecmint.com/extend-and-reduce-lvms-in-linux/">http://www.tecmint.com/extend-and-reduce-lvms-in-linux/</a></p>
+<p>作者：<a href="http://www.tecmint.com/author/babinlonston/">Babin Lonston</a>
+译者：<a href="https://github.com/GOLinux">GOLinux</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="http://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#前置需求">前置需求</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何扩展卷组以及缩减逻辑卷">如何扩展卷组以及缩减逻辑卷</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201410/20140813 How to Extend or Reduce LVM' s (Logical Volume Management) in Linux--Part II","title":"在Linux中扩展/缩减LVM（第二部分）"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

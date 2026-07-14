@@ -1,0 +1,508 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何构建一台网络引导服务器（四） - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何构建一台网络引导服务器（四） - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何构建一台网络引导服务器（四） - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201901/20190114 How to Build a Netboot Server, Part 4#page","@type":"TechArticle","headline":"如何构建一台网络引导服务器（四）","inLanguage":"en","name":"如何构建一台网络引导服务器（四）","url":"https://zhengqbbb.github.io/pages-dev/201901/20190114 How to Build a Netboot Server, Part 4","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201901/20190114 How to Build a Netboot Server, Part 4"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#修改-bootmenu-应用程序以使用-https">修改 Bootmenu 应用程序以使用 HTTPS</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#添加-https-到-ipxe">添加 HTTPS 到 iPXE</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#添加用户验证到-mojolicious-中">添加用户验证到 Mojolicious 中</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使得-iscsi-target-可写">使得 iSCSI Target 可写</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何构建一台网络引导服务器（四）</h1><p><img src="https://fedoramagazine.org/wp-content/uploads/2018/11/netboot4-816x345.jpg" alt=""></p>
+<p>在本系列教程中所构建的网络引导服务器有一个很重要的限制，那就是所提供的操作系统镜像是只读的。一些使用场景或许要求终端用户能够修改操作系统镜像。例如，一些教师或许希望学生能够安装和配置一些像 MariaDB 和 Node.js 这样的包来做为他们课程练习的一部分。</p>
+<p>可写镜像的另外的好处是，终端用户“私人定制”的操作系统，在下次不同的工作站上使用时能够“跟着”他们。</p>
+<h3 id="修改-bootmenu-应用程序以使用-https">修改 Bootmenu 应用程序以使用 HTTPS</h3>
+<p>为 bootmenu 应用程序创建一个自签名的证书：</p>
+<pre><code>$ sudo -i
+# MY_NAME=$(&lt;/etc/hostname)
+# MY_TLSD=/opt/bootmenu/tls
+# mkdir $MY_TLSD
+# openssl req -newkey rsa:2048 -nodes -keyout $MY_TLSD/$MY_NAME.key -x509 -days 3650 -out $MY_TLSD/$MY_NAME.pem
+</code></pre>
+<p>验证你的证书的值。确保 <code>Subject</code> 行中 <code>CN</code> 的值与你的 iPXE 客户端连接你的网络引导服务器所使用的 DNS 名字是相匹配的：</p>
+<pre><code># openssl x509 -text -noout -in $MY_TLSD/$MY_NAME.pem
+</code></pre>
+<p>接下来，更新 bootmenu 应用程序去监听 HTTPS 端口和新创建的证书及密钥：</p>
+<pre><code># sed -i &quot;s#listen =&gt; .*#listen =&gt; [&#39;https://$MY_NAME:443?cert=$MY_TLSD/$MY_NAME.pem\&amp;key=$MY_TLSD/$MY_NAME.key\&amp;ciphers=AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA&#39;],#&quot; /opt/bootmenu/bootmenu.conf
+</code></pre>
+<p>注意 <a href="http://ipxe.org/crypto">iPXE 当前支持的</a> 加密算法是有限制的。</p>
+<p>GnuTLS 要求 “CAP_DAC_READ_SEARCH” 能力，因此将它添加到 bootmenu 应用程序的 systemd 服务：</p>
+<pre><code># sed -i &#39;/^AmbientCapabilities=/ s/$/ CAP_DAC_READ_SEARCH/&#39; /etc/systemd/system/bootmenu.service
+# sed -i &#39;s/Serves iPXE Menus over HTTP/Serves iPXE Menus over HTTPS/&#39; /etc/systemd/system/bootmenu.service
+# systemctl daemon-reload
+</code></pre>
+<p>现在，在防火墙中为 bootmenu 服务添加一个例外规则并重启动该服务：</p>
+<pre><code># MY_SUBNET=192.0.2.0
+# MY_PREFIX=24
+# firewall-cmd --add-rich-rule=&quot;rule family=&#39;ipv4&#39; source address=&#39;$MY_SUBNET/$MY_PREFIX&#39; service name=&#39;https&#39; accept&quot;
+# firewall-cmd --runtime-to-permanent
+# systemctl restart bootmenu.service
+</code></pre>
+<p>使用 <code>wget</code> 去验证是否工作正常：</p>
+<pre><code>$ MY_NAME=server-01.example.edu
+$ MY_TLSD=/opt/bootmenu/tls
+$ wget -q --ca-certificate=$MY_TLSD/$MY_NAME.pem -O - https://$MY_NAME/menu
+</code></pre>
+<h3 id="添加-https-到-ipxe">添加 HTTPS 到 iPXE</h3>
+<p>更新 <code>init.ipxe</code> 去使用 HTTPS。接着使用选项重新编译 ipxe 引导加载器，以便它包含和信任你为 bootmenu 应用程序创建的自签名证书：</p>
+<pre><code>$ echo &#39;#define DOWNLOAD_PROTO_HTTPS&#39; &gt;&gt; $HOME/ipxe/src/config/local/general.h
+$ sed -i &#39;s/^chain http:/chain https:/&#39; $HOME/ipxe/init.ipxe
+$ cp $MY_TLSD/$MY_NAME.pem $HOME/ipxe
+$ cd $HOME/ipxe/src
+$ make clean
+$ make bin-x86_64-efi/ipxe.efi EMBED=../init.ipxe CERT=&quot;../$MY_NAME.pem&quot; TRUST=&quot;../$MY_NAME.pem&quot;
+</code></pre>
+<p>你现在可以将启用了 HTTPS 的 iPXE 引导加载器复制到你的客户端上，并测试它能否正常工作：</p>
+<pre><code>$ cp $HOME/ipxe/src/bin-x86_64-efi/ipxe.efi $HOME/esp/efi/boot/bootx64.efi
+</code></pre>
+<h3 id="添加用户验证到-mojolicious-中">添加用户验证到 Mojolicious 中</h3>
+<p>为 bootmenu 应用程序创建一个 PAM 服务定义：</p>
+<pre><code># dnf install -y pam_krb5
+# echo &#39;auth required pam_krb5.so&#39; &gt; /etc/pam.d/bootmenu
+</code></pre>
+<p>添加一个库到 bootmenu 应用程序中，它使用 Authen-PAM 的 Perl 模块去执行用户验证：</p>
+<pre><code># dnf install -y perl-Authen-PAM;
+# MY_MOJO=/opt/bootmenu
+# mkdir $MY_MOJO/lib
+# cat &lt;&lt; &#39;END&#39; &gt; $MY_MOJO/lib/PAM.pm
+package PAM;
+
+use Authen::PAM;
+
+sub auth {
+   my $success = 0;
+
+   my $username = shift;
+   my $password = shift;
+
+   my $callback = sub {
+      my @res;
+      while (@_) {
+         my $code = shift;
+         my $msg = shift;
+         my $ans = &quot;&quot;;
+   
+         $ans = $username if ($code == PAM_PROMPT_ECHO_ON());
+         $ans = $password if ($code == PAM_PROMPT_ECHO_OFF());
+   
+         push @res, (PAM_SUCCESS(), $ans);
+      }
+      push @res, PAM_SUCCESS();
+
+      return @res;
+   };
+
+   my $pamh = new Authen::PAM(&#39;bootmenu&#39;, $username, $callback);
+
+   {
+      last unless ref $pamh;
+      last unless $pamh-&gt;pam_authenticate() == PAM_SUCCESS;
+      $success = 1;
+   }
+
+   return $success;
+}
+
+return 1;
+END
+</code></pre>
+<p>以上的代码是一字不差是从 Authen::PAM::FAQ 的 man 页面中复制来的。</p>
+<p>重定义 bootmenu 应用程序，以使它仅当提供了有效的用户名和密码之后返回一个网络引导模板：</p>
+<pre><code># cat &lt;&lt; &#39;END&#39; &gt; $MY_MOJO/bootmenu.pl
+#!/usr/bin/env perl
+
+use lib &#39;lib&#39;;
+
+use PAM;
+use Mojolicious::Lite;
+use Mojolicious::Plugins;
+use Mojo::Util (&#39;url_unescape&#39;);
+
+plugin &#39;Config&#39;;
+
+get &#39;/menu&#39;;
+get &#39;/boot&#39; =&gt; sub {
+   my $c = shift;
+
+   my $instance = $c-&gt;param(&#39;instance&#39;);
+   my $username = $c-&gt;param(&#39;username&#39;);
+   my $password = $c-&gt;param(&#39;password&#39;);
+
+   my $template = &#39;menu&#39;;
+
+   {
+      last unless $instance =~ /^fc[[:digit:]]{2}$/;
+      last unless $username =~ /^[[:alnum:]]+$/;
+      last unless PAM::auth($username, url_unescape($password));
+      $template = $instance;
+   }
+
+   return $c-&gt;render(template =&gt; $template);
+};
+
+app-&gt;start;
+END
+</code></pre>
+<p>bootmenu 应用程序现在查找 <code>lib</code> 命令去找到相应的 <code>WorkingDirectory</code>。但是，默认情况下，对于 systemd 单元它的工作目录设置为服务器的 root 目录。因此，你必须更新 systemd 单元去设置 <code>WorkingDirectory</code> 为 bootmenu 应用程序的根目录：</p>
+<pre><code># sed -i &quot;/^RuntimeDirectory=/ a WorkingDirectory=$MY_MOJO&quot; /etc/systemd/system/bootmenu.service
+# systemctl daemon-reload
+</code></pre>
+<p>更新模块去使用重定义后的 bootmenu 应用程序：</p>
+<pre><code># cd $MY_MOJO/templates
+# MY_BOOTMENU_SERVER=$(&lt;/etc/hostname)
+# MY_FEDORA_RELEASES=&quot;28 29&quot;
+# for i in $MY_FEDORA_RELEASES; do echo &#39;#!ipxe&#39; &gt; fc$i.html.ep; grep &quot;^kernel\|initrd&quot; menu.html.ep | grep &quot;fc$i&quot; &gt;&gt; fc$i.html.ep; echo &quot;boot || chain https://$MY_BOOTMENU_SERVER/menu&quot; &gt;&gt; fc$i.html.ep; sed -i &quot;/^:f$i$/,/^boot /c :f$i\nlogin\nchain https://$MY_BOOTMENU_SERVER/boot?instance=fc$i\&amp;username=\${username}\&amp;password=\${password:uristring} || goto failed&quot; menu.html.ep; done
+</code></pre>
+<p>上面的最后的命令将生成类似下面的三个文件：</p>
+<p><code>menu.html.ep</code>：</p>
+<pre><code>#!ipxe
+
+set timeout 5000
+
+:menu
+menu iPXE Boot Menu
+item --key 1 lcl 1. Microsoft Windows 10
+item --key 2 f29 2. RedHat Fedora 29
+item --key 3 f28 3. RedHat Fedora 28
+choose --timeout ${timeout} --default lcl selected || goto shell
+set timeout 0
+goto ${selected}
+
+:failed
+echo boot failed, dropping to shell...
+goto shell
+
+:shell
+echo type &#39;exit&#39; to get the back to the menu
+set timeout 0
+shell
+goto menu
+
+:lcl
+exit
+
+:f29
+login
+chain https://server-01.example.edu/boot?instance=fc29&amp;username=${username}&amp;password=${password:uristring} || goto failed
+
+:f28
+login
+chain https://server-01.example.edu/boot?instance=fc28&amp;username=${username}&amp;password=${password:uristring} || goto failed
+</code></pre>
+<p><code>fc29.html.ep</code>：</p>
+<pre><code>#!ipxe
+kernel --name kernel.efi ${prefix}/vmlinuz-4.19.5-300.fc29.x86_64 initrd=initrd.img ro ip=dhcp rd.peerdns=0 nameserver=192.0.2.91 nameserver=192.0.2.92 root=/dev/disk/by-path/ip-192.0.2.158:3260-iscsi-iqn.edu.example.server-01:fc29-lun-1 netroot=iscsi:192.0.2.158::::iqn.edu.example.server-01:fc29 console=tty0 console=ttyS0,115200n8 audit=0 selinux=0 quiet
+initrd --name initrd.img ${prefix}/initramfs-4.19.5-300.fc29.x86_64.img
+boot || chain https://server-01.example.edu/menu
+</code></pre>
+<p><code>fc28.html.ep</code>：</p>
+<pre><code>#!ipxe
+kernel --name kernel.efi ${prefix}/vmlinuz-4.19.3-200.fc28.x86_64 initrd=initrd.img ro ip=dhcp rd.peerdns=0 nameserver=192.0.2.91 nameserver=192.0.2.92 root=/dev/disk/by-path/ip-192.0.2.158:3260-iscsi-iqn.edu.example.server-01:fc28-lun-1 netroot=iscsi:192.0.2.158::::iqn.edu.example.server-01:fc28 console=tty0 console=ttyS0,115200n8 audit=0 selinux=0 quiet
+initrd --name initrd.img ${prefix}/initramfs-4.19.3-200.fc28.x86_64.img
+boot || chain https://server-01.example.edu/menu
+</code></pre>
+<p>现在，重启动 bootmenu 应用程序，并验证用户认证是否正常工作：</p>
+<pre><code># systemctl restart bootmenu.service
+</code></pre>
+<h3 id="使得-iscsi-target-可写">使得 iSCSI Target 可写</h3>
+<p>现在，用户验证通过 iPXE 可以正常工作，在用户连接时，你可以按需在只读镜像的上面创建每用户可写的<ruby>overlay<rt>叠加层</rt></ruby>。使用一个 <a href="https://en.wikipedia.org/wiki/Copy-on-write">写时复制</a> 的叠加层与简单地为每个用户复制原始镜像相比有三个好处：</p>
+<ol>
+<li>副本创建非常快。这样就可以按需创建。</li>
+<li>副本并不增加服务器上的磁盘使用。除了原始镜像之外，仅存储用户写入个人镜像的内容。</li>
+<li>由于每个副本的扇区大多都是服务器的存储器上的相同扇区，在随后的用户访问这些操作系统的副本时，它们可能已经加载到内存中，这样就提升了服务器的性能，因为对内存的访问速度要比磁盘 I/O 快得多。</li>
+</ol>
+<p>使用写时复制的一个潜在隐患是，一旦叠加层创建后，叠加层之下的镜像就不能再改变。如果它们改变，所有它们之上的叠加层将出错。因此，叠加层必须被删除并用新的、空白的进行替换。即便只是简单地以读写模式加载的镜像，也可能因为某些文件系统更新导致叠加层出错。</p>
+<p>由于这个隐患，如果原始镜像被修改将导致叠加层出错，因此运行下列的命令，将原始镜像标记为不可改变：</p>
+<pre><code># chattr +i &lt;/path/to/file&gt;
+</code></pre>
+<p>你可以使用 <code>lsattr &lt;/path/to/file&gt;</code> 去查看不可改变标志，并可以使用 <code>chattr -i &lt;/path/to/file&gt;</code> 取消设置不可改变标志。在设置了不可改变标志之后，即便是 root 用户或以 root 运行的系统进程也不修改或删除这个文件。</p>
+<p>停止 tgtd.service 之后，你就可以改变镜像文件：</p>
+<pre><code># systemctl stop tgtd.service
+</code></pre>
+<p>当仍有连接打开的时候，运行这个命令一般需要一分钟或更长的时间。</p>
+<p>现在，移除只读的 iSCSI 出口。然后更新模板中的 <code>readonly-root</code> 配置文件，以使镜像不再是只读的：</p>
+<pre><code># MY_FC=fc29
+# rm -f /etc/tgt/conf.d/$MY_FC.conf
+# TEMP_MNT=$(mktemp -d)
+# mount /$MY_FC.img $TEMP_MNT
+# sed -i &#39;s/^READONLY=yes$/READONLY=no/&#39; $TEMP_MNT/etc/sysconfig/readonly-root
+# sed -i &#39;s/^Storage=volatile$/#Storage=auto/&#39; $TEMP_MNT/etc/systemd/journald.conf
+# umount $TEMP_MNT
+</code></pre>
+<p>将 journald 日志从发送到内存修改回缺省值（如果 <code>/var/log/journal</code> 存在的话记录到磁盘），因为一个用户报告说，他的客户端由于应用程序生成了大量的系统日志而产生内存溢出错误，导致它的客户端被卡住。而将日志记录到磁盘的负面影响是客户端产生了额外的写入流量，这将在你的网络引导服务器上可能增加一些没有必要的 I/O。你应该去决定到底使用哪个选择 —— 记录到内存还是记录到硬盘 —— 哪个更合适取决于你的环境。</p>
+<p>因为你的模板镜像在以后不能做任何的更改，因此在它上面设置不可更改标志，然后重启动 tgtd.service：</p>
+<pre><code># chattr +i /$MY_FC.img
+# systemctl start tgtd.service
+</code></pre>
+<p>现在，更新 bootmenu 应用程序：</p>
+<pre><code># cat &lt;&lt; &#39;END&#39; &gt; $MY_MOJO/bootmenu.pl
+#!/usr/bin/env perl
+
+use lib &#39;lib&#39;;
+
+use PAM;
+use Mojolicious::Lite;
+use Mojolicious::Plugins;
+use Mojo::Util (&#39;url_unescape&#39;);
+
+plugin &#39;Config&#39;;
+
+get &#39;/menu&#39;;
+get &#39;/boot&#39; =&gt; sub {
+   my $c = shift;
+
+   my $instance = $c-&gt;param(&#39;instance&#39;);
+   my $username = $c-&gt;param(&#39;username&#39;);
+   my $password = $c-&gt;param(&#39;password&#39;);
+
+   my $chapscrt;
+   my $template = &#39;menu&#39;;
+
+   {
+      last unless $instance =~ /^fc[[:digit:]]{2}$/;
+      last unless $username =~ /^[[:alnum:]]+$/;
+      last unless PAM::auth($username, url_unescape($password));
+      last unless $chapscrt = `sudo scripts/mktgt $instance $username`;
+      $template = $instance;
+   }
+
+   return $c-&gt;render(template =&gt; $template, username =&gt; $username, chapscrt =&gt; $chapscrt);
+};
+
+app-&gt;start;
+END
+</code></pre>
+<p>新版本的 bootmenu 应用程序调用一个定制的 <code>mktgt</code> 脚本，如果成功，它将为每个它自己创建的新的 iSCSI 目标返回一个随机的 <a href="https://en.wikipedia.org/wiki/Challenge-Handshake_Authentication_Protocol">CHAP</a> 密码。这个 CHAP 密码可以防止其它用户的 iSCSI 目标以间接方式挂载这个用户的目标。这个应用程序只有在用户密码认证成功之后才返回一个正确的 iSCSI 目标密码。</p>
+<p><code>mktgt</code> 脚本要加 <code>sudo</code> 前缀来运行，因为它需要 root 权限去创建目标。</p>
+<p><code>$username</code> 和 <code>$chapscrt</code> 变量也传递给 <code>render</code> 命令，因此在需要的时候，它们也能够被纳入到模板中返回给用户。</p>
+<p>接下来，更新我们的引导模板，以便于它们能够读取用户名和 <code>chapscrt</code> 变量，并传递它们到所属的终端用户。也要更新模板以 rw（读写）模式加载根文件系统：</p>
+<pre><code># cd $MY_MOJO/templates
+# sed -i &quot;s/:$MY_FC/:$MY_FC-&lt;%= \$username %&gt;/g&quot; $MY_FC.html.ep
+# sed -i &quot;s/ netroot=iscsi:/ netroot=iscsi:&lt;%= \$username %&gt;:&lt;%= \$chapscrt %&gt;@/&quot; $MY_FC.html.ep
+# sed -i &quot;s/ ro / rw /&quot; $MY_FC.html.ep
+</code></pre>
+<p>运行上面的命令后，你应该会看到如下的引导模板：</p>
+<pre><code>#!ipxe
+kernel --name kernel.efi ${prefix}/vmlinuz-4.19.5-300.fc29.x86_64 initrd=initrd.img rw ip=dhcp rd.peerdns=0 nameserver=192.0.2.91 nameserver=192.0.2.92 root=/dev/disk/by-path/ip-192.0.2.158:3260-iscsi-iqn.edu.example.server-01:fc29-&lt;%= $username %&gt;-lun-1 netroot=iscsi:&lt;%= $username %&gt;:&lt;%= $chapscrt %&gt;@192.0.2.158::::iqn.edu.example.server-01:fc29-&lt;%= $username %&gt; console=tty0 console=ttyS0,115200n8 audit=0 selinux=0 quiet
+initrd --name initrd.img ${prefix}/initramfs-4.19.5-300.fc29.x86_64.img
+boot || chain https://server-01.example.edu/menu
+</code></pre>
+<p>注意：如果在 <a href="https://en.wikipedia.org/wiki/String_interpolation">插入</a> 变量后需要查看引导模板，你可以在 <code>boot</code> 命令之前，在它自己的行中插入 <code>shell</code> 命令。然后在你网络引导你的客户端时，iPXE 将在那里给你提供一个用于交互的 shell，你可以在 shell 中输入 <code>imgstat</code> 去查看传递到内核的参数。如果一切正确，你可以输入 <code>exit</code> 去退出 shell 并继续引导过程。</p>
+<p>现在，通过 <code>sudo</code> 允许 bootmenu 用户以 root 权限去运行 <code>mktgt</code> 脚本（仅这个脚本）：</p>
+<pre><code># echo &quot;bootmenu ALL = NOPASSWD: $MY_MOJO/scripts/mktgt *&quot; &gt; /etc/sudoers.d/bootmenu
+</code></pre>
+<p>bootmenu 用户不应该写访问 <code>mktgt</code> 脚本或在它的家目录下的任何其它文件。在 <code>/opt/bootmenu</code> 目录下的所有文件的属主应该是 root，并且不应该被其它任何 root 以外的用户可写。</p>
+<p><code>sudo</code> 在使用 systemd 的 <code>DynamicUser</code> 选项下不能正常工作，因此创建一个普通用户帐户，并设置 systemd 服务以那个用户运行：</p>
+<pre><code># useradd -r -c &#39;iPXE Boot Menu Service&#39; -d /opt/bootmenu -s /sbin/nologin bootmenu
+# sed -i &#39;s/^DynamicUser=true$/User=bootmenu/&#39; /etc/systemd/system/bootmenu.service
+# systemctl daemon-reload
+</code></pre>
+<p>最后，为写时复制覆盖创建一个目录，并创建管理 iSCSI 目标的 <code>mktgt</code> 脚本和它们的覆盖支持存储：</p>
+<pre><code># mkdir /$MY_FC.cow
+# mkdir $MY_MOJO/scripts
+# cat &lt;&lt; &#39;END&#39; &gt; $MY_MOJO/scripts/mktgt
+#!/usr/bin/env perl
+
+# if another instance of this script is running, wait for it to finish
+&quot;$ENV{FLOCKER}&quot; eq &#39;MKTGT&#39; or exec &quot;env FLOCKER=MKTGT flock /tmp $0 @ARGV&quot;;
+
+# use &quot;RETURN&quot; to print to STDOUT; everything else goes to STDERR by default
+open(RETURN, &#39;&gt;&amp;&#39;, STDOUT);
+open(STDOUT, &#39;&gt;&amp;&#39;, STDERR);
+
+my $instance = shift or die &quot;instance not provided&quot;;
+my $username = shift or die &quot;username not provided&quot;;
+
+my $img = &quot;/$instance.img&quot;;
+my $dir = &quot;/$instance.cow&quot;;
+my $top = &quot;$dir/$username&quot;;
+
+-f &quot;$img&quot; or die &quot;&#39;$img&#39; is not a file&quot;; 
+-d &quot;$dir&quot; or die &quot;&#39;$dir&#39; is not a directory&quot;;
+
+my $base;
+die unless $base = `losetup --show --read-only --nooverlap --find $img`;
+chomp $base;
+
+my $size;
+die unless $size = `blockdev --getsz $base`;
+chomp $size;
+
+# create the per-user sparse file if it does not exist
+if (! -e &quot;$top&quot;) {
+   die unless system(&quot;dd if=/dev/zero of=$top status=none bs=512 count=0 seek=$size&quot;) == 0;
+}
+
+# create the copy-on-write overlay if it does not exist
+my $cow=&quot;$instance-$username&quot;;
+my $dev=&quot;/dev/mapper/$cow&quot;;
+if (! -e &quot;$dev&quot;) {
+   my $over;
+   die unless $over = `losetup --show --nooverlap --find $top`;
+   chomp $over;
+   die unless system(&quot;echo 0 $size snapshot $base $over p 8 | dmsetup create $cow&quot;) == 0;
+}
+
+my $tgtadm = &#39;/usr/sbin/tgtadm --lld iscsi&#39;;
+
+# get textual representations of the iscsi targets
+my $text = `$tgtadm --op show --mode target`;
+my @targets = $text =~ /(?:^T.*\n)(?:^ .*\n)*/mg;
+
+# convert the textual representations into a hash table
+my $targets = {};
+foreach (@targets) {
+   my $tgt;
+   my $sid;
+
+   foreach (split /\n/) {
+      /^Target (\d+)(?{ $tgt = $targets-&gt;{$^N} = [] })/;
+      /I_T nexus: (\d+)(?{ $sid = $^N })/;
+      /Connection: (\d+)(?{ push @{$tgt}, [ $sid, $^N ] })/;
+   }
+}
+
+my $hostname;
+die unless $hostname = `hostname`;
+chomp $hostname;
+
+my $target = &#39;iqn.&#39; . join(&#39;.&#39;, reverse split(&#39;\.&#39;, $hostname)) . &quot;:$cow&quot;;
+
+# find the target id corresponding to the provided target name and
+# close any existing connections to it
+my $tid = 0;
+foreach (@targets) {
+   next unless /^Target (\d+)(?{ $tid = $^N }): $target$/m;
+   foreach (@{$targets-&gt;{$tid}}) {
+      die unless system(&quot;$tgtadm --op delete --mode conn --tid $tid --sid $_-&gt;[0] --cid $_-&gt;[1]&quot;) == 0;
+   }
+}
+
+# create a new target if an existing one was not found
+if ($tid == 0) {
+   # find an available target id
+   my @ids = (0, sort keys %{$targets});
+   $tid = 1; while ($ids[$tid]==$tid) { $tid++ }
+
+   # create the target
+   die unless -e &quot;$dev&quot;;
+   die unless system(&quot;$tgtadm --op new --mode target --tid $tid --targetname $target&quot;) == 0;
+   die unless system(&quot;$tgtadm --op new --mode logicalunit --tid $tid --lun 1 --backing-store $dev&quot;) == 0;
+   die unless system(&quot;$tgtadm --op bind --mode target --tid $tid --initiator-address ALL&quot;) == 0;
+}
+
+# (re)set the provided target&#39;s chap password
+my $password = join(&#39;&#39;, map(chr(int(rand(26))+65), 1..8));
+my $accounts = `$tgtadm --op show --mode account`;
+if ($accounts =~ / $username$/m) {
+   die unless system(&quot;$tgtadm --op delete --mode account --user $username&quot;) == 0;
+}
+die unless system(&quot;$tgtadm --op new --mode account --user $username --password $password&quot;) == 0;
+die unless system(&quot;$tgtadm --op bind --mode account --tid $tid --user $username&quot;) == 0;
+
+# return the new password to the iscsi target on stdout
+print RETURN $password;
+END
+# chmod +x $MY_MOJO/scripts/mktgt
+</code></pre>
+<p>上面的脚本将做以下五件事情：</p>
+<ol>
+<li>创建 <code>/&lt;instance&gt;.cow/&lt;username&gt;</code> 稀疏文件（如果不存在的话）。</li>
+<li>创建 <code>/dev/mapper/&lt;instance&gt;-&lt;username&gt;</code> 设备节点作为 iSCSI 目标的写时复制支持存储（如果不存在的话）。</li>
+<li>创建 <code>iqn.&lt;reverse-hostname&gt;:&lt;instance&gt;-&lt;username&gt;</code> iSCSI 目标（如果不存在的话）。或者，如果已存在了，它将关闭任何已存在的连接，因为在任何时刻，镜像只能以只读模式从一个地方打开。</li>
+<li>它在 <code>iqn.&lt;reverse-hostname&gt;:&lt;instance&gt;-&lt;username&gt;</code> iSCSI 目标上（重新）设置 chap 密码为一个新的随机值。</li>
+<li>（如果前面的所有任务都成功的话）它在 <a href="https://en.wikipedia.org/wiki/Standard_streams">标准输出</a> 上显示新的 chap 密码。</li>
+</ol>
+<p>你应该可以在命令行上通过使用有效的测试参数来运行它，以测试 <code>mktgt</code> 脚本能否正常工作。例如：</p>
+<pre><code># echo `$MY_MOJO/scripts/mktgt fc29 jsmith`
+</code></pre>
+<p>当你从命令行上运行时，<code>mktgt</code> 脚本应该会输出 iSCSI 目标的一个随意的八字符随机密码（如果成功的话）或者是出错位置的行号（如果失败的话）。</p>
+<p>有时候，你可能需要在不停止整个服务的情况下删除一个 iSCSI 目标。例如，一个用户可能无意中损坏了他的个人镜像，在那种情况下，你可能需要按步骤撤销上面的 <code>mktgt</code> 脚本所做的事情，以便于他下次登入时他将得到一个原始镜像。</p>
+<p>下面是用于撤销的 <code>rmtgt</code> 脚本，它以相反的顺序做了上面 <code>mktgt</code> 脚本所做的事情：</p>
+<pre><code># mkdir $HOME/bin
+# cat &lt;&lt; &#39;END&#39; &gt; $HOME/bin/rmtgt
+#!/usr/bin/env perl
+
+@ARGV &gt;= 2 or die &quot;usage: $0 &lt;instance&gt; &lt;username&gt; [+d|+f]\n&quot;;
+
+my $instance = shift;
+my $username = shift;
+
+my $rmd = ($ARGV[0] eq &#39;+d&#39;); #remove device node if +d flag is set
+my $rmf = ($ARGV[0] eq &#39;+f&#39;); #remove sparse file if +f flag is set
+my $cow = &quot;$instance-$username&quot;;
+
+my $hostname;
+die unless $hostname = `hostname`;
+chomp $hostname;
+
+my $tgtadm = &#39;/usr/sbin/tgtadm&#39;;
+my $target = &#39;iqn.&#39; . join(&#39;.&#39;, reverse split(&#39;\.&#39;, $hostname)) . &quot;:$cow&quot;;
+
+my $text = `$tgtadm --op show --mode target`;
+my @targets = $text =~ /(?:^T.*\n)(?:^ .*\n)*/mg;
+
+my $targets = {};
+foreach (@targets) {
+   my $tgt;
+   my $sid;
+
+   foreach (split /\n/) {
+      /^Target (\d+)(?{ $tgt = $targets-&gt;{$^N} = [] })/;
+      /I_T nexus: (\d+)(?{ $sid = $^N })/;
+      /Connection: (\d+)(?{ push @{$tgt}, [ $sid, $^N ] })/;
+   }
+}
+
+my $tid = 0;
+foreach (@targets) {
+   next unless /^Target (\d+)(?{ $tid = $^N }): $target$/m;
+   foreach (@{$targets-&gt;{$tid}}) {
+      die unless system(&quot;$tgtadm --op delete --mode conn --tid $tid --sid $_-&gt;[0] --cid $_-&gt;[1]&quot;) == 0;
+   }
+   die unless system(&quot;$tgtadm --op delete --mode target --tid $tid&quot;) == 0;
+   print &quot;target $tid deleted\n&quot;;
+   sleep 1;
+}
+
+my $dev = &quot;/dev/mapper/$cow&quot;;
+if ($rmd or ($rmf and -e $dev)) {
+   die unless system(&quot;dmsetup remove $cow&quot;) == 0;
+   print &quot;device node $dev deleted\n&quot;;
+}
+
+if ($rmf) {
+   my $sf = &quot;/$instance.cow/$username&quot;;
+   die &quot;sparse file $sf not found&quot; unless -e &quot;$sf&quot;;
+   die unless system(&quot;rm -f $sf&quot;) == 0;
+   die unless not -e &quot;$sf&quot;;
+   print &quot;sparse file $sf deleted\n&quot;;
+}
+END
+# chmod +x $HOME/bin/rmtgt
+</code></pre>
+<p>例如，使用上面的脚本去完全删除 fc29-jsmith 目标，包含它的支持存储设备节点和稀疏文件，可以按下列方式运行命令：</p>
+<pre><code># rmtgt fc29 jsmith +f
+</code></pre>
+<p>一旦你验证 <code>mktgt</code> 脚本工作正常，你可以重启动 bootmenu 服务。下次有人从网络引导时，他们应该能够接收到一个他们可以写入的、可”私人定制“的网络引导镜像的副本：</p>
+<pre><code># systemctl restart bootmenu.service
+</code></pre>
+<p>现在，就像下面的截屏示范的那样，用户应该可以修改根文件系统了：</p>
+<p><img src="https://fedoramagazine.org/wp-content/uploads/2018/11/netboot-fix-pam_mount-1024x819.png" alt=""></p>
+<hr>
+<p>via: <a href="https://fedoramagazine.org/how-to-build-a-netboot-server-part-4/">https://fedoramagazine.org/how-to-build-a-netboot-server-part-4/</a></p>
+<p>作者：<a href="https://fedoramagazine.org/author/glb/">Gregory Bartholomew</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/qhwdw">qhwdw</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#修改-bootmenu-应用程序以使用-https">修改 Bootmenu 应用程序以使用 HTTPS</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#添加-https-到-ipxe">添加 HTTPS 到 iPXE</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#添加用户验证到-mojolicious-中">添加用户验证到 Mojolicious 中</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使得-iscsi-target-可写">使得 iSCSI Target 可写</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201901/20190114 How to Build a Netboot Server, Part 4","title":"如何构建一台网络引导服务器（四）"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

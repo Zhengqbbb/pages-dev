@@ -1,0 +1,566 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>论 HTTP 性能，Go 与 .NET Core 一争雌雄 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="论 HTTP 性能，Go 与 .NET Core 一争雌雄 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="论 HTTP 性能，Go 与 .NET Core 一争雌雄 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201710/20170818 Go vs .NET Core in terms of HTTP performance#page","@type":"TechArticle","headline":"论 HTTP 性能，Go 与 .NET Core 一争雌雄","inLanguage":"en","name":"论 HTTP 性能，Go 与 .NET Core 一争雌雄","url":"https://zhengqbbb.github.io/pages-dev/201710/20170818 Go vs .NET Core in terms of HTTP performance","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201710/20170818 Go vs .NET Core in terms of HTTP performance"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#参赛选手">参赛选手</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#基准">基准</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#想再多了解点儿吗">想再多了解点儿吗?</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#接下来呢">接下来呢？</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>论 HTTP 性能，Go 与 .NET Core 一争雌雄</h1><p><img src="https://cdn-images-1.medium.com/max/1200/1*60T60jSMO5yxUqJQmLZa4A.png" alt=""></p>
+<p>朋友们，你们好！</p>
+<p>近来，我听到了大量的关于新出的 .NET Core 和其性能的讨论，尤其在 Web 服务方面的讨论更甚。</p>
+<p>因为是新出的，我不想立马就比较两个不同的东西，所以我耐心等待，想等发布更稳定的版本后再进行。</p>
+<p>本周一（8 月 14 日），微软<a href="https://blogs.msdn.microsoft.com/dotnet/2017/08/14/announcing-net-core-2-0/">发布 .NET Core 2.0 版本</a>，因此，我准备开始。您们认为呢？</p>
+<p>如前面所提的，我们会比较它们相同的东西，比如应用程序、预期响应及运行时的稳定性，所以我们不会把像对 JSON 或者 XML 的编码、解码这些烦多的事情加入比较游戏中来，仅仅只会使用简单的文本消息。为了公平起见，我们会分别使用 Go 和 .NET Core 的 <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC 架构模式</a>。</p>
+<h3 id="参赛选手">参赛选手</h3>
+<p><a href="https://golang.org/">Go</a> （或称 Golang）： 是一种<a href="http://www.tiobe.com/tiobe-index/">快速增长</a>的开源编程语言，旨在构建出简单、快捷和稳定可靠的应用软件。</p>
+<p>用于支持 Go 语言的 MVC web 框架并不多，还好我们找到了 Iris ，可胜任此工作。</p>
+<p><a href="http://iris-go.com/">Iris</a>： 支持 Go 语言的快速、简单和高效的微型 Web 框架。它为您的下一代网站、API 或分布式应用程序奠定了精美的表现方式和易于使用的基础。</p>
+<p><a href="https://en.wikipedia.org/wiki/C_Sharp_%28programming_language%29">C#</a>： 是一种通用的、面向对象的编程语言。其开发团队由 <a href="https://twitter.com/ahejlsberg">Anders Hejlsberg</a> 领导。</p>
+<p><a href="https://www.microsoft.com/net/">.NET Core</a>： 跨平台，可以在极少时间内开发出高性能的应用程序。</p>
+<p>可从 <a href="https://golang.org/dl">https://golang.org/dl</a> 下载 Go ，从 <a href="https://www.microsoft.com/net/core">https://www.microsoft.com/net/core</a> 下载 .NET Core。</p>
+<p>在下载和安装好这些软件后，还需要为 Go 安装 Iris。安装很简单，仅仅只需要打开终端，然后执行如下语句：</p>
+<pre><code>go get -u github.com/kataras/iris
+</code></pre>
+<h3 id="基准">基准</h3>
+<h4 id="硬件">硬件</h4>
+<ul>
+<li>处理器： Intel(R) Core(TM) i7–4710HQ CPU @ 2.50GHz 2.50GHz</li>
+<li>内存： 8.00 GB</li>
+</ul>
+<h4 id="软件">软件</h4>
+<ul>
+<li>操作系统： 微软 Windows [10.0.15063 版本]， 电源计划设置为“高性能”</li>
+<li>HTTP 基准工具： <a href="https://github.com/codesenberg/bombardier">https://github.com/codesenberg/bombardier</a>， 使用最新的 1.1 版本。</li>
+<li>.NET Core： <a href="https://www.microsoft.com/net/core">https://www.microsoft.com/net/core</a>， 使用最新的 2.0 版本。</li>
+<li>Iris： <a href="https://github.com/kataras/iris">https://github.com/kataras/iris</a>， 使用基于 <a href="https://golang.org/">Go 1.8.3</a> 构建的最新 8.3 版本。</li>
+</ul>
+<p>两个应用程序都通过请求路径 “api/values/{id}” 返回文本“值”。</p>
+<h5 id="net-core-mvc">.NET Core MVC</h5>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*v2VJL3-I3bLyuehntuqfng.png" alt=""></p>
+<p>Logo 由 <a href="https://github.com/campusMVP/dotnetCoreLogoPack">Pablo Iglesias</a> 设计。</p>
+<p>可以使用 <code>dotnet new webapi</code> 命令创建项目，其 <code>webapi</code> 模板会为您生成代码，代码包含 <code>GET</code> 请求方法的 <code>返回“值”</code>。</p>
+<p>源代码：</p>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
+namespace netcore_mvc
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            BuildWebHost(args).Run();
+        }
+
+        public static IWebHost BuildWebHost(string[] args) =&gt;
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup&lt;Startup&gt;()
+                .Build();
+    }
+}
+</code></pre>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+namespace netcore_mvc
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvcCore();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseMvc();
+        }
+    }
+}
+</code></pre>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+
+namespace netcore_mvc.Controllers
+{
+    // ValuesController is the equivalent
+    // `ValuesController` of the Iris 8.3 mvc application.
+    [Route(&quot;api/[controller]&quot;)]
+    public class ValuesController : Controller
+    {
+        // Get handles &quot;GET&quot; requests to &quot;api/values/{id}&quot;.
+        [HttpGet(&quot;{id}&quot;)]
+        public string Get(int id)
+        {
+            return &quot;value&quot;;
+        }
+
+        // Put handles &quot;PUT&quot; requests to &quot;api/values/{id}&quot;.
+        [HttpPut(&quot;{id}&quot;)]
+        public void Put(int id, [FromBody]string value)
+        {
+        }
+
+        // Delete handles &quot;DELETE&quot; requests to &quot;api/values/{id}&quot;.
+        [HttpDelete(&quot;{id}&quot;)]
+        public void Delete(int id)
+        {
+        }
+    }
+}
+</code></pre>
+<p>运行 .NET Core web 服务项目：</p>
+<pre><code>$ cd netcore-mvc
+$ dotnet run -c Release
+Hosting environment: Production
+Content root path: C:\mygopath\src\github.com\kataras\iris\_benchmarks\netcore-mvc
+Now listening on: http://localhost:5000
+Application started. Press Ctrl+C to shut down.
+</code></pre>
+<p>运行和定位 HTTP 基准工具：</p>
+<pre><code>$ bombardier -c 125 -n 5000000 http://localhost:5000/api/values/5
+Bombarding http://localhost:5000/api/values/5 with 5000000 requests using 125 connections
+ 5000000 / 5000000 [=====================================================] 100.00% 2m3s
+Done!
+Statistics        Avg      Stdev        Max
+  Reqs/sec     40226.03    8724.30     161919
+  Latency        3.09ms     1.40ms   169.12ms
+  HTTP codes:
+    1xx - 0, 2xx - 5000000, 3xx - 0, 4xx - 0, 5xx - 0
+    others - 0
+  Throughput:     8.91MB/s
+</code></pre>
+<h5 id="iris-mvc">Iris MVC</h5>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*zf4BjL-7MQNJGikw5E-iNA.png" alt=""></p>
+<p>Logo 由 <a href="https://github.com/santoshanand">Santosh Anand</a> 设计。</p>
+<p>源代码：</p>
+<pre><code>package main
+
+import (
+	&quot;github.com/kataras/iris&quot;
+	&quot;github.com/kataras/iris/_benchmarks/iris-mvc/controllers&quot;
+)
+
+func main() {
+	app := iris.New()
+	app.Controller(&quot;/api/values/{id}&quot;, new(controllers.ValuesController))
+	app.Run(iris.Addr(&quot;:5000&quot;), iris.WithoutVersionChecker)
+}
+view raw
+</code></pre>
+<pre><code>package controllers
+
+import &quot;github.com/kataras/iris/mvc&quot;
+
+// ValuesController is the equivalent
+// `ValuesController` of the .net core 2.0 mvc application.
+type ValuesController struct {
+	mvc.Controller
+}
+
+// Get handles &quot;GET&quot; requests to &quot;api/values/{id}&quot;.
+func (vc *ValuesController) Get() {
+	// id,_ := vc.Params.GetInt(&quot;id&quot;)
+	vc.Ctx.WriteString(&quot;value&quot;)
+}
+
+// Put handles &quot;PUT&quot; requests to &quot;api/values/{id}&quot;.
+func (vc *ValuesController) Put() {}
+
+// Delete handles &quot;DELETE&quot; requests to &quot;api/values/{id}&quot;.
+func (vc *ValuesController) Delete() {}
+</code></pre>
+<p>运行 Go web 服务项目：</p>
+<pre><code>$ cd iris-mvc
+$ go run main.go
+Now listening on: http://localhost:5000
+Application started. Press CTRL+C to shut down.
+</code></pre>
+<p>运行和定位 HTTP 基准工具：</p>
+<pre><code>$ bombardier -c 125 -n 5000000 http://localhost:5000/api/values/5
+Bombarding http://localhost:5000/api/values/5 with 5000000 requests using 125 connections
+ 5000000 / 5000000 [======================================================] 100.00% 47s
+Done!
+Statistics        Avg      Stdev        Max
+  Reqs/sec    105643.81    7687.79     122564
+  Latency        1.18ms   366.55us    22.01ms
+  HTTP codes:
+    1xx - 0, 2xx - 5000000, 3xx - 0, 4xx - 0, 5xx - 0
+    others - 0
+  Throughput:    19.65MB/s
+</code></pre>
+<p>想通过图片来理解的人，我也把我的屏幕截屏出来了！</p>
+<p>请点击<a href="https://github.com/kataras/iris/tree/master/_benchmarks/screens">这儿</a>可以看到这些屏幕快照。</p>
+<h4 id="总结">总结</h4>
+<ul>
+<li>完成 <code>5000000 个请求</code>的时间 - 越短越好。</li>
+<li>请求次数/每秒 - 越大越好。</li>
+<li>等待时间 — 越短越好。</li>
+<li>吞吐量 — 越大越好。</li>
+<li>内存使用 — 越小越好。</li>
+<li>LOC (代码行数) — 越少越好。</li>
+</ul>
+<p>.NET Core MVC 应用程序，使用 86 行代码，运行 2 分钟 8 秒，每秒接纳 39311.56 个请求，平均 3.19ms 等待，最大时到 229.73ms，内存使用大约为 126MB（不包括 dotnet 框架）。</p>
+<p>Iris MVC 应用程序，使用 27 行代码，运行 47 秒，每秒接纳 105643.71 个请求，平均 1.18ms 等待，最大时到 22.01ms，内存使用大约为 12MB。</p>
+<blockquote>
+<p>还有另外一个模板的基准，滚动到底部。</p>
+</blockquote>
+<p><strong>2017 年 8 月 20 号更新</strong></p>
+<p>[Josh Clark] <a href="https://twitter.com/clarkis117">24</a> 和 [Scott Hanselman] <a href="https://twitter.com/shanselman">25</a>在此 [tweet 评论] <a href="https://twitter.com/shanselman/status/899005786826788865">26</a>上指出，.NET Core <code>Startup.cs</code> 文件中 <code>services.AddMvc();</code> 这行可以替换为 <code>services.AddMvcCore();</code>。我听从他们的意见，修改代码，重新运行基准，该文章的 .NET Core 应用程序的基准输出已经修改。</p>
+<p>@topdawgevh @shanselman 他们也在使用 <code>AddMvc()</code> 而不是 <code>AddMvcCore()</code> ...，难道都不包含中间件？</p>
+<p> —  @clarkis117</p>
+<p>@clarkis117 @topdawgevh Cool @MakisMaropoulos @ben_a_adams @davidfowl 我们来看看。认真学习下怎么使用更简单的性能默认值。</p>
+<p> —  @shanselman</p>
+<p>@shanselman @clarkis117 @topdawgevh @ben_a_adams @davidfowl @shanselman @ben_a_adams @davidfowl 谢谢您们的反馈意见。我已经修改，更新了结果，没什么不同。对其它的建议，我非常欢迎。</p>
+<p> —  @MakisMaropoulos</p>
+<blockquote>
+<p>它有点稍微的不同但相差不大（从 8.61MB/s 到 8.91MB/s）</p>
+</blockquote>
+<p>想要了解跟 <code>services.AddMvc()</code> 标准比较结果的，可以点击<a href="https://github.com/kataras/iris/blob/master/_benchmarks/screens/5m_requests_netcore-mvc.png">这儿</a>。</p>
+<h3 id="想再多了解点儿吗">想再多了解点儿吗?</h3>
+<p>我们再制定一个基准，产生 <code>1000000 次请求</code>，这次会通过视图引擎由模板生成 <code>HTML</code> 页面。</p>
+<h4 id="net-core-mvc-使用的模板">.NET Core MVC 使用的模板</h4>
+<pre><code>using System;
+
+namespace netcore_mvc_templates.Models
+{
+    public class ErrorViewModel
+    {
+        public string Title { get; set; }
+        public int Code { get; set; }
+    }
+}
+</code></pre>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using netcore_mvc_templates.Models;
+
+namespace netcore_mvc_templates.Controllers
+{
+   public class HomeController : Controller
+   {
+       public IActionResult Index()
+       {
+           return View();
+       }
+
+       public IActionResult About()
+       {
+           ViewData[&quot;Message&quot;] = &quot;Your application description page.&quot;;
+
+           return View();
+       }
+
+       public IActionResult Contact()
+       {
+           ViewData[&quot;Message&quot;] = &quot;Your contact page.&quot;;
+
+           return View();
+       }
+
+       public IActionResult Error()
+       {
+           return View(new ErrorViewModel { Title = &quot;Error&quot;, Code = 500});
+       }
+   }
+}
+</code></pre>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
+namespace netcore_mvc_templates
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            BuildWebHost(args).Run();
+        }
+
+        public static IWebHost BuildWebHost(string[] args) =&gt;
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup&lt;Startup&gt;()
+                .Build();
+    }
+}
+</code></pre>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace netcore_mvc_templates
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            /*  An unhandled exception was thrown by the application.
+                System.InvalidOperationException: No service for type
+                &#39;Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataDictionaryFactory&#39; has been registered.
+                Solution: Use AddMvc() instead of AddMvcCore() in Startup.cs and it will work.
+            */
+            // services.AddMvcCore();
+            services.AddMvc();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseStaticFiles();
+
+            app.UseMvc(routes =&gt;
+            {
+                routes.MapRoute(
+                    name: &quot;default&quot;,
+                    template: &quot;{controller=Home}/{action=Index}/{id?}&quot;);
+            });
+        }
+    }
+}
+</code></pre>
+<pre><code>/*
+wwwroot/css
+wwwroot/images
+wwwroot/js
+wwwroot/lib
+wwwroot/favicon.ico
+
+
+Views/Shared/_Layout.cshtml
+Views/Shared/Error.cshtml
+
+Views/Home/About.cshtml
+Views/Home/Contact.cshtml
+Views/Home/Index.cshtml
+
+These files are quite long to be shown in this article but you can view them at: 
+https://github.com/kataras/iris/tree/master/_benchmarks/netcore-mvc-templates
+</code></pre>
+<p>运行 .NET Core 服务项目：  </p>
+<pre><code>$ cd netcore-mvc-templates
+$ dotnet run -c Release
+Hosting environment: Production
+Content root path: C:\mygopath\src\github.com\kataras\iris\_benchmarks\netcore-mvc-templates
+Now listening on: http://localhost:5000
+Application started. Press Ctrl+C to shut down.
+</code></pre>
+<p>运行 HTTP 基准工具：</p>
+<pre><code>Bombarding http://localhost:5000 with 1000000 requests using 125 connections
+ 1000000 / 1000000 [====================================================] 100.00% 1m20s
+Done!
+Statistics Avg Stdev Max
+ Reqs/sec 11738.60 7741.36 125887
+ Latency 10.10ms 22.10ms 1.97s
+ HTTP codes:
+ 1xx — 0, 2xx — 1000000, 3xx — 0, 4xx — 0, 5xx — 0
+ others — 0
+ Throughput: 89.03MB/s
+</code></pre>
+<h4 id="iris-mvc-使用的模板">Iris MVC 使用的模板</h4>
+<pre><code>package controllers
+
+import &quot;github.com/kataras/iris/mvc&quot;
+
+type AboutController struct{ mvc.Controller }
+
+func (c *AboutController) Get() {
+	c.Data[&quot;Title&quot;] = &quot;About&quot;
+	c.Data[&quot;Message&quot;] = &quot;Your application description page.&quot;
+	c.Tmpl = &quot;about.html&quot;
+}
+</code></pre>
+<pre><code>package controllers
+
+import &quot;github.com/kataras/iris/mvc&quot;
+
+type ContactController struct{ mvc.Controller }
+
+func (c *ContactController) Get() {
+	c.Data[&quot;Title&quot;] = &quot;Contact&quot;
+	c.Data[&quot;Message&quot;] = &quot;Your contact page.&quot;
+	c.Tmpl = &quot;contact.html&quot;
+}
+</code></pre>
+<pre><code>package models
+
+// HTTPError a silly structure to keep our error page data.
+type HTTPError struct {
+	Title string
+	Code  int
+}
+</code></pre>
+<pre><code>package controllers
+
+import &quot;github.com/kataras/iris/mvc&quot;
+
+type IndexController struct{ mvc.Controller }
+
+func (c *IndexController) Get() {
+	c.Data[&quot;Title&quot;] = &quot;Home Page&quot;
+	c.Tmpl = &quot;index.html&quot;
+}
+</code></pre>
+<pre><code>package main
+
+import (
+	&quot;github.com/kataras/iris/_benchmarks/iris-mvc-templates/controllers&quot;
+
+	&quot;github.com/kataras/iris&quot;
+	&quot;github.com/kataras/iris/context&quot;
+)
+
+const (
+	// templatesDir is the exactly the same path that .NET Core is using for its templates,
+	// in order to reduce the size in the repository.
+	// Change the &quot;C\\mygopath&quot; to your own GOPATH.
+	templatesDir = &quot;C:\\mygopath\\src\\github.com\\kataras\\iris\\_benchmarks\\netcore-mvc-templates\\wwwroot&quot;
+)
+
+func main() {
+	app := iris.New()
+	app.Configure(configure)
+
+	app.Controller(&quot;/&quot;, new(controllers.IndexController))
+	app.Controller(&quot;/about&quot;, new(controllers.AboutController))
+	app.Controller(&quot;/contact&quot;, new(controllers.ContactController))
+
+	app.Run(iris.Addr(&quot;:5000&quot;), iris.WithoutVersionChecker)
+}
+
+func configure(app *iris.Application) {
+	app.RegisterView(iris.HTML(&quot;./views&quot;, &quot;.html&quot;).Layout(&quot;shared/layout.html&quot;))
+	app.StaticWeb(&quot;/public&quot;, templatesDir)
+	app.OnAnyErrorCode(onError)
+}
+
+type err struct {
+	Title string
+	Code  int
+}
+
+func onError(ctx context.Context) {
+	ctx.ViewData(&quot;&quot;, err{&quot;Error&quot;, ctx.GetStatusCode()})
+	ctx.View(&quot;shared/error.html&quot;)
+}
+</code></pre>
+<pre><code>/*
+../netcore-mvc-templates/wwwroot/css
+../netcore-mvc-templates/wwwroot/images
+../netcore-mvc-templates/wwwroot/js
+../netcore-mvc-templates/wwwroot/lib
+../netcore-mvc-templates/wwwroot/favicon.ico
+views/shared/layout.html
+views/shared/error.html
+views/about.html
+views/contact.html
+views/index.html
+These files are quite long to be shown in this article but you can view them at: 
+https://github.com/kataras/iris/tree/master/_benchmarks/iris-mvc-templates
+*/
+</code></pre>
+<p>运行 Go 服务项目：  </p>
+<pre><code>$ cd iris-mvc-templates
+$ go run main.go
+Now listening on: http://localhost:5000
+Application started. Press CTRL+C to shut down.
+</code></pre>
+<p>运行 HTTP 基准工具：</p>
+<pre><code>Bombarding http://localhost:5000 with 1000000 requests using 125 connections
+ 1000000 / 1000000 [======================================================] 100.00% 37s
+Done!
+Statistics Avg Stdev Max
+ Reqs/sec 26656.76 1944.73 31188
+ Latency 4.69ms 1.20ms 22.52ms
+ HTTP codes:
+ 1xx — 0, 2xx — 1000000, 3xx — 0, 4xx — 0, 5xx — 0
+ others — 0
+ Throughput: 192.51MB/s
+</code></pre>
+<h4 id="总结">总结</h4>
+<ul>
+<li>完成 <code>1000000 个请求</code>的时间 - 越短越好。</li>
+<li>请求次数/每秒 - 越大越好。</li>
+<li>等待时间 — 越短越好。</li>
+<li>内存使用 — 越小越好。</li>
+<li>吞吐量 — 越大越好。</li>
+</ul>
+<p>.NET Core MVC 模板应用程序，运行 1 分钟 20 秒，每秒接纳 11738.60 个请求，同时每秒生成 89.03M 页面，平均 10.10ms 等待，最大时到 1.97s，内存使用大约为 193MB（不包括 dotnet 框架）。</p>
+<p>Iris MVC 模板应用程序，运行 37 秒，每秒接纳 26656.76 个请求，同时每秒生成 192.51M 页面，平均 1.18ms 等待，最大时到 22.52ms，内存使用大约为 17MB。</p>
+<h3 id="接下来呢">接下来呢？</h3>
+<p><a href="https://github.com/kataras/iris/tree/master/_benchmarks">这里</a>有上面所示的源代码，请下载下来，在您本地以同样的基准运行，然后把运行结果在这儿给大家分享。</p>
+<p>想添加 Go 或 C# .net core WEB 服务框架到列表的朋友请向<a href="https://github.com/kataras/iris">这个仓库</a>的 <code>_benchmarks </code> 目录推送 PR。</p>
+<p>我也需要亲自感谢下 <a href="https://dev.to/kataras/go-vsnet-core-in-terms-of-http-performance">dev.to</a> 团队，感谢把我的这篇文章分享到他们的 Twitter 账户。</p>
+<p>感谢大家真心反馈，玩得开心！</p>
+<h4 id="更新-2017-年-8-月-21-周一">更新 : 2017 年 8 月 21 ，周一</h4>
+<p>很多人联系我，希望看到一个基于 .NET Core 的较低级别 Kestrel 的基准测试文章。</p>
+<p>因此我完成了，请点击下面的<a href="https://medium.com/@kataras/iris-go-vs-net-core-kestrel-in-terms-of-http-performance-806195dc93d5">链接</a>来了解 Kestrel 和 Iris 之间的性能差异，它还包含一个会话存储管理基准！</p>
+<hr>
+<p>via: <a href="https://hackernoon.com/go-vs-net-core-in-terms-of-http-performance-7535a61b67b8">https://hackernoon.com/go-vs-net-core-in-terms-of-http-performance-7535a61b67b8</a></p>
+<p>作者：<a href="https://hackernoon.com/@kataras?source=post_header_lockup">Gerasimos Maropoulos</a>
+译者：<a href="https://github.com/runningwater">runningwater</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#参赛选手">参赛选手</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#基准">基准</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#想再多了解点儿吗">想再多了解点儿吗?</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#接下来呢">接下来呢？</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201710/20170818 Go vs .NET Core in terms of HTTP performance","title":"论 HTTP 性能，Go 与 .NET Core 一争雌雄"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 FreeBSD 上设置 PF 防火墙来保护 Web 服务器 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 FreeBSD 上设置 PF 防火墙来保护 Web 服务器 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 FreeBSD 上设置 PF 防火墙来保护 Web 服务器 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201809/20170829 How To Set Up PF Firewall on FreeBSD to Protect a Web Server#page","@type":"TechArticle","headline":"如何在 FreeBSD 上设置 PF 防火墙来保护 Web 服务器","inLanguage":"en","name":"如何在 FreeBSD 上设置 PF 防火墙来保护 Web 服务器","url":"https://zhengqbbb.github.io/pages-dev/201809/20170829 How To Set Up PF Firewall on FreeBSD to Protect a Web Server","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201809/20170829 How To Set Up PF Firewall on FreeBSD to Protect a Web Server"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第一步开启-pf-防火墙">第一步：开启 PF 防火墙</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第二步在-usrlocaletcpfconf-文件中创建防火墙规则">第二步：在 /usr/local/etc/pf.conf 文件中创建防火墙规则</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第三步开始运行-pf-防火墙">第三步：开始运行 PF 防火墙</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第四步pfctl-命令的简单介绍">第四步：pfctl 命令的简单介绍</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第五步查看-pf-日志">第五步：查看 PF 日志</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#关于作者">关于作者</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 FreeBSD 上设置 PF 防火墙来保护 Web 服务器</h1><p><a href="https://www.cyberciti.biz/media/new/faq/2017/08/howto-setup-a-firewall-with-pf-on-freebsd.001.jpeg"><img src="https://www.cyberciti.biz/media/new/faq/2017/08/howto-setup-a-firewall-with-pf-on-freebsd.001.jpeg" alt="How To Set Up a Firewall with PF on FreeBSD to Protect a Web Server"></a></p>
+<p>我是从 Linux 迁移过来的 FreeBSD 新用户，Linux 中使用的是 netfilter 防火墙框架（LCTT 译注：netfilter 是由 Rusty Russell 提出的 Linux 2.4 内核防火墙框架）。那么在 FreeBSD 上，我该如何设置 PF 防火墙，来保护只有一个公共 IP 地址和端口的 web 服务器呢？</p>
+<p>PF 是<ruby>包过滤器<rt>packet filter</rt></ruby>的简称。它是为 OpenBSD 开发的，但是已经被移植到了 FreeBSD 以及其它操作系统上。PF 是一个包状态过滤引擎。在这篇教程中，我将向你展示如何在 FreeBSD 10.x 以及 11.x 中设置 PF 防火墙，从而来保护 web 服务器。</p>
+<h3 id="第一步开启-pf-防火墙">第一步：开启 PF 防火墙</h3>
+<p>你需要把下面这几行内容添加到文件 <code>/etc/rc.conf</code> 文件中：</p>
+<pre><code># echo &#39;pf_enable=&quot;YES&quot;&#39; &gt;&gt; /etc/rc.conf
+# echo &#39;pf_rules=&quot;/usr/local/etc/pf.conf&quot;&#39; &gt;&gt; /etc/rc.conf
+# echo &#39;pflog_enable=&quot;YES&quot;&#39; &gt;&gt; /etc/rc.conf
+# echo &#39;pflog_logfile=&quot;/var/log/pflog&quot;&#39; &gt;&gt; /etc/rc.conf
+</code></pre>
+<p>在这里：</p>
+<ol>
+<li><code>pf_enable=&quot;YES&quot;</code> - 开启 PF 服务</li>
+<li><code>pf_rules=&quot;/usr/local/etc/pf.conf&quot;</code> - 从文件 <code>/usr/local/etc/pf.conf</code> 中读取 PF 规则</li>
+<li><code>pflog_enable=&quot;YES&quot;</code> - 为 PF 服务打开日志支持</li>
+<li><code>pflog_logfile=&quot;/var/log/pflog&quot;</code> - 存储日志的文件，即日志存于文件 <code>/var/log/pflog</code> 中</li>
+</ol>
+<h3 id="第二步在-usrlocaletcpfconf-文件中创建防火墙规则">第二步：在 /usr/local/etc/pf.conf 文件中创建防火墙规则</h3>
+<p>输入下面这个命令打开文件（超级用户模式下）：</p>
+<pre><code># vi /usr/local/etc/pf.conf
+</code></pre>
+<p>在文件中添加下面这些 PF 规则集：</p>
+<pre><code># vim: set ft=pf
+# /usr/local/etc/pf.conf
+ 
+## 设置公共端口 ##
+ext_if=&quot;vtnet0&quot;
+ 
+## 设置服务器公共 IP 地址 ##
+ext_if_ip=&quot;172.xxx.yyy.zzz&quot;
+ 
+## 设置并删除下面这些公共端口上的 IP 范围 ##
+martians = &quot;{ 127.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12, \
+	      10.0.0.0/8, 169.254.0.0/16, 192.0.2.0/24, \
+	      0.0.0.0/8, 240.0.0.0/4 }&quot;
+ 
+## 设置 http(80)/https (443) 端口 ##
+webports = &quot;{http, https}&quot;
+ 
+## 启用下面这些服务 ##
+int_tcp_services = &quot;{domain, ntp, smtp, www, https, ftp, ssh}&quot;
+int_udp_services = &quot;{domain, ntp}&quot;
+ 
+## 跳过回环端口 - 跳过端口上的所有 PF 处理 ##
+set skip on lo
+ 
+## 设置 PF 应该统计的端口信息，如发送/接收字节数，通过/禁止的包的数目 ##
+set loginterface $ext_if
+ 
+## 设置默认策略 ##
+block return in log all
+block out all
+ 
+# 基于 IP 分片的错误处理来防御攻击 
+scrub in all
+ 
+# 删除所有不可达路由地址
+block drop in quick on $ext_if from $martians to any
+block drop out quick on $ext_if from any to $martians
+ 
+## 禁止欺骗包
+antispoof quick for $ext_if
+ 
+# 打开 SSH 端口，SSH 服务仅从 VPN IP 139.xx.yy.zz 监听 22 号端口
+# 出于安全原因，我不允许/接收 SSH 流量
+pass in quick on $ext_if inet proto tcp from 139.xxx.yyy.zzz to $ext_if_ip port = ssh flags S/SA keep state label &quot;USER_RULE: Allow SSH from 139.xxx.yyy.zzz&quot;
+## 使用下面这些规则来为所有来自任何 IP 地址的用户开启 SSH 服务 #
+## pass in inet proto tcp to $ext_if port ssh
+### [ OR ] ###
+## pass in inet proto tcp to $ext_if port 22 
+ 
+# Allow Ping-Pong stuff. Be a good sysadmin 
+pass inet proto icmp icmp-type echoreq
+ 
+# All access to our Nginx/Apache/Lighttpd Webserver ports 
+pass proto tcp from any to $ext_if port $webports
+ 
+# 允许重要的发送流量
+pass out quick on $ext_if proto tcp to any port $int_tcp_services
+pass out quick on $ext_if proto udp to any port $int_udp_services
+ 
+# 在下面添加自定义规则
+</code></pre>
+<p>保存并关闭文件。欢迎来参考我的<a href="https://github.com/nixcraft/pf.conf/blob/master/pf.conf">规则集</a>。如果要检查语法错误，可以运行：</p>
+<pre><code># service pf check
+</code></pre>
+<p>或</p>
+<pre><code>/etc/rc.d/pf check
+</code></pre>
+<p>或</p>
+<pre><code># pfctl -n -f /usr/local/etc/pf.conf
+</code></pre>
+<h3 id="第三步开始运行-pf-防火墙">第三步：开始运行 PF 防火墙</h3>
+<p>命令如下。请小心，如果是基于 SSH 的会话，你可能会和服务器断开连接。</p>
+<h4 id="开启-pf-防火墙">开启 PF 防火墙：</h4>
+<pre><code># service pf start
+</code></pre>
+<h4 id="停用-pf-防火墙">停用 PF 防火墙：</h4>
+<pre><code># service pf stop
+</code></pre>
+<h4 id="检查语法错误">检查语法错误：</h4>
+<pre><code># service pf check
+</code></pre>
+<h4 id="重启服务">重启服务：</h4>
+<pre><code># service pf restart
+</code></pre>
+<h4 id="查看-pf-状态">查看 PF 状态：</h4>
+<pre><code># service pf status
+</code></pre>
+<p>示例输出：</p>
+<pre><code>Status: Enabled for 0 days 00:02:18           Debug: Urgent
+ 
+Interface Stats for vtnet0            IPv4             IPv6
+  Bytes In                           19463                0
+  Bytes Out                          18541                0
+  Packets In
+    Passed                             244                0
+    Blocked                              3                0
+  Packets Out
+    Passed                             136                0
+    Blocked                             12                0
+ 
+State Table                          Total             Rate
+  current entries                        1               
+  searches                             395            2.9/s
+  inserts                                4            0.0/s
+  removals                               3            0.0/s
+Counters
+  match                                 19            0.1/s
+  bad-offset                             0            0.0/s
+  fragment                               0            0.0/s
+  short                                  0            0.0/s
+  normalize                              0            0.0/s
+  memory                                 0            0.0/s
+  bad-timestamp                          0            0.0/s
+  congestion                             0            0.0/s
+  ip-option                              0            0.0/s
+  proto-cksum                            0            0.0/s
+  state-mismatch                         0            0.0/s
+  state-insert                           0            0.0/s
+  state-limit                            0            0.0/s
+  src-limit                              0            0.0/s
+  synproxy                               0            0.0/s
+  map-failed                             0            0.0/s
+</code></pre>
+<h4 id="开启关闭重启-pflog-服务的命令">开启/关闭/重启 pflog 服务的命令</h4>
+<p>输入下面这些命令：</p>
+<pre><code># service pflog start
+# service pflog stop
+# service pflog restart
+</code></pre>
+<h3 id="第四步pfctl-命令的简单介绍">第四步：pfctl 命令的简单介绍</h3>
+<p>你需要使用 <code>pfctl</code> 命令来查看 PF 规则集和参数配置，包括来自<ruby>包过滤器<rt>packet filter</rt></ruby>的状态信息。让我们来看一下所有常见命令：</p>
+<h4 id="显示-pf-规则信息">显示 PF 规则信息</h4>
+<pre><code># pfctl -s rules
+</code></pre>
+<p>示例输出：</p>
+<pre><code>block return in log all
+block drop out all
+block drop in quick on ! vtnet0 inet from 172.xxx.yyy.zzz/24 to any
+block drop in quick inet from 172.xxx.yyy.zzz/24 to any
+pass in quick on vtnet0 inet proto tcp from 139.aaa.ccc.ddd to 172.xxx.yyy.zzz/24 port = ssh flags S/SA keep state label &quot;USER_RULE: Allow SSH from 139.aaa.ccc.ddd&quot;
+pass inet proto icmp all icmp-type echoreq keep state
+pass out quick on vtnet0 proto tcp from any to any port = domain flags S/SA keep state
+pass out quick on vtnet0 proto tcp from any to any port = ntp flags S/SA keep state
+pass out quick on vtnet0 proto tcp from any to any port = smtp flags S/SA keep state
+pass out quick on vtnet0 proto tcp from any to any port = http flags S/SA keep state
+pass out quick on vtnet0 proto tcp from any to any port = https flags S/SA keep state
+pass out quick on vtnet0 proto tcp from any to any port = ftp flags S/SA keep state
+pass out quick on vtnet0 proto tcp from any to any port = ssh flags S/SA keep state
+pass out quick on vtnet0 proto udp from any to any port = domain keep state
+pass out quick on vtnet0 proto udp from any to any port = ntp keep state
+</code></pre>
+<h4 id="显示每条规则的详细内容">显示每条规则的详细内容</h4>
+<pre><code># pfctl -v -s rules
+</code></pre>
+<p>在每条规则的详细输出中添加规则编号：</p>
+<pre><code># pfctl -vvsr show
+</code></pre>
+<h4 id="显示状态信息">显示状态信息</h4>
+<pre><code># pfctl -s state
+# pfctl -s state | more
+# pfctl -s state | grep &#39;something&#39;
+</code></pre>
+<h4 id="如何在命令行中禁止-pf-服务">如何在命令行中禁止 PF 服务</h4>
+<pre><code># pfctl -d
+</code></pre>
+<h4 id="如何在命令行中启用-pf-服务">如何在命令行中启用 PF 服务</h4>
+<pre><code># pfctl -e
+</code></pre>
+<h4 id="如何在命令行中刷新-pf-规则nat路由表">如何在命令行中刷新 PF 规则/NAT/路由表</h4>
+<pre><code># pfctl -F all
+</code></pre>
+<p>示例输出：</p>
+<pre><code>rules cleared
+nat cleared
+0 tables deleted.
+2 states cleared
+source tracking entries cleared
+pf: statistics cleared
+pf: interface flags reset
+</code></pre>
+<h4 id="如何在命令行中仅刷新-pf-规则">如何在命令行中仅刷新 PF 规则</h4>
+<pre><code># pfctl -F rules
+</code></pre>
+<h4 id="如何在命令行中仅刷新队列">如何在命令行中仅刷新队列</h4>
+<pre><code># pfctl -F queue
+</code></pre>
+<h4 id="如何在命令行中刷新统计信息它不是任何规则的一部分">如何在命令行中刷新统计信息（它不是任何规则的一部分）</h4>
+<pre><code># pfctl -F info
+</code></pre>
+<h4 id="如何在命令行中清除所有计数器">如何在命令行中清除所有计数器</h4>
+<pre><code># pfctl -z clear
+</code></pre>
+<h3 id="第五步查看-pf-日志">第五步：查看 PF 日志</h3>
+<p>PF 日志是二进制格式的。使用下面这一命令来查看：</p>
+<pre><code># tcpdump -n -e -ttt -r /var/log/pflog
+</code></pre>
+<p>示例输出：</p>
+<pre><code>Aug 29 15:41:11.757829 rule 0/(match) block in on vio0: 86.47.225.151.55806 &gt; 45.FOO.BAR.IP.23: S 757158343:757158343(0) win 52206 [tos 0x28]
+Aug 29 15:41:44.193309 rule 0/(match) block in on vio0: 5.196.83.88.25461 &gt; 45.FOO.BAR.IP.26941: S 2224505792:2224505792(0) ack 4252565505 win 17520 (DF) [tos 0x24]
+Aug 29 15:41:54.628027 rule 0/(match) block in on vio0: 45.55.13.94.50217 &gt; 45.FOO.BAR.IP.465: S 3941123632:3941123632(0) win 65535
+Aug 29 15:42:11.126427 rule 0/(match) block in on vio0: 87.250.224.127.59862 &gt; 45.FOO.BAR.IP.80: S 248176545:248176545(0) win 28200 &lt;mss 1410,sackOK,timestamp 1044055305 0,nop,wscale 8&gt; (DF)
+Aug 29 15:43:04.953537 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.7475: S 1164335542:1164335542(0) win 1024
+Aug 29 15:43:05.122156 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.7475: R 1164335543:1164335543(0) win 1200
+Aug 29 15:43:37.302410 rule 0/(match) block in on vio0: 94.130.12.27.18080 &gt; 45.FOO.BAR.IP.64857: S 683904905:683904905(0) ack 4000841729 win 16384 &lt;mss 1460&gt;
+Aug 29 15:44:46.574863 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.7677: S 3451987887:3451987887(0) win 1024
+Aug 29 15:44:46.819754 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.7677: R 3451987888:3451987888(0) win 1200
+Aug 29 15:45:21.194752 rule 0/(match) block in on vio0: 185.40.4.130.55910 &gt; 45.FOO.BAR.IP.80: S 3106068642:3106068642(0) win 1024
+Aug 29 15:45:32.999219 rule 0/(match) block in on vio0: 185.40.4.130.55910 &gt; 45.FOO.BAR.IP.808: S 322591763:322591763(0) win 1024
+Aug 29 15:46:30.157884 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.6511: S 2412580953:2412580953(0) win 1024 [tos 0x28]
+Aug 29 15:46:30.252023 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.6511: R 2412580954:2412580954(0) win 1200 [tos 0x28]
+Aug 29 15:49:44.337015 rule 0/(match) block in on vio0: 189.219.226.213.22640 &gt; 45.FOO.BAR.IP.23: S 14807:14807(0) win 14600 [tos 0x28]
+Aug 29 15:49:55.161572 rule 0/(match) block in on vio0: 5.196.83.88.25461 &gt; 45.FOO.BAR.IP.40321: S 1297217585:1297217585(0) ack 1051525121 win 17520 (DF) [tos 0x24]
+Aug 29 15:49:59.735391 rule 0/(match) block in on vio0: 36.7.147.209.2545 &gt; 45.FOO.BAR.IP.3389: SWE 3577047469:3577047469(0) win 8192 &lt;mss 1460,nop,wscale 8,nop,nop,sackOK&gt; (DF) [tos 0x2 (E)]
+Aug 29 15:50:00.703229 rule 0/(match) block in on vio0: 36.7.147.209.2546 &gt; 45.FOO.BAR.IP.3389: SWE 1539382950:1539382950(0) win 8192 &lt;mss 1460,nop,wscale 8,nop,nop,sackOK&gt; (DF) [tos 0x2 (E)]
+Aug 29 15:51:33.880334 rule 0/(match) block in on vio0: 45.55.22.21.53510 &gt; 45.FOO.BAR.IP.2362: udp 14
+Aug 29 15:51:34.006656 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.6491: S 151489102:151489102(0) win 1024 [tos 0x28]
+Aug 29 15:51:34.274654 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.6491: R 151489103:151489103(0) win 1200 [tos 0x28]
+Aug 29 15:51:36.393019 rule 0/(match) block in on vio0: 60.191.38.78.4249 &gt; 45.FOO.BAR.IP.8000: S 3746478095:3746478095(0) win 29200 (DF)
+Aug 29 15:51:57.213051 rule 0/(match) block in on vio0: 24.137.245.138.7343 &gt; 45.FOO.BAR.IP.5358: S 14134:14134(0) win 14600
+Aug 29 15:52:37.852219 rule 0/(match) block in on vio0: 122.226.185.125.51128 &gt; 45.FOO.BAR.IP.23: S 1715745381:1715745381(0) win 5840 &lt;mss 1420,sackOK,timestamp 13511417 0,nop,wscale 2&gt; (DF)
+Aug 29 15:53:31.309325 rule 0/(match) block in on vio0: 189.218.148.69.377 &gt; 45.FOO.BAR.IP5358: S 65340:65340(0) win 14600 [tos 0x28]
+Aug 29 15:53:31.809570 rule 0/(match) block in on vio0: 13.93.104.140.53184 &gt; 45.FOO.BAR.IP.1433: S 39854048:39854048(0) win 1024
+Aug 29 15:53:32.138231 rule 0/(match) block in on vio0: 13.93.104.140.53184 &gt; 45.FOO.BAR.IP.1433: R 39854049:39854049(0) win 1200
+Aug 29 15:53:41.459088 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.6028: S 168338703:168338703(0) win 1024
+Aug 29 15:53:41.789732 rule 0/(match) block in on vio0: 77.72.82.22.47218 &gt; 45.FOO.BAR.IP.6028: R 168338704:168338704(0) win 1200
+Aug 29 15:54:34.993594 rule 0/(match) block in on vio0: 212.47.234.50.5102 &gt; 45.FOO.BAR.IP.5060: udp 408 (DF) [tos 0x28]
+Aug 29 15:54:57.987449 rule 0/(match) block in on vio0: 51.15.69.145.5100 &gt; 45.FOO.BAR.IP.5060: udp 406 (DF) [tos 0x28]
+Aug 29 15:55:07.001743 rule 0/(match) block in on vio0: 190.83.174.214.58863 &gt; 45.FOO.BAR.IP.23: S 757158343:757158343(0) win 27420
+Aug 29 15:55:51.269549 rule 0/(match) block in on vio0: 142.217.201.69.26112 &gt; 45.FOO.BAR.IP.22: S 757158343:757158343(0) win 22840 &lt;mss 1460&gt;
+Aug 29 15:58:41.346028 rule 0/(match) block in on vio0: 169.1.29.111.29765 &gt; 45.FOO.BAR.IP.23: S 757158343:757158343(0) win 28509
+Aug 29 15:59:11.575927 rule 0/(match) block in on vio0: 187.160.235.162.32427 &gt; 45.FOO.BAR.IP.5358: S 22445:22445(0) win 14600 [tos 0x28]
+Aug 29 15:59:37.826598 rule 0/(match) block in on vio0: 94.74.81.97.54656 &gt; 45.FOO.BAR.IP.3128: S 2720157526:2720157526(0) win 1024 [tos 0x28]stateful
+Aug 29 15:59:37.991171 rule 0/(match) block in on vio0: 94.74.81.97.54656 &gt; 45.FOO.BAR.IP.3128: R 2720157527:2720157527(0) win 1200 [tos 0x28]
+Aug 29 16:01:36.990050 rule 0/(match) block in on vio0: 182.18.8.28.23299 &gt; 45.FOO.BAR.IP.445: S 1510146048:1510146048(0) win 16384
+</code></pre>
+<p>如果要查看实时日志，可以运行：</p>
+<pre><code># tcpdump -n -e -ttt -i pflog0
+</code></pre>
+<p>如果你想了解更多信息，可以访问 <a href="https://www.openbsd.org/faq/pf/">PF FAQ</a> 和 <a href="https://www.freebsd.org/doc/handbook/firewalls.html">FreeBSD HANDBOOK</a> 以及下面这些 man 页面：</p>
+<pre><code># man tcpdump
+# man pfctl
+# man pf
+</code></pre>
+<h3 id="关于作者">关于作者</h3>
+<p>我是 nixCraft 的创立者，一个经验丰富的系统管理员，同时也是一位 Linux 操作系统/Unix shell 脚本培训师。我在不同的行业与全球客户工作过，包括 IT、教育、国防和空间研究、以及非营利组织。你可以在 <a href="https://twitter.com/nixcraft">Twitter</a>、<a href="https://facebook.com/nixcraft">Facebook</a> 或 <a href="https://plus.google.com/+CybercitiBiz">Google+</a> 上面关注我。 </p>
+<hr>
+<p>via: <a href="https://www.cyberciti.biz/faq/how-to-set-up-a-firewall-with-pf-on-freebsd-to-protect-a-web-server/">https://www.cyberciti.biz/faq/how-to-set-up-a-firewall-with-pf-on-freebsd-to-protect-a-web-server/</a></p>
+<p>作者：<a href="https://www.cyberciti.biz">Vivek Gite</a>
+译者：<a href="https://github.com/ucasFL">ucasFL</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第一步开启-pf-防火墙">第一步：开启 PF 防火墙</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第二步在-usrlocaletcpfconf-文件中创建防火墙规则">第二步：在 /usr/local/etc/pf.conf 文件中创建防火墙规则</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第三步开始运行-pf-防火墙">第三步：开始运行 PF 防火墙</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第四步pfctl-命令的简单介绍">第四步：pfctl 命令的简单介绍</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#第五步查看-pf-日志">第五步：查看 PF 日志</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#关于作者">关于作者</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201809/20170829 How To Set Up PF Firewall on FreeBSD to Protect a Web Server","title":"如何在 FreeBSD 上设置 PF 防火墙来保护 Web 服务器"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

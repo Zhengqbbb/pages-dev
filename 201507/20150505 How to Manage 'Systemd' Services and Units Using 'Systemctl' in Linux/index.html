@@ -1,0 +1,533 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>systemctl 完全指南 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="systemctl 完全指南 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="systemctl 完全指南 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201507/20150505 How to Manage 'Systemd' Services and Units Using 'Systemctl' in Linux#page","@type":"TechArticle","headline":"systemctl 完全指南","inLanguage":"en","name":"systemctl 完全指南","url":"https://zhengqbbb.github.io/pages-dev/201507/20150505 How to Manage 'Systemd' Services and Units Using 'Systemctl' in Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201507/20150505 How to Manage 'Systemd' Services and Units Using 'Systemctl' in Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#systemd初体验和systemctl基础">Systemd初体验和Systemctl基础</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用systemctl控制并管理服务">使用Systemctl控制并管理服务</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用systemctl控制并管理挂载点">使用Systemctl控制并管理挂载点</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用systemctl控制并管理套接口">使用Systemctl控制并管理套接口</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#服务的cpu利用率分配额">服务的CPU利用率（分配额）</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#控制系统运行等级">控制系统运行等级</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>systemctl 完全指南</h1><p>Systemctl是一个systemd工具，主要负责控制systemd系统和服务管理器。</p>
+<p>Systemd是一个系统管理守护进程、工具和库的集合，用于取代System V初始进程。Systemd的功能是用于集中管理和配置类UNIX系统。</p>
+<p>在Linux生态系统中，Systemd被部署到了大多数的标准Linux发行版中，只有为数不多的几个发行版尚未部署。Systemd通常是所有其它守护进程的父进程，但并非总是如此。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2015/04/Manage-Linux-Services-Using-Systemctl.jpg" alt="Manage Linux Services Using Systemctl"></p>
+<p><em>使用Systemctl管理Linux服务</em></p>
+<p>本文旨在阐明在运行systemd的系统上“如何控制系统和服务”。</p>
+<h3 id="systemd初体验和systemctl基础">Systemd初体验和Systemctl基础</h3>
+<h4 id="1-首先检查你的系统中是否安装有systemd并确定当前安装的版本">1. 首先检查你的系统中是否安装有systemd并确定当前安装的版本</h4>
+<pre><code># systemd --version
+
+systemd 215
++PAM +AUDIT +SELINUX +IMA +SYSVINIT +LIBCRYPTSETUP +GCRYPT +ACL +XZ -SECCOMP -APPARMOR
+</code></pre>
+<p>上例中很清楚地表明，我们安装了215版本的systemd。</p>
+<h4 id="2-检查systemd和systemctl的二进制文件和库文件的安装位置">2. 检查systemd和systemctl的二进制文件和库文件的安装位置</h4>
+<pre><code># whereis systemd 
+systemd: /usr/lib/systemd /etc/systemd /usr/share/systemd /usr/share/man/man1/systemd.1.gz
+
+
+# whereis systemctl
+systemctl: /usr/bin/systemctl /usr/share/man/man1/systemctl.1.gz
+</code></pre>
+<h4 id="3-检查systemd是否运行">3. 检查systemd是否运行</h4>
+<pre><code># ps -eaf | grep [s]ystemd
+
+root         1     0  0 16:27 ?        00:00:00 /usr/lib/systemd/systemd --switched-root --system --deserialize 23
+root       444     1  0 16:27 ?        00:00:00 /usr/lib/systemd/systemd-journald
+root       469     1  0 16:27 ?        00:00:00 /usr/lib/systemd/systemd-udevd
+root       555     1  0 16:27 ?        00:00:00 /usr/lib/systemd/systemd-logind
+dbus       556     1  0 16:27 ?        00:00:00 /bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
+</code></pre>
+<p><strong>注意</strong>：systemd是作为父进程（PID=1）运行的。在上面带（-e）参数的ps命令输出中，选择所有进程，（-a）选择除会话前导外的所有进程，并使用（-f）参数输出完整格式列表（即 -eaf）。</p>
+<p>也请注意上例中后随的方括号和例子中剩余部分。方括号表达式是grep的字符类表达式的一部分。</p>
+<h4 id="4-分析systemd启动进程">4. 分析systemd启动进程</h4>
+<pre><code># systemd-analyze
+Startup finished in 487ms (kernel) + 2.776s (initrd) + 20.229s (userspace) = 23.493s
+</code></pre>
+<h4 id="5-分析启动时各个进程花费的时间">5. 分析启动时各个进程花费的时间</h4>
+<pre><code># systemd-analyze blame
+
+8.565s mariadb.service
+7.991s webmin.service
+6.095s postfix.service
+4.311s httpd.service
+3.926s firewalld.service
+3.780s kdump.service
+3.238s tuned.service
+1.712s network.service
+1.394s lvm2-monitor.service
+1.126s systemd-logind.service
+....
+</code></pre>
+<h4 id="6-分析启动时的关键链">6. 分析启动时的关键链</h4>
+<pre><code># systemd-analyze critical-chain
+
+The time after the unit is active or started is printed after the &quot;@&quot; character.
+The time the unit takes to start is printed after the &quot;+&quot; character.
+
+multi-user.target @20.222s
+└─mariadb.service @11.657s +8.565s
+  └─network.target @11.168s
+    └─network.service @9.456s +1.712s
+      └─NetworkManager.service @8.858s +596ms
+        └─firewalld.service @4.931s +3.926s
+          └─basic.target @4.916s
+            └─sockets.target @4.916s
+              └─dbus.socket @4.916s
+                └─sysinit.target @4.905s
+                  └─systemd-update-utmp.service @4.864s +39ms
+                    └─auditd.service @4.563s +301ms
+                      └─systemd-tmpfiles-setup.service @4.485s +69ms
+                        └─rhel-import-state.service @4.342s +142ms
+                          └─local-fs.target @4.324s
+                            └─boot.mount @4.286s +31ms
+                              └─systemd-fsck@dev-disk-by\x2duuid-79f594ad\x2da332\x2d4730\x2dbb5f\x2d85d19608096
+                                └─dev-disk-by\x2duuid-79f594ad\x2da332\x2d4730\x2dbb5f\x2d85d196080964.device @4
+</code></pre>
+<p><strong>重要</strong>：Systemctl接受服务（.service），挂载点（.mount），套接口（.socket）和设备（.device）作为单元。</p>
+<h4 id="7-列出所有可用单元">7. 列出所有可用单元</h4>
+<pre><code># systemctl list-unit-files
+
+UNIT FILE                                   STATE   
+proc-sys-fs-binfmt_misc.automount           static  
+dev-hugepages.mount                         static  
+dev-mqueue.mount                            static  
+proc-sys-fs-binfmt_misc.mount               static  
+sys-fs-fuse-connections.mount               static  
+sys-kernel-config.mount                     static  
+sys-kernel-debug.mount                      static  
+tmp.mount                                   disabled
+brandbot.path                               disabled
+.....
+</code></pre>
+<h4 id="8-列出所有运行中单元">8. 列出所有运行中单元</h4>
+<pre><code># systemctl list-units
+
+UNIT                                        LOAD   ACTIVE SUB       DESCRIPTION
+proc-sys-fs-binfmt_misc.automount           loaded active waiting   Arbitrary Executable File Formats File Syste
+sys-devices-pc...0-1:0:0:0-block-sr0.device loaded active plugged   VBOX_CD-ROM
+sys-devices-pc...:00:03.0-net-enp0s3.device loaded active plugged   PRO/1000 MT Desktop Adapter
+sys-devices-pc...00:05.0-sound-card0.device loaded active plugged   82801AA AC&#39;97 Audio Controller
+sys-devices-pc...:0:0-block-sda-sda1.device loaded active plugged   VBOX_HARDDISK
+sys-devices-pc...:0:0-block-sda-sda2.device loaded active plugged   LVM PV Qzyo3l-qYaL-uRUa-Cjuk-pljo-qKtX-VgBQ8
+sys-devices-pc...0-2:0:0:0-block-sda.device loaded active plugged   VBOX_HARDDISK
+sys-devices-pl...erial8250-tty-ttyS0.device loaded active plugged   /sys/devices/platform/serial8250/tty/ttyS0
+sys-devices-pl...erial8250-tty-ttyS1.device loaded active plugged   /sys/devices/platform/serial8250/tty/ttyS1
+sys-devices-pl...erial8250-tty-ttyS2.device loaded active plugged   /sys/devices/platform/serial8250/tty/ttyS2
+sys-devices-pl...erial8250-tty-ttyS3.device loaded active plugged   /sys/devices/platform/serial8250/tty/ttyS3
+sys-devices-virtual-block-dm\x2d0.device    loaded active plugged   /sys/devices/virtual/block/dm-0
+sys-devices-virtual-block-dm\x2d1.device    loaded active plugged   /sys/devices/virtual/block/dm-1
+sys-module-configfs.device                  loaded active plugged   /sys/module/configfs
+...
+</code></pre>
+<h4 id="9-列出所有失败单元">9. 列出所有失败单元</h4>
+<pre><code># systemctl --failed
+
+UNIT          LOAD   ACTIVE SUB    DESCRIPTION
+kdump.service loaded failed failed Crash recovery kernel arming
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+
+1 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use &#39;systemctl list-unit-files&#39;.
+</code></pre>
+<h4 id="10-检查某个单元如-cronservice是否启用">10. 检查某个单元（如 cron.service）是否启用</h4>
+<pre><code># systemctl is-enabled crond.service
+
+enabled
+</code></pre>
+<h4 id="11-检查某个单元或服务是否运行">11. 检查某个单元或服务是否运行</h4>
+<pre><code># systemctl status firewalld.service
+
+firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled)
+   Active: active (running) since Tue 2015-04-28 16:27:55 IST; 34min ago
+ Main PID: 549 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─549 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid
+
+Apr 28 16:27:51 tecmint systemd[1]: Starting firewalld - dynamic firewall daemon...
+Apr 28 16:27:55 tecmint systemd[1]: Started firewalld - dynamic firewall daemon.
+</code></pre>
+<h3 id="使用systemctl控制并管理服务">使用Systemctl控制并管理服务</h3>
+<h4 id="12-列出所有服务包括启用的和禁用的">12. 列出所有服务（包括启用的和禁用的）</h4>
+<pre><code># systemctl list-unit-files --type=service
+
+UNIT FILE                                   STATE   
+arp-ethers.service                          disabled
+auditd.service                              enabled 
+autovt@.service                             disabled
+blk-availability.service                    disabled
+brandbot.service                            static  
+collectd.service                            disabled
+console-getty.service                       disabled
+console-shell.service                       disabled
+cpupower.service                            disabled
+crond.service                               enabled 
+dbus-org.fedoraproject.FirewallD1.service   enabled 
+....
+</code></pre>
+<h4 id="13-linux中如何启动重启停止重载服务以及检查服务如-httpdservice状态">13. Linux中如何启动、重启、停止、重载服务以及检查服务（如 httpd.service）状态</h4>
+<pre><code># systemctl start httpd.service
+# systemctl restart httpd.service
+# systemctl stop httpd.service
+# systemctl reload httpd.service
+# systemctl status httpd.service
+
+httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled)
+   Active: active (running) since Tue 2015-04-28 17:21:30 IST; 6s ago
+  Process: 2876 ExecStop=/bin/kill -WINCH ${MAINPID} (code=exited, status=0/SUCCESS)
+ Main PID: 2881 (httpd)
+   Status: &quot;Processing requests...&quot;
+   CGroup: /system.slice/httpd.service
+           ├─2881 /usr/sbin/httpd -DFOREGROUND
+           ├─2884 /usr/sbin/httpd -DFOREGROUND
+           ├─2885 /usr/sbin/httpd -DFOREGROUND
+           ├─2886 /usr/sbin/httpd -DFOREGROUND
+           ├─2887 /usr/sbin/httpd -DFOREGROUND
+           └─2888 /usr/sbin/httpd -DFOREGROUND
+
+Apr 28 17:21:30 tecmint systemd[1]: Starting The Apache HTTP Server...
+Apr 28 17:21:30 tecmint httpd[2881]: AH00558: httpd: Could not reliably determine the server&#39;s fully q...ssage
+Apr 28 17:21:30 tecmint systemd[1]: Started The Apache HTTP Server.
+Hint: Some lines were ellipsized, use -l to show in full.
+</code></pre>
+<p><strong>注意</strong>：当我们使用systemctl的start，restart，stop和reload命令时，我们不会从终端获取到任何输出内容，只有status命令可以打印输出。</p>
+<h4 id="14-如何激活服务并在启动时启用或禁用服务即系统启动时自动启动服务">14. 如何激活服务并在启动时启用或禁用服务（即系统启动时自动启动服务）</h4>
+<pre><code># systemctl is-active httpd.service
+# systemctl enable httpd.service
+# systemctl disable httpd.service
+</code></pre>
+<h4 id="15-如何屏蔽让它不能启动或显示服务如-httpdservice">15. 如何屏蔽（让它不能启动）或显示服务（如 httpd.service）</h4>
+<pre><code># systemctl mask httpd.service
+ln -s &#39;/dev/null&#39; &#39;/etc/systemd/system/httpd.service&#39;
+
+# systemctl unmask httpd.service
+rm &#39;/etc/systemd/system/httpd.service&#39;
+</code></pre>
+<h4 id="16-使用systemctl命令杀死服务">16. 使用systemctl命令杀死服务</h4>
+<pre><code># systemctl kill httpd
+# systemctl status httpd
+
+httpd.service - The Apache HTTP Server
+   Loaded: loaded (/usr/lib/systemd/system/httpd.service; enabled)
+   Active: failed (Result: exit-code) since Tue 2015-04-28 18:01:42 IST; 28min ago
+ Main PID: 2881 (code=exited, status=0/SUCCESS)
+   Status: &quot;Total requests: 0; Current requests/sec: 0; Current traffic:   0 B/sec&quot;
+
+Apr 28 17:37:29 tecmint systemd[1]: httpd.service: Got notification message from PID 2881, but recepti...bled.
+Apr 28 17:37:29 tecmint systemd[1]: httpd.service: Got notification message from PID 2881, but recepti...bled.
+Apr 28 17:37:39 tecmint systemd[1]: httpd.service: Got notification message from PID 2881, but recepti...bled.
+Apr 28 17:37:39 tecmint systemd[1]: httpd.service: Got notification message from PID 2881, but recepti...bled.
+Apr 28 17:37:49 tecmint systemd[1]: httpd.service: Got notification message from PID 2881, but recepti...bled.
+Apr 28 17:37:49 tecmint systemd[1]: httpd.service: Got notification message from PID 2881, but recepti...bled.
+Apr 28 17:37:59 tecmint systemd[1]: httpd.service: Got notification message from PID 2881, but recepti...bled.
+Apr 28 17:37:59 tecmint systemd[1]: httpd.service: Got notification message from PID 2881, but recepti...bled.
+Apr 28 18:01:42 tecmint systemd[1]: httpd.service: control process exited, code=exited status=226
+Apr 28 18:01:42 tecmint systemd[1]: Unit httpd.service entered failed state.
+Hint: Some lines were ellipsized, use -l to show in full.
+</code></pre>
+<h3 id="使用systemctl控制并管理挂载点">使用Systemctl控制并管理挂载点</h3>
+<h4 id="17-列出所有系统挂载点">17. 列出所有系统挂载点</h4>
+<pre><code># systemctl list-unit-files --type=mount
+
+UNIT FILE                     STATE   
+dev-hugepages.mount           static  
+dev-mqueue.mount              static  
+proc-sys-fs-binfmt_misc.mount static  
+sys-fs-fuse-connections.mount static  
+sys-kernel-config.mount       static  
+sys-kernel-debug.mount        static  
+tmp.mount                     disabled
+</code></pre>
+<h4 id="18-挂载卸载重新挂载重载系统挂载点并检查系统中挂载点状态">18. 挂载、卸载、重新挂载、重载系统挂载点并检查系统中挂载点状态</h4>
+<pre><code># systemctl start tmp.mount
+# systemctl stop tmp.mount
+# systemctl restart tmp.mount
+# systemctl reload tmp.mount
+# systemctl status tmp.mount
+
+tmp.mount - Temporary Directory
+   Loaded: loaded (/usr/lib/systemd/system/tmp.mount; disabled)
+   Active: active (mounted) since Tue 2015-04-28 17:46:06 IST; 2min 48s ago
+    Where: /tmp
+     What: tmpfs
+     Docs: man:hier(7)
+
+http://www.freedesktop.org/wiki/Software/systemd/APIFileSystems
+
+  Process: 3908 ExecMount=/bin/mount tmpfs /tmp -t tmpfs -o mode=1777,strictatime (code=exited, status=0/SUCCESS)
+
+Apr 28 17:46:06 tecmint systemd[1]: Mounting Temporary Directory...
+Apr 28 17:46:06 tecmint systemd[1]: tmp.mount: Directory /tmp to mount over is not empty, mounting anyway.
+Apr 28 17:46:06 tecmint systemd[1]: Mounted Temporary Directory.
+</code></pre>
+<h4 id="19-在启动时激活启用或禁用挂载点系统启动时自动挂载">19. 在启动时激活、启用或禁用挂载点（系统启动时自动挂载）</h4>
+<pre><code># systemctl is-active tmp.mount
+# systemctl enable tmp.mount
+# systemctl disable  tmp.mount
+</code></pre>
+<h4 id="20-在linux中屏蔽让它不能启用或可见挂载点">20. 在Linux中屏蔽（让它不能启用）或可见挂载点</h4>
+<pre><code># systemctl mask tmp.mount
+
+ln -s &#39;/dev/null&#39; &#39;/etc/systemd/system/tmp.mount&#39;
+
+# systemctl unmask tmp.mount
+
+rm &#39;/etc/systemd/system/tmp.mount&#39;
+</code></pre>
+<h3 id="使用systemctl控制并管理套接口">使用Systemctl控制并管理套接口</h3>
+<h4 id="21-列出所有可用系统套接口">21. 列出所有可用系统套接口</h4>
+<pre><code># systemctl list-unit-files --type=socket
+
+UNIT FILE                    STATE   
+dbus.socket                  static  
+dm-event.socket              enabled 
+lvm2-lvmetad.socket          enabled 
+rsyncd.socket                disabled
+sshd.socket                  disabled
+syslog.socket                static  
+systemd-initctl.socket       static  
+systemd-journald.socket      static  
+systemd-shutdownd.socket     static  
+systemd-udevd-control.socket static  
+systemd-udevd-kernel.socket  static  
+
+11 unit files listed.
+</code></pre>
+<h4 id="22-在linux中启动重启停止重载套接口并检查其状态">22. 在Linux中启动、重启、停止、重载套接口并检查其状态####</h4>
+<pre><code># systemctl start cups.socket
+# systemctl restart cups.socket
+# systemctl stop cups.socket
+# systemctl reload cups.socket
+# systemctl status cups.socket
+
+cups.socket - CUPS Printing Service Sockets
+   Loaded: loaded (/usr/lib/systemd/system/cups.socket; enabled)
+   Active: active (listening) since Tue 2015-04-28 18:10:59 IST; 8s ago
+   Listen: /var/run/cups/cups.sock (Stream)
+
+Apr 28 18:10:59 tecmint systemd[1]: Starting CUPS Printing Service Sockets.
+Apr 28 18:10:59 tecmint systemd[1]: Listening on CUPS Printing Service Sockets.
+</code></pre>
+<h4 id="23-在启动时激活套接口并启用或禁用它系统启动时自启动">23. 在启动时激活套接口，并启用或禁用它（系统启动时自启动）</h4>
+<pre><code># systemctl is-active cups.socket
+# systemctl enable cups.socket
+# systemctl disable cups.socket
+</code></pre>
+<h4 id="24-屏蔽使它不能启动或显示套接口">24. 屏蔽（使它不能启动）或显示套接口</h4>
+<pre><code># systemctl mask cups.socket
+ln -s &#39;/dev/null&#39; &#39;/etc/systemd/system/cups.socket&#39;
+
+# systemctl unmask cups.socket
+rm &#39;/etc/systemd/system/cups.socket&#39;
+</code></pre>
+<h3 id="服务的cpu利用率分配额">服务的CPU利用率（分配额）</h3>
+<h4 id="25-获取当前某个服务的cpu分配额如httpd">25. 获取当前某个服务的CPU分配额（如httpd）</h4>
+<pre><code># systemctl show -p CPUShares httpd.service
+
+CPUShares=1024
+</code></pre>
+<p><strong>注意</strong>：各个服务的默认CPU分配份额=1024，你可以增加/减少某个进程的CPU分配份额。</p>
+<h4 id="26-将某个服务httpdservice的cpu分配份额限制为2000-cpushares">26. 将某个服务（httpd.service）的CPU分配份额限制为2000 CPUShares/</h4>
+<pre><code># systemctl set-property httpd.service CPUShares=2000
+# systemctl show -p CPUShares httpd.service
+
+CPUShares=2000
+</code></pre>
+<p><strong>注意</strong>：当你为某个服务设置CPUShares，会自动创建一个以服务名命名的目录（如 httpd.service），里面包含了一个名为90-CPUShares.conf的文件，该文件含有CPUShare限制信息，你可以通过以下方式查看该文件：</p>
+<pre><code># vi /etc/systemd/system/httpd.service.d/90-CPUShares.conf 
+
+[Service]
+CPUShares=2000        
+</code></pre>
+<h4 id="27-检查某个服务的所有配置细节">27. 检查某个服务的所有配置细节</h4>
+<pre><code># systemctl show httpd
+
+Id=httpd.service
+Names=httpd.service
+Requires=basic.target
+Wants=system.slice
+WantedBy=multi-user.target
+Conflicts=shutdown.target
+Before=shutdown.target multi-user.target
+After=network.target remote-fs.target nss-lookup.target systemd-journald.socket basic.target system.slice
+Description=The Apache HTTP Server
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/httpd.service
+....
+</code></pre>
+<h4 id="28-分析某个服务httpd的关键链">28. 分析某个服务（httpd）的关键链</h4>
+<pre><code># systemd-analyze critical-chain httpd.service
+
+The time after the unit is active or started is printed after the &quot;@&quot; character.
+The time the unit takes to start is printed after the &quot;+&quot; character.
+
+httpd.service +142ms
+└─network.target @11.168s
+  └─network.service @9.456s +1.712s
+    └─NetworkManager.service @8.858s +596ms
+      └─firewalld.service @4.931s +3.926s
+        └─basic.target @4.916s
+          └─sockets.target @4.916s
+            └─dbus.socket @4.916s
+              └─sysinit.target @4.905s
+                └─systemd-update-utmp.service @4.864s +39ms
+                  └─auditd.service @4.563s +301ms
+                    └─systemd-tmpfiles-setup.service @4.485s +69ms
+                      └─rhel-import-state.service @4.342s +142ms
+                        └─local-fs.target @4.324s
+                          └─boot.mount @4.286s +31ms
+                            └─systemd-fsck@dev-disk-by\x2duuid-79f594ad\x2da332\x2d4730\x2dbb5f\x2d85d196080964.service @4.092s +149ms
+                              └─dev-disk-by\x2duuid-79f594ad\x2da332\x2d4730\x2dbb5f\x2d85d196080964.device @4.092s
+</code></pre>
+<h4 id="29-获取某个服务httpd的依赖性列表">29. 获取某个服务（httpd）的依赖性列表</h4>
+<pre><code># systemctl list-dependencies httpd.service
+
+httpd.service
+├─system.slice
+└─basic.target
+  ├─firewalld.service
+  ├─microcode.service
+  ├─rhel-autorelabel-mark.service
+  ├─rhel-autorelabel.service
+  ├─rhel-configure.service
+  ├─rhel-dmesg.service
+  ├─rhel-loadmodules.service
+  ├─paths.target
+  ├─slices.target
+  │ ├─-.slice
+  │ └─system.slice
+  ├─sockets.target
+  │ ├─dbus.socket
+....
+</code></pre>
+<h4 id="30-按等级列出控制组">30. 按等级列出控制组</h4>
+<pre><code># systemd-cgls
+
+├─1 /usr/lib/systemd/systemd --switched-root --system --deserialize 23
+├─user.slice
+│ └─user-0.slice
+│   └─session-1.scope
+│     ├─2498 sshd: root@pts/0    
+│     ├─2500 -bash
+│     ├─4521 systemd-cgls
+│     └─4522 systemd-cgls
+└─system.slice
+  ├─httpd.service
+  │ ├─4440 /usr/sbin/httpd -DFOREGROUND
+  │ ├─4442 /usr/sbin/httpd -DFOREGROUND
+  │ ├─4443 /usr/sbin/httpd -DFOREGROUND
+  │ ├─4444 /usr/sbin/httpd -DFOREGROUND
+  │ ├─4445 /usr/sbin/httpd -DFOREGROUND
+  │ └─4446 /usr/sbin/httpd -DFOREGROUND
+  ├─polkit.service
+  │ └─721 /usr/lib/polkit-1/polkitd --no-debug
+....
+</code></pre>
+<h4 id="31-按cpu内存输入和输出列出控制组">31. 按CPU、内存、输入和输出列出控制组</h4>
+<pre><code># systemd-cgtop
+
+Path                                                              Tasks   %CPU   Memory  Input/s Output/s
+
+/                                                                    83    1.0   437.8M        -        -
+/system.slice                                                         -    0.1        -        -        -
+/system.slice/mariadb.service                                         2    0.1        -        -        -
+/system.slice/tuned.service                                           1    0.0        -        -        -
+/system.slice/httpd.service                                           6    0.0        -        -        -
+/system.slice/NetworkManager.service                                  1      -        -        -        -
+/system.slice/atop.service                                            1      -        -        -        -
+/system.slice/atopacct.service                                        1      -        -        -        -
+/system.slice/auditd.service                                          1      -        -        -        -
+/system.slice/crond.service                                           1      -        -        -        -
+/system.slice/dbus.service                                            1      -        -        -        -
+/system.slice/firewalld.service                                       1      -        -        -        -
+/system.slice/lvm2-lvmetad.service                                    1      -        -        -        -
+/system.slice/polkit.service                                          1      -        -        -        -
+/system.slice/postfix.service                                         3      -        -        -        -
+/system.slice/rsyslog.service                                         1      -        -        -        -
+/system.slice/system-getty.slice/getty@tty1.service                   1      -        -        -        -
+/system.slice/systemd-journald.service                                1      -        -        -        -
+/system.slice/systemd-logind.service                                  1      -        -        -        -
+/system.slice/systemd-udevd.service                                   1      -        -        -        -
+/system.slice/webmin.service                                          1      -        -        -        -
+/user.slice/user-0.slice/session-1.scope                              3      -        -        -        -
+</code></pre>
+<h3 id="控制系统运行等级">控制系统运行等级</h3>
+<h4 id="32-启动系统救援模式">32. 启动系统救援模式</h4>
+<pre><code># systemctl rescue
+
+Broadcast message from root@tecmint on pts/0 (Wed 2015-04-29 11:31:18 IST):
+
+The system is going down to rescue mode NOW!
+</code></pre>
+<h4 id="33-进入紧急模式">33. 进入紧急模式</h4>
+<pre><code># systemctl emergency
+
+Welcome to emergency mode! After logging in, type &quot;journalctl -xb&quot; to view
+system logs, &quot;systemctl reboot&quot; to reboot, &quot;systemctl default&quot; to try again
+to boot into default mode.
+</code></pre>
+<h4 id="34-列出当前使用的运行等级">34. 列出当前使用的运行等级</h4>
+<pre><code># systemctl get-default
+
+multi-user.target
+</code></pre>
+<h4 id="35-启动运行等级5即图形模式">35. 启动运行等级5，即图形模式</h4>
+<pre><code># systemctl isolate runlevel5.target
+或
+# systemctl isolate graphical.target
+</code></pre>
+<h4 id="36-启动运行等级3即多用户模式命令行">36. 启动运行等级3，即多用户模式（命令行）</h4>
+<pre><code># systemctl isolate runlevel3.target
+或
+# systemctl isolate multiuser.target
+</code></pre>
+<h4 id="36-设置多用户模式或图形模式为默认运行等级">36. 设置多用户模式或图形模式为默认运行等级</h4>
+<pre><code># systemctl set-default runlevel3.target
+
+# systemctl set-default runlevel5.target
+</code></pre>
+<h4 id="37-重启停止挂起休眠系统或使系统进入混合睡眠">37. 重启、停止、挂起、休眠系统或使系统进入混合睡眠</h4>
+<pre><code># systemctl reboot
+
+# systemctl halt
+
+# systemctl suspend
+
+# systemctl hibernate
+
+# systemctl hybrid-sleep
+</code></pre>
+<p>对于不知运行等级为何物的人，说明如下。</p>
+<ul>
+<li>Runlevel 0 : 关闭系统</li>
+<li>Runlevel 1 : 救援？维护模式</li>
+<li>Runlevel 3 : 多用户，无图形系统</li>
+<li>Runlevel 4 : 多用户，无图形系统</li>
+<li>Runlevel 5 : 多用户，图形化系统</li>
+<li>Runlevel 6 : 关闭并重启机器</li>
+</ul>
+<p>到此为止吧。保持连线，进行评论。别忘了在下面的评论中为我们提供一些有价值的反馈哦。喜欢我们、与我们分享，求扩散。</p>
+<hr>
+<p>via: <a href="http://www.tecmint.com/manage-services-using-systemd-and-systemctl-in-linux/">http://www.tecmint.com/manage-services-using-systemd-and-systemctl-in-linux/</a></p>
+<p>作者：<a href="http://www.tecmint.com/author/avishek/">Avishek Kumar</a>
+译者：<a href="https://github.com/GOLinux">GOLinux</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#systemd初体验和systemctl基础">Systemd初体验和Systemctl基础</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用systemctl控制并管理服务">使用Systemctl控制并管理服务</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用systemctl控制并管理挂载点">使用Systemctl控制并管理挂载点</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#使用systemctl控制并管理套接口">使用Systemctl控制并管理套接口</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#服务的cpu利用率分配额">服务的CPU利用率（分配额）</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#控制系统运行等级">控制系统运行等级</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201507/20150505 How to Manage 'Systemd' Services and Units Using 'Systemctl' in Linux","title":"systemctl 完全指南"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

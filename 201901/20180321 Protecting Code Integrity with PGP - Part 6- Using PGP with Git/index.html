@@ -1,0 +1,194 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>用 PGP 保护代码完整性（六）：在 Git 上使用 PGP - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="用 PGP 保护代码完整性（六）：在 Git 上使用 PGP - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="用 PGP 保护代码完整性（六）：在 Git 上使用 PGP - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201901/20180321 Protecting Code Integrity with PGP - Part 6- Using PGP with Git#page","@type":"TechArticle","headline":"用 PGP 保护代码完整性（六）：在 Git 上使用 PGP","inLanguage":"en","name":"用 PGP 保护代码完整性（六）：在 Git 上使用 PGP","url":"https://zhengqbbb.github.io/pages-dev/201901/20180321 Protecting Code Integrity with PGP - Part 6- Using PGP with Git","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201901/20180321 Protecting Code Integrity with PGP - Part 6- Using PGP with Git"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>用 PGP 保护代码完整性（六）：在 Git 上使用 PGP</h1><blockquote>
+<p>我们继续我们的 PGP 实践系列，来看看签名标签的标签和提交，这可以帮你确保你的仓库没有被篡改。</p>
+</blockquote>
+<p><img src="https://www.linux.com/sites/lcom/files/styles/rendered_file/public/global-network.jpg?itok=h_hhZc36" alt=""></p>
+<p>在本系列教程中，我们提供了一个使用 PGP 的实用指南，包括基本概念和工具、生成和保护你的密钥。如果你错过了前面的文章，你可以查看下面的链接。在这篇文章中，我们谈一谈在 Git 中如何集成 PGP、使用签名的标签，然后介绍签名提交，最后添加签名推送的支持。</p>
+<ul>
+<li><a href="https://linux.cn/article-9524-1.html">第一部分：基本概念和工具</a></li>
+<li><a href="https://linux.cn/article-9529-1.html">第二部分：生成你的主密钥</a></li>
+<li><a href="https://linux.cn/article-9607-1.html">第三部分：生成 PGP 子密钥</a></li>
+<li><a href="https://linux.cn/article-10402-1.html">第四部分：将主密钥移到离线存储中</a></li>
+<li><a href="https://linux.cn/article-10415-1.html">第五部分：将子密钥移到硬件设备中</a></li>
+</ul>
+<p>Git 的核心特性之一就是它的去中心化本质 —— 一旦仓库克隆到你的本地系统，你就拥有了项目的完整历史，包括所有的标签、提交和分支。然而由于存在着成百上千的克隆仓库，如何才能验证你下载的仓库没有被恶意的第三方做过篡改？你可以从 GitHub 或一些貌似官方的位置来克隆它们，但是如果有些人故意欺骗了你怎么办？</p>
+<p>或者在你参与的一些项目上发现了后门，而 “Author” 行显示是你干的，然而你很确定 <a href="https://github.com/jayphelps/git-blame-someone-else">不是你干的</a>，会发生什么情况？</p>
+<p>为解决上述问题，Git 添加了 PGP 集成。签名的标签通过确认它的内容与创建这个标签的开发者的工作站上的内容完全一致来证明仓库的完整性，而签名的提交几乎是不可能在不访问你的 PGP 密钥的情况下能够假冒你。</p>
+<h4 id="清单">清单</h4>
+<ul>
+<li>了解签名的标签、提交和推送（必要）</li>
+<li>配置 git 使用你的密钥（必要）</li>
+<li>学习标签如何签名和验证（必要）</li>
+<li>配置 git 总是签名带注释标签（推荐）</li>
+<li>学习提交如何签名和验证工作（必要）</li>
+<li>配置 git 总是签名提交（推荐）</li>
+<li>配置 gpg-agent 选项（必要）</li>
+</ul>
+<h4 id="考虑事项">考虑事项</h4>
+<p>git 实现了 PGP 的多级集成，首先从签名标签开始，接着介绍签名提交，最后添加签名推送的支持。</p>
+<h5 id="了解-git-哈希">了解 Git 哈希</h5>
+<p>git 是一个复杂的东西，为了你能够更好地掌握它如何集成 PGP，你需要了解什么是”哈希“。我们将它归纳为两种类型的哈希：树哈希和提交哈希。</p>
+<h6 id="树哈希">树哈希</h6>
+<p>每次你向仓库提交一个变更，对于仓库中的每个子目录，git 都会记录它里面所有对象的校验和哈希 —— 内容（blobs）、目录（trees）、文件名和许可等等。它只对每次提交中发生变更的树和内容做此操作，这样在只变更树的一小部分时就不必去重新计算整个树的校验和。</p>
+<p>然后再计算和存储处于顶级的树的校验和，这样如果仓库的任何一部分发生变化，校验和将不可避免地发生变化。</p>
+<h6 id="提交哈希">提交哈希</h6>
+<p>一旦创建了树哈希，git 将计算提交哈希，它将包含有关仓库和变更的下列信息：</p>
+<ul>
+<li>树哈希的校验和</li>
+<li>变更前树哈希的校验和（父级）</li>
+<li>有关作者的信息（名字、email、创作时间）</li>
+<li>有关提交者的信息（名字、email、提交时间）</li>
+<li>提交信息</li>
+</ul>
+<h6 id="哈希函数">哈希函数</h6>
+<p>在写这篇文章时，虽然研究一种更强大的、抗碰撞的算法的工作正在进行，但 git 仍然使用的是 SHA1 哈希机制去计算校验和。注意，git 已经包含了碰撞防范程序，因此认为对 git 成功进行碰撞攻击仍然是不可行的。</p>
+<h4 id="带注释标签和标签签名">带注释标签和标签签名</h4>
+<p>在每个 Git 仓库中，标签允许开发者标记特定的提交。标签可以是 “轻量级的” —— 几乎只是一个特定提交上的指针，或者它们可以是 “带注释的”，它自己将成为 git 树中的项目。一个带注释标签对象包含所有下列的信息：</p>
+<ul>
+<li>成为标签的提交的哈希的校验和</li>
+<li>标签名字</li>
+<li>关于打标签的人的信息（名字、email、打标签时间）</li>
+<li>标签信息</li>
+</ul>
+<p>一个 PGP 签名的标签是一个带有将所有这些条目封装进一个 PGP 签名的带注释标签。当开发者签名他们的 git 标签时，他们实际上是向你保证了如下的信息：</p>
+<ul>
+<li>他们是谁（以及他们为什么应该被信任）</li>
+<li>他们在签名时的仓库状态是什么样：<ul>
+<li>标签包含的提交的哈希<ul>
+<li>提交的哈希包含了顶级树的哈希<ul>
+<li>顶级树哈希包含了所有文件、内容和子树的哈希</li>
+</ul>
+</li>
+<li>它也包含有关作者的所有信息</li>
+<li>包含变更发生时的精确时间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>当你克隆一个仓库并验证一个签名的标签时，就是向你以密码方式保证：仓库中的所有内容、包括所有它的历史，与开发者签名时在它的计算机上的仓库完全一致。</p>
+<h4 id="签名的提交">签名的提交</h4>
+<p>签名的提交与签名的标签非常类似 ——  PGP 签名的是提交对象的内容，而不是标签对象的内容。一个提交签名也给你提供了开发者签名时开发者树上的全部可验证信息。标签签名和提交的 PGP 签名提供了有关仓库和它的完整历史的完全一致的安全保证。</p>
+<h4 id="签名的推送">签名的推送</h4>
+<p>为了完整起见，在这里包含了签名的推送这一功能，因为在你使用这个功能之前，需要在接收推送的服务器上先启用它。正如我们在上面所说过的，PGP 签名一个 git 对象就是提供了开发者的 git 树当时的可验证信息，但不提供开发者对那个树意图相关的信息。</p>
+<p>比如，你可以在你自己复刻的 git 仓库的一个实验分支上尝试一个很酷的特性，为了评估它，你提交了你的工作，但是有人在你的代码中发现了一个恶意的 bug。由于你的提交是经过正确签名的，因此有人可能将包含有恶意 bug 的分支推入到 master 分支中，从而在生产系统中引入一个漏洞。由于提交是经过你的密钥正确签名的，所以一切看起来都是合理合法的，而当 bug 被发现时，你的声誉就会因此而受到影响。</p>
+<p>在 <code>git push</code> 时，为了验证提交的意图而不仅仅是验证它的内容，添加了要求 PGP 推送签名的功能。</p>
+<h4 id="配置-git-使用你的-pgp-密钥">配置 git 使用你的 PGP 密钥</h4>
+<p>如果在你的钥匙环上只有一个密钥，那么你就不需要再做额外的事了，因为它是你的默认密钥。</p>
+<p>然而，如果你有多个密钥，那么你必须要告诉 git 去使用哪一个密钥。（<code>[fpr]</code> 是你的密钥的指纹）：</p>
+<pre><code>$ git config --global user.signingKey [fpr]
+</code></pre>
+<p>注意：如果你有一个不同的 <code>gpg2</code> 命令，那么你应该告诉 git 总是去使用它，而不是传统的版本 1 的 <code>gpg</code>：</p>
+<pre><code>$ git config --global gpg.program gpg2
+</code></pre>
+<h4 id="如何使用签名标签">如何使用签名标签</h4>
+<p>创建一个签名的标签，只要传递一个简单地 <code>-s</code> 开关给 <code>tag</code> 命令即可：</p>
+<pre><code>$ git tag -s [tagname]
+</code></pre>
+<p>我们建议始终对 git 标签签名，这样让其它的开发者确信他们使用的 git 仓库没有被恶意地修改过（比如，引入后门）：</p>
+<h5 id="如何验证签名的标签">如何验证签名的标签</h5>
+<p>验证一个签名的标签，只需要简单地使用 <code>verify-tag</code> 命令即可：</p>
+<pre><code>$ git verify-tag [tagname]
+</code></pre>
+<p>如果你要验证其他人的 git 标签，那么就需要你导入他的 PGP 公钥。请参考 “可信任的团队沟通” 一文中关于此主题的指导。</p>
+<h5 id="在拉取时验证">在拉取时验证</h5>
+<p>如果你从项目仓库的其它复刻中拉取一个标签，git 将自动验证签名，并在合并操作时显示结果：</p>
+<pre><code>$ git pull [url] tags/sometag
+</code></pre>
+<p>合并信息将包含类似下面的内容：</p>
+<pre><code>Merge tag &#39;sometag&#39; of [url]
+
+[Tag message]
+
+# gpg: Signature made [...]
+# gpg: Good signature from [...]
+</code></pre>
+<h4 id="配置-git-始终签名带注释标签">配置 git 始终签名带注释标签</h4>
+<p>很可能的是，你正在创建一个带注释标签，你应该去签名它。强制 git 始终签名带注释的标签，你可以设置一个全局配置选项：</p>
+<pre><code>$ git config --global tag.forceSignAnnotated true
+</code></pre>
+<p>或者，你始终记得每次都传递一个 <code>-s</code> 开关：</p>
+<pre><code>$ git tag -asm &quot;Tag message&quot; tagname
+</code></pre>
+<h4 id="如何使用签名的提交">如何使用签名的提交</h4>
+<p>创建一个签名的提交很容易，但是将它纳入到你的工作流中却很困难。许多项目使用签名的提交作为一种 “Committed-by:” 的等价行，它记录了代码来源 —— 除了跟踪项目历史外，签名很少有人去验证。在某种意义上，签名的提交用于 “篡改证据”，而不是 git 工作流的 “篡改证明”。</p>
+<p>为创建一个签名的提交，你只需要 <code>git commit</code> 命令传递一个 <code>-S</code> 标志即可（由于它与另一个标志冲突，所以改为大写的 <code>-S</code>）：</p>
+<pre><code>$ git commit -S
+</code></pre>
+<p>我们建议始终使用签名提交，并要求项目所有成员都这样做，这样其它人就可以验证它们（下面就讲到如何验证）。</p>
+<h5 id="如何去验证签名的提交">如何去验证签名的提交</h5>
+<p>验证签名的提交需要使用 <code>verify-commit</code> 命令：</p>
+<pre><code>$ git verify-commit [hash]
+</code></pre>
+<p>你也可以查看仓库日志，要求所有提交签名是被验证和显示的：</p>
+<pre><code>$ git log --pretty=short --show-signature
+</code></pre>
+<h5 id="在-git-合并时验证提交">在 git 合并时验证提交</h5>
+<p>如果项目的所有成员都签名了他们的提交，你可以在合并时强制进行签名检查（然后使用 <code>-S</code> 标志对合并操作本身进行签名）：</p>
+<pre><code>$ git merge --verify-signatures -S merged-branch
+</code></pre>
+<p>注意，如果有一个提交没有签名或验证失败，将导致合并操作失败。通常情况下，技术是最容易的部分 —— 而人的因素使得项目中很难采用严格的提交验证。</p>
+<h5 id="如果你的项目在补丁管理上采用邮件列表">如果你的项目在补丁管理上采用邮件列表</h5>
+<p>如果你的项目在提交和处理补丁时使用一个邮件列表，那么一般很少使用签名提交，因为通过那种方式发送时，签名信息将会丢失。对提交进行签名仍然是非常有用的，这样其他人就能引用你托管在公开 git 树作为参考，但是上游项目接收你的补丁时，仍然不能直接使用 git 去验证它们。</p>
+<p>尽管，你仍然可以签名包含补丁的电子邮件。</p>
+<h4 id="配置-git-始终签名提交">配置 git 始终签名提交</h4>
+<p>你可以告诉 git 总是签名提交：</p>
+<pre><code>git config --global commit.gpgSign true
+</code></pre>
+<p>或者你每次都记得给 <code>git commit</code> 操作传递一个 <code>-S</code> 标志（包括 <code>—amend</code>）。</p>
+<h4 id="配置-gpg-agent-选项">配置 gpg-agent 选项</h4>
+<p>GnuPG agent 是一个守护工具，它能在你使用 gpg 命令时随时自动启动，并运行在后台来缓存私钥的密码。这种方式让你只需要解锁一次密钥就可以重复地使用它（如果你需要在一个自动脚本中签署一组 git 操作，而不想重复输入密钥，这种方式就很方便）。</p>
+<p>为了调整缓存中的密钥过期时间，你应该知道这两个选项：</p>
+<ul>
+<li><code>default-cache-ttl</code>（秒）：如果在 TTL 过期之前再次使用同一个密钥，这个倒计时将重置成另一个倒计时周期。缺省值是 600（10 分钟）。</li>
+<li><code>max-cache-ttl</code>（秒）：自首次密钥输入以后，不论最近一次使用密钥是什么时间，只要最大值的 TTL 倒计时过期，你将被要求再次输入密码。它的缺省值是 30 分钟。</li>
+</ul>
+<p>如果你认为这些缺省值过短（或过长），你可以编辑 <code>~/.gnupg/gpg-agent.conf</code> 文件去设置你自己的值：</p>
+<pre><code># set to 30 minutes for regular ttl, and 2 hours for max ttl
+default-cache-ttl 1800
+max-cache-ttl 7200
+</code></pre>
+<h5 id="补充与-ssh-一起使用-gpg-agent">补充：与 ssh 一起使用 gpg-agent</h5>
+<p>如果你创建了一个 <a href="https://www.linux.com/users/mricon">A</a>（验证）密钥，并将它移到了智能卡，你可以将它用到 ssh 上，为你的 ssh 会话添加一个双因子验证。为了与 agent 沟通你只需要告诉你的环境去使用正确的套接字文件即可。</p>
+<p>首先，添加下列行到你的 <code>~/.gnupg/gpg-agent.conf</code> 文件中：</p>
+<pre><code>enable-ssh-support
+</code></pre>
+<p>接着，添加下列行到你的 <code>.bashrc</code> 文件中：</p>
+<pre><code>export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+</code></pre>
+<p>为了让改变生效，你需要杀掉正在运行的 gpg-agent 进程，并重新启动一个新的登入会话：</p>
+<pre><code>$ killall gpg-agent
+$ bash
+$ ssh-add -L
+</code></pre>
+<p>最后的命令将列出代表你的 PGP Auth 密钥的 SSH（注释应该会在结束的位置显示： cardno:XXXXXXXX，表示它来自智能卡）。</p>
+<p>为了启用 ssh 的基于密钥的登入，只需要在你要登入的远程系统上添加 <code>ssh-add -L</code> 的输出到 <code>~/.ssh/authorized_keys</code> 中。祝贺你，这将使你的 SSH 登入凭据更难以窃取。</p>
+<p>此外，你可以从公共密钥服务器上下载其它人的基于 PGP 的 ssh 公钥，这样就可以赋予他登入 ssh 的权利：</p>
+<pre><code>$ gpg --export-ssh-key [keyid]
+</code></pre>
+<p>如果你有让开发人员通过 ssh 来访问 git 仓库的需要，这将让你非常方便。下一篇文章，我们将提供像保护你的密钥那样保护电子邮件帐户的小技巧。</p>
+<hr>
+<p>via: <a href="https://www.linux.com/blog/learn/pgp/2018/3/protecting-code-integrity-pgp-part-6-using-pgp-git">https://www.linux.com/blog/learn/pgp/2018/3/protecting-code-integrity-pgp-part-6-using-pgp-git</a></p>
+<p>作者：<a href="https://www.linux.com/users/mricon">KONSTANTIN RYABITSEV</a>
+译者：<a href="https://github.com/qhwdw">qhwdw</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201901/20180321 Protecting Code Integrity with PGP - Part 6- Using PGP with Git","title":"用 PGP 保护代码完整性（六）：在 Git 上使用 PGP"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

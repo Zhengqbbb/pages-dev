@@ -1,0 +1,343 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>破除对 AWS Fargate 的幻觉 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="破除对 AWS Fargate 的幻觉 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="破除对 AWS Fargate 的幻觉 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201904/20190413 The Fargate Illusion#page","@type":"TechArticle","headline":"破除对 AWS Fargate 的幻觉","inLanguage":"en","name":"破除对 AWS Fargate 的幻觉","url":"https://zhengqbbb.github.io/pages-dev/201904/20190413 The Fargate Illusion","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201904/20190413 The Fargate Illusion"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#aws-是有开销的">AWS 是有开销的</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#运行简单的容器">运行简单的容器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#告诉我你的-secret">告诉我你的 Secret</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#就这样了">就这样了</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#代价">代价</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>破除对 AWS Fargate 的幻觉</h1><p>我在 $work 建立了一个基于 Kubernetes 的平台已经快一年了，而且有点像 Kubernetes 的布道者了。真的，我认为这项技术太棒了。然而我并没有对它的运营和维护的困难程度抱过什么幻想。今年早些时候我读了<a href="https://matthias-endler.de/2019/maybe-you-dont-need-kubernetes/">这样</a>的一篇文章，并对其中某些观点深以为然。如果我在一家规模较小的、有 10 到 15 个工程师的公司，假如有人建议管理和维护一批 Kubernetes 集群，那我会感到害怕的，因为它的运维开销太高了！</p>
+<p>尽管我现在对 Kubernetes 的一切都很感兴趣，但我仍然对“<ruby>无服务器<rt>Serverless</rt></ruby>”计算会消灭运维工程师的说法抱有好奇。这种好奇心主要来源于我希望在未来仍然能有一份有报酬的工作 —— 如果我们前景光明的未来不需要运维工程师，那我得明白到底是怎么回事。我已经在 Lamdba 和Google Cloud Functions 上做了一些实验，结果让我印象十分深刻，但我仍然坚信无服务器解决方案只是解决了一部分问题。</p>
+<p>我关注 <a href="https://aws.amazon.com/fargate/">AWS Fargate</a> 已经有一段时间了，这就是 $work 的开发人员所推崇为“无服务器计算”的东西 —— 主要是因为 Fargate，用它你就可以无需管理底层节点而运行你的 Docker 容器。我想看看它到底意味着什么，所以我开始尝试从头开始在 Fargate 上运行一个应用，看看是否可以成功。这里我对成功的定义是一个与“生产级”应用程序相近的东西，我想应该包含以下内容：</p>
+<ul>
+<li>一个在 Fargate 上运行的容器</li>
+<li>配置信息以环境变量的形式下推</li>
+<li>“秘密信息” 不能是明文的</li>
+<li>位于负载均衡器之后</li>
+<li>有效的 SSL 证书的 TLS 通道</li>
+</ul>
+<p>我以“基础设施即代码”的角度来开始整个任务，不遵循默认的 AWS 控制台向导，而是使用 terraform 来定义基础架构。这很可能让整个事情变得复杂，但我想确保任何部署都是可重现的，任何想要遵循此步骤的人都可发现我的结论。</p>
+<p>上述所有标准通常都可以通过基于 Kubernetes 的平台使用一些外部的附加组件和插件来实现，所以我确实是以一种比较的心态来处理整个任务的，因为我要将它与我的常用工作流程进行比较。我的主要目标是看看Fargate 有多容易，特别是与 Kubernetes 相比时。结果让我感到非常惊讶。</p>
+<h3 id="aws-是有开销的">AWS 是有开销的</h3>
+<p>我有一个干净的 AWS 账户，并决定从零到部署一个 webapp。与 AWS 中的其它基础设施一样，我必须首先使基本的基础设施正常工作起来，因此我需要先定义一个 VPC。</p>
+<p>遵循最佳实践，因此我将这个 VPC 划分为跨可用区（AZ）的子网，一个公共子网和私有子网。这时我想到，只要这种设置基础设施的需求存在，我就能找到一份这种工作。AWS 是&quot;免&quot;运维的这一概念一直让我感到愤怒。开发者社区中的许多人理所当然地认为在设置和定义一个设计良好的 AWS 账户和基础设施是不需要付出多少工作和努力的。而这种想当然甚至发生在开始谈论多帐户架构<em>之前</em>就有了——现在我仍然使用单一帐户，我已经必须定义好基础设施和传统的网络设备。</p>
+<p>这里也值得记住，我已经做了很多次，所以我<em>很清楚</em>该做什么。我可以在我的帐户中使用默认的 VPC 以及预先提供的子网，我觉得很多刚开始的人也可以使用它。这大概花了我半个小时才运行起来，但我不禁想到，即使我想运行 lambda 函数，我仍然需要某种连接和网络。定义 NAT 网关和在 VPC 中路由根本不会让你觉得很“Serverless”，但要往下进行这就是必须要做的。</p>
+<h3 id="运行简单的容器">运行简单的容器</h3>
+<p>在我启动运行了基本的基础设施之后，现在我想让我的 Docker 容器运行起来。我开始翻阅 Fargate 文档并浏览 <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_GetStarted.html">入门</a> 文档，这些就马上就展现在了我面前：</p>
+<p><img src="https://i.imgur.com/YfMyXBdl.png" alt=""></p>
+<p>等等，只是让我的容器运行就至少要有<strong>三个</strong>步骤？这完全不像我所想的，不过还是让我们开始吧。</p>
+<h4 id="任务定义">任务定义</h4>
+<p>“<ruby>任务定义<rt>Task Definition</rt></ruby>”用来定义要运行的实际容器。我在这里遇到的问题是，任务定义这件事非常复杂。这里有很多选项都很简单，比如指定 Docker 镜像和内存限制，但我还必须定义一个网络模型以及我并不熟悉的其它各种选项。真需要这样吗？如果我完全没有 AWS 方面的知识就进入到这个过程里，那么在这个阶段我会感觉非常的不知所措。可以在 AWS 页面上找到这些 <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html">参数</a> 的完整列表，这个列表很长。我知道我的容器需要一些环境变量，它需要暴露一个端口。所以我首先在一个神奇的 <a href="https://github.com/cloudposse/terraform-aws-ecs-container-definition">terraform 模块</a> 的帮助下定义了这一点，这真的让这件事更容易了。如果没有这个模块，我就得手写 JSON 来定义我的容器定义。</p>
+<p>首先我定义了一些环境变量：</p>
+<pre><code>container_environment_variables = [
+    {
+      name  = &quot;USER&quot;
+      value = &quot;${var.user}&quot;
+    },
+    {
+      name  = &quot;PASSWORD&quot;
+      value = &quot;${var.password}&quot;
+    }
+]
+</code></pre>
+<p>然后我使用上面提及的模块组成了任务定义：</p>
+<pre><code>module &quot;container_definition_app&quot; {
+  source  = &quot;cloudposse/ecs-container-definition/aws&quot;
+  version = &quot;v0.7.0&quot;
+
+  container_name  = &quot;${var.name}&quot;
+  container_image = &quot;${var.image}&quot;
+
+  container_cpu                = &quot;${var.ecs_task_cpu}&quot;
+  container_memory             = &quot;${var.ecs_task_memory}&quot;
+  container_memory_reservation = &quot;${var.container_memory_reservation}&quot;
+
+  port_mappings = [
+    {
+      containerPort = &quot;${var.app_port}&quot;
+      hostPort      = &quot;${var.app_port}&quot;
+      protocol      = &quot;tcp&quot;
+    },
+  ]
+
+  environment = &quot;${local.container_environment_variables}&quot;
+
+}
+</code></pre>
+<p>在这一点上我非常困惑，我需要在这里定义很多配置才能运行，而这时什么都没有开始呢，但这是必要的 —— 运行 Docker 容器肯定需要了解一些容器配置的知识。我 <a href="https://leebriggs.co.uk/blog/2018/05/08/kubernetes-config-mgmt.html">之前写过</a> 关于 Kubernetes 和配置管理的问题的文章，在这里似乎遇到了同样的问题。</p>
+<p>接下来，我在上面的模块中定义了任务定义（幸好从我这里抽象出了所需的 JSON  —— 如果我不得不手写JSON，我可能已经放弃了）。</p>
+<p>当我定义模块参数时，我突然意识到我漏掉了一些东西。我需要一个 IAM 角色！好吧，让我来定义：</p>
+<pre><code>resource &quot;aws_iam_role&quot; &quot;ecs_task_execution&quot; {
+  name = &quot;${var.name}-ecs_task_execution&quot;
+
+  assume_role_policy = &lt;&lt;EOF
+{
+  &quot;Version&quot;: &quot;2008-10-17&quot;,
+  &quot;Statement&quot;: [
+    {
+      &quot;Action&quot;: &quot;sts:AssumeRole&quot;,
+      &quot;Principal&quot;: {
+        &quot;Service&quot;: &quot;ecs-tasks.amazonaws.com&quot;
+      },
+      &quot;Effect&quot;: &quot;Allow&quot;
+    }
+  ]
+}
+EOF
+}
+
+resource &quot;aws_iam_role_policy_attachment&quot; &quot;ecs_task_execution&quot; {
+  count = &quot;${length(var.policies_arn)}&quot;
+
+  role       = &quot;${aws_iam_role.ecs_task_execution.id}&quot;
+  policy_arn = &quot;${element(var.policies_arn, count.index)}&quot;
+}
+</code></pre>
+<p>这样做是有意义的，我需要在 Kubernetes 中定义一个 RBAC 策略，所以在这里我还未完全错失或获得任何东西。这时我开始觉得从 Kubernetes 的角度来看，这种感觉非常熟悉。</p>
+<pre><code>resource &quot;aws_ecs_task_definition&quot; &quot;app&quot; {
+  family                   = &quot;${var.name}&quot;
+  network_mode             = &quot;awsvpc&quot;
+  requires_compatibilities = [&quot;FARGATE&quot;]
+  cpu                      = &quot;${var.ecs_task_cpu}&quot;
+  memory                   = &quot;${var.ecs_task_memory}&quot;
+  execution_role_arn       = &quot;${aws_iam_role.ecs_task_execution.arn}&quot;
+  task_role_arn            = &quot;${aws_iam_role.ecs_task_execution.arn}&quot;
+
+  container_definitions    = &quot;${module.container_definition_app.json}&quot;
+
+}
+</code></pre>
+<p>现在，为了运行起来我已经写了很多行代码，我阅读了很多 ECS 文档，我所做的就是定义一个任务定义。我还没有让这个东西运行起来。在这一点上，我真的很困惑这个基于 Kubernetes 的平台到底增值了什么，但我继续前行。</p>
+<h4 id="服务">服务</h4>
+<p>服务，一定程度上是将容器如何暴露给外部，另外是如何定义它拥有的副本数量。我的第一个想法是“啊！这就像一个 Kubernetes 服务！”我开始着手映射端口等。这是我第一次在 terraform 上跑：</p>
+<pre><code>resource &quot;aws_ecs_service&quot; &quot;app&quot; {
+  name                               = &quot;${var.name}&quot;
+  cluster                            = &quot;${module.ecs.this_ecs_cluster_id}&quot;
+  task_definition                    = &quot;${data.aws_ecs_task_definition.app.family}:${max(aws_ecs_task_definition.app.revision, data.aws_ecs_task_definition.app.revision)}&quot;
+  desired_count                      = &quot;${var.ecs_service_desired_count}&quot;
+  launch_type                        = &quot;FARGATE&quot;
+  deployment_maximum_percent         = &quot;${var.ecs_service_deployment_maximum_percent}&quot;
+  deployment_minimum_healthy_percent = &quot;${var.ecs_service_deployment_minimum_healthy_percent}&quot;
+
+  network_configuration {
+    subnets          = [&quot;${values(local.private_subnets)}&quot;]
+    security_groups  = [&quot;${module.app.this_security_group_id}&quot;]
+  }
+
+}
+</code></pre>
+<p>当我必须定义允许访问所需端口的安全组时，我再次感到沮丧，当我这样做了并将其插入到网络配置中后，我就像被扇了一巴掌。</p>
+<p>我还需要定义自己的负载均衡器？</p>
+<p>什么？</p>
+<p>当然不是吗？</p>
+<h5 id="负载均衡器从未远离">负载均衡器从未远离</h5>
+<p>老实说，我很满意，我甚至不确定为什么。我已经习惯了 Kubernetes 的服务和 Ingress 对象，我一心认为用 Kubernetes 将我的应用程序放到网上是多么容易。当然，我们在 $work 花了几个月的时间建立一个平台，以便更轻松。我是 <a href="https://github.com/kubernetes-incubator/external-dns">external-dns</a> 和 <a href="https://github.com/jetstack/cert-manager">cert-manager</a> 的重度用户，它们可以自动填充 Ingress 对象上的 DNS 条目并自动化 TLS 证书，我非常了解进行这些设置所需的工作，但老实说，我认为在 Fargate 上做这件事会更容易。我认识到 Fargate 并没有声称自己是“如何运行应用程序”这件事的全部和最终目的，它只是抽象出节点管理，但我一直被告知这比 Kubernetes <em>更加容易</em>。我真的很惊讶。定义负载均衡器（即使你不想使用 Ingress 和 Ingress Controller）也是向 Kubernetes 部署服务的重要组成部分，我不得不在这里再次做同样的事情。这一切都让人觉得如此熟悉。</p>
+<p>我现在意识到我需要：</p>
+<ul>
+<li>一个负载均衡器</li>
+<li>一个 TLS 证书</li>
+<li>一个 DNS 名字</li>
+</ul>
+<p>所以我着手做了这些。我使用了一些流行的 terraform 模块，并做了这个：</p>
+<pre><code># Define a wildcard cert for my app
+module &quot;acm&quot; {
+  source  = &quot;terraform-aws-modules/acm/aws&quot;
+  version = &quot;v1.1.0&quot;
+
+  create_certificate = true
+
+  domain_name = &quot;${var.route53_zone_name}&quot;
+  zone_id     = &quot;${data.aws_route53_zone.this.id}&quot;
+
+  subject_alternative_names = [
+    &quot;*.${var.route53_zone_name}&quot;,
+  ]
+
+
+  tags = &quot;${local.tags}&quot;
+
+}
+# Define my loadbalancer
+resource &quot;aws_lb&quot; &quot;main&quot; {
+  name            = &quot;${var.name}&quot;
+  subnets         = [ &quot;${values(local.public_subnets)}&quot; ]
+  security_groups = [&quot;${module.alb_https_sg.this_security_group_id}&quot;, &quot;${module.alb_http_sg.this_security_group_id}&quot;]
+}
+
+resource &quot;aws_lb_target_group&quot; &quot;main&quot; {
+  name        = &quot;${var.name}&quot;
+  port        = &quot;${var.app_port}&quot;
+  protocol    = &quot;HTTP&quot;
+  vpc_id      = &quot;${local.vpc_id}&quot;
+  target_type = &quot;ip&quot;
+  depends_on  = [ &quot;aws_lb.main&quot; ]
+}
+
+# Redirect all traffic from the ALB to the target group
+resource &quot;aws_lb_listener&quot; &quot;main&quot; {
+  load_balancer_arn = &quot;${aws_lb.main.id}&quot;
+  port              = &quot;80&quot;
+  protocol          = &quot;HTTP&quot;
+
+  default_action {
+    target_group_arn = &quot;${aws_lb_target_group.main.id}&quot;
+    type             = &quot;forward&quot;
+  }
+}
+
+resource &quot;aws_lb_listener&quot; &quot;main-tls&quot; {
+  load_balancer_arn = &quot;${aws_lb.main.id}&quot;
+  port              = &quot;443&quot;
+  protocol          = &quot;HTTPS&quot;
+  certificate_arn   = &quot;${module.acm.this_acm_certificate_arn}&quot;
+
+  default_action {
+    target_group_arn = &quot;${aws_lb_target_group.main.id}&quot;
+    type             = &quot;forward&quot;
+  }
+}
+</code></pre>
+<p>我必须承认，我在这里搞砸了好几次。我不得不在 AWS 控制台中四处翻弄，以弄清楚我做错了什么。这当然不是一个“轻松”的过程，而且我之前已经做过很多次了。老实说，在这一点上，Kubernetes 看起来对我很有启发性，但我意识到这是因为我对它非常熟悉。幸运的是我能够使用托管的 Kubernetes 平台（预装了 external-dns 和 cert-manager），我真的很想知道我漏掉了 Fargate 什么增值的地方。它真的感觉不那么简单。</p>
+<p>经过一番折腾，我现在有一个可以工作的 ECS 服务。包括服务在内的最终定义如下所示：</p>
+<pre><code>data &quot;aws_ecs_task_definition&quot; &quot;app&quot; {
+  task_definition = &quot;${var.name}&quot;
+  depends_on      = [&quot;aws_ecs_task_definition.app&quot;]
+}
+
+resource &quot;aws_ecs_service&quot; &quot;app&quot; {
+  name                               = &quot;${var.name}&quot;
+  cluster                            = &quot;${module.ecs.this_ecs_cluster_id}&quot;
+  task_definition                    = &quot;${data.aws_ecs_task_definition.app.family}:${max(aws_ecs_task_definition.app.revision, data.aws_ecs_task_definition.app.revision)}&quot;
+  desired_count                      = &quot;${var.ecs_service_desired_count}&quot;
+  launch_type                        = &quot;FARGATE&quot;
+  deployment_maximum_percent         = &quot;${var.ecs_service_deployment_maximum_percent}&quot;
+  deployment_minimum_healthy_percent = &quot;${var.ecs_service_deployment_minimum_healthy_percent}&quot;
+
+  network_configuration {
+    subnets          = [&quot;${values(local.private_subnets)}&quot;]
+    security_groups  = [&quot;${module.app_sg.this_security_group_id}&quot;]
+  }
+
+  load_balancer {
+    target_group_arn = &quot;${aws_lb_target_group.main.id}&quot;
+    container_name   = &quot;app&quot;
+    container_port   = &quot;${var.app_port}&quot;
+  }
+
+  depends_on = [
+    &quot;aws_lb_listener.main&quot;,
+  ]
+
+}
+</code></pre>
+<p>我觉得我已经接近完成了，但后来我记起了我只完成了最初的“入门”文档中所需的 3 个步骤中的 2 个，我仍然需要定义 ECS 群集。</p>
+<h4 id="集群">集群</h4>
+<p>感谢 <a href="https://github.com/terraform-aws-modules/terraform-aws-ecs">定义模块</a>，定义要所有这些运行的集群实际上非常简单。</p>
+<pre><code>module &quot;ecs&quot; {
+  source  = &quot;terraform-aws-modules/ecs/aws&quot;
+  version = &quot;v1.1.0&quot;
+
+  name = &quot;${var.name}&quot;
+}
+</code></pre>
+<p>这里让我感到惊讶的是为什么我必须定义一个集群。作为一个相当熟悉 ECS 的人，你会觉得你需要一个集群，但我试图从一个必须经历这个过程的新人的角度来考虑这一点 —— 对我来说，Fargate 标榜自己“
+Serverless”而你仍需要定义集群，这似乎很令人惊讶。当然这是一个小细节，但它确实盘旋在我的脑海里。</p>
+<h3 id="告诉我你的-secret">告诉我你的 Secret</h3>
+<p>在这个阶段，我很高兴我成功地运行了一些东西。然而，我的原始的成功标准缺少一些东西。如果我们回到任务定义那里，你会记得我的应用程序有一个存放密码的环境变量：</p>
+<pre><code>container_environment_variables = [
+    {
+      name  = &quot;USER&quot;
+      value = &quot;${var.user}&quot;
+    },
+    {
+      name  = &quot;PASSWORD&quot;
+      value = &quot;${var.password}&quot;
+    }
+]
+</code></pre>
+<p>如果我在 AWS 控制台中查看我的任务定义，我的密码就在那里，明晃晃的明文。我希望不要这样，所以我开始尝试将其转化为其他东西，类似于 <a href="https://kubernetes.io/docs/concepts/configuration/secret/">Kubernetes 的Secrets管理</a>。</p>
+<h4 id="aws-ssm">AWS SSM</h4>
+<p>Fargate / ECS 执行<ruby>secret 管理<rt>secret management</rt></ruby>部分的方式是使用 <a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html">AWS SSM</a>（此服务的全名是 AWS 系统管理器参数存储库 Systems Manager Parameter Store，但我不想使用这个名称，因为坦率地说这个名字太愚蠢了）。</p>
+<p>AWS 文档很好的<a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html">涵盖了这个内容</a>，因此我开始将其转换为 terraform。</p>
+<h5 id="指定秘密信息">指定秘密信息</h5>
+<p>首先，你必须定义一个参数并为其命名。在 terraform 中，它看起来像这样：</p>
+<pre><code>resource &quot;aws_ssm_parameter&quot; &quot;app_password&quot; {
+  name  = &quot;${var.app_password_param_name}&quot; # The name of the value in AWS SSM
+  type  = &quot;SecureString&quot;
+  value = &quot;${var.app_password}&quot; # The actual value of the password, like correct-horse-battery-stable
+}
+</code></pre>
+<p>显然，这里的关键部分是 “SecureString” 类型。这会使用默认的 AWS KMS 密钥来加密数据，这对我来说并不是很直观。这比 Kubernetes 的 Secret 管理具有巨大优势，默认情况下，这些 Secret 在 etcd 中是不加密的。</p>
+<p>然后我为 ECS 指定了另一个本地值映射，并将其作为 Secret 参数传递：</p>
+<pre><code>container_secrets = [
+    {
+      name      = &quot;PASSWORD&quot;
+      valueFrom = &quot;${var.app_password_param_name}&quot;
+    },
+]
+
+module &quot;container_definition_app&quot; {
+  source  = &quot;cloudposse/ecs-container-definition/aws&quot;
+  version = &quot;v0.7.0&quot;
+
+  container_name  = &quot;${var.name}&quot;
+  container_image = &quot;${var.image}&quot;
+
+  container_cpu                = &quot;${var.ecs_task_cpu}&quot;
+  container_memory             = &quot;${var.ecs_task_memory}&quot;
+  container_memory_reservation = &quot;${var.container_memory_reservation}&quot;
+
+  port_mappings = [
+    {
+      containerPort = &quot;${var.app_port}&quot;
+      hostPort      = &quot;${var.app_port}&quot;
+      protocol      = &quot;tcp&quot;
+    },
+  ]
+
+  environment = &quot;${local.container_environment_variables}&quot;
+  secrets     = &quot;${local.container_secrets}&quot;
+</code></pre>
+<h5 id="出了个问题">出了个问题</h5>
+<p>此刻，我重新部署了我的任务定义，并且非常困惑。为什么任务没有正确拉起？当新的任务定义（版本 8）可用时，我一直在控制台中看到正在运行的应用程序仍在使用先前的任务定义（版本 7）。解决这件事花费的时间比我预期的要长，但是在控制台的事件屏幕上，我注意到了 IAM 错误。我错过了一个步骤，容器无法从 AWS SSM 中读取 Secret 信息，因为它没有正确的 IAM 权限。这是我第一次真正对整个这件事情感到沮丧。从用户体验的角度来看，这里的反馈非常<em>糟糕</em>。如果我没有发觉的话，我会认为一切都很好，因为仍然有一个任务正在运行，我的应用程序仍然可以通过正确的 URL 访问  —— 只不过是旧的配置而已。</p>
+<p>在 Kubernetes 里，我会清楚地看到 pod 定义中的错误。Fargate 可以确保我的应用不会停止，这绝对是太棒了，但作为一名运维，我需要一些关于发生了什么的实际反馈。这真的不够好。我真的希望 Fargate 团队的人能够读到这篇文章，改善这种体验。</p>
+<h3 id="就这样了">就这样了</h3>
+<p>到这里就结束了，我的应用程序正在运行，也符合我的所有标准。我确实意识到我做了一些改进，其中包括：</p>
+<ul>
+<li>定义一个 cloudwatch 日志组，这样我就可以正确地写日志了</li>
+<li>添加了一个 route53 托管区域，使整个事情从 DNS 角度更容易自动化</li>
+<li>修复并重新调整了 IAM 权限，这里太宽泛了</li>
+</ul>
+<p>但老实说，现在我想反思一下这段经历。我写了一个关于我的经历的 <a href="https://twitter.com/briggsl/status/1116870900719030272">推特会话</a>，然后花了其余时间思考我在这里的真实感受。</p>
+<h3 id="代价">代价</h3>
+<p>经过一夜的反思，我意识到无论你是使用 Fargate 还是 Kubernetes，这个过程都大致相同。最让我感到惊讶的是，尽管我经常听说 Fargate “更容易”，但我真的没有看到任何超过 Kubernetes 平台的好处。现在，如果你正在构建 Kubernetes 集群，我绝对可以看到这里的价值 —— 管理节点和控制面板只是不必要的开销，问题是 —— 基于 Kubernetes 的平台的大多数消费者都<em>没有</em>这样做。如果你很幸运能够使用 GKE，你几乎不需要考虑集群的管理，你可以使用单个 <code>gcloud</code> 命令来运行集群。我经常使用 Digital Ocean 的 Kubernetes 托管服务，我可以肯定地说它就像操作 Fargate 集群一样简单，实际上在某种程度上它更容易。</p>
+<p>必须定义一些基础设施来运行你的容器就是此时的代价。谷歌本周可能刚刚使用他们的 <a href="https://cloud.google.com/run/">Google Cloud Run</a> 产品改变了游戏规则，但他们在这一领域的领先优势远远领先于其他所有人。</p>
+<p>从这整个经历中，我可以肯定的说：*大规模运行容器仍然很难。*它需要思考，需要领域知识，需要运维和开发人员之间的协作。它还需要一个基础来构建 —— 任何基于 AWS 的操作都需要事先定义和运行一些基础架构。我对一些公司似乎渴望的 “NoOps” 概念非常感兴趣。我想如果你正在运行一个无状态应用程序，你可以把它全部放在一个 lambda 函数和一个 API 网关中，这可能不错，但我们是否真的适合在任何一种企业环境中这样做？我真的不这么认为。</p>
+<h4 id="公平比较">公平比较</h4>
+<p>令我印象深刻的另一个现实是，技术 A 和技术 B 之间的比较通常不太公平，我经常在 AWS 上看到这一点。这种实际情况往往与 Jeff Barr 博客文章截然不同。如果你是一家足够小的公司，你可以使用 AWS 控制台在 AWS 中部署你的应用程序并接受所有默认值，这绝对更容易。但是，我不想使用默认值，因为默认值几乎是不适用于生产环境的。一旦你开始剥离掉云服务商服务的层面，你就会开始意识到最终你仍然是在运行软件 —— 它仍然需要设计良好、部署良好、运行良好。我相信 AWS 和 Kubernetes 以及所有其他云服务商的增值服务使得它更容易运行、设计和操作，但它绝对不是免费的。</p>
+<h4 id="kubernetes-的争议">Kubernetes 的争议</h4>
+<p>最后就是：如果你将 Kubernetes 纯粹视为一个容器编排工具，你可能会喜欢 Fargate。然而，随着我对 Kubernetes 越来越熟悉，我开始意识到它作为一种技术的重要性 —— 不仅因为它是一个伟大的容器编排工具，而且因为它的设计模式 —— 它是声明性的、API 驱动的平台。 在<em>整个</em> Fargate 过程期间发生的一个简单的事情是，如果我删除这里某个东西，Fargate 不一定会为我重新创建它。自动缩放很不错，不需要管理服务器和操作系统的补丁及更新也很棒，但我觉得因为无法使用 Kubernetes 自我修复和 API 驱动模型而失去了很多。当然，Kubernetes 有一个学习曲线，但从这里的体验来看，Fargate 也是如此。</p>
+<h3 id="总结">总结</h3>
+<p>尽管我在这个过程中遭遇了困惑，但我确实很喜欢这种体验。我仍然相信 Fargate 是一项出色的技术，AWS 团队对 ECS/Fargate 所做的工作确实非常出色。然而，我的观点是，这绝对不比 Kubernetes “更容易”，只是……难点不同。</p>
+<p>在生产环境中运行容器时出现的问题大致相同。如果你从这篇文章中有所收获，它应该是这样的：<em>不管你选择的哪种方式都有运维开销</em>。不要相信你选择一些东西你的世界就变得更轻松。我个人的意见是：如果你有一个运维团队，而你的公司要为多个应用程序团队部署容器 —— 选择一种技术并围绕它构建流程和工具以使其更容易。</p>
+<p>人们说的一点肯定没错，用点技巧可以更容易地使用某种技术。在这个阶段，谈到 Fargate，下面的漫画这总结了我的感受：</p>
+<p><img src="https://i.imgur.com/Bx7Q50Jl.jpg" alt=""></p>
+<hr>
+<p>via: <a href="https://leebriggs.co.uk/blog/2019/04/13/the-fargate-illusion.html">https://leebriggs.co.uk/blog/2019/04/13/the-fargate-illusion.html</a></p>
+<p>作者：<a href="https://leebriggs.co.uk/">Lee Briggs</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/Bestony">Bestony</a>
+校对：<a href="https://github.com/wxy">wxy</a>, 临石（阿里云智能技术专家）</p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#aws-是有开销的">AWS 是有开销的</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#运行简单的容器">运行简单的容器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#告诉我你的-secret">告诉我你的 Secret</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#就这样了">就这样了</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#代价">代价</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201904/20190413 The Fargate Illusion","title":"破除对 AWS Fargate 的幻觉"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>十年 Linux 桌面生存指南 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="十年 Linux 桌面生存指南 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="十年 Linux 桌面生存指南 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202012/20190115 Linux Desktop Setup - HookRace Blog#page","@type":"TechArticle","headline":"十年 Linux 桌面生存指南","inLanguage":"en","name":"十年 Linux 桌面生存指南","url":"https://zhengqbbb.github.io/pages-dev/202012/20190115 Linux Desktop Setup - HookRace Blog","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202012/20190115 Linux Desktop Setup - HookRace Blog"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#动机">动机</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#操作系统">操作系统</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#窗口管理器">窗口管理器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#终端连续性">终端连续性</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#shell-编程">Shell &amp; 编程</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#系统监控">系统监控</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#邮件-同步">邮件 &amp; 同步</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#新闻-通讯">新闻 &amp; 通讯</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#日历">日历</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#字典">字典</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#记录和阅读">记录和阅读</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#图片编辑">图片编辑</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#web-浏览器">Web 浏览器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#媒体播放器">媒体播放器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#跨平台构建">跨平台构建</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#备份">备份</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结语">结语</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>十年 Linux 桌面生存指南</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202012/03/223817smrej5qwsbqjb3vs.jpg" alt=""></p>
+<p>从 2006 年开始转战 Linux 系统后，经过几年的实践，我的软件设置在过去十年内出人意料的固定。再过十年回顾一下，看看发生了什么，也许会非常有趣。在写这篇推文时，我迅速回顾了正在运行的内容：</p>
+<p><img src="https://hookrace.net/public/linux-desktop/htop.png" alt="htop overview"></p>
+<h3 id="动机">动机</h3>
+<p>我的软件介绍排序不分先后：</p>
+<ul>
+<li>程序应该运行在本地系统中以便我可以控制它，这其中并不包括云解决方案。</li>
+<li>程序应在终端中运行，以便于在任何地方连贯地使用它们，包括性能稍差的电脑或手机。</li>
+<li>通过使用终端软件，可以实现自动聚焦键盘。只有在一些有意义的地方，我会更喜欢使用鼠标，因为在打字期间一直伸手去拿鼠标感觉像在浪费时间。有时候过了一个小时我才注意到甚至还没有插鼠标。</li>
+<li>最好使用快速高效的软件，我不喜欢听到风扇的声音和感到房间在变热。我还可以继续长久地运行旧硬件，已经使用了 10 年的 Thinkpad x200s 还能很好地支持我所使用的软件。</li>
+<li>组合。我不想手动执行每个步骤，而是在需要时自动执行更多操作，这时自然是支持 shell。</li>
+</ul>
+<h3 id="操作系统">操作系统</h3>
+<p>十二年前移除 Windows 系统后，我在 Linux 系统上经历了一个艰难的开始，当时我手上只有 <a href="https://gentoo.org/">Gentoo Linux</a> 系统的安装光盘和一本打印的说明书，要用它们来实现一个可运行的 Linux 系统。虽然花费了几天的时间去编译和修整，但最终还是觉得自己受益颇多。</p>
+<p>自此我再也没有转回 Windows 系统，但在持续的编译压力导致风扇失灵后，我将我的电脑系统切换到 <a href="https://www.archlinux.org/">Arch Linux</a>。之后我将其他的电脑和私人服务器也切换到了 Arch Linux。作为一个滚动发布发行版，你可以随时升级软件包，但 <a href="https://www.archlinux.org/news/">Arch Linux News</a> 已经详细报道了其中最主要的漏洞。</p>
+<p>不过，令人烦恼的是一旦你更新了旧的内核模组，Arch Linux 就会移除旧版的相关信息。我经常注意到一旦我试着插入一个 USB 闪存盘，内核就无法加载相关组件。相反，每次内核升级后都应该进行重启。有一些 <a href="https://www.reddit.com/r/archlinux/comments/4zrsc3/keep_your_system_fully_functional_after_a_kernel/">方法</a> 可以解决这个问题，但我还没有实际地使用它们。</p>
+<p>其他程序也会出现类似的情况，通常 Firefox 、 cron 或者 Samba 在升级后都需要重启，但恼人的是，它们没有警告你存在这种情况。我在工作中使用的 <a href="https://www.suse.com/">SUSE</a> 很好地提醒了这种情况。</p>
+<p>对于 <a href="https://ddnet.tw/">DDNet</a> 产品服务器，相较于 Arch Linux ，我更倾向于 <a href="https://www.debian.org/">Debian</a> 系统，这样在每次升级时出现故障的几率更低。我的防火墙和路由器使用了 <a href="https://www.openbsd.org/">OpenBSD</a> ，它拥有干净系统、文档和强大的 <a href="https://www.openbsd.org/faq/pf/">pf 防火墙</a>，而我现在不需要一个单独的路由器。</p>
+<h3 id="窗口管理器">窗口管理器</h3>
+<p>从我开始使用 Gentoo 后，我很快注意到 KDE 的编译时间非常长，这让我没办法继续使用它。我四处寻找更简单的解决方案，最初使用了 <a href="http://openbox.org/wiki/Main_Page">Openbox</a> 和 <a href="http://fluxbox.org/">Fluxbox</a>。某次，为了能更多进行纯键盘操作，我开始尝试转入平铺窗口管理器，并在研究其初始版本的时候学习了 <a href="https://dwm.suckless.org/">dwm</a> 和 <a href="https://awesomewm.org/">awesome</a>。</p>
+<p>最终，由于 <a href="https://xmonad.org/">xmonad</a>的灵活性、可扩展性以及使用纯 <a href="https://www.haskell.org/">Haskell</a>（一种出色的函数编程语言）编写和配置，最终选择了它。一个例子是，我在家中运行一个 40&quot; 4K 的屏幕，但经常会将它分为四个虚拟屏幕，每个虚拟屏幕显示一个工作区，每个工作区自动排列在我的窗口上。当然， xmonad 有一个对应的 <a href="http://hackage.haskell.org/package/xmonad-contrib-0.15/docs/XMonad-Layout-LayoutScreens.html">模块</a>。</p>
+<p><a href="http://robm.github.io/dzen/">dzen</a> 和 <a href="https://github.com/brndnmtthws/conky">conky</a> 对我来说是一个非常简单的状态栏。我的整体 conky 配置看起来是这样的：</p>
+<pre><code>out_to_console yes
+update_interval 1
+total_run_times 0
+
+TEXT
+${downspeed eth0} ${upspeed eth0} | $cpu% ${loadavg 1} ${loadavg 2} ${loadavg 3} $mem/$memmax | ${time %F %T}
+</code></pre>
+<p>输入命令直接通过管道输入 dzen2：</p>
+<pre><code>conky | dzen2 -fn &#39;-xos4-terminus-medium-r-normal-*-12-*-*-*-*-*-*-*&#39; -bg &#39;#000000&#39; -fg &#39;#ffffff&#39; -p -e &#39;&#39; -x 1000 -w 920 -xs 1 -ta r
+</code></pre>
+<p>对我而言，一项重要功能是在完成工作后使终端发出蜂鸣声。只需要简单地在 zsh 中的 <code>PR_TITLEBAR</code> 变量中添加一个 <code>\a</code> 字符就可以做到，只要工作完成就可以发出蜂鸣声。当然，我使用了命令： </p>
+<pre><code>echo &quot;blacklist pcspkr&quot; &gt; /etc/modprobe.d/nobeep.conf
+</code></pre>
+<p>将 <code>pcspkr</code> 内核模块列入黑名单来禁用实际的蜂鸣声。相反 urxvt 的 <code>URxvt.urgentOnBell: true</code> 设置会将声音变为尖锐。之后 xmonad 有一个 urgency 钩子来捕捉这类信号，并且我可以使用组合键自动聚焦到当前的发出紧急信号的窗口。在 dzen 中我可以看到一个漂亮且明亮的 <code>#ff0000</code> 紧急窗口。</p>
+<p>在我笔记本上所得到的最终成品是：</p>
+<p><img src="https://hookrace.net/public/linux-desktop/laptop.png" alt="Laptop screenshot"></p>
+<p>我听说前几年 <a href="https://i3wm.org/">i3</a> 变得非常流行，但它要求更多的手动窗口对齐而不是自动对齐。</p>
+<p>我意识到也有像 <a href="https://github.com/tmux/tmux/wiki">tmux</a> 那样的终端多路复用器，但我仍想要一些图形化应用程序，因此最终我没有有效地使用它们。</p>
+<h3 id="终端连续性">终端连续性</h3>
+<p>为了使终端保持活跃状态，我使用了 <a href="http://dtach.sourceforge.net/">dtach</a> ，它只是模拟屏幕分离功能。为了使计算机上的每个终端都可连接和断开，我编写了一个小的封装脚本。 这意味着，即使必须重新启动 X 服务器，我也可以使所有终端都运行良好，包括本地和远程终端。</p>
+<h3 id="shell-编程">Shell & 编程</h3>
+<p>对于 shell，我使用 <a href="http://www.zsh.org/">zsh</a> 而不是 <a href="https://www.gnu.org/software/bash/">bash</a>，因为它有众多的功能。</p>
+<p>作为终端模拟，我发现 <a href="http://software.schmorp.de/pkg/rxvt-unicode.html">urxvt</a> 足够轻巧，支持 Unicode 编码和 256 色，具有出色的性能。另一个重要的功能是可以分别运行 urxvt 客户端和守护进程。因此，即使大量终端也几乎不占用任何内存（回滚缓冲区除外）。</p>
+<p>对我而言，只有一种字体看起来绝对干净和完美： <a href="http://terminus-font.sourceforge.net/">Terminus</a>。 由于它是位图字体，因此所有内容都是完美像素，渲染速度极快且 CPU 使用率低。为了能使用 <code>CTRL-WIN-[1-7]</code> 在每个终端按需切换字体，我的 <code>~/.Xdefaults</code> 包含:</p>
+<pre><code>URxvt.font: -xos4-terminus-medium-r-normal-*-14-*-*-*-*-*-*-*
+dzen2.font: -xos4-terminus-medium-r-normal-*-14-*-*-*-*-*-*-*
+
+URxvt.keysym.C-M-1: command:\033]50;-xos4-terminus-medium-r-normal-*-12-*-*-*-*-*-*-*\007
+URxvt.keysym.C-M-2: command:\033]50;-xos4-terminus-medium-r-normal-*-14-*-*-*-*-*-*-*\007
+URxvt.keysym.C-M-3: command:\033]50;-xos4-terminus-medium-r-normal-*-18-*-*-*-*-*-*-*\007
+URxvt.keysym.C-M-4: command:\033]50;-xos4-terminus-medium-r-normal-*-22-*-*-*-*-*-*-*\007
+URxvt.keysym.C-M-5: command:\033]50;-xos4-terminus-medium-r-normal-*-24-*-*-*-*-*-*-*\007
+URxvt.keysym.C-M-6: command:\033]50;-xos4-terminus-medium-r-normal-*-28-*-*-*-*-*-*-*\007
+URxvt.keysym.C-M-7: command:\033]50;-xos4-terminus-medium-r-normal-*-32-*-*-*-*-*-*-*\007
+
+URxvt.keysym.C-M-n: command:\033]10;#ffffff\007\033]11;#000000\007\033]12;#ffffff\007\033]706;#00ffff\007\033]707;#ffff00\007
+URxvt.keysym.C-M-b: command:\033]10;#000000\007\033]11;#ffffff\007\033]12;#000000\007\033]706;#0000ff\007\033]707;#ff0000\007
+</code></pre>
+<p>对于编程和书写，我使用 <a href="https://www.vim.org/">Vim</a> 语法高亮显示和 <a href="http://ctags.sourceforge.net/">ctags</a> 进行索引，以及一些带有 <code>grep</code> 、<code>sed</code> 和其他用于搜索和操作的常用终端窗口。这可能不像 IDE 那样舒适，但可以实现更多的自动化。</p>
+<p>Vim 的一个问题是你已经习惯了它的键映射，因此希望在任何地方都使用它们。</p>
+<p>在 shell 功能不够强大时，<a href="https://www.python.org/">Python</a> 和 <a href="https://nim-lang.org/">Nim</a> 作为脚本语言也不错。</p>
+<h3 id="系统监控">系统监控</h3>
+<p><a href="https://hisham.hm/htop/">htop</a> （查看当前站点的后台运行，是托管服务器的实时视图）非常适合快速了解软件的当前运行状态。 <a href="http://lm-sensors.org/">lm_sensors</a> 可以监控硬件温度、风扇和电压。 <a href="https://01.org/powertop/">powertop</a> 是一款由 Intel 发布的优秀省电小工具。 <a href="https://dev.yorhel.nl/ncdu">ncdu</a> 可以交互式分析磁盘使用情况。</p>
+<p><a href="https://nmap.org/">nmap</a>、 iptraf-ng、 <a href="https://www.tcpdump.org/">tcpdump</a> 和 <a href="https://www.wireshark.org/">Wireshark</a> 都是分析网络问题的基本工具。</p>
+<p>当然还有很多更优秀的工具。</p>
+<h3 id="邮件-同步">邮件 & 同步</h3>
+<p>在我的家庭服务器上，我为自己所有的邮箱账号运行了 <a href="http://www.fetchmail.info/">fetchmail</a> 守护进程。fetchmail 只是检索收到的邮件并调用 <a href="http://www.procmail.org/">procmail</a>：</p>
+<pre><code>#!/bin/sh
+for i in /home/deen/.fetchmail/*; do
+ FETCHMAILHOME=$i /usr/bin/fetchmail -m &#39;procmail -d %T&#39; -d 60
+done
+</code></pre>
+<p>配置非常简单，然后等待服务器通知我们有新的邮件：</p>
+<pre><code>poll imap.1und1.de protocol imap timeout 120 user &quot;dennis@felsin9.de&quot; password &quot;XXX&quot; folders INBOX keep ssl idle
+</code></pre>
+<p>我的 <code>.procmailrc</code> 配置包含一些备份全部邮件的规则，并将邮件整理在对应的目录下面。例如，基于邮件列表名或者邮件标题：</p>
+<pre><code>MAILDIR=/home/deen/shared/Maildir
+LOGFILE=$HOME/.procmaillog
+LOGABSTRACT=no
+VERBOSE=off
+FORMAIL=/usr/bin/formail
+NL=&quot;
+&quot;
+
+:0wc
+* ! ? test -d /media/mailarchive/`date +%Y`
+| mkdir -p /media/mailarchive/`date +%Y`
+
+# Make backups of all mail received in format YYYY/YYYY-MM
+:0c
+/media/mailarchive/`date +%Y`/`date +%Y-%m`
+
+:0
+* ^From: .*(.*@.*.kit.edu|.*@.*.uka.de|.*@.*.uni-karlsruhe.de)
+$MAILDIR/.uni/
+
+:0
+* ^list-Id:.*lists.kit.edu
+$MAILDIR/.uni-ml/
+
+[...]
+</code></pre>
+<p>我使用 <a href="https://marlam.de/msmtp/">msmtp</a> 来发送邮件，它也很好配置：</p>
+<pre><code>account default
+host smtp.1und1.de
+tls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+auth on
+from dennis@felsin9.de
+user dennis@felsin9.de
+password XXX
+
+[...]
+</code></pre>
+<p>但是到目前为止，邮件还在服务器上。 我的文档全部存储在一个目录中，我使用 <a href="https://www.cis.upenn.edu/~bcpierce/unison/">Unison</a> 在所有计算机之间进行同步。Unison 可以视为双向交互式 <a href="https://rsync.samba.org/">rsync</a>，我的邮件是这个文件目录下的一部分，因此它们最终存储在我的电脑上。</p>
+<p>这也意味着，尽管邮件会立即到达我的邮箱，但我只是按需拿取，而不是邮件一到达时就立即收到通知。</p>
+<p>从此我使用 <a href="http://www.mutt.org/">mutt</a> 阅读邮件，使用侧边栏显示我的邮件目录。 <code>/etc/mailcap</code> 文件对于显示非纯文本邮件（ HTML, Word 或者 PDF）不可或缺：</p>
+<pre><code>text/html;w3m -I %{charset} -T text/html; copiousoutput
+application/msword; antiword %s; copiousoutput
+application/pdf; pdftotext -layout /dev/stdin -; copiousoutput
+</code></pre>
+<h3 id="新闻-通讯">新闻 & 通讯</h3>
+<p><a href="https://newsboat.org/">Newsboat</a> 是一个非常棒的终端 RSS/Atom 阅读器。我在一个有约 150 个提要的 <code>tach</code> 会话服务器上运行它。也可以在本地选择提要，例如：</p>
+<pre><code>ignore-article &quot;https://forum.ddnet.tw/feed.php&quot; &quot;title =~ \&quot;Map Testing •\&quot; or title =~ \&quot;Old maps •\&quot; or title =~ \&quot;Map Bugs •\&quot; or title =~ \&quot;Archive •\&quot; or title =~ \&quot;Waiting for mapper •\&quot; or title =~ \&quot;Other mods •\&quot; or title =~ \&quot;Fixes •\&quot;&quot;
+</code></pre>
+<p>我以同样的方式使用 <a href="https://irssi.org/">Irssi</a> 进行 IRC 通讯。</p>
+<h3 id="日历">日历</h3>
+<p><a href="https://www.roaringpenguin.com/products/remind">remind</a> 是一个可以从命令行获取的日历。通过编辑 <code>rem</code> 文件可以设置新的提醒：</p>
+<pre><code># One time events
+REM 2019-01-20 +90 Flight to China %b
+
+# Recurring Holidays
+REM 1 May +90 Holiday &quot;Tag der Arbeit&quot; %b
+REM [trigger(easterdate(year(today()))-2)] +90 Holiday &quot;Karfreitag&quot; %b
+
+# Time Change
+REM Nov Sunday 1 --7 +90 Time Change (03:00 -&gt; 02:00) %b
+REM Apr Sunday 1 --7 +90 Time Change (02:00 -&gt; 03:00) %b
+
+# Birthdays
+FSET birthday(x) &quot;&#39;s &quot; + ord(year(trigdate())-x) + &quot; birthday is %b&quot;
+REM 16 Apr +90 MSG Andreas[birthday(1994)]
+
+# Sun
+SET $LatDeg 49
+SET $LatMin 19
+SET $LatSec 49
+SET $LongDeg -8
+SET $LongMin -40
+SET $LongSec -24
+
+MSG Sun from [sunrise(trigdate())] to [sunset(trigdate())]
+[...]
+</code></pre>
+<p>遗憾的是，目前 remind 中还没有中国农历的提醒功能，因此中国的节日不易计算。</p>
+<p>我给提醒设置了两个名字：</p>
+<pre><code>rem -m -b1 -q -g
+</code></pre>
+<p>按时间顺序查看待办事项清单</p>
+<pre><code>rem -m -b1 -q -cuc12 -w$(($(tput cols)+1)) | sed -e &quot;s/\f//g&quot; | less
+</code></pre>
+<p>显示适应终端宽度的日历：</p>
+<p><img src="https://hookrace.net/public/linux-desktop/remcal.png" alt="remcal"></p>
+<h3 id="字典">字典</h3>
+<p><a href="https://github.com/tsdh/rdictcc">rdictcc</a> 是鲜为人知的字典工具，它可以使用 <a href="https://www.dict.cc/">dict.cc</a> 很棒的词典并将他们转存在本地数据库中：</p>
+<pre><code>$ rdictcc rasch
+====================[ A =&gt; B ]====================
+rasch:
+ - apace
+ - brisk [speedy]
+ - cursory
+ - in a timely manner
+ - quick
+ - quickly
+ - rapid
+ - rapidly
+ - sharpish [Br.] [coll.]
+ - speedily
+ - speedy
+ - swift
+ - swiftly
+rasch [gehen]:
+ - smartly [quickly]
+Rasch {n} [Zittergras-Segge]:
+ - Alpine grass [Carex brizoides]
+ - quaking grass sedge [Carex brizoides]
+Rasch {m} [regional] [Putzrasch]:
+ - scouring pad
+====================[ B =&gt; A ]====================
+Rasch model:
+ - Rasch-Modell {n}
+</code></pre>
+<h3 id="记录和阅读">记录和阅读</h3>
+<p>我有一个简单记录任务的备忘录，在 Vim 会话中基本上一直处于打开状态。我也使用备忘录作为工作中“已完成”工作的记录，这样就可以检查自己每天完成了哪些任务。</p>
+<p>对于写文件、信件和演示文稿，我会使用 <a href="https://www.latex-project.org/">LaTeX</a> 进行高级排版。德式的简单信件可以这样设置，例如：</p>
+<pre><code>\documentclass[paper = a4, fromalign = right]{scrlttr2}
+\usepackage{german}
+\usepackage{eurosym}
+\usepackage[utf8]{inputenc}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+\setkomavar{fromname}{Dennis Felsing}
+\setkomavar{fromaddress}{Meine Str. 1\\69181 Leimen}
+\setkomavar{subject}{Titel}
+
+\setkomavar*{enclseparator}{Anlagen}
+
+\makeatletter
+\@setplength{refvpos}{89mm}
+\makeatother
+
+\begin{document}
+\begin{letter} {Herr Soundso\\Deine Str. 2\\69121 Heidelberg}
+\opening{Sehr geehrter Herr Soundso,}
+
+Sie haben bei mir seit dem Bla Bla Bla.
+
+Ich fordere Sie hiermit zu Bla Bla Bla auf.
+
+\closing{Mit freundlichen Grüßen}
+
+\end{letter}
+\end{document}
+</code></pre>
+<p>在 <a href="http://felsin9.de/nnis/research/">我的私人网站</a> 上可以找到更多的示例文档和演示文稿。</p>
+<p><a href="https://pwmt.org/projects/zathura/">Zathura</a> 读取 PDF 文件速度很快，支持 Vim 类控件，还支持两种不同的 PDF 后端： Poppler 和 MuPDF。另一方面，在偶尔遇到 Zathura 无法打开的文件时，<a href="https://wiki.gnome.org/Apps/Evince">Evince</a> 则显得更全能一些。</p>
+<h3 id="图片编辑">图片编辑</h3>
+<p>简便的选择是，<a href="https://www.gimp.org/">GIMP</a> 和 <a href="https://inkscape.org/">Inkscape</a> 分别用于照片编辑和交互式向量图形。</p>
+<p>有时 <a href="https://imagemagick.org/Usage/">Imagemagick</a> 已经足够好了，它可以从命令行直接使用，从而自动编辑图片。同样 <a href="https://www.graphviz.org/">Graphviz</a> 和 <a href="https://sourceforge.net/projects/pgf/">TikZ</a> 可以用来绘制曲线图和其他图表。</p>
+<h3 id="web-浏览器">Web 浏览器</h3>
+<p>对于 Web 浏览器，我一直在使用 <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>。相较于 Chrome，它的可扩展性更好，资源使用率更低。</p>
+<p>不幸的是，在 Firefox 完全改用 Chrome 风格的扩展之后， <a href="https://github.com/5digits/dactyl">Pentadactyl</a> 扩展的开发就停止了，所以我的浏览器中再也没有令人满意的 Vim 类控件了。</p>
+<h3 id="媒体播放器">媒体播放器</h3>
+<p>通过设置 <code>vo=gpu</code> 以及 <code>hwdec=vaapi</code>，具有硬件解码功能的 <a href="https://mpv.io/">mpv</a> 在播放期间 CPU 的占用率保持在 5%。相较于默认的 PulseAudio，mpv 中的 <code>audio-channels=2</code> 似乎可以使我的立体扬声器/耳机获得更清晰的降级混频。一个很棒的小功能是用 <code>Shift-Q</code> 退出，而不是只用 <code>Q</code> 来保存回放位置。当你与母语是其他语言的人一起看视频时，你可以使用 <code>--secondary-sid=</code> 同时显示两种字幕，主字幕位于底部，次字幕位于屏幕顶部。</p>
+<p>我的无线鼠标可以简单地通过一个小的配置文件（ <code>~/.config/mpv/input.conf</code> ）实现远程控制 mpv ：</p>
+<pre><code>MOUSE_BTN5 run &quot;mixer&quot; &quot;pcm&quot; &quot;-2&quot;
+MOUSE_BTN6 run &quot;mixer&quot; &quot;pcm&quot; &quot;+2&quot;
+MOUSE_BTN1 cycle sub-visibility
+MOUSE_BTN7 add chapter -1
+MOUSE_BTN8 add chapter 1
+</code></pre>
+<p><a href="https://rg3.github.io/youtube-dl/">youtube-dl</a> 非常适合观看在线托管的视频，使用 <code>-f bestvideo+bestaudio/best --all-subs --embed-subs</code> 命令可获得最高质量的视频。</p>
+<p>作为音乐播放器， <a href="http://moc.daper.net/">MOC</a> 不再活跃开发，但它仍是一个简易的播放器，可以播放各种可能的格式，包括最不常用的 Chiptune 格式。在 AUR 中有一个 <a href="https://aur.archlinux.org/packages/moc-pulse/">补丁</a> 增加了 PulseAudio 支持。即使在 CPU 时钟频率降到 800 MHz， MOC 也只使用了单核 CPU 的 1-2% 。</p>
+<p><img src="https://hookrace.net/public/linux-desktop/moc.png" alt="moc"></p>
+<p>我的音乐收藏夹保存在我的家庭服务器上，因此我可以从任何地方访问它。它使用 <a href="https://github.com/libfuse/sshfs">SSHFS</a> 挂载并自动安装在 <code>/etc/fstab/</code> 目录下：</p>
+<pre><code>root@server:/media/media /mnt/media fuse.sshfs noauto,x-systemd.automount,idmap=user,IdentityFile=/root/.ssh/id_rsa,allow_other,reconnect 0 0
+</code></pre>
+<h3 id="跨平台构建">跨平台构建</h3>
+<p>除了 Linux 本身，它对于构建任何主流操作系统的软件包都很优秀！ 一开始，我使用 <a href="https://www.qemu.org/">QEMU</a> 与旧版 Debian、 Windows 以及 Mac OS X VM 一起构建这些平台。</p>
+<p>现在我在旧版 Debian 发行版上转而使用 chroot （以获得最大的 Linux 兼容性），在 Windows 上使用 <a href="http://www.mingw.org/">MinGW</a> 进行交叉编译，在 Mac OS X 上则使用 <a href="https://github.com/tpoechtrager/osxcross">OSXCross</a>。</p>
+<p>用于 <a href="https://github.com/ddnet/ddnet-scripts/blob/master/ddnet-release.sh">构建 DDNet</a> 的脚本以及 <a href="https://github.com/ddnet/ddnet-scripts/blob/master/ddnet-lib-update.sh">更新库构建的说明</a> 的脚本都基于这个。</p>
+<h3 id="备份">备份</h3>
+<p>通常，我们都会忘记备份。即使这是最后一节，它也不应该成为事后诸葛。</p>
+<p>十年前我写了 <a href="https://github.com/def-/rrb/blob/master/rrb">rrb</a> （反向 rsync 备份）重新封装了 <code>rsync</code> ，因此我只需要将备份服务器的 root SSH 权限授予正在备份的计算机。令人惊讶地是，尽管我一直在使用 rrb ，但它在过去十年里没有任何改变。</p>
+<p>备份文件直接存储在文件系统中。使用硬链接实现增量备份（<code>--link-dest</code>）。一个简单的 <a href="https://github.com/def-/rrb/blob/master/config.example">配置</a> 定义了备份保存时间，默认为：</p>
+<pre><code>KEEP_RULES=( \
+   7  7 \ # One backup a day for the last 7 days
+  31  8 \ # 8 more backups for the last month
+ 365 11 \ # 11 more backups for the last year
+1825  4 \ # 4 more backups for the last 5 years
+)
+</code></pre>
+<p>因为我的一些计算机没有静态 IP / DNS 但仍想使用 rrb 备份，那我会使用反向安全隧道（作为 systemd 服务）：</p>
+<pre><code>[Unit]
+Description=Reverse SSH Tunnel
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/ssh -N -R 27276:localhost:22 -o &quot;ExitOnForwardFailure yes&quot; server
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>现在，隧道运行备份时，服务器可以通过 <code>ssh -p 27276 localhost</code> 命令或者使用 <code>.ssh/config</code> 到达服务器端。</p>
+<pre><code>Host cr-remote
+ HostName localhost
+ Port 27276
+</code></pre>
+<p>在谈及 SSH 技巧时，有时由于某些中断的路由会很难访问到服务器。在那种情况下你可以借道其他服务器的 SSH 连接，以获得更好的路由。在这种情况下，你可能通过美国连接访问到我的中国服务器，而来自德国的不可靠连接可能需要几个周：</p>
+<pre><code>Host chn.ddnet.tw
+ ProxyCommand ssh -q usa.ddnet.tw nc -q0 chn.ddnet.tw 22
+ Port 22
+</code></pre>
+<h3 id="结语">结语</h3>
+<p>感谢阅读我工具的收藏。这其中我也许遗漏了许多日常中自然成习惯的步骤。让我们来看看我的软件设置在下一年里能多稳定吧。如果你有任何问题，随时联系我 <a href="mailto:dennis@felsin9.de">dennis@felsin9.de</a> 。</p>
+<p>在 <a href="https://news.ycombinator.com/item?id=18979731">Hacker News</a> 下评论吧。</p>
+<hr>
+<p>via: <a href="https://hookrace.net/blog/linux-desktop-setup/">https://hookrace.net/blog/linux-desktop-setup/</a></p>
+<p>作者：<a href="http://felsin9.de/nnis/">Dennis Felsing</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/chenmu-kk">chenmu-kk</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#动机">动机</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#操作系统">操作系统</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#窗口管理器">窗口管理器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#终端连续性">终端连续性</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#shell-编程">Shell &amp; 编程</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#系统监控">系统监控</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#邮件-同步">邮件 &amp; 同步</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#新闻-通讯">新闻 &amp; 通讯</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#日历">日历</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#字典">字典</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#记录和阅读">记录和阅读</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#图片编辑">图片编辑</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#web-浏览器">Web 浏览器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#媒体播放器">媒体播放器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#跨平台构建">跨平台构建</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#备份">备份</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结语">结语</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202012/20190115 Linux Desktop Setup - HookRace Blog","title":"十年 Linux 桌面生存指南"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

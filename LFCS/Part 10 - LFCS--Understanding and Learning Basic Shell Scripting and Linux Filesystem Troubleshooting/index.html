@@ -1,0 +1,239 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>LFCS 系列第十讲：学习简单的 Shell 脚本编程和文件系统故障排除 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="LFCS 系列第十讲：学习简单的 Shell 脚本编程和文件系统故障排除 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="LFCS 系列第十讲：学习简单的 Shell 脚本编程和文件系统故障排除 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/LFCS/Part 10 - LFCS--Understanding and Learning Basic Shell Scripting and Linux Filesystem Troubleshooting#page","@type":"TechArticle","headline":"LFCS 系列第十讲：学习简单的 Shell 脚本编程和文件系统故障排除","inLanguage":"en","name":"LFCS 系列第十讲：学习简单的 Shell 脚本编程和文件系统故障排除","url":"https://zhengqbbb.github.io/pages-dev/LFCS/Part 10 - LFCS--Understanding and Learning Basic Shell Scripting and Linux Filesystem Troubleshooting","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/LFCS/Part 10 - LFCS--Understanding and Learning Basic Shell Scripting and Linux Filesystem Troubleshooting"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#理解终端-terminals-和-shell">理解终端 (Terminals) 和 Shell</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#简单的-shell-脚本编程">简单的 Shell 脚本编程</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#文件系统排错">文件系统排错</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>LFCS 系列第十讲：学习简单的 Shell 脚本编程和文件系统故障排除</h1><p>Linux 基金会发起了 LFCS 认证 (Linux Foundation Certified Sysadmin，Linux 基金会认证系统管理员)，这是一个全新的认证体系，旨在让世界各地的人能够参与到中等水平的 Linux 系统的基本管理操作的认证考试中去，这项认证包括：维护正在运行的系统和服务的能力、全面监控和分析的能力以及何时向上游团队请求支持的决策能力。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/lfcs-Part-10.png" alt="Basic Shell Scripting and Filesystem Troubleshooting"></p>
+<p><em>LFCS 系列第十讲</em></p>
+<p>请看以下视频，这里边介绍了 Linux 基金会认证程序。</p>
+<video src="https://dn-linuxcn.qbox.me/static%2Fvideo%2FIntroducing%20The%20Linux%20Foundation%20Certification%20Program-Y29qZ71Kicg.mp4" controls="controls" width="100%">
+</video><p>本讲是系列教程中的第十讲，主要集中讲解简单的 Shell 脚本编程和文件系统故障排除。这两块内容都是 LFCS 认证中的必备考点。</p>
+<h3 id="理解终端-terminals-和-shell">理解终端 (Terminals) 和 Shell</h3>
+<p>首先要声明一些概念。</p>
+<ul>
+<li>Shell 是一个程序，它将命令传递给操作系统来执行。</li>
+<li>Terminal 也是一个程序，允许最终用户使用它与 Shell 来交互。比如，下边的图片是 GNOME Terminal。</li>
+</ul>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/Gnome-Terminal.png" alt="Gnome Terminal"></p>
+<p><em>Gnome Terminal</em></p>
+<p>启动 Shell 之后，会呈现一个命令提示符 (也称为命令行) 提示我们 Shell 已经做好了准备，接受标准输入设备输入的命令，这个标准输入设备通常是键盘。</p>
+<p>你可以参考该系列文章的 <a href="https://linux.cn/article-7161-1.html">第一讲 如何在 Linux 上使用 GNU sed 等命令来创建、编辑和操作文件</a> 来温习一些常用的命令。</p>
+<p>Linux 为提供了许多可以选用的 Shell，下面列出一些常用的：</p>
+<p><strong>bash Shell</strong></p>
+<p>Bash 代表 Bourne Again Shell，它是 GNU 项目默认的 Shell。它借鉴了 Korn shell (ksh) 和 C shell (csh) 中有用的特性，并同时对性能进行了提升。它同时也是 LFCS 认证中所涵盖的各发行版中默认 Shell，也是本系列教程将使用的 Shell。</p>
+<p><strong>sh Shell</strong></p>
+<p>Bourne SHell 是一个比较古老的 shell，多年来一直都是很多类 Unix 系统的默认 shell。</p>
+<p><strong>ksh Shell</strong></p>
+<p>Korn SHell (ksh shell) 也是一个 Unix shell，是贝尔实验室 (Bell Labs) 的 David Korn 在 19 世纪 80 年代初的时候开发的。它兼容 Bourne shell ，并同时包含了 C shell 中的多数特性。</p>
+<p>一个 shell 脚本仅仅只是一个可执行的文本文件，里边包含一条条可执行命令。</p>
+<h3 id="简单的-shell-脚本编程">简单的 Shell 脚本编程</h3>
+<p>如前所述，一个 shell 脚本就是一个纯文本文件，因此，可以使用自己喜欢的文本编辑器来创建和编辑。你可以考虑使用 vi/vim (参考本系列 <a href="https://linux.cn/article-7165-1.html">第二讲 如何安装和使用纯文本编辑器 vi/vim</a>)，它的语法高亮让我的编辑工作非常方便。</p>
+<p>输入如下命令来创建一个名为 myscript.sh 的脚本文件：</p>
+<pre><code># vim myscript.sh
+</code></pre>
+<p>shell 脚本的第一行 (著名的 <a href="https://linux.cn/article-3664-1.html">释伴（shebang）行</a>) 必须如下：</p>
+<pre><code>#!/bin/bash
+</code></pre>
+<p>这条语句“告诉”操作系统需要用哪个解释器来运行这个脚本文件之后命令。</p>
+<p>现在可以添加需要执行的命令了。通过注释，我们可以声明每一条命令或者整个脚本的具体含义。注意，shell 会忽略掉以井号 (#) 开始的注释语句。</p>
+<pre><code>#!/bin/bash
+echo 这是关于 LFCS 认证系列的第十部分
+echo 今天是 $(date +%Y-%m-%d)
+</code></pre>
+<p>编写并保存脚本之后，通过以下命令来使脚本文件成为可执行文件：</p>
+<pre><code># chmod 755 myscript.sh
+</code></pre>
+<p>在执行脚本之前，我们需要说一下环境变量 ($PATH)，运行：</p>
+<pre><code>echo $PATH
+</code></pre>
+<p>我们就会看到环境变量 ($PATH) 的具体内容：这是当输入命令时系统所搜索可执行程序的目录，每一项之间使用冒号 (:) 隔开。称它为环境变量，是因为它本是就是 shell 环境的一部分 —— 这是当 shell 每次启动时 shell 及其子进程可以获取的一系列信息。</p>
+<p>当我们输入一个命令并按下回车时，shell 会搜索 $PATH 变量中列出的目录并执行第一个知道的实例。请看如下例子：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/Environment-Variable.png" alt="Linux Environment Variables"></p>
+<p><em>环境变量</em></p>
+<p>假如存在两个同名的可执行程序，一个在 /usr/local/bin，另一个在 /usr/bin，则会执行环境变量中最先列出的那个，并忽略另外一个。</p>
+<p>如果我们自己编写的脚本没有放在 $PATH 变量列出目录中的任何一个，则需要输入 ./filename 来执行它。而如果存储在 $PATH 变量中的任意一个目录，我们就可以像运行其他命令一样来运行之前编写的脚本了。</p>
+<pre><code># pwd
+# ./myscript.sh
+# cp myscript.sh ../bin
+# cd ../bin
+# pwd
+# myscript.sh
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/Execute-Script.png" alt="Execute Script in Linux"></p>
+<p><em>执行脚本</em></p>
+<h4 id="if-条件语句">if 条件语句</h4>
+<p>无论何时，当你需要在脚本中根据某个命令的运行结果来采取相应动作时，你应该使用 if 结构来定义条件。基本语法如下：</p>
+<pre><code>if CONDITION; then
+	COMMANDS;
+else
+	OTHER-COMMANDS
+fi
+</code></pre>
+<p>其中，CONDITION 可以是如下情形的任意一项 (仅列出常用的)，并且达到以下条件时返回 true：</p>
+<ul>
+<li>[ -a file ] → 指定文件存在。</li>
+<li>[ -d file ] → 指定文件存在，并且是一个目录。</li>
+<li>[ -f file ] → 指定文件存在，并且是一个普通文件。</li>
+<li>[ -u file ] → 指定文件存在，并设置了 SUID 权限位。</li>
+<li>[ -g file ] → 指定文件存在，并设置了 SGID 权限位。</li>
+<li>[ -k file ] → 指定文件存在，并设置了“黏连 (Sticky)”位。</li>
+<li>[ -r file ] → 指定文件存在，并且文件可读。</li>
+<li>[ -s file ] → 指定文件存在，并且文件不为空。</li>
+<li>[ -w file ] → 指定文件存在，并且文件可写入。</li>
+<li>[ -x file ] → 指定文件存在，并且可执行。</li>
+<li>[ string1 = string2 ] → 字符串相同。</li>
+<li>[ string1 != string2 ] → 字符串不相同。</li>
+</ul>
+<p>[ int1 op int2 ] 为前述列表中的一部分 (例如： -eq –&gt; int1 与 int2 相同时返回 true) ，其中比较项也可以是一个列表子项， 其中 op 为以下比较操作符。</p>
+<ul>
+<li>-eq –&gt; int1 等于 int2 时返回 true。</li>
+<li>-ne –&gt; int1 不等于 int2 时返回 true。</li>
+<li>-lt –&gt; int1 小于 int2 时返回 true。</li>
+<li>-le –&gt; int1 小于或等于 int2 时返回 true。</li>
+<li>-gt –&gt; int1 大于 int2 时返回 true。</li>
+<li>-ge –&gt; int1 大于或等于 int2 时返回 true。</li>
+</ul>
+<h4 id="for-循环语句">for 循环语句</h4>
+<p>循环语句可以在某个条件下重复执行某个命令。基本语法如下：</p>
+<pre><code>for item in SEQUENCE; do
+		COMMANDS;
+done
+</code></pre>
+<p>其中，item 为每次执行 COMMANDS 时，在 SEQUENCE 中匹配到的值。</p>
+<h4 id="while-循环语句">While 循环语句</h4>
+<p>该循环结构会一直执行重复的命令，直到控制命令（EVALUATION_COMMAND）执行的退出状态值等于 0 时 (即执行成功) 停止。基本语法如下：</p>
+<pre><code>while EVALUATION_COMMAND; do
+		EXECUTE_COMMANDS;
+done
+</code></pre>
+<p>其中，EVALUATION_COMMAND 可以是任何能够返回成功 (0) 或失败 (0 以外的值) 的退出状态值的命令，EXECUTE_COMMANDS 则可以是任何的程序、脚本或者 shell 结构体，包括其他的嵌套循环。</p>
+<h4 id="综合使用">综合使用</h4>
+<p>我们会通过以下例子来演示 if 条件语句和 for 循环语句。</p>
+<p><strong>在基于 systemd 的发行版中探测某个服务是否在运行</strong></p>
+<p>先建立一个文件，列出我们想要想要查看的服务名。</p>
+<pre><code># cat myservices.txt
+
+sshd
+mariadb
+httpd
+crond
+firewalld
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/Monitor-Services.png" alt="Script to Monitor Linux Services"></p>
+<p><em>使用脚本监控 Linux 服务</em></p>
+<p>我们编写的脚本看起来应该是这样的：</p>
+<pre><code>#!/bin/bash
+
+# This script iterates over a list of services and
+# is used to determine whether they are running or not.
+
+for service in $(cat myservices.txt); do
+    	systemctl status $service | grep --quiet &quot;running&quot;
+    	if [ $? -eq 0 ]; then
+            	echo $service &quot;is [ACTIVE]&quot;
+    	else
+            	echo $service &quot;is [INACTIVE or NOT INSTALLED]&quot;
+    	fi
+done
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/Monitor-Script.png" alt="Linux Service Monitoring Script"></p>
+<p><em>Linux 服务监控脚本</em></p>
+<p><strong>我们来解释一下这个脚本的工作流程</strong></p>
+<p>1). for 循环每次读取 myservices.txt 文件中的一项记录，每一项纪录表示一个服务的通用变量名。各项记录组成如下：</p>
+<pre><code># cat myservices.txt
+</code></pre>
+<p>2). 以上命令由圆括号括着，并在前面添加美元符，表示它需要从 myservices.txt 的记录列表中取值并作为变量传递给 for 循环。</p>
+<p>3). 对于记录列表中的每一项纪录 (即每一项纪录的服务变量)，都会执行以下动作：</p>
+<pre><code># systemctl status $service | grep --quiet &quot;running&quot;
+</code></pre>
+<p>此时，需要在每个通用变量名 (即每一项纪录的服务变量) 的前面添加美元符，以表明它是作为变量来传递的。其输出则通过管道符传给 grep。</p>
+<p>其中，-quiet 选项用于阻止 grep 命令将发现的 “running” 的行回显到屏幕。当 grep 捕获到 “running” 时，则会返回一个退出状态码 “0” (在 if 结构体表示为 $?)，由此确认某个服务正在运行中。</p>
+<p>如果退出状态码是非零值 (即 systemctl status $service 命令中的回显中没有出现 “running”)，则表明某个服务为运行。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/Services-Monitoring-Script.png" alt="Services Monitoring Script"></p>
+<p><em>服务监控脚本</em></p>
+<p>我们可以增加一步，在开始循环之前，先确认 myservices.txt 是否存在。</p>
+<pre><code>#!/bin/bash
+
+# This script iterates over a list of services and
+# is used to determine whether they are running or not.
+
+if [ -f myservices.txt ]; then
+    	for service in $(cat myservices.txt); do
+            	systemctl status $service | grep --quiet &quot;running&quot;
+            	if [ $? -eq 0 ]; then
+                    	echo $service &quot;is [ACTIVE]&quot;
+            	else
+                    	echo $service &quot;is [INACTIVE or NOT INSTALLED]&quot;
+            	fi
+    	done
+else
+    	echo &quot;myservices.txt is missing&quot;
+fi
+</code></pre>
+<p><strong>Ping 一系列网络或者 Internet 主机名以获取应答数据</strong></p>
+<p>你可能想把自己维护的主机写入一个文本文件，并使用脚本探测它们是否能够 ping 得通 (脚本中的 myhosts 可以随意替换为你想要的名称)。</p>
+<p>shell 的内置 read 命令将告诉 while 循环一行行的读取 myhosts，并将读取的每行内容传给 host 变量，随后 host 变量传递给 ping 命令。</p>
+<pre><code>#!/bin/bash
+
+# This script is used to demonstrate the use of a while loop
+
+while read host; do
+    	ping -c 2 $host
+done &lt; myhosts
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/Script-to-Ping-Servers.png" alt="Script to Ping Servers"></p>
+<p><em>使用脚本 Ping 服务器</em></p>
+<p>扩展阅读:</p>
+<ul>
+<li><a href="http://www.tecmint.com/learning-shell-scripting-language-a-guide-from-newbies-to-system-administrator/">Learn Shell Scripting: A Guide from Newbies to System Administrator</a></li>
+<li><a href="http://www.tecmint.com/basic-shell-programming-part-ii/">5 Shell Scripts to Learn Shell Programming</a></li>
+</ul>
+<h3 id="文件系统排错">文件系统排错</h3>
+<p>尽管 Linux 是一个很稳定的操作系统，但仍然会因为某些原因出现崩溃时 (比如因为断电等)，正好你有一个 (或者更多个) 文件系统未能正确卸载，Linux 重启的时候就会自动检测其中可能发生的错误。</p>
+<p>此外，每次系统正常启动的时候，都会在文件系统挂载之前校验它们的完整度。而这些全部都依赖于 fsck 工具 (“file system check，文件系统校验”)。</p>
+<p>如果对 fsck 进行设定，它除了校验文件系统的完整性之外，还可以尝试修复错误。fsck 能否成功修复错误，取决于文件系统的损伤程度；如果可以修复，被损坏部分的文件会恢复到位于每个文件系统根目录的 lost+found。</p>
+<p>最后但同样重要的是，我们必须注意，如果拔掉系统正在写入数据的 USB 设备同样会发生错误，甚至可能发生硬件损坏。</p>
+<p>fsck 的基本用如下：</p>
+<pre><code># fsck [options] filesystem
+</code></pre>
+<p><strong>检查文件系统错误并尝试自动修复</strong></p>
+<p>想要使用 fsck 检查文件系统，我们需要首先卸载文件系统。</p>
+<pre><code># mount | grep sdg1
+# umount /mnt
+# fsck -y /dev/sdg1
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/11/Check-Filesystem-Errors.png" alt="Scan Linux Filesystem for Errors"></p>
+<p><em>检查文件系统错误</em></p>
+<p>除了 -y 选项，我们也可以使用 -a 选项来自动修复文件系统错误，而不必做出交互式应答，并在文件系统看起来 “干净” 卸载的情况下强制校验。</p>
+<pre><code># fsck -af /dev/sdg1
+</code></pre>
+<p>如果只是要找出什么地方发生了错误 (不用在检测到错误的时候修复)，我们可以使用 -n 选项，这样只会将文件系统错误输出到标准输出设备上。</p>
+<pre><code># fsck -n /dev/sdg1
+</code></pre>
+<p>根据 fsck 输出的错误信息，我们可以知道是否可以自己修复或者需要将问题提交给工程师团队来做详细的硬件校验。</p>
+<h3 id="总结">总结</h3>
+<p>至此，系列教程的第十讲就全部结束了，全系列教程涵盖了通过 LFCS 测试所需的基础内容。</p>
+<p>但显而易见的，本系列的十讲并不足以在单个主题方面做到全面描述，我们希望这一系列教程可以成为你学习的基础素材，并一直保持学习的热情（LCTT 译注：还有后继补充的几篇）。</p>
+<p>我们欢迎你提出任何问题或者建议，所以你可以毫不犹豫的通过以下链接联系到我们： 成为一个 <a href="http://www.shareasale.com/r.cfm?b=768106&u=1260899&m=59485&urllink=&afftrack=">Linux 认证系统工程师</a></p>
+<hr>
+<p>via: <a href="http://www.tecmint.com/linux-basic-shell-scripting-and-linux-filesystem-troubleshooting/">http://www.tecmint.com/linux-basic-shell-scripting-and-linux-filesystem-troubleshooting/</a></p>
+<p>作者：<a href="http://www.tecmint.com/author/gacanepa/">Gabriel Cánepa</a>
+译者：<a href="https://github.com/GHLandy">GHLandy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#理解终端-terminals-和-shell">理解终端 (Terminals) 和 Shell</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#简单的-shell-脚本编程">简单的 Shell 脚本编程</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#文件系统排错">文件系统排错</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/LFCS/Part 10 - LFCS--Understanding and Learning Basic Shell Scripting and Linux Filesystem Troubleshooting","title":"LFCS 系列第十讲：学习简单的 Shell 脚本编程和文件系统故障排除"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

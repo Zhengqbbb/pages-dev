@@ -1,0 +1,257 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 Go 中嵌入 Python - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 Go 中嵌入 Python - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 Go 中嵌入 Python - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202107/20180416 Cgo and Python#page","@type":"TechArticle","headline":"如何在 Go 中嵌入 Python","inLanguage":"en","name":"如何在 Go 中嵌入 Python","url":"https://zhengqbbb.github.io/pages-dev/202107/20180416 Cgo and Python","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202107/20180416 Cgo and Python"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#介绍-cgo">介绍 cgo</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#嵌入-cpython一个入门指南">嵌入 CPython：一个入门指南</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#可怕的全局解释器锁">可怕的全局解释器锁</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#释放-gopher">释放 Gopher</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 Go 中嵌入 Python</h1><p><img src="https://datadog-prod.imgix.net/img/blog/engineering/cgo-and-python/cgo_python_hero.png?auto=format&w=1900&dpr=1" alt=""></p>
+<p>如果你看一下 <a href="https://github.com/DataDog/datadog-agent/">新的 Datadog Agent</a>，你可能会注意到大部分代码库是用 Go 编写的，尽管我们用来收集指标的检查仍然是用 Python 编写的。这大概是因为 Datadog Agent 是一个 <a href="https://docs.python.org/2/extending/embedding.html">嵌入了</a> CPython 解释器的普通 Go 二进制文件，可以在任何时候按需执行 Python 代码。这个过程通过抽象层来透明化，使得你可以编写惯用的 Go 代码而底层运行的是 Python。</p>
+<p><a href="https://youtu.be/yrEi5ezq2-c">视频</a></p>
+<p>在 Go 应用程序中嵌入 Python 的原因有很多：</p>
+<ul>
+<li>它在过渡期间很有用；可以逐步将现有 Python 项目的部分迁移到新语言，而不会在此过程中丢失任何功能。</li>
+<li>你可以复用现有的 Python 软件或库，而无需用新语言重新实现。</li>
+<li>你可以通过加载去执行常规 Python 脚本来动态扩展你软件，甚至在运行时也可以。</li>
+</ul>
+<p>理由还可以列很多，但对于 Datadog Agent 来说，最后一点至关重要：我们希望做到无需重新编译 Agent，或者说编译任何内容就能够执行自定义检查或更改现有检查。</p>
+<p>嵌入 CPython 非常简单，而且文档齐全。解释器本身是用 C 编写的，并且提供了一个 C API 以编程方式来执行底层操作，例如创建对象、导入模块和调用函数。</p>
+<p>在本文中，我们将展示一些代码示例，我们将会在与 Python 交互的同时继续保持 Go 代码的惯用语，但在我们继续之前，我们需要解决一个间隙：嵌入 API 是 C 语言，但我们的主要应用程序是 Go，这怎么可能工作？</p>
+<p><img src="https://datadog-prod.imgix.net/img/blog/engineering/cgo-and-python/cgo_python_divider_1.png?auto=format&fit=max&w=847" alt=""></p>
+<h3 id="介绍-cgo">介绍 cgo</h3>
+<p>有 <a href="https://dave.cheney.net/2016/01/18/cgo-is-not-go">很多好的理由</a> 说服你为什么不要在堆栈中引入 cgo，但嵌入 CPython 是你必须这样做的原因。<a href="https://golang.org/cmd/cgo/">cgo</a> 不是语言，也不是编译器。它是 <ruby><a href="https://en.wikipedia.org/wiki/Foreign_function_interface">外部函数接口</a><rt>Foreign Function Interface</rt></ruby>（FFI），一种让我们可以在 Go 中使用来调用不同语言（特别是 C）编写的函数和服务的机制。</p>
+<p>当我们提起 “cgo” 时，我们实际上指的是 Go 工具链在底层使用的一组工具、库、函数和类型，因此我们可以通过执行 <code>go build</code> 来获取我们的 Go 二进制文件。下面是使用 cgo 的示例程序：</p>
+<pre><code>package main
+
+// #include &lt;float.h&gt;
+import &quot;C&quot;
+import &quot;fmt&quot;
+
+func main() {
+    fmt.Println(&quot;Max float value of float is&quot;, C.FLT_MAX)
+}
+</code></pre>
+<p>在这种包含头文件情况下，<code>import &quot;C&quot;</code> 指令上方的注释块称为“<ruby>序言<rt>preamble</rt></ruby>”，可以包含实际的 C 代码。导入后，我们可以通过“C”伪包来“跳转”到外部代码，访问常量 <code>FLT_MAX</code>。你可以通过调用 <code>go build</code> 来构建，它就像普通的 Go 一样。</p>
+<p>如果你想查看 cgo 在这背后到底做了什么，可以运行 <code>go build -x</code>。你将看到 “cgo” 工具将被调用以生成一些 C 和 Go 模块，然后将调用 C 和 Go 编译器来构建目标模块，最后链接器将所有内容放在一起。</p>
+<p>你可以在 <a href="https://blog.golang.org/c-go-cgo">Go 博客</a> 上阅读更多有关 cgo 的信息，该文章包含更多的例子以及一些有用的链接来做进一步了解细节。</p>
+<p>现在我们已经了解了 cgo 可以为我们做什么，让我们看看如何使用这种机制运行一些 Python 代码。</p>
+<p><img src="https://datadog-prod.imgix.net/img/blog/engineering/cgo-and-python/cgo_python_divider_2.png?auto=format&fit=max&w=847" alt=""></p>
+<h3 id="嵌入-cpython一个入门指南">嵌入 CPython：一个入门指南</h3>
+<p>从技术上讲，嵌入 CPython 的 Go 程序并没有你想象的那么复杂。事实上，我们只需在运行 Python 代码之前初始化解释器，并在完成后关闭它。请注意，我们在所有示例中使用 Python 2.x，但我们只需做很少的调整就可以应用于 Python 3.x。让我们看一个例子：</p>
+<pre><code>package main
+
+// #cgo pkg-config: python-2.7
+// #include &lt;Python.h&gt;
+import &quot;C&quot;
+import &quot;fmt&quot;
+
+func main() {
+    C.Py_Initialize()
+    fmt.Println(C.GoString(C.Py_GetVersion()))
+    C.Py_Finalize()
+}
+</code></pre>
+<p>上面的例子做的正是下面 Python 代码要做的事：</p>
+<pre><code>import sys
+print(sys.version)
+</code></pre>
+<p>你可以看到我们在序言加入了一个 <code>#cgo</code> 指令；这些指令被会被传递到工具链，让你改变构建工作流程。在这种情况下，我们告诉 cgo 调用 <code>pkg-config</code> 来收集构建和链接名为 <code>python-2.7</code> 的库所需的标志，并将这些标志传递给 C 编译器。如果你的系统中安装了 CPython 开发库和 pkg-config，你只需要运行 <code>go build</code> 来编译上面的示例。</p>
+<p>回到代码，我们使用 <code>Py_Initialize()</code> 和 <code>Py_Finalize()</code> 来初始化和关闭解释器，并使用 <code>Py_GetVersion</code> C 函数来获取嵌入式解释器版本信息的字符串。</p>
+<p>如果你想知道，所有我们需要放在一起调用 C 语言 Python API的 cgo 代码都是模板代码。这就是为什么 Datadog Agent 依赖 <a href="https://github.com/sbinet/go-python">go-python</a> 来完成所有的嵌入操作；该库为 C API 提供了一个 Go 友好的轻量级包，并隐藏了 cgo 细节。这是另一个基本的嵌入式示例，这次使用 go-python：</p>
+<pre><code>package main
+
+import (
+    python &quot;github.com/sbinet/go-python&quot;
+)
+
+func main() {
+    python.Initialize()
+    python.PyRun_SimpleString(&quot;print &#39;hello, world!&#39;&quot;)
+    python.Finalize()
+}
+</code></pre>
+<p>这看起来更接近普通 Go 代码，不再暴露 cgo，我们可以在访问 Python API 时来回使用 Go 字符串。嵌入式看起来功能强大且对开发人员友好，是时候充分利用解释器了：让我们尝试从磁盘加载 Python 模块。</p>
+<p>在 Python 方面我们不需要任何复杂的东西，无处不在的“hello world” 就可以达到目的：</p>
+<pre><code># foo.py
+def hello():
+    &quot;&quot;&quot;
+    Print hello world for fun and profit.
+    &quot;&quot;&quot;
+    print &quot;hello, world!&quot;
+</code></pre>
+<p>Go 代码稍微复杂一些，但仍然可读：</p>
+<pre><code>// main.go
+package main
+
+import &quot;github.com/sbinet/go-python&quot;
+
+func main() {
+    python.Initialize()
+    defer python.Finalize()
+
+    fooModule := python.PyImport_ImportModule(&quot;foo&quot;)
+    if fooModule == nil {
+        panic(&quot;Error importing module&quot;)
+    }
+
+    helloFunc := fooModule.GetAttrString(&quot;hello&quot;)
+    if helloFunc == nil {
+        panic(&quot;Error importing function&quot;)
+    }
+
+    // The Python function takes no params but when using the C api
+    // we&#39;re required to send (empty) *args and **kwargs anyways.
+    helloFunc.Call(python.PyTuple_New(0), python.PyDict_New())
+}
+</code></pre>
+<p>构建时，我们需要将 <code>PYTHONPATH</code> 环境变量设置为当前工作目录，以便导入语句能够找到 <code>foo.py</code> 模块。在 shell 中，该命令如下所示：</p>
+<pre><code>$ go build main.go &amp;&amp; PYTHONPATH=. ./main
+hello, world!
+</code></pre>
+<p><img src="https://datadog-prod.imgix.net/img/blog/engineering/cgo-and-python/cgo_python_divider_3.png?auto=format&fit=max&w=847" alt=""></p>
+<h3 id="可怕的全局解释器锁">可怕的全局解释器锁</h3>
+<p>为了嵌入 Python 必须引入 cgo ，这是一种权衡：构建速度会变慢，垃圾收集器不会帮助我们管理外部系统使用的内存，交叉编译也很难。对于一个特定的项目来说，这些问题是否是可以争论的，但我认为有一些不容商量的问题：Go 并发模型。如果我们不能从 goroutine 中运行 Python，那么使用 Go 就没有意义了。</p>
+<p>在处理并发、Python 和 cgo 之前，我们还需要知道一些事情：它就是<ruby>全局解释器锁<rt>Global Interpreter Lock</rt></ruby>，即 GIL。GIL 是语言解释器（CPython 就是其中之一）中广泛采用的一种机制，可防止多个线程同时运行。这意味着 CPython 执行的任何 Python 程序都无法在同一进程中并行运行。并发仍然是可能的，锁是速度、安全性和实现简易性之间的一个很好的权衡，那么，当涉及到嵌入时，为什么这会造成问题呢？</p>
+<p>当一个常规的、非嵌入式的 Python 程序启动时，不涉及 GIL 以避免锁定操作中的无用开销；在某些 Python 代码首次请求生成线程时 GIL 就启动了。对于每个线程，解释器创建一个数据结构来存储当前的相关状态信息并锁定 GIL。当线程完成时，状态被恢复，GIL 被解锁，准备被其他线程使用。</p>
+<p>当我们从 Go 程序运行 Python 时，上述情况都不会自动发生。如果没有 GIL，我们的 Go 程序可以创建多个 Python 线程，这可能会导致竞争条件，从而导致致命的运行时错误，并且很可能出现分段错误导致整个 Go 应用程序崩溃。</p>
+<p>解决方案是在我们从 Go 运行多线程代码时显式调用 GIL；代码并不复杂，因为 C API 提供了我们需要的所有工具。为了更好地暴露这个问题，我们需要写一些受 CPU 限制的 Python 代码。让我们将这些函数添加到前面示例中的 <code>foo.py</code> 模块中：</p>
+<pre><code># foo.py
+import sys
+
+def print_odds(limit=10):
+    &quot;&quot;&quot;
+    Print odds numbers &lt; limit
+    &quot;&quot;&quot;
+    for i in range(limit):
+        if i%2:
+            sys.stderr.write(&quot;{}\n&quot;.format(i))
+
+def print_even(limit=10):
+    &quot;&quot;&quot;
+    Print even numbers &lt; limit
+    &quot;&quot;&quot;
+    for i in range(limit):
+        if i%2 == 0:
+            sys.stderr.write(&quot;{}\n&quot;.format(i))
+</code></pre>
+<p>我们将尝试从 Go 并发打印奇数和偶数，使用两个不同的 goroutine（因此涉及线程）：</p>
+<pre><code>package main
+
+import (
+    &quot;sync&quot;
+
+    &quot;github.com/sbinet/go-python&quot;
+)
+
+func main() {
+    // The following will also create the GIL explicitly
+    // by calling PyEval_InitThreads(), without waiting
+    // for the interpreter to do that
+    python.Initialize()
+
+    var wg sync.WaitGroup
+    wg.Add(2)
+
+    fooModule := python.PyImport_ImportModule(&quot;foo&quot;)
+    odds := fooModule.GetAttrString(&quot;print_odds&quot;)
+    even := fooModule.GetAttrString(&quot;print_even&quot;)
+
+    // Initialize() has locked the the GIL but at this point we don&#39;t need it
+    // anymore. We save the current state and release the lock
+    // so that goroutines can acquire it
+    state := python.PyEval_SaveThread()
+
+    go func() {
+        _gstate := python.PyGILState_Ensure()
+        odds.Call(python.PyTuple_New(0), python.PyDict_New())
+        python.PyGILState_Release(_gstate)
+
+        wg.Done()
+    }()
+
+    go func() {
+        _gstate := python.PyGILState_Ensure()
+        even.Call(python.PyTuple_New(0), python.PyDict_New())
+        python.PyGILState_Release(_gstate)
+
+        wg.Done()
+    }()
+
+    wg.Wait()
+
+    // At this point we know we won&#39;t need Python anymore in this
+    // program, we can restore the state and lock the GIL to perform
+    // the final operations before exiting.
+    python.PyEval_RestoreThread(state)
+    python.Finalize()
+}
+</code></pre>
+<p>在阅读示例时，你可能会注意到一个模式，该模式将成为我们运行嵌入式 Python 代码的习惯写法：</p>
+<ol>
+<li>保存状态并锁定 GIL。</li>
+<li>执行 Python。</li>
+<li>恢复状态并解锁 GIL。</li>
+</ol>
+<p>代码应该很简单，但我们想指出一个微妙的细节：请注意，尽管借用了 GIL 执行，有时我们通过调用 <code>PyEval_SaveThread()</code> 和 <code>PyEval_RestoreThread()</code> 来操作 GIL，有时（查看 goroutines 里面）我们对 <code>PyGILState_Ensure()</code> 和 <code>PyGILState_Release()</code> 来做同样的事情。</p>
+<p>我们说过当从 Python 操作多线程时，解释器负责创建存储当前状态所需的数据结构，但是当同样的事情发生在 C API 时，我们来负责处理。</p>
+<p>当我们用 go-python 初始化解释器时，我们是在 Python 上下文中操作的。因此，当调用 <code>PyEval_InitThreads()</code> 时，它会初始化数据结构并锁定 GIL。我们可以使用 <code>PyEval_SaveThread()</code> 和 <code>PyEval_RestoreThread()</code> 对已经存在的状态进行操作。</p>
+<p>在 goroutines 中，我们从 Go 上下文操作，我们需要显式创建状态并在完成后将其删除，这就是 <code>PyGILState_Ensure()</code> 和 <code>PyGILState_Release()</code> 为我们所做的。</p>
+<p><img src="https://datadog-prod.imgix.net/img/blog/engineering/cgo-and-python/cgo_python_divider_4.png?auto=format&fit=max&w=847" alt=""></p>
+<h3 id="释放-gopher">释放 Gopher</h3>
+<p>在这一点上，我们知道如何处理在嵌入式解释器中执行 Python 的多线程 Go 代码，但在 GIL 之后，另一个挑战即将来临：Go 调度程序。</p>
+<p>当一个 goroutine 启动时，它被安排在可用的 <code>GOMAXPROCS</code> 线程之一上执行，<a href="https://morsmachine.dk/go-scheduler">参见此处</a> 可了解有关该主题的更多详细信息。如果一个 goroutine 碰巧执行了系统调用或调用 C 代码，当前线程会将线程队列中等待运行的其他 goroutine 移交给另一个线程，以便它们有更好的机会运行； 当前 goroutine 被暂停，等待系统调用或 C 函数返回。当这种情况发生时，线程会尝试恢复暂停的 goroutine，但如果这不可能，它会要求 Go 运行时找到另一个线程来完成 goroutine 并进入睡眠状态。 goroutine 最后被安排给另一个线程，它就完成了。</p>
+<p>考虑到这一点，让我们看看当一个 goroutine 被移动到一个新线程时，运行一些 Python 代码的 goroutine 会发生什么：</p>
+<ol>
+<li>我们的 goroutine 启动，执行 C 调用并暂停。GIL 被锁定。</li>
+<li>当 C 调用返回时，当前线程尝试恢复 goroutine，但失败了。</li>
+<li>当前线程告诉 Go 运行时寻找另一个线程来恢复我们的 goroutine。</li>
+<li>Go 调度器找到一个可用线程并恢复 goroutine。</li>
+<li>goroutine 快完成了，并在返回之前尝试解锁 GIL。</li>
+<li>当前状态中存储的线程 ID 来自原线程，与当前线程的 ID 不同。</li>
+<li>崩溃！</li>
+</ol>
+<p>所幸，我们可以通过从 goroutine 中调用运行时包中的 <code>LockOSThread</code> 函数来强制 Go runtime 始终保持我们的 goroutine 在同一线程上运行：</p>
+<pre><code>go func() {
+    runtime.LockOSThread()
+
+    _gstate := python.PyGILState_Ensure()
+    odds.Call(python.PyTuple_New(0), python.PyDict_New())
+    python.PyGILState_Release(_gstate)
+    wg.Done()
+}()
+</code></pre>
+<p>这会干扰调度器并可能引入一些开销，但这是我们愿意付出的代价。</p>
+<h3 id="结论">结论</h3>
+<p>为了嵌入 Python，Datadog Agent 必须接受一些权衡：</p>
+<ul>
+<li>cgo 引入的开销。</li>
+<li>手动处理 GIL 的任务。</li>
+<li>在执行期间将 goroutine 绑定到同一线程的限制。</li>
+</ul>
+<p>为了能方便在 Go 中运行 Python 检查，我们很乐意接受其中的每一项。但通过意识到这些权衡，我们能够最大限度地减少它们的影响，除了为支持 Python 而引入的其他限制，我们没有对策来控制潜在问题：</p>
+<ul>
+<li>构建是自动化和可配置的，因此开发人员仍然需要拥有与 <code>go build</code> 非常相似的东西。</li>
+<li>Agent 的轻量级版本，可以使用 Go 构建标签，完全剥离 Python 支持。</li>
+<li>这样的版本仅依赖于在 Agent 本身硬编码的核心检查（主要是系统和网络检查），但没有 cgo 并且可以交叉编译。</li>
+</ul>
+<p>我们将在未来重新评估我们的选择，并决定是否仍然值得保留 cgo；我们甚至可以重新考虑整个 Python 是否仍然值得，等待 <a href="https://golang.org/pkg/plugin/">Go 插件包</a> 成熟到足以支持我们的用例。但就目前而言，嵌入式 Python 运行良好，从旧代理过渡到新代理再简单不过了。</p>
+<p>你是一个喜欢混合不同编程语言的多语言者吗？你喜欢了解语言的内部工作原理以提高你的代码性能吗？</p>
+<hr>
+<p>via: <a href="https://www.datadoghq.com/blog/engineering/cgo-and-python/">https://www.datadoghq.com/blog/engineering/cgo-and-python/</a></p>
+<p>作者：<a href="https://github.com/masci">Massimiliano Pippi</a>
+译者：<a href="https://github.com/Zioyi">Zioyi</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#介绍-cgo">介绍 cgo</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#嵌入-cpython一个入门指南">嵌入 CPython：一个入门指南</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#可怕的全局解释器锁">可怕的全局解释器锁</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#释放-gopher">释放 Gopher</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202107/20180416 Cgo and Python","title":"如何在 Go 中嵌入 Python"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

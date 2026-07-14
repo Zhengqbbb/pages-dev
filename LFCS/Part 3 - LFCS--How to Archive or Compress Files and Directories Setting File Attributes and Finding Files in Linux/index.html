@@ -1,0 +1,298 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>LFCS 系列第三讲：归档/压缩文件及目录、设置文件属性和搜索文件 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="LFCS 系列第三讲：归档/压缩文件及目录、设置文件属性和搜索文件 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="LFCS 系列第三讲：归档/压缩文件及目录、设置文件属性和搜索文件 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/LFCS/Part 3 - LFCS--How to Archive or Compress Files and Directories Setting File Attributes and Finding Files in Linux#page","@type":"TechArticle","headline":"LFCS 系列第三讲：归档/压缩文件及目录、设置文件属性和搜索文件","inLanguage":"en","name":"LFCS 系列第三讲：归档/压缩文件及目录、设置文件属性和搜索文件","url":"https://zhengqbbb.github.io/pages-dev/LFCS/Part 3 - LFCS--How to Archive or Compress Files and Directories Setting File Attributes and Finding Files in Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/LFCS/Part 3 - LFCS--How to Archive or Compress Files and Directories Setting File Attributes and Finding Files in Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#归档和压缩的相关工具">归档和压缩的相关工具</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#通过-find-命令搜索文件">通过 find 命令搜索文件</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#文件权限及基本属性">文件权限及基本属性</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>LFCS 系列第三讲：归档/压缩文件及目录、设置文件属性和搜索文件</h1><p>最近，Linux 基金会发起了一个全新的 LFCS（Linux Foundation Certified Sysadmin，Linux 基金会认证系统管理员）认证，旨在让遍布全世界的人都有机会参加该认证的考试，通过考试的人将表明他们有能力在 Linux 上执行基本的中级系统管理任务。这项认证包括了对已运行的系统和服务的支持、一流水平的问题解决和分析以及决定何时将问题反映给工程师团队的能力。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/lfcs-Part-3.png" alt="Linux Foundation Certified Sysadmin – Part 3"></p>
+<p><em>LFCS 系列第三讲</em></p>
+<p>请看以下视频，这里边讲给出 Linux 基金会认证程序的一些想法。</p>
+<p>注：youtube 视频</p>
+<iframe width="720" height="405" frameborder="0" allowfullscreen="allowfullscreen" src="//www.youtube.com/embed/Y29qZ71Kicg"></iframe><p>本讲是系列教程中的第三讲，在这一讲中，我们会涵盖如何在文件系统中归档/压缩文件及目录、设置文件属性和搜索文件等内容，这些都是 LFCS 认证中必须掌握的知识。</p>
+<h3 id="归档和压缩的相关工具">归档和压缩的相关工具</h3>
+<p>文件归档工具将一堆文件整合到一个单独的归档文件之后，我们可以将归档文件备份到不同类型的介质或者通过网络传输和发送 Email 来备份。在 Linux 中使用频率最高的归档实用工具是 tar。当归档工具和压缩工具一起使用的时候，可以减少同一文件和信息在硬盘中的存储空间。</p>
+<h4 id="tar-使用工具">tar 使用工具</h4>
+<p>tar 将一组文件打包到一个单独的归档文件（通常叫做 tar 文件或者 tarball）。tar 这个名称最初代表磁带存档程序（tape archiver），但现在我们可以用它来归档任意类型的可读写介质上边的数据，而不是只能归档磁带数据。tar 通常与 gzip、bzip2 或者 xz 等压缩工具一起使用，生成一个压缩的 tarball。</p>
+<p><strong>基本语法：</strong></p>
+<pre><code># tar [选项] [路径名 ...]
+</code></pre>
+<p>其中 ... 代表指定哪些文件进行归档操作的表达式</p>
+<h4 id="tar-的常用命令">tar 的常用命令</h4>
+<table>
+<thead>
+<tr>
+<th>长选项</th>
+<th align="center">简写</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-create</td>
+<td align="center">c</td>
+<td align="left">创建 tar 归档文件</td>
+</tr>
+<tr>
+<td>-concatenate</td>
+<td align="center">A</td>
+<td align="left">将一存档与已有的存档合并</td>
+</tr>
+<tr>
+<td>-append</td>
+<td align="center">r</td>
+<td align="left">把要存档的文件追加到归档文件的末尾</td>
+</tr>
+<tr>
+<td>-update</td>
+<td align="center">u</td>
+<td align="left">更新新文件到归档文件中去</td>
+</tr>
+<tr>
+<td>-diff 或 -compare</td>
+<td align="center">d</td>
+<td align="left">比较存档与当前文件的不同之处</td>
+</tr>
+<tr>
+<td>-file archive</td>
+<td align="center">f</td>
+<td align="left">使用档案文件或归档设备</td>
+</tr>
+<tr>
+<td>-list</td>
+<td align="center">t</td>
+<td align="left">列出 tarball 中的内容</td>
+</tr>
+<tr>
+<td>-extract 或 -get</td>
+<td align="center">x</td>
+<td align="left">从归档文件中释放文件</td>
+</tr>
+</tbody></table>
+<h4 id="常用的操作修饰符">常用的操作修饰符</h4>
+<p>注：表格</p>
+<table>
+<thead>
+<tr>
+<th>长选项</th>
+<th align="center">缩写</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-directory dir</td>
+<td align="center">C</td>
+<td align="left">执行归档操作前，先转到指定目录</td>
+</tr>
+<tr>
+<td>-same-permissions</td>
+<td align="center">p</td>
+<td align="left">保持原始的文件权限</td>
+</tr>
+<tr>
+<td>-verbose</td>
+<td align="center">v</td>
+<td align="left">列出所有的读取或提取的文件。但这个标识符与 -list 一起使用的时候，还会显示出文件大小、属主和时间戳的信息</td>
+</tr>
+<tr>
+<td>-verify</td>
+<td align="center">W</td>
+<td align="left">写入存档后进行校验</td>
+</tr>
+<tr>
+<td>-exclude file</td>
+<td align="center"></td>
+<td align="left">不把指定文件包含在内</td>
+</tr>
+<tr>
+<td>-exclude=pattern</td>
+<td align="center">X</td>
+<td align="left">以PATTERN模式排除文件</td>
+</tr>
+<tr>
+<td>-gzip 或 -gunzip</td>
+<td align="center">z</td>
+<td align="left">通过gzip压缩归档</td>
+</tr>
+<tr>
+<td>-bzip2</td>
+<td align="center">j</td>
+<td align="left">通过bzip2压缩归档</td>
+</tr>
+<tr>
+<td>-xz</td>
+<td align="center">J</td>
+<td align="left">通过xz压缩归档</td>
+</tr>
+</tbody></table>
+<p>Gzip 是最古老的压缩工具，压缩率最小，bzip2 的压缩率稍微高一点。另外，xz 是最新的压缩工具，压缩率最好。xz 具有最佳压缩率的代价是：完成压缩操作花费最多时间，压缩过程中占有较多系统资源。</p>
+<p>通常，通过这些工具压缩的 tar 文件相应的具有 .gz、.bz2 或 .xz的扩展名。在下列的例子中，我们使用 file1、file2、file3、file4 和 file5 进行演示。</p>
+<p><strong>通过 gzip、bzip2 和 xz 压缩归档</strong></p>
+<p>归档当前工作目录的所有文件，并以 gzip、bzip2 和 xz 压缩刚刚的归档文件（请注意，用正则表达式来指定哪些文件应该归档——这是为了防止将归档工具包前一步生成的文件打包进来）。</p>
+<pre><code># tar czf myfiles.tar.gz file[0-9]
+# tar cjf myfiles.tar.bz2 file[0-9]
+# tar cJf myfile.tar.xz file[0-9]
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/Compress-Multiple-Files.png" alt="Compress Multiple Files Using tar"></p>
+<p><em>压缩多个文件</em></p>
+<p><strong>列举 tarball 中的内容和更新/追加文件到归档文件中</strong></p>
+<p>列举 tarball 中的内容，并显示相同信息为一个详细目录清单。注意，不能直接向压缩的归档文件更新/追加文件（若你需要向压缩的 tarball 中更新/追加文件，需要先解压 tar 文件后再进行操作，然后重新压缩）。</p>
+<pre><code># tar tvf [tarball]
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/List-Archive-Content.png" alt="Check Files in tar Archive"></p>
+<p><em>列举归档文件中的内容</em></p>
+<p>运行一下任意一条命令：</p>
+<pre><code># gzip -d myfiles.tar.gz	[#1]
+# bzip2 -d myfiles.tar.bz2	[#2]
+# xz -d myfiles.tar.xz 		[#3]
+</code></pre>
+<p>然后：</p>
+<pre><code># tar --delete --file myfiles.tar file4 (删除tarball中的file4)
+# tar --update --file myfiles.tar file4 (更新tarball中的file4)
+</code></pre>
+<p>和</p>
+<pre><code># gzip myfiles.tar		[ 如果你运行 #1 命令 ]
+# bzip2 myfiles.tar		[ 如果你运行 #2 命令 ]
+# xz myfiles.tar 		[ 如果你运行 #3 命令 ]
+</code></pre>
+<p>最后</p>
+<pre><code># tar tvf [tarball] #again
+</code></pre>
+<p>将 file4 修改后的日期和时间与之前显示的对应信息进行比较</p>
+<p><strong>排除文件类型</strong></p>
+<p>假设你现在需要备份用户的家目录。一个有经验的系统管理员会选择忽略所有视频和音频文件再备份（也可能是公司规定）。</p>
+<p>可能你最先想到的方法是在备份的时候，忽略扩展名为 .mp3 和 .mp4（或者其他格式）的文件。但如果你有些自作聪明的用户将扩展名改为 .txt 或者 .bkp，那你的方法就不灵了。为了发现并排除音频或者视频文件，你需要先检查文件类型。以下 shell 脚本可以代你完成类型检查：</p>
+<pre><code>#!/bin/bash
+# 把需要进行备份的目录传递给 $1 参数.
+DIR=$1
+# 排除文件类型中包含了 mpeg 字符串的文件，然后创建 tarball 并进行压缩。
+# -若文件类型中包含 mpeg 字符串， $?（最后执行的命令的退出状态）返回 0，然后文件名被定向到排除选项。否则返回 1。
+# -若 $? 等于 0，该文件从需要备份文件的列表排除。
+tar X &lt;(for i in $DIR/*; do file $i | grep -i mpeg; if [ $? -eq 0 ]; then echo $i; fi;done) -cjf backupfile.tar.bz2 $DIR/*
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/Exclude-Files-in-Tar.png" alt="Exclude Files in tar Archive"></p>
+<p><em>排除文件进行备份</em></p>
+<p><strong>使用 tar 保持文件的原有权限进行恢复</strong></p>
+<p>通过以下命令，你可以保留文件的权限将备份文件恢复到原始用户的家目录（本例是 user_restore）。</p>
+<pre><code># tar xjf backupfile.tar.bz2 --directory user_restore --same-permissions
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/Restore-tar-Backup-Files.png" alt="Restore Files from tar Archive"></p>
+<p><em>从归档文件中恢复</em></p>
+<p><strong>扩展阅读：</strong></p>
+<ul>
+<li><a href="http://www.tecmint.com/18-tar-command-examples-in-linux/">18 tar Command Examples in Linux</a></li>
+<li><a href="http://www.tecmint.com/dtrx-an-intelligent-archive-extraction-tar-zip-cpio-rpm-deb-rar-tool-for-linux/">Dtrx – An Intelligent Archive Tool for Linux</a></li>
+</ul>
+<h3 id="通过-find-命令搜索文件">通过 find 命令搜索文件</h3>
+<p>find 命令用于递归搜索目录树中包含指定字符的文件和目录，然后在屏幕显示出于指定字符相匹配的文件和目录，或者在匹配项进行其他操作。</p>
+<p>通常，我们通过文件名、文件的属主、属组、类型权限、日期及大小来搜索。</p>
+<h4 id="基本语法">基本语法：####</h4>
+<pre><code># find [需搜索的目录] [表达式]
+</code></pre>
+<p><strong>通过文件大小递归搜索文件</strong></p>
+<p>以下命令会搜索当前目录（.）及其下两层子目录（-maxdepth 3，包含当前目录及往下两层的子目录）中大于 2 MB（-size +2M）的所有文件（-f）。</p>
+<pre><code># find . -maxdepth 3 -type f -size +2M
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/Find-Files-Based-on-Size.png" alt="Find Files by Size in Linux">
+*
+通过文件大小搜索文件*</p>
+<p><strong>搜索符合一定规则的文件并将其删除</strong></p>
+<p>有时候，777 权限的文件通常为外部攻击者打开便利之门。不管是以何种方式，让所有人都可以对文件进行任意操作都是不安全的。对此，我们采取一个相对激进的方法——删除这些文件（&#39;{}&#39; + 用来“聚集”搜索的结果）。</p>
+<pre><code># find /home/user -perm 777 -exec rm &#39;{}&#39; +
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/Find-Files-with-777-Permission.png" alt="Find all 777 Permission Files"></p>
+<p><em>搜索 777 权限的文件</em></p>
+<p><strong>按访问时间和修改时间搜索文件</strong></p>
+<p>搜索 /etc 目录下访问时间（-atime）或修改时间（-mtime）大于（+180）或小于（-180） 6 个月或者刚好（180） 6 个月的配置文件。</p>
+<p>按照下面例子对命令进行修改：</p>
+<pre><code># find /etc -iname &quot;*.conf&quot; -mtime -180 -print
+</code></pre>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/Find-Modified-Files.png" alt="Find Files by Modification Time"></p>
+<p><em>按修改时间搜索文件</em></p>
+<ul>
+<li>扩展阅读： <a href="http://www.tecmint.com/35-practical-examples-of-linux-find-command/">35 Practical Examples of Linux ‘find’ Command</a></li>
+</ul>
+<h3 id="文件权限及基本属性">文件权限及基本属性</h3>
+<p>ls -l 命令输出的前 10 位字符是文件的属性，其中第一个字符用来表明文件的类型。</p>
+<ul>
+<li>– : 普通文件</li>
+<li>-d : 目录</li>
+<li>-l : 符号链接</li>
+<li>-c : 字符设备 (它将数据作为字节流处理，如terminal)</li>
+<li>-b : 块设备 (在块设备中处理数据，如存储设备)</li>
+</ul>
+<p>接下来表示文件属性的 9 位字符叫做文件的读写模式，代表文件属主、同组用户和其他用户（通常指的是“外部世界”）对应的读（r）、写（w）和执行（x）权限。</p>
+<p>文件的写权限允许对应的用户对文件进行打开和读写，对于同时设置了执行权限的目录，对应用户可以列举出该目录的内容。另外，文件的执行权限允许将文件当做是一个可执行程序来运行，而目录的执行权限则是允许用户进入和退出该目录。</p>
+<p>文件的权限通过 chown 命令来更改，其基本语法如下：</p>
+<pre><code># chmod [new_mode] file
+</code></pre>
+<p>new_mode 可以是 3 位八进制数值或者对应权限的表达式。</p>
+<p>八进制数值可以从二进制数值进行等值转换，通过下列方法来计算文件属主、同组用户和其他用户权限对应的二进制数值：</p>
+<p>一个确定权限的二进制数值表现为 2 的幂（r=2^2，w=2^1，x=2^0），当权限省缺时，二进制数值为 0。如下：</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/File-Permissions.png" alt="Linux File Permissions"></p>
+<p><em>文件权限</em></p>
+<p>使用八进制数值设置上图的文件权限，请输入：</p>
+<pre><code># chmod 744 myfile
+</code></pre>
+<p>通过 u、g 和 o 分别代表用户、同组用户和其他用户，然后你也可以使用权限表达式来单独对用户设置文件的权限模式。也可以通过 a 代表所有用户，然后设置文件权限。通过 + 号或者 - 号相应的赋予或移除文件权限。</p>
+<p><strong>为所有用户撤销一个 shell 脚本的执行权限</strong></p>
+<p>正如之前解释的那样，我们可以通过 - 号为需要移除权限的属主、同组用户、其他用户或者所有用户去掉指定的文件权限。下面命令中的短横线（-）可以理解为：移除（-）所有用户（a）的 backup.sh 文件执行权限（x）。</p>
+<pre><code># chmod a-x backup.sh
+</code></pre>
+<p>下面演示为文件属主、同组用户赋予读、写和执行权限，并赋予其他用户读权限。</p>
+<p>当我们使用 3 位八进制数值为文件设置权限的时候，第一位数字代表属主权限，第二位数字代表同组用户权限，第三位数字代表其他用户的权限：</p>
+<ul>
+<li>属主：(r=2^2 + w=2^1 + x=2^0 = 7)</li>
+<li>同组用户：(r=2^2 + w=2^1 + x=2^0 = 7)</li>
+<li>其他用户：(r=2^2 + w=0 + x=0 = 4)</li>
+</ul>
+<p>命令如下：</p>
+<pre><code># chmod 774 myfile
+</code></pre>
+<p>随着练习时间的推移，你会知道何种情况下使用哪种方式来更改文件的权限模式的效果最好。</p>
+<p>使用 ls -l 详细列举目录详细同样会显示出文件的属主和属组（这个很基本，而且影响到系统文件的访问控制）。</p>
+<p><img src="http://www.tecmint.com/wp-content/uploads/2014/10/Linux-File-Listing.png" alt="Linux File Listing"></p>
+<p><em>列举 Linux 文件</em></p>
+<p>通过 chown 命令可以对文件的归属权进行更改，可以同时或者分开更改属主和属组。其基本语法为：</p>
+<pre><code># chown user:group file
+</code></pre>
+<p>至少要指定用户或者用户组</p>
+<p><strong>举几个例子：</strong></p>
+<p>将文件的属主更改为指定用户：</p>
+<pre><code># chown gacanepa sent
+</code></pre>
+<p>同时将文件的属主和属组更改为指定的用户和组：</p>
+<pre><code># chown gacanepa:gacanepa TestFile
+</code></pre>
+<p>只将文件的属组更改为指定组。注意组名前的冒号（:）。</p>
+<pre><code># chown :gacanepa email_body.txt
+</code></pre>
+<h3 id="结论">结论</h3>
+<p>作为一个系统管理员，你需要懂得如何创建和恢复备份、如何在系统中搜索文件并更改它们的属性。通过一些技巧，你可以更好地管理系统并避免以后出问题。</p>
+<p>我希望，本文给出的技巧可以帮助你达成管理系统的目标。你可以随时在评论中发表自己的技巧及社区给你带来的益处。</p>
+<p>先行感谢！</p>
+<p>参考链接</p>
+<ul>
+<li><a href="https://training.linuxfoundation.org/certification/LFCS">关于 LFCS</a></li>
+<li><a href="https://training.linuxfoundation.org/certification/why-certify-with-us">为什么需要 Linux 基金会认证?</a></li>
+<li><a href="https://identity.linuxfoundation.org/user?destination=pid/1">注册 LFCS 考试</a></li>
+</ul>
+<hr>
+<p>via: <a href="http://www.tecmint.com/compress-files-and-finding-files-in-linux/">http://www.tecmint.com/compress-files-and-finding-files-in-linux/</a></p>
+<p>作者：<a href="http://www.tecmint.com/author/gacanepa/">Gabriel Cánepa</a>
+译者：<a href="https://github.com/GHLandy">GHLandy</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创翻译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#归档和压缩的相关工具">归档和压缩的相关工具</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#通过-find-命令搜索文件">通过 find 命令搜索文件</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#文件权限及基本属性">文件权限及基本属性</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#结论">结论</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/LFCS/Part 3 - LFCS--How to Archive or Compress Files and Directories Setting File Attributes and Finding Files in Linux","title":"LFCS 系列第三讲：归档/压缩文件及目录、设置文件属性和搜索文件"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

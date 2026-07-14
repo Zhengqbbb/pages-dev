@@ -1,0 +1,352 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>GraphQL 用例：使用 Golang 和 PostgreSQL 构建一个博客引擎 API - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="GraphQL 用例：使用 Golang 和 PostgreSQL 构建一个博客引擎 API - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="GraphQL 用例：使用 Golang 和 PostgreSQL 构建一个博客引擎 API - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201705/20170101 GraphQL In Use Building a Blogging Engine API with Golang and PostgreSQL#page","@type":"TechArticle","headline":"GraphQL 用例：使用 Golang 和 PostgreSQL 构建一个博客引擎 API","inLanguage":"en","name":"GraphQL 用例：使用 Golang 和 PostgreSQL 构建一个博客引擎 API","url":"https://zhengqbbb.github.io/pages-dev/201705/20170101 GraphQL In Use Building a Blogging Engine API with Golang and PostgreSQL","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201705/20170101 GraphQL In Use Building a Blogging Engine API with Golang and PostgreSQL"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#摘要">摘要</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#介绍">介绍</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#相关阅读">相关阅读</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-graphql-中建模一个博客引擎">在 GraphQL 中建模一个博客引擎</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#设计-postgresql-数据库">设计 PostgreSQL 数据库</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#golang-api-实现">Golang API 实现</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#普通场景下和-rest-的对比">普通场景下和 REST 的对比</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#附录1图数据库和高效数据存储">附录1：图数据库和高效数据存储</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>GraphQL 用例：使用 Golang 和 PostgreSQL 构建一个博客引擎 API</h1><h3 id="摘要">摘要</h3>
+<p>GraphQL 在生产环境中似乎难以使用：虽然对于建模功能来说图接口非常灵活，但是并不适用于关系型存储，不管是在实现还是性能方面。</p>
+<p>在这篇博客中，我们会设计并实现一个简单的博客引擎 API，它支持以下功能：</p>
+<ul>
+<li>三种类型的资源（用户、博文以及评论）支持多种功能（创建用户、创建博文、给博文添加评论、关注其它用户的博文和评论，等等。）</li>
+<li>使用 PostgreSQL 作为后端数据存储（选择它因为它是一个流行的关系型数据库）。</li>
+<li>使用 Golang（开发 API 的一个流行语言）实现 API。</li>
+</ul>
+<p>我们会比较简单的 GraphQL 实现和纯 REST 替代方案，在一种普通场景（呈现博客文章页面）下对比它们的实现复杂性和效率。</p>
+<h3 id="介绍">介绍</h3>
+<p>GraphQL 是一种 IDL（Interface Definition Language，接口定义语言），设计者定义数据类型和并把数据建模为一个图（graph）。每个顶点都是一种数据类型的一个实例，边代表了节点之间的关系。这种方式非常灵活，能适应任何业务领域。然而，问题是设计过程更加复杂，而且传统的数据存储不能很好地映射到图模型。阅读_附录1_了解更多关于这个问题的详细信息。</p>
+<p>GraphQL 在 2014 年由 Facebook 的工程师团队首次提出。尽管它的优点和功能非常有趣而且引人注目，但它并没有得到大规模应用。开发者需要权衡 REST 的设计简单性、熟悉性、丰富的工具和 GraphQL 不会受限于 CRUD（LCTT 译注：Create、Read、Update、Delete） 以及网络性能（它优化了往返服务器的网络）的灵活性。</p>
+<p>大部分关于 GraphQL 的教程和指南都跳过了从数据存储获取数据以便解决查询的问题。也就是，如何使用通用目的、流行存储方案（例如关系型数据库）为 GraphQL API 设计一个支持高效数据提取的数据库。</p>
+<p>这篇博客介绍构建一个博客引擎 GraphQL API 的流程。它的功能相当复杂。为了和基于 REST 的方法进行比较，它的范围被限制为一个熟悉的业务领域。</p>
+<p>这篇博客的文章结构如下：</p>
+<ul>
+<li>第一部分我们会设计一个 GraphQL 模式并介绍所使用语言的一些功能。</li>
+<li>第二部分是 PostgreSQL 数据库的设计。</li>
+<li>第三部分介绍了使用 Golang 实现第一部分设计的 GraphQL 模式。</li>
+<li>第四部分我们以从后端获取所需数据的角度来比较呈现博客文章页面的任务。</li>
+</ul>
+<h3 id="相关阅读">相关阅读</h3>
+<ul>
+<li>很棒的 <a href="http://graphql.org/learn/">GraphQL 介绍文档</a>。</li>
+<li>该项目的完整实现代码在 <a href="https://github.com/topliceanu/graphql-go-example">github.com/topliceanu/graphql-go-example</a>。</li>
+</ul>
+<h3 id="在-graphql-中建模一个博客引擎">在 GraphQL 中建模一个博客引擎</h3>
+<p>下述_列表1_包括了博客引擎 API 的全部模式。它显示了组成图的顶点的数据类型。顶点之间的关系，也就是边，被建模为指定类型的属性。</p>
+<pre><code>type User {
+  id: ID
+  email: String!
+  post(id: ID!): Post
+  posts: [Post!]!
+  follower(id: ID!): User
+  followers: [User!]!
+  followee(id: ID!): User
+  followees: [User!]!
+}
+
+type Post {
+  id: ID
+  user: User!
+  title: String!
+  body: String!
+  comment(id: ID!): Comment
+  comments: [Comment!]!
+}
+
+type Comment {
+  id: ID
+  user: User!
+  post: Post!
+  title: String
+  body: String!
+}
+
+type Query {
+  user(id: ID!): User
+}
+
+type Mutation {
+  createUser(email: String!): User
+  removeUser(id: ID!): Boolean
+  follow(follower: ID!, followee: ID!): Boolean
+  unfollow(follower: ID!, followee: ID!): Boolean
+  createPost(user: ID!, title: String!, body: String!): Post
+  removePost(id: ID!): Boolean
+  createComment(user: ID!, post: ID!, title: String!, body: String!): Comment
+  removeComment(id: ID!): Boolean
+}
+</code></pre>
+<p><em>列表1</em></p>
+<p>模式使用 GraphQL DSL 编写，它用于定义自定义数据类型，例如 <code>User</code>、<code>Post</code> 和 <code>Comment</code>。该语言也提供了一系列原始数据类型，例如 <code>String</code>、<code>Boolean</code> 和 <code>ID</code>（它是<code>String</code> 的别名，但是有顶点唯一标识符的额外语义）。</p>
+<p><code>Query</code> 和 <code>Mutation</code> 是语法解析器能识别并用于查询图的可选类型。从 GraphQL API 读取数据等同于遍历图。需要提供这样一个起始顶点；该角色通过 <code>Query</code> 类型来实现。在这种情况中，所有图的查询都要从一个由 id <code>user(id:ID!)</code> 指定的用户开始。对于写数据，定义了 <code>Mutation</code> 顶点。它提供了一系列操作，建模为能遍历（并返回）新创建顶点类型的参数化属性。_列表2_是这些查询的一些例子。</p>
+<p>顶点属性能被参数化，也就是能接受参数。在图遍历场景中，如果一个博文顶点有多个评论顶点，你可以通过指定 <code>comment(id: ID)</code> 只遍历其中的一个。所有这些都取决于设计，设计者可以选择不提供到每个独立顶点的直接路径。</p>
+<p><code>!</code> 字符是一个类型后缀，适用于原始类型和用户定义类型，它有两种语义：</p>
+<ul>
+<li>当被用于参数化属性的参数类型时，表示这个参数是必须的。</li>
+<li>当被用于一个属性的返回类型时，表示当顶点被获取时该属性不会为空。</li>
+<li>也可以把它们组合起来，例如 <code>[Comment!]!</code> 表示一个非空 Comment 顶点链表，其中 <code>[]</code>、<code>[Comment]</code> 是有效的，但 <code>null, [null], [Comment, null]</code> 就不是。</li>
+</ul>
+<p><em>列表2</em> 包括一系列用于博客 API 的 <code>curl</code> 命令，它们会使用 mutation 填充图然后查询图以便获取数据。要运行它们，按照 <a href="https://github.com/graphql/graphql-js">topliceanu/graphql-go-example</a> 仓库中的指令编译并运行服务。</p>
+<pre><code># 创建用户 1、2 和 3 的更改。更改和查询类似，在该情景中我们检索新创建用户的 id 和 email。
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createUser(email:&quot;user1@x.co&quot;){id, email}}&#39;
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createUser(email:&quot;user2@x.co&quot;){id, email}}&#39;
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createUser(email:&quot;user3@x.co&quot;){id, email}}&#39;
+# 为用户添加博文的更改。为了和模式匹配我们需要检索他们的 id，否则会出现错误。
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createPost(user:1,title:&quot;post1&quot;,body:&quot;body1&quot;){id}}&#39;
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createPost(user:1,title:&quot;post2&quot;,body:&quot;body2&quot;){id}}&#39;
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createPost(user:2,title:&quot;post3&quot;,body:&quot;body3&quot;){id}}&#39;
+# 博文所有评论的更改。`createComment` 需要用户 id，标题和正文。看列表 1 的模式。
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createComment(user:2,post:1,title:&quot;comment1&quot;,body:&quot;comment1&quot;){id}}&#39;
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createComment(user:1,post:3,title:&quot;comment2&quot;,body:&quot;comment2&quot;){id}}&#39;
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {createComment(user:3,post:3,title:&quot;comment3&quot;,body:&quot;comment3&quot;){id}}&#39;
+# 让用户 3 关注用户 1 和用户 2 的更改。注意 `follow` 更改只返回一个布尔值而不需要指定。
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {follow(follower:3, followee:1)}&#39;
+curl -XPOST http://vm:8080/graphql -d &#39;mutation {follow(follower:3, followee:2)}&#39;
+
+# 用户获取用户 1 所有数据的查询。
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:1)}&#39;
+# 用户获取用户 2 和用户 1 的关注者的查询。
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:2){followers{id, email}}}&#39;
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:1){followers{id, email}}}&#39;
+# 检测用户 2 是否被用户 1 关注的查询。如果是，检索用户 1 的 email，否则返回空。
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:2){follower(id:1){email}}}&#39;
+# 返回用户 3 关注的所有用户 id 和 email 的查询。
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:3){followees{id, email}}}&#39;
+# 如果用户 3 被用户 1 关注，就获取用户 3 email 的查询。
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:1){followee(id:3){email}}}&#39;
+# 获取用户 1 的第二篇博文的查询，检索它的标题和正文。如果博文 2 不是由用户 1 创建的，就会返回空。
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:1){post(id:2){title,body}}}&#39;
+# 获取用户 1 的所有博文的所有数据的查询。
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:1){posts{id,title,body}}}&#39;
+# 获取写博文 2 用户的查询，如果博文 2 是由 用户 1 撰写；一个现实语言灵活性的例证。
+curl -XPOST http://vm:8080/graphql -d &#39;{user(id:1){post(id:2){user{id,email}}}}&#39;
+</code></pre>
+<p><em>列表2</em></p>
+<p>通过仔细设计 mutation 和类型属性，可以实现强大而富有表达力的查询。</p>
+<h3 id="设计-postgresql-数据库">设计 PostgreSQL 数据库</h3>
+<p>关系型数据库的设计，一如以往，由避免数据冗余的需求驱动。选择该方式有两个原因：</p>
+<ol>
+<li>表明实现 GraphQL API 不需要定制化的数据库技术或者学习和使用新的设计技巧。</li>
+<li>表明 GraphQL API 能在现有的数据库之上创建，更具体地说，最初设计用于 REST 后端甚至传统的呈现 HTML 站点的服务器端数据库。</li>
+</ol>
+<p>阅读 <em>附录1</em> 了解关于关系型和图数据库在构建 GraphQL API 方面的区别。<em>列表3</em> 显示了用于创建新数据库的 SQL 命令。数据库模式和 GraphQL 模式相对应。为了支持 <code>follow/unfollow</code> 更改，需要添加 <code>followers</code> 关系。</p>
+<pre><code>CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(100) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS posts (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title VARCHAR(200) NOT NULL,
+  body TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS comments (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  title VARCHAR(200) NOT NULL,
+  body TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS followers (
+  follower_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  followee_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  PRIMARY KEY(follower_id, followee_id)
+);
+</code></pre>
+<p><em>列表3</em></p>
+<h3 id="golang-api-实现">Golang API 实现</h3>
+<p>本项目使用的用 Go 实现的 GraphQL 语法解析器是 <code>github.com/graphql-go/graphql</code>。它包括一个查询解析器，但不包括模式解析器。这要求开发者利用库提供的结构使用 Go 构建 GraphQL 模式。这和 <a href="https://github.com/graphql/graphql-js">nodejs 实现</a> 不同，后者提供了一个模式解析器并为数据获取暴露了钩子。因此 <em>列表1</em> 中的模式只是作为指导使用，需要转化为 Golang 代码。然而，这个_“限制”_提供了与抽象级别对等的机会，并且了解模式如何和用于检索数据的图遍历模型相关。<em>列表4</em> 显示了 <code>Comment</code> 顶点类型的实现：</p>
+<pre><code>var CommentType = graphql.NewObject(graphql.ObjectConfig{
+	Name: &quot;Comment&quot;,
+	Fields: graphql.Fields{
+		&quot;id&quot;: &amp;graphql.Field{
+			Type: graphql.NewNonNull(graphql.ID),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				if comment, ok := p.Source.(*Comment); ok == true {
+					return comment.ID, nil
+				}
+				return nil, nil
+			},
+		},
+		&quot;title&quot;: &amp;graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				if comment, ok := p.Source.(*Comment); ok == true {
+					return comment.Title, nil
+				}
+				return nil, nil
+			},
+		},
+		&quot;body&quot;: &amp;graphql.Field{
+			Type: graphql.NewNonNull(graphql.ID),
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				if comment, ok := p.Source.(*Comment); ok == true {
+					return comment.Body, nil
+				}
+				return nil, nil
+			},
+		},
+	},
+})
+func init() {
+	CommentType.AddFieldConfig(&quot;user&quot;, &amp;graphql.Field{
+		Type: UserType,
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			if comment, ok := p.Source.(*Comment); ok == true {
+				return GetUserByID(comment.UserID)
+			}
+			return nil, nil
+		},
+	})
+	CommentType.AddFieldConfig(&quot;post&quot;, &amp;graphql.Field{
+		Type: PostType,
+		Args: graphql.FieldConfigArgument{
+			&quot;id&quot;: &amp;graphql.ArgumentConfig{
+				Description: &quot;Post ID&quot;,
+				Type:        graphql.NewNonNull(graphql.ID),
+			},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			i := p.Args[&quot;id&quot;].(string)
+			id, err := strconv.Atoi(i)
+			if err != nil {
+				return nil, err
+			}
+			return GetPostByID(id)
+		},
+	})
+}
+</code></pre>
+<p><em>列表4</em></p>
+<p>正如 <em>列表1</em> 中的模式，<code>Comment</code> 类型是静态定义的一个有三个属性的结构体：<code>id</code>、<code>title</code> 和 <code>body</code>。为了避免循环依赖，动态定义了 <code>user</code> 和 <code>post</code> 两个其它属性。</p>
+<p>Go 并不适用于这种动态建模，它只支持一些类型检查，代码中大部分变量都是 <code>interface{}</code> 类型，在使用之前都需要进行类型断言。<code>CommentType</code> 是一个 <code>graphql.Object</code> 类型的变量，它的属性是 <code>graphql.Field</code> 类型。因此，GraphQL DSL 和 Go 中使用的数据结构并没有直接的转换。</p>
+<p>每个字段的 <code>resolve</code> 函数暴露了 <code>Source</code> 参数，它是表示遍历时前一个节点的数据类型顶点。<code>Comment</code> 的所有属性都有作为 source 的当前 <code>CommentType</code> 顶点。检索<code>id</code>、<code>title</code> 和 <code>body</code> 是一个直接属性访问，而检索 <code>user</code> 和 <code>post</code> 要求图遍历，也需要数据库查询。由于它们非常简单，这篇文章并没有介绍这些 SQL 查询，但在_参考文献_部分列出的 github 仓库中有。</p>
+<h3 id="普通场景下和-rest-的对比">普通场景下和 REST 的对比</h3>
+<p>在这一部分，我们会展示一个普通的博客文章呈现场景，并比较 REST 和 GraphQL 的实现。关注重点会放在入站/出站请求数量，因为这些是造成页面呈现延迟的最主要原因。</p>
+<p>场景：呈现一个博客文章页面。它应该包含关于作者（email）、博客文章（标题、正文）、所有评论（标题、正文）以及评论人是否关注博客文章作者的信息。<em>图1</em> 和 <em>图2</em> 显示了客户端 SPA、API 服务器以及数据库之间的交互，一个是 REST API、另一个对应是 GraphQL API。 </p>
+<pre><code>+------+                  +------+                  +--------+
+|client|                  |server|                  |database|
++--+---+                  +--+---+                  +----+---+
+   |      GET /blogs/:id     |                           |
+1\. +-------------------------&gt;  SELECT * FROM blogs...   |
+   |                         +---------------------------&gt;
+   |                         &lt;---------------------------+
+   &lt;-------------------------+                           |
+   |                         |                           |
+   |     GET /users/:id      |                           |
+2\. +-------------------------&gt;  SELECT * FROM users...   |
+   |                         +---------------------------&gt;
+   |                         &lt;---------------------------+
+   &lt;-------------------------+                           |
+   |                         |                           |
+   | GET /blogs/:id/comments |                           |
+3\. +-------------------------&gt; SELECT * FROM comments... |
+   |                         +---------------------------&gt;
+   |                         &lt;---------------------------+
+   &lt;-------------------------+                           |
+   |                         |                           |
+   | GET /users/:id/followers|                           |
+4\. +-------------------------&gt; SELECT * FROM followers.. |
+   |                         +---------------------------&gt;
+   |                         &lt;---------------------------+
+   &lt;-------------------------+                           |
+   |                         |                           |
+   +                         +                           +
+</code></pre>
+<p><em>图1</em></p>
+<pre><code>+------+                  +------+                  +--------+
+|client|                  |server|                  |database|
++--+---+                  +--+---+                  +----+---+
+   |      GET /graphql       |                           |
+1\. +-------------------------&gt;  SELECT * FROM blogs...   |
+   |                         +---------------------------&gt;
+   |                         &lt;---------------------------+
+   |                         |                           |
+   |                         |                           |
+   |                         |                           |
+2\. |                         |  SELECT * FROM users...   |
+   |                         +---------------------------&gt;
+   |                         &lt;---------------------------+
+   |                         |                           |
+   |                         |                           |
+   |                         |                           |
+3\. |                         | SELECT * FROM comments... |
+   |                         +---------------------------&gt;
+   |                         &lt;---------------------------+
+   |                         |                           |
+   |                         |                           |
+   |                         |                           |
+4\. |                         | SELECT * FROM followers.. |
+   |                         +---------------------------&gt;
+   |                         &lt;---------------------------+
+   &lt;-------------------------+                           |
+   |                         |                           |
+   +                         +                           +
+</code></pre>
+<p><em>图2</em></p>
+<p><em>列表5</em> 是一条用于获取所有呈现博文所需数据的简单 GraphQL 查询。</p>
+<pre><code>{
+  user(id: 1) {
+    email
+    followers
+    post(id: 1) {
+      title
+      body
+      comments {
+        id
+        title
+        user {
+          id
+          email
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p><em>列表5</em></p>
+<p>对于这种情况，对数据库的查询次数是故意相同的，但是到 API 服务器的 HTTP 请求已经减少到只有一个。我们认为在这种类型的应用程序中通过互联网的 HTTP 请求是最昂贵的。</p>
+<p>为了利用 GraphQL 的优势，后端并不需要进行特别设计，从 REST 到 GraphQL 的转换可以逐步完成。这使得可以测量性能提升和优化。从这一点，API 设计者可以开始优化（潜在的合并） SQL 查询从而提高性能。缓存的机会在数据库和 API 级别都大大增加。</p>
+<p>SQL 之上的抽象（例如 ORM 层）通常会和 <code>n+1</code> 问题相抵触。在 REST 示例的步骤 4 中，客户端可能不得不在单独的请求中为每个评论的作者请求关注状态。这是因为在 REST 中没有标准的方式来表达两个以上资源之间的关系，而 GraphQL 旨在通过使用嵌套查询来防止这类问题。这里我们通过获取用户的所有关注者来作弊。我们向客户提出了如何确定评论并关注了作者的用户的逻辑。</p>
+<p>另一个区别是获取比客户端所需更多的数据，以免破坏 REST 资源抽象。这对于用于解析和存储不需要数据的带宽消耗和电池寿命非常重要。</p>
+<h3 id="总结">总结</h3>
+<p>GraphQL 是 REST 的一个可用替代方案，因为：</p>
+<ul>
+<li>尽管设计 API 更加困难，但该过程可以逐步完成。也是由于这个原因，从 REST 转换到 GraphQL 非常容易，两个流程可以没有任何问题地共存。</li>
+<li>在网络请求方面更加高效，即使是类似本博客中的简单实现。它还提供了更多查询优化和结果缓存的机会。</li>
+<li>在用于解析结果的带宽消耗和 CPU 周期方面它更加高效，因为它只返回呈现页面所需的数据。</li>
+</ul>
+<p>REST 仍然非常有用，如果：</p>
+<ul>
+<li>你的 API 非常简单，只有少量的资源或者资源之间关系简单。</li>
+<li>在你的组织中已经在使用 REST API，而且你已经配置好了所有工具，或者你的客户希望获取 REST API。</li>
+<li>你有复杂的 ACL（LCTT 译注：Access Control List） 策略。在博客例子中，可能的功能是允许用户良好地控制谁能查看他们的电子邮箱、博客、特定博客的评论、他们关注了谁，等等。优化数据获取同时检查复杂的业务规则可能会更加困难。</li>
+</ul>
+<h3 id="附录1图数据库和高效数据存储">附录1：图数据库和高效数据存储</h3>
+<p>尽管将其应用领域数据想象为一个图非常直观，正如这篇博文介绍的那样，但是支持这种接口的高效数据存储问题仍然没有解决。</p>
+<p>近年来图数据库变得越来越流行。通过将 GraphQL 查询转换为特定的图数据库查询语言从而延迟解决请求的复杂性似乎是一种可行的方案。</p>
+<p>问题是和关系型数据库相比，图并不是一种高效的数据结构。图中一个顶点可能有到任何其它顶点的连接，访问模式比较难以预测因此提供了较少的优化机会。</p>
+<p>例如缓存的问题，为了快速访问需要将哪些顶点保存在内存中？通用缓存算法在图遍历场景中可能没那么高效。</p>
+<p>数据库分片问题：把数据库切分为更小、没有交叉的数据库并保存到独立的硬件。在学术上，最小切割的图划分问题已经得到了很好的理解，但可能是次优的，而且由于病态的最坏情况可能导致高度不平衡切割。</p>
+<p>在关系型数据库中，数据被建模为记录（行或者元组）和列，表和数据库名称都只是简单的命名空间。大部分数据库都是面向行的，意味着每个记录都是一个连续的内存块，一个表中的所有记录在磁盘上一个接一个地整齐地打包（通常按照某个关键列排序）。这非常高效，因为这是物理存储最优的工作方式。HDD 最昂贵的操作是将磁头移动到磁盘上的另一个扇区，因此最小化此类访问非常重要。</p>
+<p>很有可能如果应用程序对一条特定记录感兴趣，它需要获取整条记录，而不仅仅是记录中的其中一列。也很有可能如果应用程序对一条记录感兴趣，它也会对该记录周围的记录感兴趣，例如全表扫描。这两点使得关系型数据库相当高效。然而，也是因为这个原因，关系型数据库的最差使用场景就是总是随机访问所有数据。图数据库正是如此。</p>
+<p>随着支持更快随机访问的 SSD 驱动器的出现，更便宜的内存使得缓存大部分图数据库成为可能，更好的优化图缓存和分区的技术，图数据库开始成为可选的存储解决方案。大部分大公司也使用它：Facebook 有 Social Graph，Google 有 Knowledge Graph。</p>
+<hr>
+<p>via: <a href="http://alexandrutopliceanu.ro/post/graphql-with-go-and-postgresql">http://alexandrutopliceanu.ro/post/graphql-with-go-and-postgresql</a></p>
+<p>作者：<a href="https://github.com/topliceanu">Alexandru Topliceanu</a>
+译者：<a href="https://github.com/ictlyh">ictlyh</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#摘要">摘要</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#介绍">介绍</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#相关阅读">相关阅读</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#在-graphql-中建模一个博客引擎">在 GraphQL 中建模一个博客引擎</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#设计-postgresql-数据库">设计 PostgreSQL 数据库</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#golang-api-实现">Golang API 实现</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#普通场景下和-rest-的对比">普通场景下和 REST 的对比</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#附录1图数据库和高效数据存储">附录1：图数据库和高效数据存储</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201705/20170101 GraphQL In Use Building a Blogging Engine API with Golang and PostgreSQL","title":"GraphQL 用例：使用 Golang 和 PostgreSQL 构建一个博客引擎 API"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>在你的 Python 平台类游戏中放一些奖励 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="在你的 Python 平台类游戏中放一些奖励 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="在你的 Python 平台类游戏中放一些奖励 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202001/20200102 Put some loot in your Python platformer game#page","@type":"TechArticle","headline":"在你的 Python 平台类游戏中放一些奖励","inLanguage":"en","name":"在你的 Python 平台类游戏中放一些奖励","url":"https://zhengqbbb.github.io/pages-dev/202001/20200102 Put some loot in your Python platformer game","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202001/20200102 Put some loot in your Python platformer game"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建奖励函数">创建奖励函数</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#滚动奖励">滚动奖励</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#检测碰撞">检测碰撞</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>在你的 Python 平台类游戏中放一些奖励</h1><blockquote>
+<p>这部分是关于在使用 Python 的 Pygame 模块开发的视频游戏总给你的玩家提供收集的宝物和经验值的内容。</p>
+</blockquote>
+<p><img src="https://img.linux.net.cn/data/attachment/album/202001/29/131158jkwnhgd1nnawzn86.jpg" alt=""></p>
+<p>这是正在进行的关于使用 <a href="https://www.python.org/">Python 3</a> 的 <a href="https://www.pygame.org/news">Pygame</a> 模块创建视频游戏的系列文章的第十部分。以前的文章有:</p>
+<ul>
+<li><a href="https://linux.cn/article-9071-1.html">通过构建一个简单的掷骰子游戏去学习怎么用 Python 编程</a></li>
+<li><a href="https://linux.cn/article-10850-1.html">使用 Python 和 Pygame 模块构建一个游戏框架</a></li>
+<li><a href="https://linux.cn/article-10858-1.html">如何在你的 Python 游戏中添加一个玩家</a></li>
+<li><a href="https://linux.cn/article-10874-1.html">用 Pygame 使你的游戏角色移动起来</a></li>
+<li><a href="https://linux.cn/article-10883-1.html">如何向你的 Python 游戏中添加一个敌人</a></li>
+<li><a href="https://linux.cn/article-10902-1.html">在 Pygame 游戏中放置平台</a></li>
+<li><a href="https://linux.cn/article-11780-1.html">在你的 Python 游戏中模拟引力</a></li>
+<li><a href="https://linux.cn/article-11790-1.html">为你的 Python 平台类游戏添加跳跃功能</a></li>
+<li><a href="https://linux.cn/article-11819-1.html">使你的 Python 游戏玩家能够向前和向后跑</a></li>
+</ul>
+<p>如果你已经阅读了本系列的前几篇文章，那么你已经了解了编写游戏的所有基础知识。现在你可以在这些基础上，创造一个全功能的游戏。当你第一次学习时，遵循本系列代码示例，这样的“用例”是有帮助的，但是，用例也会约束你。现在是时候运用你学到的知识，以新的方式应用它们了。</p>
+<p>如果说，说起来容易做起来难，这篇文章展示了一个如何将你已经了解的内容用于新目的的例子中。具体来说，就是它涵盖了如何使用你以前的课程中已经了解到的来实现奖励系统。</p>
+<p>在大多数电子游戏中，你有机会在游戏世界中获得“奖励”或收集到宝物和其他物品。奖励通常会增加你的分数或者你的生命值，或者为你的下一次任务提供信息。</p>
+<p>游戏中包含的奖励类似于编程平台。像平台一样，奖励没有用户控制，随着游戏世界的滚动进行，并且必须检查与玩家的碰撞。</p>
+<h3 id="创建奖励函数">创建奖励函数</h3>
+<p>奖励和平台非常相似，你甚至不需要一个奖励的类。你可以重用 <code>Platform</code> 类，并将结果称为“奖励”。</p>
+<p>由于奖励类型和位置可能因关卡不同而不同，如果你还没有，请在你的 <code>Level</code> 中创建一个名为 <code>loot</code> 的新函数。因为奖励物品不是平台，你也必须创建一个新的 <code>loot_list</code> 组，然后添加奖励物品。与平台、地面和敌人一样，该组用于检查玩家碰撞:</p>
+<pre><code>    def loot(lvl,lloc):
+        if lvl == 1:
+            loot_list = pygame.sprite.Group()
+            loot = Platform(300,ty*7,tx,ty, &#39;loot_1.png&#39;)
+            loot_list.add(loot)
+
+        if lvl == 2:
+            print(lvl)
+
+        return loot_list
+</code></pre>
+<p>你可以随意添加任意数量的奖励对象；记住把每一个都加到你的奖励清单上。<code>Platform</code> 类的参数是奖励图标的 X 位置、Y 位置、宽度和高度（通常让你的奖励精灵保持和所有其他方块一样的大小最为简单），以及你想要用作的奖励的图片。奖励的放置可以和贴图平台一样复杂，所以使用创建关卡时需要的关卡设计文档。</p>
+<p>在脚本的设置部分调用新的奖励函数。在下面的代码中，前三行是上下文，所以只需添加第四行:</p>
+<pre><code>enemy_list = Level.bad( 1, eloc )
+ground_list = Level.ground( 1,gloc,tx,ty )
+plat_list = Level.platform( 1,tx,ty )
+loot_list = Level.loot(1,tx,ty)
+</code></pre>
+<p>正如你现在所知道的，除非你把它包含在你的主循环中，否则奖励不会被显示到屏幕上。将下面代码示例的最后一行添加到循环中:</p>
+<pre><code>    enemy_list.draw(world)
+    ground_list.draw(world)
+    plat_list.draw(world)
+    loot_list.draw(world)
+</code></pre>
+<p>启动你的游戏看看会发生什么。</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/pygame-loot.jpg" alt="Loot in Python platformer" title="Loot in Python platformer"></p>
+<p>你的奖励将会显示出来，但是当你的玩家碰到它们时，它们不会做任何事情，当你的玩家经过它们时，它们也不会滚动。接下来解决这些问题。</p>
+<h3 id="滚动奖励">滚动奖励</h3>
+<p>像平台一样，当玩家在游戏世界中移动时，奖励必须滚动。逻辑与平台滚动相同。要向前滚动奖励物品，添加最后两行:</p>
+<pre><code>        for e in enemy_list:
+            e.rect.x -= scroll
+        for l in loot_list:
+            l.rect.x -= scroll
+</code></pre>
+<p>要向后滚动，请添加最后两行：</p>
+<pre><code>        for e in enemy_list:
+            e.rect.x += scroll
+        for l in loot_list:
+            l.rect.x += scroll
+</code></pre>
+<p>再次启动你的游戏，看看你的奖励物品现在表现得像在游戏世界里一样了，而不是仅仅画在上面。</p>
+<h3 id="检测碰撞">检测碰撞</h3>
+<p>就像平台和敌人一样，你可以检查奖励物品和玩家之间的碰撞。逻辑与其他碰撞相同，除了撞击不会（必然）影响重力或生命值。取而代之的是，命中会导致奖励物品会消失并增加玩家的分数。</p>
+<p>当你的玩家触摸到一个奖励对象时，你可以从 <code>loot_list</code> 中移除该对象。这意味着当你的主循环在 <code>loot_list</code> 中重绘所有奖励物品时，它不会重绘那个特定的对象，所以看起来玩家已经获得了奖励物品。</p>
+<p>在 <code>Player</code> 类的 <code>update</code> 函数中的平台碰撞检测之上添加以下代码（最后一行仅用于上下文）：</p>
+<pre><code>                loot_hit_list = pygame.sprite.spritecollide(self, loot_list, False)
+                for loot in loot_hit_list:
+                        loot_list.remove(loot)
+                        self.score += 1
+                print(self.score)
+ 
+        plat_hit_list = pygame.sprite.spritecollide(self, plat_list, False)
+</code></pre>
+<p>当碰撞发生时，你不仅要把奖励从它的组中移除，还要给你的玩家一个分数提升。你还没有创建分数变量，所以请将它添加到你的玩家属性中，该属性是在 <code>Player</code> 类的 <code>__init__</code> 函数中创建的。在下面的代码中，前两行是上下文，所以只需添加分数变量:</p>
+<pre><code>        self.frame = 0
+        self.health = 10
+        self.score = 0
+</code></pre>
+<p>当在主循环中调用 <code>update</code> 函数时，需要包括 <code>loot_list</code>：</p>
+<pre><code>        player.gravity()
+        player.update()
+</code></pre>
+<p>如你所见，你已经掌握了所有的基本知识。你现在要做的就是用新的方式使用你所知道的。</p>
+<p>在下一篇文章中还有一些提示，但是与此同时，用你学到的知识来制作一些简单的单关卡游戏。限制你试图创造的东西的范围是很重要的，这样你就不会埋没自己。这也使得最终的成品看起来和感觉上更容易完成。</p>
+<p>以下是迄今为止你为这个 Python 平台编写的所有代码:</p>
+<pre><code>#!/usr/bin/env python3
+# draw a world
+# add a player and player control
+# add player movement
+# add enemy and basic collision
+# add platform
+# add gravity
+# add jumping
+# add scrolling
+
+# GNU All-Permissive License
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
+
+import pygame
+import sys
+import os
+
+&#39;&#39;&#39;
+Objects
+&#39;&#39;&#39;
+
+class Platform(pygame.sprite.Sprite):
+    # x location, y location, img width, img height, img file    
+    def __init__(self,xloc,yloc,imgw,imgh,img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join(&#39;images&#39;,img)).convert()
+        self.image.convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.y = yloc
+        self.rect.x = xloc
+
+class Player(pygame.sprite.Sprite):
+    &#39;&#39;&#39;
+    Spawn a player
+    &#39;&#39;&#39;
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.movex = 0
+        self.movey = 0
+        self.frame = 0
+        self.health = 10
+        self.collide_delta = 0
+        self.jump_delta = 6
+        self.score = 1
+        self.images = []
+        for i in range(1,9):
+            img = pygame.image.load(os.path.join(&#39;images&#39;,&#39;hero&#39; + str(i) + &#39;.png&#39;)).convert()
+            img.convert_alpha()
+            img.set_colorkey(ALPHA)
+            self.images.append(img)
+            self.image = self.images[0]
+            self.rect  = self.image.get_rect()
+
+    def jump(self,platform_list):
+        self.jump_delta = 0
+
+    def gravity(self):
+        self.movey += 3.2 # how fast player falls
+       
+        if self.rect.y &gt; worldy and self.movey &gt;= 0:
+            self.movey = 0
+            self.rect.y = worldy-ty
+       
+    def control(self,x,y):
+        &#39;&#39;&#39;
+        control player movement
+        &#39;&#39;&#39;
+        self.movex += x
+        self.movey += y
+       
+    def update(self):
+        &#39;&#39;&#39;
+        Update sprite position
+        &#39;&#39;&#39;
+       
+        self.rect.x = self.rect.x + self.movex
+        self.rect.y = self.rect.y + self.movey
+
+        # moving left
+        if self.movex &lt; 0:
+            self.frame += 1
+            if self.frame &gt; ani*3:
+                self.frame = 0
+            self.image = self.images[self.frame//ani]
+
+        # moving right
+        if self.movex &gt; 0:
+            self.frame += 1
+            if self.frame &gt; ani*3:
+                self.frame = 0
+            self.image = self.images[(self.frame//ani)+4]
+
+        # collisions
+        enemy_hit_list = pygame.sprite.spritecollide(self, enemy_list, False)
+        for enemy in enemy_hit_list:
+            self.health -= 1
+            #print(self.health)
+
+        loot_hit_list = pygame.sprite.spritecollide(self, loot_list, False)
+        for loot in loot_hit_list:
+            loot_list.remove(loot)
+            self.score += 1
+            print(self.score)
+
+        plat_hit_list = pygame.sprite.spritecollide(self, plat_list, False)
+        for p in plat_hit_list:
+            self.collide_delta = 0 # stop jumping
+            self.movey = 0
+            if self.rect.y &gt; p.rect.y:
+                self.rect.y = p.rect.y+ty
+            else:
+                self.rect.y = p.rect.y-ty
+           
+        ground_hit_list = pygame.sprite.spritecollide(self, ground_list, False)
+        for g in ground_hit_list:
+            self.movey = 0
+            self.rect.y = worldy-ty-ty
+            self.collide_delta = 0 # stop jumping
+            if self.rect.y &gt; g.rect.y:
+                self.health -=1
+                print(self.health)
+               
+        if self.collide_delta &lt; 6 and self.jump_delta &lt; 6:
+            self.jump_delta = 6*2
+            self.movey -= 33  # how high to jump
+            self.collide_delta += 6
+            self.jump_delta    += 6
+           
+class Enemy(pygame.sprite.Sprite):
+    &#39;&#39;&#39;
+    Spawn an enemy
+    &#39;&#39;&#39;
+    def __init__(self,x,y,img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join(&#39;images&#39;,img))
+        self.movey = 0
+        #self.image.convert_alpha()
+        #self.image.set_colorkey(ALPHA)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.counter = 0
+
+               
+    def move(self):
+        &#39;&#39;&#39;
+        enemy movement
+        &#39;&#39;&#39;
+        distance = 80
+        speed = 8
+
+        self.movey += 3.2
+       
+        if self.counter &gt;= 0 and self.counter &lt;= distance:
+            self.rect.x += speed
+        elif self.counter &gt;= distance and self.counter &lt;= distance*2:
+            self.rect.x -= speed
+        else:
+            self.counter = 0
+       
+        self.counter += 1
+
+        if not self.rect.y &gt;= worldy-ty-ty:
+            self.rect.y += self.movey
+
+        plat_hit_list = pygame.sprite.spritecollide(self, plat_list, False)
+        for p in plat_hit_list:
+            self.movey = 0
+            if self.rect.y &gt; p.rect.y:
+                self.rect.y = p.rect.y+ty
+            else:
+                self.rect.y = p.rect.y-ty
+
+        ground_hit_list = pygame.sprite.spritecollide(self, ground_list, False)
+        for g in ground_hit_list:
+            self.rect.y = worldy-ty-ty
+
+       
+class Level():
+    def bad(lvl,eloc):
+        if lvl == 1:
+            enemy = Enemy(eloc[0],eloc[1],&#39;yeti.png&#39;) # spawn enemy
+            enemy_list = pygame.sprite.Group() # create enemy group
+            enemy_list.add(enemy)              # add enemy to group
+           
+        if lvl == 2:
+            print(&quot;Level &quot; + str(lvl) )
+
+        return enemy_list
+
+    def loot(lvl,tx,ty):
+        if lvl == 1:
+            loot_list = pygame.sprite.Group()
+            loot = Platform(200,ty*7,tx,ty, &#39;loot_1.png&#39;)
+            loot_list.add(loot)
+
+        if lvl == 2:
+            print(lvl)
+
+        return loot_list
+
+    def ground(lvl,gloc,tx,ty):
+        ground_list = pygame.sprite.Group()
+        i=0
+        if lvl == 1:
+            while i &lt; len(gloc):
+                ground = Platform(gloc[i],worldy-ty,tx,ty,&#39;ground.png&#39;)
+                ground_list.add(ground)
+                i=i+1
+
+        if lvl == 2:
+            print(&quot;Level &quot; + str(lvl) )
+
+        return ground_list
+
+    def platform(lvl,tx,ty):
+        plat_list = pygame.sprite.Group()
+        ploc = []
+        i=0
+        if lvl == 1:
+            ploc.append((20,worldy-ty-128,3))
+            ploc.append((300,worldy-ty-256,3))
+            ploc.append((500,worldy-ty-128,4))
+
+            while i &lt; len(ploc):
+                j=0
+                while j &lt;= ploc[i][2]:
+                    plat = Platform((ploc[i][0]+(j*tx)),ploc[i][1],tx,ty,&#39;ground.png&#39;)
+                    plat_list.add(plat)
+                    j=j+1
+                print(&#39;run&#39; + str(i) + str(ploc[i]))
+                i=i+1
+
+        if lvl == 2:
+            print(&quot;Level &quot; + str(lvl) )
+
+        return plat_list
+
+&#39;&#39;&#39;
+Setup
+&#39;&#39;&#39;
+worldx = 960
+worldy = 720
+
+fps = 40 # frame rate
+ani = 4  # animation cycles
+clock = pygame.time.Clock()
+pygame.init()
+main = True
+
+BLUE  = (25,25,200)
+BLACK = (23,23,23 )
+WHITE = (254,254,254)
+ALPHA = (0,255,0)
+
+world = pygame.display.set_mode([worldx,worldy])
+backdrop = pygame.image.load(os.path.join(&#39;images&#39;,&#39;stage.png&#39;)).convert()
+backdropbox = world.get_rect()
+player = Player() # spawn player
+player.rect.x = 0
+player.rect.y = 0
+player_list = pygame.sprite.Group()
+player_list.add(player)
+steps = 10
+forwardx = 600
+backwardx = 230
+
+eloc = []
+eloc = [200,20]
+gloc = []
+#gloc = [0,630,64,630,128,630,192,630,256,630,320,630,384,630]
+tx = 64 #tile size
+ty = 64 #tile size
+
+i=0
+while i &lt;= (worldx/tx)+tx:
+    gloc.append(i*tx)
+    i=i+1
+
+enemy_list = Level.bad( 1, eloc )
+ground_list = Level.ground( 1,gloc,tx,ty )
+plat_list = Level.platform( 1,tx,ty )
+loot_list = Level.loot(1,tx,ty)
+
+&#39;&#39;&#39;
+Main loop
+&#39;&#39;&#39;
+while main == True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit(); sys.exit()
+            main = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT or event.key == ord(&#39;a&#39;):
+                print(&quot;LEFT&quot;)
+                player.control(-steps,0)
+            if event.key == pygame.K_RIGHT or event.key == ord(&#39;d&#39;):
+                print(&quot;RIGHT&quot;)
+                player.control(steps,0)
+            if event.key == pygame.K_UP or event.key == ord(&#39;w&#39;):
+                print(&#39;jump&#39;)
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == ord(&#39;a&#39;):
+                player.control(steps,0)
+            if event.key == pygame.K_RIGHT or event.key == ord(&#39;d&#39;):
+                player.control(-steps,0)
+            if event.key == pygame.K_UP or event.key == ord(&#39;w&#39;):
+                player.jump(plat_list)
+
+            if event.key == ord(&#39;q&#39;):
+                pygame.quit()
+                sys.exit()
+                main = False
+
+    # scroll the world forward
+    if player.rect.x &gt;= forwardx:
+        scroll = player.rect.x - forwardx
+        player.rect.x = forwardx
+        for p in plat_list:
+            p.rect.x -= scroll
+        for e in enemy_list:
+            e.rect.x -= scroll
+        for l in loot_list:
+            l.rect.x -= scroll
+               
+    # scroll the world backward
+    if player.rect.x &lt;= backwardx:
+        scroll = backwardx - player.rect.x
+        player.rect.x = backwardx
+        for p in plat_list:
+            p.rect.x += scroll
+        for e in enemy_list:
+            e.rect.x += scroll
+        for l in loot_list:
+            l.rect.x += scroll
+
+    world.blit(backdrop, backdropbox)    
+    player.gravity() # check gravity
+    player.update()
+    player_list.draw(world) #refresh player position
+    enemy_list.draw(world)  # refresh enemies
+    ground_list.draw(world)  # refresh enemies
+    plat_list.draw(world)   # refresh platforms
+    loot_list.draw(world)   # refresh loot
+
+    for e in enemy_list:
+        e.move()
+    pygame.display.flip()
+    clock.tick(fps)
+</code></pre>
+<hr>
+<p>via: <a href="https://opensource.com/article/20/1/loot-python-platformer-game">https://opensource.com/article/20/1/loot-python-platformer-game</a></p>
+<p>作者：<a href="https://opensource.com/users/seth">Seth Kenlon</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/heguangzhi">heguangzhi</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#创建奖励函数">创建奖励函数</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#滚动奖励">滚动奖励</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#检测碰撞">检测碰撞</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202001/20200102 Put some loot in your Python platformer game","title":"在你的 Python 平台类游戏中放一些奖励"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

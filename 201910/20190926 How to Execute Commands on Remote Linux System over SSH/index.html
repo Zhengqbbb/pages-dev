@@ -1,0 +1,332 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何通过 SSH 在远程 Linux 系统上运行命令 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何通过 SSH 在远程 Linux 系统上运行命令 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何通过 SSH 在远程 Linux 系统上运行命令 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201910/20190926 How to Execute Commands on Remote Linux System over SSH#page","@type":"TechArticle","headline":"如何通过 SSH 在远程 Linux 系统上运行命令","inLanguage":"en","name":"如何通过 SSH 在远程 Linux 系统上运行命令","url":"https://zhengqbbb.github.io/pages-dev/201910/20190926 How to Execute Commands on Remote Linux System over SSH","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201910/20190926 How to Execute Commands on Remote Linux System over SSH"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-如何通过-ssh-在远程-linux-系统上运行命令">1) 如何通过 SSH 在远程 Linux 系统上运行命令</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-如何通过-ssh-在远程-linux-系统上运行多条命令">2) 如何通过 SSH 在远程 Linux 系统上运行多条命令</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-如何通过-ssh-在远程-linux-系统上运行带-sudo-权限的命令">3) 如何通过 SSH 在远程 Linux 系统上运行带 sudo 权限的命令</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-如何通过-ssh-在远程-linux-系统上运行带-sudo-权限的服务控制命令">4) 如何通过 SSH 在远程 Linux 系统上运行带 sudo 权限的服务控制命令</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-如何通过非标准端口-ssh-在远程-linux-系统上运行命令">5) 如何通过非标准端口 SSH 在远程 Linux 系统上运行命令</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6-如何将远程系统的输出保存到本地系统">6) 如何将远程系统的输出保存到本地系统</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7-如何在远程系统上运行本地-bash-脚本">7) 如何在远程系统上运行本地 Bash 脚本</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#8-如何同时在多个远程系统上运行多条指令">8) 如何同时在多个远程系统上运行多条指令</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#9-如何使用-sshpass-命令添加一个密码">9) 如何使用 sshpass 命令添加一个密码</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何通过 SSH 在远程 Linux 系统上运行命令</h1><p>我们有时可能需要在远程机器上运行一些命令。如果只是偶尔进行的操作，要实现这个目的，可以登录到远程系统上直接执行命令。但是每次都这么做的话，就有点烦人了。既然如此，有没有摆脱这种麻烦操作的更佳方案？</p>
+<p>是的，你可以从你本地系统上执行这些操作，而不用登录到远程系统上。这有什么好处吗？毫无疑问。这会为你节省很多好时光。</p>
+<p>这是怎么实现的？SSH 允许你无需登录到远程计算机就可以在它上面运行命令。</p>
+<p><strong>通用语法如下所示：</strong></p>
+<pre><code>$ ssh [用户名]@[远程主机名或 IP] [命令或脚本]
+</code></pre>
+<h3 id="1-如何通过-ssh-在远程-linux-系统上运行命令">1) 如何通过 SSH 在远程 Linux 系统上运行命令</h3>
+<p>下面的例子允许用户通过 ssh 在远程 Linux 机器上运行 <a href="https://www.2daygeek.com/linux-check-disk-space-usage-df-command/">df 命令</a>。</p>
+<pre><code>$ ssh daygeek@CentOS7.2daygeek.com df -h
+
+ Filesystem               Size  Used Avail Use% Mounted on
+ /dev/mapper/centos-root   27G  4.4G   23G  17% /
+ devtmpfs                 903M     0  903M   0% /dev
+ tmpfs                    920M     0  920M   0% /dev/shm
+ tmpfs                    920M  9.3M  910M   2% /run
+ tmpfs                    920M     0  920M   0% /sys/fs/cgroup
+ /dev/sda1               1014M  179M  836M  18% /boot
+ tmpfs                    184M  8.0K  184M   1% /run/user/42
+ tmpfs                    184M     0  184M   0% /run/user/1000
+</code></pre>
+<h3 id="2-如何通过-ssh-在远程-linux-系统上运行多条命令">2) 如何通过 SSH 在远程 Linux 系统上运行多条命令</h3>
+<p>下面的例子允许用户通过 ssh 在远程 Linux 机器上一次运行多条命令。</p>
+<p>同时在远程 Linux 系统上运行 <code>uptime</code> 命令和 <code>free</code> 命令。</p>
+<pre><code>$ ssh daygeek@CentOS7.2daygeek.com &quot;uptime &amp;&amp; free -m&quot;
+
+ 23:05:10 up 10 min,  0 users,  load average: 0.00, 0.03, 0.03
+
+              total       used       free     shared    buffers     cached
+ Mem:          1878        432       1445          1        100        134
+ -/+ buffers/cache:        197       1680
+ Swap:         3071          0       3071
+</code></pre>
+<h3 id="3-如何通过-ssh-在远程-linux-系统上运行带-sudo-权限的命令">3) 如何通过 SSH 在远程 Linux 系统上运行带 sudo 权限的命令</h3>
+<p>下面的例子允许用户通过 ssh 在远程 Linux 机器上运行带有 <a href="https://www.2daygeek.com/how-to-configure-sudo-access-in-linux/">sudo 权限</a> 的 <code>fdisk</code> 命令。</p>
+<p>普通用户不允许执行系统二进制（<code>/usr/sbin/</code>）目录下提供的命令。用户需要 root 权限来运行它。</p>
+<p>所以你需要 root 权限，好在 Linux 系统上运行 <a href="https://www.2daygeek.com/linux-fdisk-command-to-manage-disk-partitions/">fdisk 命令</a>。<code>which</code> 命令返回给定命令的完整可执行路径。</p>
+<pre><code>$ which fdisk
+ /usr/sbin/fdisk
+</code></pre>
+<pre><code>$ ssh -t daygeek@CentOS7.2daygeek.com &quot;sudo fdisk -l&quot;
+ [sudo] password for daygeek:
+
+ Disk /dev/sda: 32.2 GB, 32212254720 bytes, 62914560 sectors
+ Units = sectors of 1 * 512 = 512 bytes
+ Sector size (logical/physical): 512 bytes / 512 bytes
+ I/O size (minimum/optimal): 512 bytes / 512 bytes
+ Disk label type: dos
+ Disk identifier: 0x000bf685
+
+ Device Boot      Start         End      Blocks   Id  System
+ /dev/sda1   *        2048     2099199     1048576   83  Linux
+ /dev/sda2         2099200    62914559    30407680   8e  Linux LVM
+
+ Disk /dev/sdb: 10.7 GB, 10737418240 bytes, 20971520 sectors
+ Units = sectors of 1 * 512 = 512 bytes
+ Sector size (logical/physical): 512 bytes / 512 bytes
+ I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+ Disk /dev/mapper/centos-root: 29.0 GB, 28982640640 bytes, 56606720 sectors
+ Units = sectors of 1 * 512 = 512 bytes
+ Sector size (logical/physical): 512 bytes / 512 bytes
+ I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+ Disk /dev/mapper/centos-swap: 2147 MB, 2147483648 bytes, 4194304 sectors
+ Units = sectors of 1 * 512 = 512 bytes
+ Sector size (logical/physical): 512 bytes / 512 bytes
+ I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+ Connection to centos7.2daygeek.com closed.
+</code></pre>
+<h3 id="4-如何通过-ssh-在远程-linux-系统上运行带-sudo-权限的服务控制命令">4) 如何通过 SSH 在远程 Linux 系统上运行带 sudo 权限的服务控制命令</h3>
+<p>下面的例子允许用户通过 ssh 在远程 Linux 机器上运行带有 sudo 权限的服务控制命令。</p>
+<pre><code>$ ssh -t daygeek@CentOS7.2daygeek.com &quot;sudo systemctl restart httpd&quot;
+
+ [sudo] password for daygeek:
+ Connection to centos7.2daygeek.com closed.
+</code></pre>
+<h3 id="5-如何通过非标准端口-ssh-在远程-linux-系统上运行命令">5) 如何通过非标准端口 SSH 在远程 Linux 系统上运行命令</h3>
+<p>下面的例子允许用户通过 ssh 在使用了非标准端口的远程 Linux 机器上运行 <a href="https://www.2daygeek.com/four-methods-to-change-the-hostname-in-linux/">hostnamectl 命令</a>。</p>
+<pre><code>$ ssh -p 2200 daygeek@CentOS7.2daygeek.com hostnamectl
+
+    Static hostname: Ubuntu18.2daygeek.com
+          Icon name: computer-vm
+            Chassis: vm
+         Machine ID: 27f6c2febda84dc881f28fd145077187
+            Boot ID: bbeccdf932be41ddb5deae9e5f15183d
+     Virtualization: oracle
+   Operating System: Ubuntu 18.04.2 LTS
+             Kernel: Linux 4.15.0-60-generic
+       Architecture: x86-64
+</code></pre>
+<h3 id="6-如何将远程系统的输出保存到本地系统">6) 如何将远程系统的输出保存到本地系统</h3>
+<p>下面的例子允许用户通过 ssh 在远程 Linux 机器上运行 <a href="https://www.2daygeek.com/understanding-linux-top-command-output-usage/">top 命令</a>，并将输出保存到本地系统。</p>
+<pre><code>$ ssh daygeek@CentOS7.2daygeek.com &quot;top -bc | head -n 35&quot; &gt; /tmp/top-output.txt
+</code></pre>
+<pre><code>cat /tmp/top-output.txt
+
+ top - 01:13:11 up 18 min,  1 user,  load average: 0.01, 0.05, 0.10
+ Tasks: 168 total,   1 running, 167 sleeping,   0 stopped,   0 zombie
+ %Cpu(s):  0.0 us,  6.2 sy,  0.0 ni, 93.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+ KiB Mem :  1882300 total,  1176324 free,   342392 used,   363584 buff/cache
+ KiB Swap:  2097148 total,  2097148 free,        0 used.  1348140 avail Mem
+ PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+  4943 daygeek   20   0  162052   2248   1612 R 10.0  0.1   0:00.07 top -bc
+     1 root      20   0  128276   6936   4204 S  0.0  0.4   0:03.08 /usr/lib/sy+
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.00 [kthreadd]
+     3 root      20   0       0      0      0 S  0.0  0.0   0:00.25 [ksoftirqd/+
+     4 root      20   0       0      0      0 S  0.0  0.0   0:00.00 [kworker/0:+
+     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 [kworker/0:+
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 [migration/+
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 [rcu_bh]
+     9 root      20   0       0      0      0 S  0.0  0.0   0:00.77 [rcu_sched]
+    10 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 [lru-add-dr+
+    11 root      rt   0       0      0      0 S  0.0  0.0   0:00.01 [watchdog/0]
+    13 root      20   0       0      0      0 S  0.0  0.0   0:00.00 [kdevtmpfs]
+    14 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 [netns]
+    15 root      20   0       0      0      0 S  0.0  0.0   0:00.00 [khungtaskd]
+    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 [writeback]
+    17 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 [kintegrity+
+    18 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 [bioset]
+    19 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 [bioset]
+    20 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 [bioset]
+</code></pre>
+<p>或者你也可以使用以下格式在远程系统上运行多条命令：</p>
+<pre><code>$ ssh daygeek@CentOS7.2daygeek.com &lt;&lt; EOF
+hostnamectl
+free -m
+grep daygeek /etc/passwd
+EOF
+</code></pre>
+<p>上面命令的输出如下：</p>
+<pre><code>Pseudo-terminal will not be allocated because stdin is not a terminal.
+    Static hostname: CentOS7.2daygeek.com
+          Icon name: computer-vm
+            Chassis: vm
+         Machine ID: 002f47b82af248f5be1d67b67e03514c
+            Boot ID: dca9a1ba06374d7d96678f9461752482
+     Virtualization: kvm
+   Operating System: CentOS Linux 7 (Core)
+        CPE OS Name: cpe:/o:centos:centos:7
+             Kernel: Linux 3.10.0-957.el7.x86_64
+       Architecture: x86-64
+
+               total        used        free      shared  buff/cache   available
+ Mem:           1838         335        1146          11         355        1314
+ Swap:          2047           0        2047
+
+ daygeek:x:1000:1000:2daygeek:/home/daygeek:/bin/bash
+</code></pre>
+<h3 id="7-如何在远程系统上运行本地-bash-脚本">7) 如何在远程系统上运行本地 Bash 脚本</h3>
+<p>下面的例子允许用户通过 ssh 在远程 Linux 机器上运行本地 <a href="https://www.2daygeek.com/understanding-linux-top-command-output-usage/">bash 脚本</a> <code>remote-test.sh</code>。</p>
+<p>创建一个 shell 脚本并执行它。</p>
+<pre><code>$ vi /tmp/remote-test.sh
+
+#!/bin/bash
+#Name: remote-test.sh
+#--------------------
+ uptime
+ free -m
+ df -h
+ uname -a
+ hostnamectl
+</code></pre>
+<p>上面命令的输出如下：</p>
+<pre><code>$ ssh daygeek@CentOS7.2daygeek.com &#39;bash -s&#39; &lt; /tmp/remote-test.sh
+
+  01:17:09 up 22 min,  1 user,  load average: 0.00, 0.02, 0.08
+
+               total        used        free      shared  buff/cache   available
+ Mem:           1838         333        1148          11         355        1316
+ Swap:          2047           0        2047
+
+ Filesystem               Size  Used Avail Use% Mounted on
+ /dev/mapper/centos-root   27G  4.4G   23G  17% /
+ devtmpfs                 903M     0  903M   0% /dev
+ tmpfs                    920M     0  920M   0% /dev/shm
+ tmpfs                    920M  9.3M  910M   2% /run
+ tmpfs                    920M     0  920M   0% /sys/fs/cgroup
+ /dev/sda1               1014M  179M  836M  18% /boot
+ tmpfs                    184M   12K  184M   1% /run/user/42
+ tmpfs                    184M     0  184M   0% /run/user/1000
+
+ Linux CentOS7.2daygeek.com 3.10.0-957.el7.x86_64 #1 SMP Thu Nov 8 23:39:32 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+    Static hostname: CentOS7.2daygeek.com
+          Icon name: computer-vm
+            Chassis: vm
+         Machine ID: 002f47b82af248f5be1d67b67e03514c
+            Boot ID: dca9a1ba06374d7d96678f9461752482
+     Virtualization: kvm
+   Operating System: CentOS Linux 7 (Core)
+        CPE OS Name: cpe:/o:centos:centos:7
+             Kernel: Linux 3.10.0-957.el7.x86_64
+       Architecture: x86-64
+</code></pre>
+<p>或者也可以使用管道。如果你觉得输出不太好看，再做点修改让它更优雅些。</p>
+<pre><code>$ vi /tmp/remote-test-1.sh
+
+#!/bin/bash
+#Name: remote-test.sh
+ echo &quot;---------System Uptime--------------------------------------------&quot;
+ uptime
+ echo -e &quot;\n&quot;
+ echo &quot;---------Memory Usage---------------------------------------------&quot;
+ free -m
+ echo -e &quot;\n&quot;
+ echo &quot;---------Disk Usage-----------------------------------------------&quot;
+ df -h
+ echo -e &quot;\n&quot;
+ echo &quot;---------Kernel Version-------------------------------------------&quot;
+ uname -a
+ echo -e &quot;\n&quot;
+ echo &quot;---------HostName Info--------------------------------------------&quot;
+ hostnamectl
+ echo &quot;------------------------------------------------------------------&quot;
+</code></pre>
+<p>上面脚本的输出如下：</p>
+<pre><code>$ cat /tmp/remote-test.sh  | ssh daygeek@CentOS7.2daygeek.com
+ Pseudo-terminal will not be allocated because stdin is not a terminal.
+ ---------System Uptime--------------------------------------------
+  03:14:09 up  2:19,  1 user,  load average: 0.00, 0.01, 0.05
+
+ ---------Memory Usage---------------------------------------------
+               total        used        free      shared  buff/cache   available
+ Mem:           1838         376        1063          11         398        1253
+ Swap:          2047           0        2047
+
+ ---------Disk Usage-----------------------------------------------
+ Filesystem               Size  Used Avail Use% Mounted on
+ /dev/mapper/centos-root   27G  4.4G   23G  17% /
+ devtmpfs                 903M     0  903M   0% /dev
+ tmpfs                    920M     0  920M   0% /dev/shm
+ tmpfs                    920M  9.3M  910M   2% /run
+ tmpfs                    920M     0  920M   0% /sys/fs/cgroup
+ /dev/sda1               1014M  179M  836M  18% /boot
+ tmpfs                    184M   12K  184M   1% /run/user/42
+ tmpfs                    184M     0  184M   0% /run/user/1000
+ tmpfs                    184M     0  184M   0% /run/user/0
+
+ ---------Kernel Version-------------------------------------------
+ Linux CentOS7.2daygeek.com 3.10.0-957.el7.x86_64 #1 SMP Thu Nov 8 23:39:32 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+ ---------HostName Info--------------------------------------------
+    Static hostname: CentOS7.2daygeek.com
+          Icon name: computer-vm
+            Chassis: vm
+         Machine ID: 002f47b82af248f5be1d67b67e03514c
+            Boot ID: dca9a1ba06374d7d96678f9461752482
+     Virtualization: kvm
+   Operating System: CentOS Linux 7 (Core)
+        CPE OS Name: cpe:/o:centos:centos:7
+             Kernel: Linux 3.10.0-957.el7.x86_64
+       Architecture: x86-64
+</code></pre>
+<h3 id="8-如何同时在多个远程系统上运行多条指令">8) 如何同时在多个远程系统上运行多条指令</h3>
+<p>下面的 bash 脚本允许用户同时在多个远程系统上运行多条指令。使用简单的 <code>for</code> 循环实现。</p>
+<p>为了实现这个目的，你可以尝试 <a href="https://www.2daygeek.com/pssh-parallel-ssh-run-execute-commands-on-multiple-linux-servers/">PSSH 命令</a> 或 <a href="https://www.2daygeek.com/clustershell-clush-run-commands-on-cluster-nodes-remote-system-in-parallel-linux/">ClusterShell 命令</a> 或 <a href="https://www.2daygeek.com/dsh-run-execute-shell-commands-on-multiple-linux-servers-at-once/">DSH 命令</a>。</p>
+<pre><code>$ vi /tmp/multiple-host.sh
+
+ for host in CentOS7.2daygeek.com CentOS6.2daygeek.com
+ do
+    ssh daygeek@CentOS7.2daygeek.com${host} &quot;uname -a;uptime;date;w&quot;
+ done
+</code></pre>
+<p>上面脚本的输出如下：</p>
+<pre><code>$ sh multiple-host.sh
+
+ Linux CentOS7.2daygeek.com 3.10.0-957.el7.x86_64 #1 SMP Thu Nov 8 23:39:32 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+  01:33:57 up 39 min,  1 user,  load average: 0.07, 0.06, 0.06
+
+ Wed Sep 25 01:33:57 CDT 2019
+
+  01:33:57 up 39 min,  1 user,  load average: 0.07, 0.06, 0.06
+ USER     TTY      FROM             daygeek@CentOS7.2daygeek.com   IDLE   JCPU   PCPU WHAT
+ daygeek  pts/0    192.168.1.6      01:08   23:25   0.06s  0.06s -bash
+
+ Linux CentOS6.2daygeek.com 2.6.32-754.el6.x86_64 #1 SMP Tue Jun 19 21:26:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+
+  23:33:58 up 39 min,  0 users,  load average: 0.00, 0.00, 0.00
+
+ Tue Sep 24 23:33:58 MST 2019
+
+  23:33:58 up 39 min,  0 users,  load average: 0.00, 0.00, 0.00
+ USER     TTY      FROM             daygeek@CentOS7.2daygeek.com   IDLE   JCPU   PCPU WHAT
+</code></pre>
+<h3 id="9-如何使用-sshpass-命令添加一个密码">9) 如何使用 sshpass 命令添加一个密码</h3>
+<p>如果你觉得每次输入密码很麻烦，我建议你视你的需求选择以下方法中的一项来解决这个问题。</p>
+<p>如果你经常进行类似的操作，我建议你设置 <a href="https://www.2daygeek.com/configure-setup-passwordless-ssh-key-based-authentication-linux/">免密码认证</a>，因为它是标准且永久的解决方案。</p>
+<p>如果你一个月只是执行几次这些任务，我推荐你使用 <code>sshpass</code> 工具。只需要使用 <code>-p</code> 参数选项提供你的密码即可。</p>
+<pre><code>$ sshpass -p &#39;在这里输入你的密码&#39; ssh -p 2200 daygeek@CentOS7.2daygeek.com ip a
+
+ 1: lo:  mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+     inet 127.0.0.1/8 scope host lo
+        valid_lft forever preferred_lft forever
+     inet6 ::1/128 scope host
+        valid_lft forever preferred_lft forever
+ 2: eth0:  mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+     link/ether 08:00:27:18:90:7f brd ff:ff:ff:ff:ff:ff
+     inet 192.168.1.12/24 brd 192.168.1.255 scope global dynamic eth0
+        valid_lft 86145sec preferred_lft 86145sec
+     inet6 fe80::a00:27ff:fe18:907f/64 scope link tentative dadfailed
+        valid_lft forever preferred_lft forever
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/execute-run-linux-commands-remote-system-over-ssh/">https://www.2daygeek.com/execute-run-linux-commands-remote-system-over-ssh/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/magesh/">Magesh Maruthamuthu</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/alim0x">alim0x</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-如何通过-ssh-在远程-linux-系统上运行命令">1) 如何通过 SSH 在远程 Linux 系统上运行命令</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-如何通过-ssh-在远程-linux-系统上运行多条命令">2) 如何通过 SSH 在远程 Linux 系统上运行多条命令</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-如何通过-ssh-在远程-linux-系统上运行带-sudo-权限的命令">3) 如何通过 SSH 在远程 Linux 系统上运行带 sudo 权限的命令</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-如何通过-ssh-在远程-linux-系统上运行带-sudo-权限的服务控制命令">4) 如何通过 SSH 在远程 Linux 系统上运行带 sudo 权限的服务控制命令</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-如何通过非标准端口-ssh-在远程-linux-系统上运行命令">5) 如何通过非标准端口 SSH 在远程 Linux 系统上运行命令</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#6-如何将远程系统的输出保存到本地系统">6) 如何将远程系统的输出保存到本地系统</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#7-如何在远程系统上运行本地-bash-脚本">7) 如何在远程系统上运行本地 Bash 脚本</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#8-如何同时在多个远程系统上运行多条指令">8) 如何同时在多个远程系统上运行多条指令</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#9-如何使用-sshpass-命令添加一个密码">9) 如何使用 sshpass 命令添加一个密码</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201910/20190926 How to Execute Commands on Remote Linux System over SSH","title":"如何通过 SSH 在远程 Linux 系统上运行命令"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

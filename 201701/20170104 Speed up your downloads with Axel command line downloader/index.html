@@ -1,0 +1,288 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用 Axel 命令行下载器/加速器加速下载 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用 Axel 命令行下载器/加速器加速下载 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用 Axel 命令行下载器/加速器加速下载 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201701/20170104 Speed up your downloads with Axel command line downloader#page","@type":"TechArticle","headline":"使用 Axel 命令行下载器/加速器加速下载","inLanguage":"en","name":"使用 Axel 命令行下载器/加速器加速下载","url":"https://zhengqbbb.github.io/pages-dev/201701/20170104 Speed up your downloads with Axel command line downloader","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201701/20170104 Speed up your downloads with Axel command line downloader"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用 Axel 命令行下载器/加速器加速下载</h1><p><a href="https://axel.alioth.debian.org/">Axel</a> 是一个轻量级下载程序，它和其他加速器一样，对同一个文件建立多个连接，每个连接下载单独的文件片段以更快地完成下载。</p>
+<p>Axel 支持 HTTP、HTTPS、FTP 和 FTPS 协议。它也可以使用多个镜像站点下载单个文件，所以，Axel 可以加速下载高达 40％（大约，我个人认为）。它非常轻量级，因为它没有依赖并且使用非常少的 CPU 和内存。</p>
+<p>Axel 一步到位地将所有数据直接下载到目标文件（LCTT 译注：而不是像其它的下载软件那样下载成多个文件块，然后拼接）。</p>
+<p><strong>注意</strong>：不支持在单条命令中下载两个文件。</p>
+<p>你还可以尝试其他命令行下载管理器/加速器。</p>
+<ul>
+<li>[aria2 - 超快速下载程序] <a href="http://www.2daygeek.com/aria2-command-line-download-utility-tool/">1</a></li>
+<li>[wget - 标准命令行下载程序] <a href="http://www.2daygeek.com/wget-command-line-download-utility-tool/">2</a></li>
+<li>[curl - 命令行下载程序] <a href="http://www.2daygeek.com/aria2-command-line-download-utility-tool/">3</a></li>
+<li>[Linux 下的最好的 4 个命令行下载管理器/加速器] <a href="https://linux.cn/article-8124-1.html">4</a></li>
+</ul>
+<p>大多数发行版（Debian、Ubuntu、Mint、Fedora、suse、openSUSE、Arch Linux、Manjaro、Mageia 等）都有 axel 包，所以我们可以从发行版官方仓库轻松安装。对于 CentOS/RHEL，我们需要启用 <a href="https://linux.cn/article-2324-1.html">EPEL Repository</a>。</p>
+<pre><code>[在 Debian/Ubuntu/LinuxMint 上安装 Axel]
+$ sudo apt-get install axel
+
+[在 RHEL/CentOS 上安装 Axel]
+$ sudo yum install axel
+
+[在 Fedora 上安装 Axel]
+$ sudo dnf install axel
+
+[在 openSUSE 上安装 Axel]
+$ sudo zypper install axel
+
+[在 Mageia 上安装 Axel]
+$ sudo urpmi axel
+
+[在基于 Arch Linux 的发行版安装 Axel]
+$ sudo pacman -S axel
+</code></pre>
+<h4 id="1-下载单个文件">1) 下载单个文件</h4>
+<p>以下命令将从给定的 URL 下载文件并存储在当前目录中，下载文件时，我们可以看到文件的信息（建立的连接数、下载速度、下载进度、完成下载所花费的时间以及连接完成的时间）。</p>
+<pre><code># axel https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+Initializing download: https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+File size: 22678208 bytes
+Opening output file owncloud-9.0.0.tar.bz2
+Starting download
+
+[  0%]  .......... .......... .......... .......... ..........  [ 146.7KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 267.0KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 373.9KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 406.9KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 487.5KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 572.6KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 650.7KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 649.3KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 718.1KB/s]
+[  2%]  .......... .......... .......... .......... ..........  [ 769.3KB/s]
+[  2%]  .......... .......... .......... .......... ..........  [ 838.7KB/s]
+[  2%]  .......... .......... .......... .......... ..........  [ 866.0KB/s]
+Connection 0 finished
+.
+.
+[ 99%]  .......... .......... .......... .......... ..........  [5721.0KB/s]
+Connection 2 finished
+[ 99%]  .......... .......... .......... .......... ..........  [5733.4KB/s]
+Connection 1 finished
+[ 99%]  .......... .......... .......... .......... ..........  [5745.4KB/s]
+[100%]  .......... .......... .......... .......... ......
+
+Downloaded 21.6 megabytes in 3 seconds. (5755.94 KB/s)
+</code></pre>
+<h4 id="2-用不同的名称保存文件">2) 用不同的名称保存文件</h4>
+<p>要使用其他名称来保存文件，启动下载时可以添加 <code>-o</code>（小写字母）选项和文件名。这里我们使用文件名 <code>owncloud.tar.bz2</code> 来保存文件。</p>
+<pre><code># axel -o cloud.tar.bz2 https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+Initializing download: https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+File size: 22678208 bytes
+Opening output file cloud.tar.bz2
+Starting download
+
+[  0%]  .......... .......... .......... .......... ..........  [ 143.0KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 264.1KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 309.8KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 406.3KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 495.4KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 586.3KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 673.1KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 647.1KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 721.1KB/s]
+[  2%]  .......... .......... .......... .......... ..........  [ 781.3KB/s]
+Connection 2 finished
+.
+.
+Connection 0 finished
+[ 98%]  .......... .......... .......... .......... ..........  [6221.9KB/s]
+[ 98%]  .......... .......... .....
+Connection 1 finished
+        ,,,,,,,,,, ,,,,,,,,,, ,,,,,..... .......... ..........  [6145.6KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [6159.2KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [6172.0KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [5977.9KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [5989.6KB/s]
+[100%]  .......... .......... .......... .......... ......
+
+Downloaded 21.6 megabytes in 3 seconds. (6001.05 KB/s)
+</code></pre>
+<h4 id="3-限制下载速度">3) 限制下载速度</h4>
+<p>默认情况下 axel 以字节/秒为单位设置下载文件的最大速度。当我们的网络连接速度较慢时，可以使用此选项。只需添加 <code>-s</code> 选项，后面跟字节值。这里我们要限速 <code>512 KB/s</code> 下载一个文件。</p>
+<pre><code># axel -s 512000 https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+Initializing download: https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+File size: 22678208 bytes
+Opening output file owncloud-9.0.0.tar.bz2
+Starting download
+
+[  0%]  .......... .......... .......... .......... ..........  [ 141.5KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 266.1KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 308.0KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 405.9KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 496.7KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 526.4KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 507.0KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 505.6KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 504.8KB/s]
+[  2%]  .......... .......... .......... .......... ..........  [ 503.9KB/s]
+[  2%]  .......... .......... .......... .......... ..........  [ 503.4KB/s]
+.
+.
+[ 99%]  .......... .......... .......... .......... ..........  [ 497.0KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [ 496.9KB/s]
+[100%]  .......... ..
+Connection 0 finished
+        ,,,,,,,,,, ,,.....
+Connection 1 finished
+Connection 3 finished
+        ,,,,,,,,,, ,,,,,,,... .......... .......... ......
+
+Downloaded 21.6 megabytes in 44 seconds. (494.54 KB/s)
+</code></pre>
+<h4 id="4-限制连接数">4) 限制连接数</h4>
+<p>axel 默认建立 4 个连接以从不同的镜像获取文件。此外，我们可以通过使用 <code>-n</code> 选项添加更多的连接，后跟连接数 <code>10</code> 来提高下载速度。保险起见，我们添加了十个连接，但不幸的是，它花了更多时间来下载文件。</p>
+<pre><code># axel -n 10 https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+Initializing download: https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+File size: 22678208 bytes
+Opening output file owncloud-9.0.0.tar.bz2
+Starting download
+
+[  0%]  .......... .......... .......... .......... ..........  [ 140.8KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 265.7KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 305.4KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 402.1KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 496.3KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 522.1KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 567.5KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 640.5KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 710.8KB/s]
+[  2%]  .......... .......... .......... .......... ..........  [ 780.5KB/s]
+.
+.
+[ 98%]  .......... .......... .......... .......... ..........  [7544.9KB/s]
+[ 98%]  .......... .......... .......... .......... ..........  [7557.9KB/s]
+[ 98%]  .......... .......... .......... .......... ..........  [7570.4KB/s]
+[ 98%]  .......... .......... .......... .......... ..........  [7495.3KB/s]
+[ 99%]  .......... .......... .......... .......... ......
+Connection 2 finished
+        ,,,,,,,,,, ,,,,,,,,,, ,,,,,,,,,, ,,,,,,,,,, ,,,,,,....  [7311.6KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [7318.9KB/s]
+[ 99%]  .......... .......... .......... .......... ..........
+Connection 9 finished
+        ,,,,,,,,,, ,,,,,,,,,, ,,,,,,,,,, ,,,,,,,,,, ,,,,,,,,,,  [7331.0KB/s]
+[ 99%]  .......... .......... .......... ..........
+Connection 3 finished
+        ,,,,,,,,,, ,,,,,,,,,, ,,,,,,,,,, ,,,,,,,,,, ..........  [4300.7KB/s]
+[100%]  .......... .......... .......... .......... ......
+
+Downloaded 21.6 megabytes in 5 seconds. (4109.41 KB/s)
+</code></pre>
+<h4 id="5-恢复未完成的下载">5) 恢复未完成的下载</h4>
+<p>axel 默认具有恢复未完成的下载的行为。Axel 在下载文件时定期更新状态文件（扩展名为 <code>.st</code>）。由于某些原因，下载中途停止了？不用担心，只要使用相同的 axel 命令，它将会检查 <code>file</code> 和 <code>file.st</code>，如果找到，它会从停止处恢复下载。</p>
+<pre><code># axel https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+Initializing download: https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+File size: 22678208 bytes
+Opening output file owncloud-9.0.0.tar.bz2
+Starting download
+
+[  0%]  .......... .......... .......... .......... ..........  [ 140.8KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 265.7KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 305.4KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 402.1KB/s]
+[  0%]  .......... .......... .......... .......... ..........  [ 496.3KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 522.1KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 567.5KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 640.5KB/s]
+[  1%]  .......... .......... .......... .......... ..........  [ 710.8KB/s]
+[  2%]  .......... .......... .......... .......... ..........  [ 780.5KB/s]
+.
+.
+[ 84%]  .......... .......... .......... .......... ..........  [7100.7KB/s]
+[ 84%]  .......... .......... .......... .......... ..........  [7104.3KB/s]
+[ 84%]  .......... .......... .......... .^C
+
+Downloaded 18.3 megabytes in 2 seconds. (7009.79 KB/s)
+</code></pre>
+<p>上面的输出清晰地显示了在下载断开时有两个文件 <code>owncloud-9.0.0.tar.bz2</code> 和 <code>owncloud-9.0.0.tar.bz2.st</code>。当重新开始下载时，它会从停止处开始下载。</p>
+<pre><code># ls -lh
+total 19M
+-rw------- 1 root root 22M Dec 27 08:33 owncloud-9.0.0.tar.bz2
+-rw------- 1 root root  44 Dec 27 08:33 owncloud-9.0.0.tar.bz2.st
+
+# axel https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+Initializing download: https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+File size: 22678208 bytes
+Opening output file owncloud-9.0.0.tar.bz2
+State file found: 19180828 bytes downloaded, 3497380 to go.
+Starting download
+
+        ,,,,,,,,,, ,,,,,,,,,, ,,,,,,,,,, ,......... ..........  [  66.5KB/s]
+[ 84%]  .......... .......... .......... .......... ..........  [ 186.0KB/s]
+[ 85%]  .......... .......... .......... .......... ..........  [ 241.7KB/s]
+[ 85%]  .......... .......... .......... .......... ..........  [ 335.6KB/s]
+[ 85%]  .......... .......... .......... .......... ..........  [ 351.5KB/s]
+[ 85%]  .......... .......... .......... .......... ..........  [ 427.1KB/s]
+[ 85%]  .......... .......... .......... .......... ..........  [ 427.4KB/s]
+[ 86%]  .......... .......... .......... .......... ..........  [ 491.5KB/s]
+.
+.
+[ 98%]  ...
+Connection 0 finished
+        ,,,....... .......... .......... .......... ..........  [2106.6KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [2140.5KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [2172.4KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [2203.2KB/s]
+[ 99%]  .......... .......... .......... .......... ..........  [2236.2KB/s]
+[100%]  .......... .......... .......... .......... ......
+
+Downloaded 3415.4 kilobytes in 1 second. (2264.93 KB/s)
+</code></pre>
+<h4 id="6-不显示文件下载进度">6) 不显示文件下载进度</h4>
+<p>如果你不想要看到文件的下载进度，只要在 axel 命令中加入 <code>-q</code> 选项。</p>
+<pre><code># axel -q https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+</code></pre>
+<h4 id="7-替换进度条">7) 替换进度条</h4>
+<p>如果你不喜欢默认的进度条，你可以使用 <code>-a</code> 选项来替换进度条。</p>
+<pre><code># axel -a https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+Initializing download: https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+File size: 22678208 bytes
+Opening output file owncloud-9.0.0.tar.bz2
+Starting download
+
+[ 66%] [......0      ...1        ..........2  ...........3] [   5.8MB/s] [00:01]^C
+
+Downloaded 14.3 megabytes in 2 seconds. (5916.11 KB/s)
+</code></pre>
+<p>我们中断了上面的下载，以便在下载文件时能清楚地显示替代进度条状态。一旦文件成功下载后，你可以看到相同的输出，如下所示。</p>
+<pre><code># axel -a https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2
+File size: 22678208 bytes
+Opening output file owncloud-9.0.0.tar.bz2
+Starting download
+
+Connection 2 finished                                                          ]
+Connection 1 finished                                                          ]
+Connection 3 finished                                                          ]
+Connection 0 finished                                                          ]
+
+Downloaded 21.6 megabytes in 4 seconds. (5062.32 KB/s)
+</code></pre>
+<h4 id="8-了解关于-axel-的更多信息">8) 了解关于 axel 的更多信息</h4>
+<p>如果你想要了解更多关于 axel 的选项，只需要进入它的手册。</p>
+<pre><code># man axel
+或者
+# axel --help
+</code></pre>
+<p>享受吧。。。)</p>
+<hr>
+<p>via: <a href="http://www.2daygeek.com/axel-command-line-downloader-accelerator-for-linux/">http://www.2daygeek.com/axel-command-line-downloader-accelerator-for-linux/</a></p>
+<p>作者：<a href="http://www.2daygeek.com/author/magesh/">Magesh Maruthamuthu</a>
+译者：<a href="https://github.com/geekpi">geekpi</a>
+校对：<a href="https://github.com/jasminepeng">jasminepeng</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201701/20170104 Speed up your downloads with Axel command line downloader","title":"使用 Axel 命令行下载器/加速器加速下载"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

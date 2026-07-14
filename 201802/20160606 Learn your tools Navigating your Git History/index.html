@@ -1,0 +1,236 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>学习用工具来驾驭 Git 历史 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="学习用工具来驾驭 Git 历史 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="学习用工具来驾驭 Git 历史 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201802/20160606 Learn your tools Navigating your Git History#page","@type":"TechArticle","headline":"学习用工具来驾驭 Git 历史","inLanguage":"en","name":"学习用工具来驾驭 Git 历史","url":"https://zhengqbbb.github.io/pages-dev/201802/20160606 Learn your tools Navigating your Git History","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201802/20160606 Learn your tools Navigating your Git History"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#git-历史">Git 历史</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#寻找尼莫">寻找尼莫</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#那么最后的变更是什么">那么，最后的变更是什么？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#搜索日志">搜索日志</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#下次见">下次见</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>学习用工具来驾驭 Git 历史</h1><p>在你的日常工作中，不可能每天都从头开始去开发一个新的应用程序。而真实的情况是，在日常工作中，我们大多数时候所面对的都是遗留下来的一个代码库，去修改一些特性的内容或者现存的一些代码行，这是我们在日常工作中很重要的一部分。而这也就是分布式版本控制系统 <code>git</code> 的价值所在。现在，我们来深入了解怎么去使用 <code>git</code> 的历史以及如何很轻松地去浏览它的历史。</p>
+<h3 id="git-历史">Git 历史</h3>
+<p>首先和最重要的事是，什么是 <code>git</code> 历史？正如其名字一样，它是一个 <code>git</code> 仓库的提交历史。它包含一堆提交信息，其中有它们的作者的名字、该提交的哈希值以及提交日期。查看一个 <code>git</code> 仓库历史的方法很简单，就是一个 <code>git log</code> 命令。</p>
+<blockquote>
+<p><em>旁注：为便于本文的演示，我们使用 Ruby on Rails 的仓库的 <code>master</code> 分支。之所以选择它的理由是因为，Rails 有良好的 <code>git</code> 历史，漂亮的提交信息、引用以及对每个变更的解释。如果考虑到代码库的大小、维护者的年龄和数量，Rails 肯定是我见过的最好的仓库。当然了，我并不是说其它的 <code>git</code> 仓库做的不好，它只是我见过的比较好的一个仓库。</em></p>
+</blockquote>
+<p>那么，回到 Rails 仓库。如果你在 Ralis 仓库上运行 <code>git log</code>。你将看到如下所示的输出：</p>
+<pre><code>commit 66ebbc4952f6cfb37d719f63036441ef98149418
+Author: Arthur Neves &lt;foo@bar.com&gt;
+Date:   Fri Jun 3 17:17:38 2016 -0400
+
+	Dont re-define class SQLite3Adapter on test
+    
+    We were declaring  in a few tests, which depending of    the order load will cause an error, as the super class could change.
+    
+	see https://github.com/rails/rails/commit/ac1c4e141b20c1067af2c2703db6e1b463b985da#commitcomment-17731383
+
+commit 755f6bf3d3d568bc0af2c636be2f6df16c651eb1
+Merge: 4e85538 f7b850e
+Author: Eileen M. Uchitelle &lt;foo@bar.com&gt;
+Date:   Fri Jun 3 10:21:49 2016 -0400
+    
+    Merge pull request #25263 from abhishekjain16/doc_accessor_thread
+    
+    [skip ci] Fix grammar
+    
+commit f7b850ec9f6036802339e965c8ce74494f731b4a
+Author: Abhishek Jain &lt;foo@bar.com&gt;
+Date:   Fri Jun 3 16:49:21 2016 +0530
+    
+	[skip ci] Fix grammar
+    
+commit 4e85538dddf47877cacc65cea6c050e349af0405
+Merge: 082a515 cf2158c
+Author: Vijay Dev &lt;foo@bar.com&gt;
+Date:   Fri Jun 3 14:00:47 2016 +0000
+    
+    Merge branch &#39;master&#39; of github.com:rails/docrails
+
+	Conflicts:
+    	guides/source/action_cable_overview.md
+    
+commit 082a5158251c6578714132e5c4f71bd39f462d71
+Merge: 4bd11d4 3bd30d9
+Author: Yves Senn &lt;foo@bar.com&gt;
+Date:   Fri Jun 3 11:30:19 2016 +0200
+    
+    Merge pull request #25243 from sukesan1984/add_i18n_validation_test
+
+	Add i18n_validation_test
+    
+commit 4bd11d46de892676830bca51d3040f29200abbfa
+Merge: 99d8d45 e98caf8
+Author: Arthur Nogueira Neves &lt;foo@bar.com&gt;
+Date:   Thu Jun 2 22:55:52 2016 -0400
+
+	Merge pull request #25258 from alexcameron89/master
+
+	[skip ci] Make header bullets consistent in engines.md
+    
+commit e98caf81fef54746126d31076c6d346c48ae8e1b
+Author: Alex Kitchens &lt;foo@bar.com&gt;
+Date:   Thu Jun 2 21:26:53 2016 -0500
+
+	[skip ci] Make header bullets consistent in engines.md
+</code></pre>
+<p>正如你所见，<code>git log</code> 展示了提交的哈希、作者及其 email 以及该提交创建的日期。当然，<code>git</code> 输出的可定制性很强大，它允许你去定制 <code>git log</code> 命令的输出格式。比如说，我们只想看提交信息的第一行，我们可以运行 <code>git log --oneline</code>，它将输出一个更紧凑的日志：</p>
+<pre><code>66ebbc4 Dont re-define class SQLite3Adapter on test
+755f6bf Merge pull request #25263 from abhishekjain16/doc_accessor_thread
+f7b850e [skip ci] Fix grammar4e85538 Merge branch &#39;master&#39; of github.com:rails/docrails
+082a515 Merge pull request #25243 from sukesan1984/add_i18n_validation_test
+4bd11d4 Merge pull request #25258 from alexcameron89/master
+e98caf8 [skip ci] Make header bullets consistent in engines.md
+99d8d45 Merge pull request #25254 from kamipo/fix_debug_helper_test
+818397c Merge pull request #25240 from matthewd/reloadable-channels
+2c5a8ba Don&#39;t blank pad day of the month when formatting dates
+14ff8e7 Fix debug helper test
+</code></pre>
+<p>如果你想看 <code>git log</code> 的全部选项，我建议你去查阅 <code>git log</code> 的 man 页面，你可以在一个终端中输入 <code>man git-log</code> 或者 <code>git help log</code> 来获得。</p>
+<blockquote>
+<p><em>小提示：如果你觉得 <code>git log</code> 看起来太恐怖或者过于复杂，或者你觉得看它太无聊了，我建议你去寻找一些 <code>git</code> 的 GUI 或命令行工具。在之前，我使用过 <a href="http://gitx.frim.nl/">GitX</a> ，我觉得它很不错，但是，由于我看命令行更“亲切”一些，在我尝试了 <a href="https://github.com/jonas/tig">tig</a> 之后，就再也没有去用过它。</em></p>
+</blockquote>
+<h3 id="寻找尼莫">寻找尼莫</h3>
+<p>现在，我们已经知道了关于 <code>git log</code> 命令的一些很基础的知识之后，我们来看一下，在我们的日常工作中如何使用它更加高效地浏览历史。</p>
+<p>假如，我们怀疑在 <code>String#classify</code> 方法中有一个预期之外的行为，我们希望能够找出原因，并且定位出实现它的代码行。</p>
+<p>为达到上述目的，你可以使用的第一个命令是 <code>git grep</code>，通过它可以找到这个方法定义在什么地方。简单来说，这个命令输出了匹配特定模式的那些行。现在，我们来找出定义它的方法，它非常简单 —— 我们对  <code>def classify</code> 运行 grep，然后看到的输出如下：</p>
+<pre><code>➜  git grep &#39;def classify&#39;
+
+activesupport/lib/active_support/core_ext/string/inflections.rb:	def classifyactivesupport/lib/active_support/inflector/methods.rb:    def classify(table_name)tools/profile:    def classify
+</code></pre>
+<p>现在，虽然我们已经看到这个方法是在哪里创建的，但是，并不能够确定它是哪一行。如果，我们在 <code>git grep</code> 命令上增加 <code>-n</code> 标志，<code>git</code> 将提供匹配的行号：</p>
+<pre><code>➜  git grep -n &#39;def classify&#39;
+
+activesupport/lib/active_support/core_ext/string/inflections.rb:205:  def classifyactivesupport/lib/active_support/inflector/methods.rb:186:    def classify(table_name)tools/profile:112:    def classify
+</code></pre>
+<p>更好看了，是吧？考虑到上下文，我们可以很轻松地找到，这个方法在 <code>activesupport/lib/active_support/core_ext/string/inflections.rb</code> 的第 205 行的 <code>classify</code> 方法，它看起来像这样，是不是很容易？</p>
+<pre><code># Creates a class name from a plural table name like Rails does for table names to models.
+# Note that this returns a string and not a class. (To convert to an actual class
+# follow +classify+ with +constantize+.)
+#
+#	&#39;ham_and_eggs&#39;.classify # =&gt; &quot;HamAndEgg&quot;
+#   &#39;posts&#39;.classify        # =&gt; &quot;Post&quot;
+	def classify
+		ActiveSupport::Inflector.classify(self)
+	end
+</code></pre>
+<p>尽管我们找到的这个方法是在 <code>String</code> 上的一个常见的调用，它调用了 <code>ActiveSupport::Inflector</code> 上的另一个同名的方法。根据之前的 <code>git grep</code> 的结果，我们可以很轻松地发现结果的第二行， <code>activesupport/lib/active_support/inflector/methods.rb</code> 在 186 行上。我们正在寻找的方法是这样的：</p>
+<pre><code># Creates a class name from a plural table name like Rails does for table
+# names to models. Note that this returns a string and not a Class (To
+# convert to an actual class follow +classify+ with constantize).
+#
+#   classify(&#39;ham_and_eggs&#39;) # =&gt; &quot;HamAndEgg&quot;
+#   classify(&#39;posts&#39;)        # =&gt; &quot;Post&quot;
+#
+# Singular names are not handled correctly:
+#
+#   classify(&#39;calculus&#39;)     # =&gt; &quot;Calculus&quot;
+def classify(table_name)
+	# strip out any leading schema name
+	camelize(singularize(table_name.to_s.sub(/.*\./, &#39;&#39;.freeze)))
+end
+</code></pre>
+<p>酷！考虑到 Rails 仓库的大小，我们借助 <code>git grep</code> 找到它，用时都没有超越 30 秒。</p>
+<h3 id="那么最后的变更是什么">那么，最后的变更是什么？</h3>
+<p>现在，我们已经找到了所要找的方法，现在，我们需要搞清楚这个文件所经历的变更。由于我们已经知道了正确的文件名和行数，我们可以使用 <code>git blame</code>。这个命令展示了一个文件中每一行的最后修订者和修订的内容。我们来看一下这个文件最后的修订都做了什么：</p>
+<pre><code>git blame activesupport/lib/active_support/inflector/methods.rb
+</code></pre>
+<p>虽然我们得到了这个文件每一行的最后的变更，但是，我们更感兴趣的是对特定方法（176 到 189 行）的最后变更。让我们在 <code>git blame</code> 命令上增加一个选项，让它只显示那些行的变化。此外，我们将在命令上增加一个 <code>-s</code> （忽略）选项，去跳过那一行变更时的作者名字和修订（提交）的时间戳：</p>
+<pre><code>git blame -L 176,189 -s activesupport/lib/active_support/inflector/methods.rb
+
+9fe8e19a 176)	#Creates a class name from a plural table name like Rails does for table
+5ea3f284 177)	# names to models. Note that this returns a string and not a Class (To
+9fe8e19a 178)	# convert to an actual class follow +classify+ with #constantize).
+51cd6bb8 179)   #
+6d077205 180)   #   classify(&#39;ham_and_eggs&#39;) # =&gt; &quot;HamAndEgg&quot;
+9fe8e19a 181)   #   classify(&#39;posts&#39;)        # =&gt; &quot;Post&quot;
+51cd6bb8 182)   #
+51cd6bb8 183)   # Singular names are not handled correctly:
+5ea3f284 184)   #
+66d6e7be 185)   #   classify(&#39;calculus&#39;)     # =&gt; &quot;Calculus&quot;
+51cd6bb8 186)   def classify(table_name)
+51cd6bb8 187)     # strip out any leading schema name
+5bb1d4d2 188)     camelize(singularize(table_name.to_s.sub(/.*\./, &#39;&#39;.freeze)))
+51cd6bb8 189)     end
+</code></pre>
+<p>现在，<code>git blame</code> 命令的输出展示了指定行的全部内容以及它们各自的修订。让我们来看一下指定的修订，换句话说就是，每个变更都修订了什么，我们可以使用 <code>git show</code> 命令。当指定一个修订哈希（像 <code>66d6e7be</code>）作为一个参数时，它将展示这个修订的全部内容。包括作者名字、时间戳以及完整的修订内容。我们来看一下 188 行最后的修订都做了什么？</p>
+<pre><code>git show 5bb1d4d2
+</code></pre>
+<p>你亲自做实验了吗？如果没有做，我直接告诉你结果，这个令人惊叹的 <a href="https://github.com/rails/rails/commit/5bb1d4d288d019e276335465d0389fd2f5246bfd">提交</a> 是由 <a href="https://twitter.com/schneems">Schneems</a> 完成的，他通过使用 frozen 字符串做了一个非常有趣的性能优化，这在我们当前的场景中是非常有意义的。但是，由于我们在这个假设的调试会话中，这样做并不能告诉我们当前问题所在。因此，我们怎么样才能够通过研究来发现，我们选定的方法经过了哪些变更？</p>
+<h3 id="搜索日志">搜索日志</h3>
+<p>现在，我们回到 <code>git</code> 日志，现在的问题是，怎么能够看到 <code>classify</code> 方法经历了哪些修订？</p>
+<p><code>git log</code> 命令非常强大，因此它提供了非常多的列表选项。我们尝试使用 <code>-p</code> 选项去看一下保存了这个文件的 <code>git</code> 日志内容，这个选项的意思是在 <code>git</code> 日志中显示这个文件的完整补丁:</p>
+<pre><code>git log -p activesupport/lib/active_support/inflector/methods.rb
+</code></pre>
+<p>这将给我们展示一个很长的修订列表，显示了对这个文件的每个修订。但是，正如下面所显示的，我们感兴趣的是对指定行的修订。对命令做一个小的修改，只显示我们希望的内容：</p>
+<pre><code>git log -L 176,189:activesupport/lib/active_support/inflector/methods.rb
+</code></pre>
+<p><code>git log</code> 命令接受 <code>-L</code> 选项，它用一个行的范围和文件名做为参数。它的格式可能有点奇怪，格式解释如下：</p>
+<pre><code>git log -L &lt;start-line&gt;,&lt;end-line&gt;:&lt;path-to-file&gt;
+</code></pre>
+<p>当我们运行这个命令之后，我们可以看到对这些行的一个修订列表，它将带我们找到创建这个方法的第一个修订：</p>
+<pre><code>commit 51xd6bb829c418c5fbf75de1dfbb177233b1b154
+Author: Foo Bar &lt;foo@bar.com&gt;
+Date:   Tue Jun 7 19:05:09 2011 -0700
+
+	Refactor
+	
+diff--git a/activesupport/lib/active_support/inflector/methods.rb b/activesupport/lib/active_support/inflector/methods.rb
+--- a/activesupport/lib/active_support/inflector/methods.rb
++++ b/activesupport/lib/active_support/inflector/methods.rb
+@@ -58,0 +135,14 @@
++    # Create a class name from a plural table name like Rails does for table names to models.
++    # Note that this returns a string and not a Class. (To convert to an actual class
++    # follow +classify+ with +constantize+.)
++    #
++    # Examples:
++    #   &quot;egg_and_hams&quot;.classify # =&gt; &quot;EggAndHam&quot;
++    #   &quot;posts&quot;.classify        # =&gt; &quot;Post&quot;
++    #
++    # Singular names are not handled correctly:
++    #   &quot;business&quot;.classify     # =&gt; &quot;Busines&quot;
++    def classify(table_name)
++      # strip out any leading schema name
++      camelize(singularize(table_name.to_s.sub(/.*\./, &#39;&#39;)))
++    end
+</code></pre>
+<p>现在，我们再来看一下 ——  它是在 2011 年提交的。<code>git</code> 可以让我们重回到这个时间。这是一个很好的例子，它充分说明了足够的提交信息对于重新了解当时的上下文环境是多么的重要，因为从这个提交信息中，我们并不能获得足够的信息来重新理解当时的创建这个方法的上下文环境，但是，话说回来，你<strong>不应该</strong>对此感到恼怒，因为，你看到的这些项目，它们的作者都是无偿提供他们的工作时间和精力来做开源工作的。（向开源项目贡献者致敬！）</p>
+<p>回到我们的正题，我们并不能确认 <code>classify</code> 方法最初实现是怎么回事，考虑到这个第一次的提交只是一个重构。现在，如果你认为，“或许、有可能、这个方法不在 176 行到 189 行的范围之内，那么就你应该在这个文件中扩大搜索范围”，这样想是对的。我们看到在它的修订提交的信息中提到了“重构”这个词，它意味着这个方法可能在那个文件中是真实存在的，而且是在重构之后它才存在于那个行的范围内。</p>
+<p>但是，我们如何去确认这一点呢？不管你信不信，<code>git</code> 可以再次帮助你。<code>git log</code> 命令有一个 <code>-S</code> 选项，它可以传递一个特定的字符串作为参数，然后去查找代码变更（添加或者删除）。也就是说，如果我们执行 <code>git log -S classify</code> 这样的命令，我们可以看到所有包含 <code>classify</code> 字符串的变更行的提交。</p>
+<p>如果你在 Ralis 仓库上运行上述命令，首先你会发现这个命令运行有点慢。但是，你应该会发现 <code>git</code> 实际上解析了在那个仓库中的所有修订来匹配这个字符串，其实它的运行速度是非常快的。在你的指尖下 <code>git</code> 再次展示了它的强大之处。因此，如果去找关于 <code>classify</code> 方法的第一个修订，我们可以运行如下的命令：</p>
+<pre><code>git log -S &#39;def classify&#39;
+</code></pre>
+<p>它将返回所有这个方法的引用和修改的地方。如果你一直往下看，你将看到日志中它的最后的提交：</p>
+<pre><code>commit db045dbbf60b53dbe013ef25554fd013baf88134
+Author: David Heinemeier Hansson &lt;foo@bar.com&gt;
+Date:   Wed Nov 24 01:04:44 2004 +0000
+	Initial
+    git-svn-id: http://svn-commit.rubyonrails.org/rails/trunk@4 5ecf4fe2-1ee6-0310-87b1-e25e094e27de
+</code></pre>
+<p>很酷！是吧？它初次被提交到 Rails，是由 DHH 在一个 <code>svn</code> 仓库上做的！这意味着 <code>classify</code> 大概在一开始就被提交到了 Rails 仓库。现在，我们去看一下这个提交的所有变更信息，我们运行如下的命令：</p>
+<pre><code>git show db045dbbf60b53dbe013ef25554fd013baf88134
+</code></pre>
+<p>非常好！我们终于找到它的根源了。现在，我们使用 <code>git log -S &#39;def classify&#39;</code> 的输出，结合 <code>git log -L</code> 命令来跟踪这个方法都发生了哪些变更。</p>
+<h3 id="下次见">下次见</h3>
+<p>当然，我们并没有真的去修改任何 bug，因为我们只是去尝试使用一些 <code>git</code> 命令，来演示如何查看 <code>classify</code> 方法的演变历史。但是不管怎样，<code>git</code> 是一个非常强大的工具，我们必须学好它、用好它。我希望这篇文章可以帮助你掌握更多的关于如何使用 <code>git</code> 的知识。</p>
+<p>你喜欢这些内容吗？</p>
+<hr>
+<p>作者简介：</p>
+<p>后端工程师，对 Ruby、Go、微服务、构建弹性架构来解决大规模部署带来的挑战很感兴趣。我在阿姆斯特丹的 Rails Girls 担任顾问，维护着一个小而精的列表，并且经常为开源做贡献。</p>
+<p>那个列表是我写的关于软件开发、编程语言以及任何我感兴趣的东西。</p>
+<hr>
+<p>via: <a href="https://ieftimov.com/learn-your-tools-navigating-git-history">https://ieftimov.com/learn-your-tools-navigating-git-history</a></p>
+<p>作者：<a href="https://ieftimov.com/">Ilija Eftimov</a>
+译者：<a href="https://github.com/qhwdw">qhwdw</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#git-历史">Git 历史</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#寻找尼莫">寻找尼莫</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#那么最后的变更是什么">那么，最后的变更是什么？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#搜索日志">搜索日志</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#下次见">下次见</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201802/20160606 Learn your tools Navigating your Git History","title":"学习用工具来驾驭 Git 历史"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

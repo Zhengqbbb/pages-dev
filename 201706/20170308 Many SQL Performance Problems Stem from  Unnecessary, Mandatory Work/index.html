@@ -1,0 +1,290 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>许多 SQL 性能问题来自于“不必要的强制性工作” - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="许多 SQL 性能问题来自于“不必要的强制性工作” - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="许多 SQL 性能问题来自于“不必要的强制性工作” - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201706/20170308 Many SQL Performance Problems Stem from  Unnecessary, Mandatory Work#page","@type":"TechArticle","headline":"许多 SQL 性能问题来自于“不必要的强制性工作”","inLanguage":"en","name":"许多 SQL 性能问题来自于“不必要的强制性工作”","url":"https://zhengqbbb.github.io/pages-dev/201706/20170308 Many SQL Performance Problems Stem from  Unnecessary, Mandatory Work","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201706/20170308 Many SQL Performance Problems Stem from  Unnecessary, Mandatory Work"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#不必要的">不必要的</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#强制性">强制性</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#内存消耗">内存消耗</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#索引使用">索引使用</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#sql-转换">SQL 转换</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#同时">同时……</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#计算出现次数">计算出现次数</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如果你喜欢这篇文章">如果你喜欢这篇文章...</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>许多 SQL 性能问题来自于“不必要的强制性工作”</h1><p>在编写高效 SQL 时，你可能遇到的最有影响的事情就是<a href="http://use-the-index-luke.com/">索引</a>。但是，一个很重要的事实就是很多 SQL 客户端要求数据库做很多**“不必要的强制性工作”**。</p>
+<p>跟我再重复一遍：</p>
+<blockquote>
+<p>不必要的强制性工作</p>
+</blockquote>
+<p>什么是**“不必要的强制性工作”**？这个意思包括两个方面：</p>
+<h3 id="不必要的">不必要的</h3>
+<p>假设你的客户端应用程序需要这些信息：</p>
+<p><a href="https://lukaseder.files.wordpress.com/2017/03/title-rating.png">
+ <img src="https://lukaseder.files.wordpress.com/2017/03/title-rating.png?w=662" alt=""> 
+</a></p>
+<p>这没什么特别的。我们运行着一个电影数据库（<a href="https://github.com/jOOQ/jOOQ/tree/master/jOOQ-examples/Sakila">例如 Sakila 数据库</a>），我们想要给用户显示每部电影的名称和评分。</p>
+<p>这是能产生上面结果的查询： </p>
+<pre><code>SELECT title, rating
+FROM film
+</code></pre>
+<p>然而，我们的应用程序（或者我们的 ORM（LCTT 译注：Object-Relational Mapping，对象关系映射））运行的查询却是：</p>
+<pre><code>SELECT *
+FROM film
+</code></pre>
+<p>我们得到什么？猜一下。我们得到很多无用的信息：</p>
+<p><a href="https://lukaseder.files.wordpress.com/2017/03/useless-information.png">
+ <img src="https://lukaseder.files.wordpress.com/2017/03/useless-information.png?w=662&h=131" alt=""> 
+</a></p>
+<p>甚至一些复杂的 JSON 数据全程在下列环节中加载：</p>
+<ul>
+<li>从磁盘</li>
+<li>加载到缓存</li>
+<li>通过总线</li>
+<li>进入客户端内存</li>
+<li>然后被丢弃</li>
+</ul>
+<p>是的，我们丢弃了其中大部分的信息。检索它所做的工作完全就是不必要的。对吧？没错。</p>
+<h3 id="强制性">强制性</h3>
+<p>这是最糟糕的部分。现今随着优化器变得越来越聪明，这些工作对于数据库来说都是强制执行的。数据库没有办法_知道_客户端应用程序实际上不需要其中 95% 的数据。这只是一个简单的例子。想象一下如果我们连接更多的表...</p>
+<p>你想想那会怎样呢？数据库还快吗？让我们来看看一些之前你可能没有想到的地方：</p>
+<h3 id="内存消耗">内存消耗</h3>
+<p>当然，单次执行时间不会变化很大。可能是慢 1.5 倍，但我们可以忍受，是吧？为方便起见，有时候确实如此。但是如果你_每次_都为了方便而牺牲性能，这事情就大了。我们不说性能问题（单个查询的速度），而是关注在吞吐量上时（系统响应时间），事情就变得困难而难以解决。你就会受阻于规模的扩大。</p>
+<p>让我们来看看执行计划，这是 Oracle 的：</p>
+<pre><code>--------------------------------------------------
+| Id  | Operation         | Name | Rows  | Bytes |
+--------------------------------------------------
+|   0 | SELECT STATEMENT  |      |  1000 |   166K|
+|   1 |  TABLE ACCESS FULL| FILM |  1000 |   166K|
+--------------------------------------------------
+</code></pre>
+<p>对比一下：</p>
+<pre><code>--------------------------------------------------
+| Id  | Operation         | Name | Rows  | Bytes |
+--------------------------------------------------
+|   0 | SELECT STATEMENT  |      |  1000 | 20000 |
+|   1 |  TABLE ACCESS FULL| FILM |  1000 | 20000 |
+--------------------------------------------------
+</code></pre>
+<p>当执行 <code>SELECT *</code> 而不是 <code>SELECT film, rating</code> 的时候，我们在数据库中使用了 8 倍之多的内存。这并不奇怪，对吧？我们早就知道了。在很多我们并不需要其中全部数据的查询中我们都是这样做的。我们为数据库产生了<strong>不必要的强制性工作</strong>，其后果累加了起来，就是我们使用了多达 8 倍的内存（当然，数值可能有些不同）。</p>
+<p>而现在，所有其它的步骤（比如，磁盘 I/O、总线传输、客户端内存消耗）也受到相同的影响，我这里就跳过了。另外，我还想看看...</p>
+<h3 id="索引使用">索引使用</h3>
+<p>如今大部分数据库都有<a href="https://blog.jooq.org/2015/04/28/do-not-think-that-one-second-is-fast-for-query-execution/">涵盖索引</a>（LCTT 译注：covering index，包括了你查询所需列、甚至更多列的索引，可以直接从索引中获取所有需要的数据，而无需访问物理表）的概念。涵盖索引并不是特殊的索引。但对于一个特定的查询，它可以“意外地”或人为地转变为一个“特殊索引”。</p>
+<p>看看这个查询：</p>
+<pre><code>SELECT *
+FROM actor
+WHERE last_name LIKE &#39;A%&#39;
+</code></pre>
+<p>执行计划中没有什么特别之处。它只是个简单的查询。索引范围扫描、表访问，就结束了：</p>
+<pre><code>-------------------------------------------------------------------
+| Id  | Operation                   | Name                | Rows  |
+-------------------------------------------------------------------
+|   0 | SELECT STATEMENT            |                     |     8 |
+|   1 |  TABLE ACCESS BY INDEX ROWID| ACTOR               |     8 |
+|*  2 |   INDEX RANGE SCAN          | IDX_ACTOR_LAST_NAME |     8 |
+-------------------------------------------------------------------
+</code></pre>
+<p>这是个好计划吗？如果我们只是想要这些，那么它就不是：</p>
+<p><a href="https://lukaseder.files.wordpress.com/2017/03/first-name-last-name.png">
+ <img src="https://lukaseder.files.wordpress.com/2017/03/first-name-last-name.png?w=662" alt=""> 
+</a></p>
+<p>当然，我们浪费了内存之类的。再来看看这个查询：</p>
+<pre><code>SELECT first_name, last_name 
+FROM actor
+WHERE last_name LIKE &#39;A%&#39;
+</code></pre>
+<p>它的计划是：</p>
+<pre><code>----------------------------------------------------
+| Id  | Operation        | Name            | Rows  |
+----------------------------------------------------
+|   0 | SELECT STATEMENT |                 |     8 |
+|*  1 |  INDEX RANGE SCAN| IDX_ACTOR_NAMES |     8 |
+----------------------------------------------------
+</code></pre>
+<p>现在我们可以完全消除表访问，因为有一个索引涵盖了我们查询需要的所有东西……一个涵盖索引。这很重要吗？当然！这种方法可以将你的某些查询加速一个数量级（如果在某个更改后你的索引不再涵盖，可能会降低一个数量级）。</p>
+<p>你不能总是从涵盖索引中获利。索引也有它们自己的成本，你不应该添加太多索引，例如像这种情况就是不明智的。让我们来做个测试：</p>
+<pre><code>SET SERVEROUTPUT ON
+DECLARE
+  v_ts TIMESTAMP;
+  v_repeat CONSTANT NUMBER := 100000;
+BEGIN
+  v_ts := SYSTIMESTAMP;
+     
+  FOR i IN 1..v_repeat LOOP
+    FOR rec IN (
+      -- Worst query: Memory overhead AND table access
+      SELECT *
+      FROM actor
+      WHERE last_name LIKE &#39;A%&#39;
+    ) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+     
+  dbms_output.put_line(&#39;Statement 1 : &#39; || (SYSTIMESTAMP - v_ts));
+  v_ts := SYSTIMESTAMP;
+     
+  FOR i IN 1..v_repeat LOOP
+    FOR rec IN (
+      -- Better query: Still table access
+      SELECT /*+INDEX(actor(last_name))*/
+        first_name, last_name
+      FROM actor
+      WHERE last_name LIKE &#39;A%&#39;
+    ) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+     
+  dbms_output.put_line(&#39;Statement 2 : &#39; || (SYSTIMESTAMP - v_ts));
+  v_ts := SYSTIMESTAMP;
+     
+  FOR i IN 1..v_repeat LOOP
+    FOR rec IN (
+      -- Best query: Covering index
+      SELECT /*+INDEX(actor(last_name, first_name))*/
+        first_name, last_name
+      FROM actor
+      WHERE last_name LIKE &#39;A%&#39;
+    ) LOOP
+      NULL;
+    END LOOP;
+  END LOOP;
+     
+  dbms_output.put_line(&#39;Statement 3 : &#39; || (SYSTIMESTAMP - v_ts));
+END;
+/
+</code></pre>
+<p>结果是：</p>
+<pre><code>Statement 1 : +000000000 00:00:02.479000000
+Statement 2 : +000000000 00:00:02.261000000
+Statement 3 : +000000000 00:00:01.857000000
+</code></pre>
+<p>注意，表 actor 只有 4 列，因此语句 1 和 2 的差别并不是太令人印象深刻，但仍然很重要。还要注意我使用了 Oracle 的提示来强制优化器为查询选择一个或其它索引。在这种情况下语句 3 明显胜利。这是一个好_很多_的查询，也是一个十分简单的查询。</p>
+<p>当我们写 <code>SELECT *</code> 语句时，我们为数据库带来了<strong>不必要的强制性工作</strong>，这是无法优化的。它不会使用涵盖索引，因为比起它所使用的 <code>LAST_NAME</code> 索引，涵盖索引开销更多一点，不管怎样，它都要访问表以获取无用的 <code>LAST_UPDATE</code> 列。</p>
+<p>使用 <code>SELECT *</code> 会变得更糟。考虑一下……</p>
+<h3 id="sql-转换">SQL 转换</h3>
+<p>优化器工作的很好，因为它们转换了你的 SQL 查询（<a href="https://www.youtube.com/watch?v=wTPGW1PNy_Y">看我最近在 Voxxed Days Zurich 关于这方面的演讲</a>）。例如，其中有一个称为“表连接消除”的转换，它真的很强大。看看这个辅助视图，我们写了这个视图是因为我们非常讨厌总是连接所有这些表：</p>
+<pre><code>CREATE VIEW v_customer AS
+SELECT
+  c.first_name, c.last_name, 
+  a.address, ci.city, co.country
+FROM customer c
+JOIN address a USING (address_id)
+JOIN city ci USING (city_id)
+JOIN country co USING (country_id)
+</code></pre>
+<p>这个视图仅仅是把 <code>CUSTOMER</code> 和他们不同的 <code>ADDRESS</code> 部分所有“对一”关系连接起来。谢天谢地，它很工整。</p>
+<p>现在，使用这个视图一段时间之后，想象我们非常习惯这个视图，我们都忘了所有它底层的表。然后，我们运行了这个查询：</p>
+<pre><code>SELECT *
+FROM v_customer
+</code></pre>
+<p>我们得到了一个相当令人印象深刻的计划：</p>
+<pre><code>----------------------------------------------------------------
+| Id  | Operation            | Name     | Rows  | Bytes | Cost |
+----------------------------------------------------------------
+|   0 | SELECT STATEMENT     |          |   599 | 47920 |   14 |
+|*  1 |  HASH JOIN           |          |   599 | 47920 |   14 |
+|   2 |   TABLE ACCESS FULL  | COUNTRY  |   109 |  1526 |    2 |
+|*  3 |   HASH JOIN          |          |   599 | 39534 |   11 |
+|   4 |    TABLE ACCESS FULL | CITY     |   600 | 10800 |    3 |
+|*  5 |    HASH JOIN         |          |   599 | 28752 |    8 |
+|   6 |     TABLE ACCESS FULL| CUSTOMER |   599 | 11381 |    4 |
+|   7 |     TABLE ACCESS FULL| ADDRESS  |   603 | 17487 |    3 |
+----------------------------------------------------------------
+</code></pre>
+<p>当然是这样。我们运行了所有这些表连接以及全表扫描，因为这就是我们让数据库去做的：获取所有的数据。</p>
+<p>现在，再一次想一下，对于一个特定场景，我们真正想要的是：</p>
+<p><a href="https://lukaseder.files.wordpress.com/2017/03/first-name-last-name-customers.png">
+ <img src="https://lukaseder.files.wordpress.com/2017/03/first-name-last-name-customers.png?w=662" alt=""> 
+</a></p>
+<p>是啊，对吧？现在你应该知道我的意图了。但想像一下，我们确实从前面的错误中学到了东西，现在我们实际上运行下面一个比较好的查询：</p>
+<pre><code>SELECT first_name, last_name
+FROM v_customer
+</code></pre>
+<p>再来看看结果！</p>
+<pre><code>------------------------------------------------------------------
+| Id  | Operation          | Name        | Rows  | Bytes | Cost  |
+------------------------------------------------------------------
+|   0 | SELECT STATEMENT   |             |   599 | 16173 |     4 |
+|   1 |  NESTED LOOPS      |             |   599 | 16173 |     4 |
+|   2 |   TABLE ACCESS FULL| CUSTOMER    |   599 | 11381 |     4 |
+|*  3 |   INDEX UNIQUE SCAN| SYS_C007120 |     1 |     8 |     0 |
+------------------------------------------------------------------
+</code></pre>
+<p>这是执行计划一个_极大的_进步。我们的表连接被消除了，因为优化器可以证明它们是<strong>不必要的</strong>，因此一旦它可以证明这点（而且你不会因使用 <code>select *</code> 而使其成为<strong>强制性</strong>工作），它就可以移除这些工作并不执行它。为什么会发生这种情况？</p>
+<p>每个 <code>CUSTOMER.ADDRESS_ID</code> 外键保证了_有且只有一个_ <code>ADDRESS.ADDRESS_ID</code> 主键值，因此可以保证 <code>JOIN</code> 操作是对一连接，它不会产生或者删除行。如果我们甚至不选择行或查询行，当然我们就不需要真正地去加载行。可以证实地移除 <code>JOIN</code> 并不会改变查询的结果。</p>
+<p>数据库总是会做这些事情。你可以在大部分数据库上尝试它：</p>
+<pre><code>-- Oracle
+SELECT CASE WHEN EXISTS (
+  SELECT 1 / 0 FROM dual
+) THEN 1 ELSE 0 END
+FROM dual
+ 
+-- 更合理的 SQL 语句，例如 PostgreSQL
+SELECT EXISTS (SELECT 1 / 0)
+</code></pre>
+<p>在这种情况下，当你运行这个查询时你可能预料到会抛出算术异常：</p>
+<pre><code>SELECT 1 / 0 FROM dual
+</code></pre>
+<p>产生了：</p>
+<pre><code>ORA-01476: divisor is equal to zero
+</code></pre>
+<p>但它并没有发生。优化器（甚至解析器）可以证明 <code>EXISTS (SELECT ..)</code> 谓词内的任何 <code>SELECT</code> 列表达式不会改变查询的结果，因此也就没有必要计算它的值。呵！</p>
+<h3 id="同时">同时……</h3>
+<p>大部分 ORM 最不幸问题就是事实上他们很随意就写出了 <code>SELECT *</code> 查询。事实上，例如 HQL / JPQL，就设置默认使用它。你甚至可以完全抛弃 <code>SELECT</code> 从句，因为毕竟你想要获取所有实体，正如声明的那样，对吧？</p>
+<p>例如：</p>
+<p><code>FROM</code> <code>v_customer</code></p>
+<p>例如 <a href="https://vladmihalcea.com/2016/09/13/the-best-way-to-handle-the-lazyinitializationexception/">Vlad Mihalcea</a>（一个 Hibernate 专家和 Hibernate 开发倡导者）建议你每次确定不想要在获取后进行任何更改时再使用查询。ORM 使解决对象图持久化问题变得简单。注意：持久化。真正修改对象图并持久化修改的想法是固有的。</p>
+<p>但如果你不想那样做，为什么要抓取实体呢？为什么不写一个查询？让我们清楚一点：从性能角度，针对你正在解决的用例写一个查询_总是_会胜过其它选项。你可以不会在意，因为你的数据集很小，没关系。可以。但最终，你需要扩展并重新设计你的应用程序以便在强制实体图遍历之上支持查询语言，就会变得很困难。你也需要做其它事情。</p>
+<h3 id="计算出现次数">计算出现次数</h3>
+<p>资源浪费最严重的情况是在只是想要检验存在性时运行 <code>COUNT(*)</code> 查询。例如：</p>
+<blockquote>
+<p>这个用户有没有订单？</p>
+</blockquote>
+<p>我们会运行：</p>
+<pre><code>SELECT count(*)
+FROM orders
+WHERE user_id = :user_id
+</code></pre>
+<p>很简单。如果 <code>COUNT = 0</code>：没有订单。否则：是的，有订单。</p>
+<p>性能可能不会很差，因为我们可能有一个 <code>ORDERS.USER_ID</code> 列上的索引。但是和下面的这个相比你认为上面的性能是怎样呢：</p>
+<pre><code>-- Oracle
+SELECT CASE WHEN EXISTS (
+  SELECT *
+  FROM orders
+  WHERE user_id = :user_id
+) THEN 1 ELSE 0 END
+FROM dual
+ 
+-- 更合理的 SQL 语句，例如 PostgreSQL
+SELECT EXISTS (
+  SELECT *
+  FROM orders
+  WHERE user_id = :user_id
+)
+</code></pre>
+<p>它不需要火箭科学家来确定，一旦它找到一个，实际存在谓词就可以马上停止寻找额外的行。因此，如果答案是“没有订单”，速度将会是差不多。但如果结果是“是的，有订单”，那么结果在我们不计算具体次数的情况下就会_大幅_加快。</p>
+<p>因为我们_不在乎_具体的次数。我们告诉数据库去计算它（<strong>不必要的</strong>），而数据库也不知道我们会丢弃所有大于 1 的结果（<strong>强制性</strong>）。</p>
+<p>当然，如果你在 JPA 支持的集合上调用 <code>list.size()</code> 做同样的事情，情况会变得更糟！</p>
+<p><a href="https://blog.jooq.org/2016/09/14/avoid-using-count-in-sql-when-you-could-use-exists/">近期我有关于该情况的博客以及在不同数据库上的测试。去看看吧。</a></p>
+<h3 id="总结">总结</h3>
+<p>这篇文章的立场很“明显”。别让数据库做<strong>不必要的强制性工作</strong>。</p>
+<p>它<strong>不必要</strong>，因为对于你给定的需求，你_知道_一些特定的工作不需要完成。但是，你告诉数据库去做。</p>
+<p>它<strong>强制性</strong>，因为数据库无法证明它是<strong>不必要的</strong>。这些信息只包含在客户端中，对于服务器来说无法访问。因此，数据库需要去做。</p>
+<p>这篇文章大部分在介绍 <code>SELECT *</code>，因为这是一个很简单的目标。但是这并不仅限于数据库。这关系到客户端要求服务器完成<strong>不必要的强制性工作</strong>的任何分布式算法。你的 AngularJS 应用程序平均有多少个 N+1 问题，UI 在服务结果 A 上循环，多次调用服务 B，而不是把所有对 B 的调用打包为一个调用？这是一个复发的模式。</p>
+<p>解决方法总是相同。你给执行你命令的实体越多信息，（理论上）它能更快执行这样的命令。每次都写一个好的查询。你的整个系统都会为此感谢你的。</p>
+<h3 id="如果你喜欢这篇文章">如果你喜欢这篇文章...</h3>
+<p>再看看近期我在 Voxxed Days Zurich 的演讲，其中我展示了一些在数据处理算法上为什么 SQL 总是会胜过 Java 的双曲线例子</p>
+<hr>
+<p>via: <a href="https://blog.jooq.org/2017/03/08/many-sql-performance-problems-stem-from-unnecessary-mandatory-work">https://blog.jooq.org/2017/03/08/many-sql-performance-problems-stem-from-unnecessary-mandatory-work</a></p>
+<p>作者：<a href="https://blog.jooq.org/">jooq</a>
+译者：<a href="https://github.com/ictlyh">ictlyh</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#不必要的">不必要的</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#强制性">强制性</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#内存消耗">内存消耗</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#索引使用">索引使用</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#sql-转换">SQL 转换</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#同时">同时……</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#计算出现次数">计算出现次数</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如果你喜欢这篇文章">如果你喜欢这篇文章...</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201706/20170308 Many SQL Performance Problems Stem from  Unnecessary, Mandatory Work","title":"许多 SQL 性能问题来自于“不必要的强制性工作”"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

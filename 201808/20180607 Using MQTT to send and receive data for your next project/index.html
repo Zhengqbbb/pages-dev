@@ -1,0 +1,253 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>使用 MQTT 在项目中实现数据收发 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="使用 MQTT 在项目中实现数据收发 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="使用 MQTT 在项目中实现数据收发 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201808/20180607 Using MQTT to send and receive data for your next project#page","@type":"TechArticle","headline":"使用 MQTT 在项目中实现数据收发","inLanguage":"en","name":"使用 MQTT 在项目中实现数据收发","url":"https://zhengqbbb.github.io/pages-dev/201808/20180607 Using MQTT to send and receive data for your next project","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201808/20180607 Using MQTT to send and receive data for your next project"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#寻找数据">寻找数据</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#mqtt-是什么">MQTT 是什么？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#为何我喜爱-mqtt">为何我喜爱 MQTT</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#我们的第一个-mqtt-流">我们的第一个 MQTT 流</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#mqtt-主题">MQTT 主题</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#订阅主题">订阅主题</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#增加我们自己的数据层次">增加我们自己的数据层次</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从终端消费数据">从终端消费数据</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从网页直接访问-mqtt">从网页直接访问 MQTT</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#继续深入">继续深入</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>使用 MQTT 在项目中实现数据收发</h1><blockquote>
+<p>从开源数据到开源事件流，了解一下 MQTT 发布/订阅（pubsub）线路协议。</p>
+</blockquote>
+<p><img src="https://opensource.com/sites/default/files/styles/image-full-size/public/lead-images/toolbox-learn-draw-container-yearbook.png?itok=xDbwz1pP" alt=""></p>
+<p>去年 11 月我们购买了一辆电动汽车，同时也引发了有趣的思考：我们应该什么时候为电动汽车充电？对于电动汽车充电所用的电，我希望能够对应最小的二氧化碳排放，归结为一个特定的问题：对于任意给定时刻，每千瓦时对应的二氧化碳排放量是多少，一天中什么时间这个值最低？</p>
+<h3 id="寻找数据">寻找数据</h3>
+<p>我住在纽约州，大约 80% 的电力消耗可以自给自足，主要来自天然气、水坝（大部分来自于<ruby>尼亚加拉<rt>Niagara</rt></ruby>大瀑布）、核能发电，少部分来自风力、太阳能和其它化石燃料发电。非盈利性组织 <a href="http://www.nyiso.com/public/index.jsp"><ruby>纽约独立电网运营商<rt>New York Independent System Operator</rt></ruby></a> （NYISO）负责整个系统的运作，实现发电机组发电与用电之间的平衡，同时也是纽约路灯系统的监管部门。</p>
+<p>尽管没有为公众提供公开 API，NYISO 还是尽责提供了<a href="http://www.nyiso.com/public/markets_operations/market_data/reports_info/index.jsp">不少公开数据</a>供公众使用。每隔 5 分钟汇报全州各个发电机组消耗的燃料数据。数据以 CSV 文件的形式发布于公开的档案库中，全天更新。如果你了解不同燃料对发电瓦数的贡献比例，你可以比较准确的估计任意时刻的二氧化碳排放情况。</p>
+<p>在构建收集处理公开数据的工具时，我们应该时刻避免过度使用这些资源。相比将这些数据打包并发送给所有人，我们有更好的方案。我们可以创建一个低开销的<ruby>事件流<rt>event stream</rt></ruby>，人们可以订阅并第一时间得到消息。我们可以使用 <a href="http://mqtt.org/">MQTT</a> 实现该方案。我的项目（<a href="http://ny-power.org/#">ny-power.org</a>）目标是收录到 <a href="https://www.home-assistant.io">Home Assistant</a> 项目中；后者是一个开源的<ruby>家庭自动化<rt>home automation</rt></ruby>平台，拥有数十万用户。如果所有用户同时访问 CSV 文件服务器，估计 NYISO 不得不增加访问限制。</p>
+<h3 id="mqtt-是什么">MQTT 是什么？</h3>
+<p>MQTT 是一个<ruby>发布订阅线路协议<rt>publish/subscription wire protocol</rt></ruby>，为小规模设备设计。发布订阅系统工作原理类似于消息总线。你将一条消息发布到一个<ruby>主题<rt>topic</rt></ruby>上，那么所有订阅了该主题的客户端都可以获得该消息的一份拷贝。对于消息发送者而言，无需知道哪些人在订阅消息；你只需将消息发布到一系列主题，并订阅一些你感兴趣的主题。就像参加了一场聚会，你选取并加入感兴趣的对话。</p>
+<p>MQTT 能够构建极为高效的应用。客户端订阅有限的几个主题，也只收到它们感兴趣的内容。不仅节省了处理时间，还降低了网络带宽使用。</p>
+<p>作为一个开放标准，MQTT 有很多开源的客户端和服务端实现。对于你能想到的每种编程语言，都有对应的客户端库；甚至有嵌入到 Arduino 的库，可以构建传感器网络。服务端可供选择的也很多，我的选择是 Eclipse 项目提供的 <a href="https://mosquitto.org/">Mosquitto</a> 服务端，这是因为它体积小、用 C 编写，可以承载数以万计的订阅者。</p>
+<h3 id="为何我喜爱-mqtt">为何我喜爱 MQTT</h3>
+<p>在过去二十年间，我们为软件应用设计了可靠且准确的模型，用于解决服务遇到的问题。我还有其它邮件吗？当前的天气情况如何？我应该此刻购买这种产品吗？在绝大多数情况下，这种<ruby>问答式<rt>ask/receive</rt></ruby>的模型工作良好；但对于一个数据爆炸的世界，我们需要其它的模型。MQTT 的发布订阅模型十分强大，可以将大量数据发送到系统中。客户可以订阅数据中的一小部分并在订阅数据发布的第一时间收到更新。</p>
+<p>MQTT 还有一些有趣的特性，其中之一是<ruby>遗嘱<rt>last-will-and-testament</rt></ruby>消息，可以用于区分两种不同的静默，一种是没有主题相关数据推送，另一种是你的数据接收器出现故障。MQTT 还包括<ruby>保留消息<rt>retained message</rt></ruby>，当客户端初次连接时会提供相关主题的最后一条消息。这对那些更新缓慢的主题来说很有必要。</p>
+<p>我在 Home Assistant 项目开发过程中，发现这种消息总线模型对<ruby>异构系统<rt>heterogeneous systems</rt></ruby>尤为适合。如果你深入<ruby>物联网<rt>Internet of Things</rt></ruby>领域，你会发现 MQTT 无处不在。</p>
+<h3 id="我们的第一个-mqtt-流">我们的第一个 MQTT 流</h3>
+<p>NYSO 公布的 CSV 文件中有一个是实时的燃料混合使用情况。每 5 分钟，NYSO 发布这 5 分钟内发电使用的燃料类型和相应的发电量（以兆瓦为单位）。</p>
+<p>这个 CSV 文件看起来像这样：</p>
+<table>
+<thead>
+<tr>
+<th>时间戳</th>
+<th>时区</th>
+<th>燃料类型</th>
+<th>兆瓦为单位的发电量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>05/09/2018 00:05:00</td>
+<td>EDT</td>
+<td>混合燃料</td>
+<td>1400</td>
+</tr>
+<tr>
+<td>05/09/2018 00:05:00</td>
+<td>EDT</td>
+<td>天然气</td>
+<td>2144</td>
+</tr>
+<tr>
+<td>05/09/2018 00:05:00</td>
+<td>EDT</td>
+<td>核能</td>
+<td>4114</td>
+</tr>
+<tr>
+<td>05/09/2018 00:05:00</td>
+<td>EDT</td>
+<td>其它化石燃料</td>
+<td>4</td>
+</tr>
+<tr>
+<td>05/09/2018 00:05:00</td>
+<td>EDT</td>
+<td>其它可再生资源</td>
+<td>226</td>
+</tr>
+<tr>
+<td>05/09/2018 00:05:00</td>
+<td>EDT</td>
+<td>风力</td>
+<td>1</td>
+</tr>
+<tr>
+<td>05/09/2018 00:05:00</td>
+<td>EDT</td>
+<td>水力</td>
+<td>3229</td>
+</tr>
+<tr>
+<td>05/09/2018 00:10:00</td>
+<td>EDT</td>
+<td>混合燃料</td>
+<td>1307</td>
+</tr>
+<tr>
+<td>05/09/2018 00:10:00</td>
+<td>EDT</td>
+<td>天然气</td>
+<td>2092</td>
+</tr>
+<tr>
+<td>05/09/2018 00:10:00</td>
+<td>EDT</td>
+<td>核能</td>
+<td>4115</td>
+</tr>
+<tr>
+<td>05/09/2018 00:10:00</td>
+<td>EDT</td>
+<td>其它化石燃料</td>
+<td>4</td>
+</tr>
+<tr>
+<td>05/09/2018 00:10:00</td>
+<td>EDT</td>
+<td>其它可再生资源</td>
+<td>224</td>
+</tr>
+<tr>
+<td>05/09/2018 00:10:00</td>
+<td>EDT</td>
+<td>风力</td>
+<td>40</td>
+</tr>
+<tr>
+<td>05/09/2018 00:10:00</td>
+<td>EDT</td>
+<td>水力</td>
+<td>3166</td>
+</tr>
+</tbody></table>
+<p>表中唯一令人不解就是燃料类别中的混合燃料。纽约的大多数天然气工厂也通过燃烧其它类型的化石燃料发电。在冬季寒潮到来之际，家庭供暖的优先级高于发电；但这种情况出现的次数不多，（在我们计算中）可以将混合燃料类型看作天然气类型。</p>
+<p>CSV 文件全天更新。我编写了一个简单的数据泵，每隔 1 分钟检查是否有数据更新，并将新条目发布到 MQTT 服务器的一系列主题上，主题名称基本与 CSV 文件有一定的对应关系。数据内容被转换为 JSON 对象，方便各种编程语言处理。</p>
+<pre><code>ny-power/upstream/fuel-mix/Hydro {&quot;units&quot;: &quot;MW&quot;, &quot;value&quot;: 3229, &quot;ts&quot;: &quot;05/09/2018 00:05:00&quot;}
+ny-power/upstream/fuel-mix/Dual Fuel {&quot;units&quot;: &quot;MW&quot;, &quot;value&quot;: 1400, &quot;ts&quot;: &quot;05/09/2018 00:05:00&quot;}
+ny-power/upstream/fuel-mix/Natural Gas {&quot;units&quot;: &quot;MW&quot;, &quot;value&quot;: 2144, &quot;ts&quot;: &quot;05/09/2018 00:05:00&quot;}
+ny-power/upstream/fuel-mix/Other Fossil Fuels {&quot;units&quot;: &quot;MW&quot;, &quot;value&quot;: 4, &quot;ts&quot;: &quot;05/09/2018 00:05:00&quot;}
+ny-power/upstream/fuel-mix/Wind {&quot;units&quot;: &quot;MW&quot;, &quot;value&quot;: 41, &quot;ts&quot;: &quot;05/09/2018 00:05:00&quot;}
+ny-power/upstream/fuel-mix/Other Renewables {&quot;units&quot;: &quot;MW&quot;, &quot;value&quot;: 226, &quot;ts&quot;: &quot;05/09/2018 00:05:00&quot;}
+ny-power/upstream/fuel-mix/Nuclear {&quot;units&quot;: &quot;MW&quot;, &quot;value&quot;: 4114, &quot;ts&quot;: &quot;05/09/2018 00:05:00&quot;}
+</code></pre>
+<p>这种直接的转换是种不错的尝试，可将公开数据转换为公开事件。我们后续会继续将数据转换为二氧化碳排放强度，但这些原始数据还可被其它应用使用，用于其它计算用途。</p>
+<h3 id="mqtt-主题">MQTT 主题</h3>
+<p>主题和<ruby>主题结构<rt>topic structure</rt></ruby>是 MQTT 的一个主要特色。与其它标准的企业级消息总线不同，MQTT 的主题无需事先注册。发送者可以凭空创建主题，唯一的限制是主题的长度，不超过 220 字符。其中 <code>/</code> 字符有特殊含义，用于创建主题的层次结构。我们即将看到，你可以订阅这些层次中的一些分片。</p>
+<p>基于开箱即用的 Mosquitto，任何一个客户端都可以向任何主题发布消息。在原型设计过程中，这种方式十分便利；但一旦部署到生产环境，你需要增加<ruby>访问控制列表<rt>access control list</rt></ruby>（ACL）只允许授权的应用发布消息。例如，任何人都能以只读的方式访问我的应用的主题层级，但只有那些具有特定<ruby>凭证<rt>credentials</rt></ruby>的客户端可以发布内容。</p>
+<p>主题中不包含<ruby>自动样式<rt>automatic schema</rt></ruby>，也没有方法查找客户端可以发布的全部主题。因此，对于那些从 MQTT 总线消费数据的应用，你需要让其直接使用已知的主题和消息格式样式。</p>
+<p>那么应该如何设计主题呢？最佳实践包括使用应用相关的根名称，例如在我的应用中使用 <code>ny-power</code>。接着，为提高订阅效率，构建足够深的层次结构。<code>upstream</code> 层次结构包含了直接从数据源获取的、不经处理的原始数据，而 <code>fuel-mix</code> 层次结构包含特定类型的数据；我们后续还可以增加其它的层次结构。</p>
+<h3 id="订阅主题">订阅主题</h3>
+<p>在 MQTT 中，订阅仅仅是简单的字符串匹配。为提高处理效率，只允许如下两种通配符：</p>
+<ul>
+<li><code>#</code> 以递归方式匹配，直到字符串结束</li>
+<li><code>+</code> 匹配下一个 <code>/</code> 之前的内容</li>
+</ul>
+<p>为便于理解，下面给出几个例子：</p>
+<pre><code>ny-power/#  - 匹配 ny-power 应用发布的全部主题
+ny-power/upstream/#  - 匹配全部原始数据的主题
+ny-power/upstream/fuel-mix/+  - 匹配全部燃料类型的主题
+ny-power/+/+/Hydro - 匹配全部两次层级之后为 Hydro 类型的主题（即使不位于 upstream 层次结构下）
+</code></pre>
+<p>类似 <code>ny-power/#</code> 的大范围订阅适用于<ruby>低数据量<rt>low-volume</rt></ruby>的应用，应用从网络获取全部数据并处理。但对<ruby>高数据量<rt>high-volume</rt></ruby>应用而言则是一个灾难，由于绝大多数消息并不会被使用，大部分的网络带宽被白白浪费了。</p>
+<p>在大数据量情况下，为确保性能，应用需要使用恰当的主题筛选（如 <code>ny-power/+/+/Hydro</code>）尽量准确获取业务所需的数据。</p>
+<h3 id="增加我们自己的数据层次">增加我们自己的数据层次</h3>
+<p>接下来，应用中的一切都依赖于已有的 MQTT 流并构建新流。第一个额外的数据层用于计算发电对应的二氧化碳排放。</p>
+<p>利用<a href="https://www.eia.gov/"><ruby>美国能源情报署<rt>U.S. Energy Information Administration</rt></ruby></a> 给出的 2016 年纽约各类燃料发电及排放情况，我们可以给出各类燃料的<a href="https://github.com/IBM/ny-power/blob/master/src/nypower/calc.py#L1-L60">平均排放率</a>，单位为克/兆瓦时。</p>
+<p>上述结果被封装到一个专用的微服务中。该微服务订阅 <code>ny-power/upstream/fuel-mix/+</code>，即数据泵中燃料组成情况的原始数据，接着完成计算并将结果（单位为克/千瓦时）发布到新的主题层次结构上：</p>
+<pre><code>ny-power/computed/co2 {&quot;units&quot;: &quot;g / kWh&quot;, &quot;value&quot;: 152.9486, &quot;ts&quot;: &quot;05/09/2018 00:05:00&quot;}
+</code></pre>
+<p>接着，另一个服务会订阅该主题层次结构并将数据打包到 <a href="https://www.influxdata.com/">InfluxDB</a> 进程中；同时，发布 24 小时内的时间序列数据到 <code>ny-power/archive/co2/24h</code> 主题，这样可以大大简化当前变化数据的绘制。</p>
+<p>这种层次结构的主题模型效果不错，可以将上述程序之间的逻辑解耦合。在复杂系统中，各个组件可能使用不同的编程语言，但这并不重要，因为交换格式都是 MQTT 消息，即主题和 JSON 格式的消息内容。</p>
+<h3 id="从终端消费数据">从终端消费数据</h3>
+<p>为了更好的了解 MQTT 完成了什么工作，将其绑定到一个消息总线并查看消息流是个不错的方法。<code>mosquitto-clients</code> 包中的 <code>mosquitto_sub</code> 可以让我们轻松实现该目标。</p>
+<p>安装程序后，你需要提供服务器名称以及你要订阅的主题。如果有需要，使用参数 <code>-v</code> 可以让你看到有新消息发布的那些主题；否则，你只能看到主题内的消息数据。</p>
+<pre><code>mosquitto_sub -h mqtt.ny-power.org -t ny-power/# -v
+</code></pre>
+<p>只要我编写或调试 MQTT 应用，我总会在一个终端中运行 <code>mosquitto_sub</code>。</p>
+<h3 id="从网页直接访问-mqtt">从网页直接访问 MQTT</h3>
+<p>到目前为止，我们已经有提供公开事件流的应用，可以用微服务或命令行工具访问该应用。但考虑到互联网仍占据主导地位，因此让用户可以从浏览器直接获取事件流是很重要。</p>
+<p>MQTT 的设计者已经考虑到了这一点。协议标准支持三种不同的传输协议：<a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol">TCP</a>、<a href="https://en.wikipedia.org/wiki/User_Datagram_Protocol">UDP</a> 和 <a href="https://en.wikipedia.org/wiki/WebSocket">WebSockets</a>。主流浏览器都支持 WebSockets，可以维持持久连接，用于实时应用。</p>
+<p>Eclipse 项目提供了 MQTT 的一个 JavaScript 实现，叫做 <a href="https://www.eclipse.org/paho/">Paho</a>，可包含在你的应用中。工作模式为与服务器建立连接、建立一些订阅，然后根据接收到的消息进行响应。</p>
+<pre><code>// ny-power web console application
+
+var client = new Paho.MQTT.Client(mqttHost, Number(&quot;80&quot;), &quot;client-&quot; + Math.random());
+
+// set callback handlers
+client.onMessageArrived = onMessageArrived;
+
+// connect the client
+client.reconnect = true;
+client.connect({onSuccess: onConnect});
+
+// called when the client connects
+function onConnect() {
+    // Once a connection has been made, make a subscription and send a message.
+    console.log(&quot;onConnect&quot;);
+    client.subscribe(&quot;ny-power/computed/co2&quot;);
+    client.subscribe(&quot;ny-power/archive/co2/24h&quot;);
+    client.subscribe(&quot;ny-power/upstream/fuel-mix/#&quot;);
+}
+
+// called when a message arrives
+function onMessageArrived(message) {
+    console.log(&quot;onMessageArrived:&quot;+message.destinationName + message.payloadString);
+    if (message.destinationName == &quot;ny-power/computed/co2&quot;) {
+        var data = JSON.parse(message.payloadString);
+        $(&quot;#co2-per-kwh&quot;).html(Math.round(data.value));
+        $(&quot;#co2-units&quot;).html(data.units);
+        $(&quot;#co2-updated&quot;).html(data.ts);
+    }
+
+    if (message.destinationName.startsWith(&quot;ny-power/upstream/fuel-mix&quot;)) {
+        fuel_mix_graph(message);
+    }
+
+    if (message.destinationName == &quot;ny-power/archive/co2/24h&quot;) {
+        var data = JSON.parse(message.payloadString);
+        var plot = [
+            {
+                x: data.ts,
+                y: data.values,
+                type: &#39;scatter&#39;
+            }
+        ];
+        var layout = {
+            yaxis: {
+                title: &quot;g CO2 / kWh&quot;,
+            }
+        };
+        Plotly.newPlot(&#39;co2_graph&#39;, plot, layout);
+    }
+</code></pre>
+<p>上述应用订阅了不少主题，因为我们将要呈现若干种不同类型的数据；其中 <code>ny-power/computed/co2</code> 主题为我们提供当前二氧化碳排放的参考值。一旦收到该主题的新消息，网站上的相应内容会被相应替换。</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/mqtt_nyiso-co2intensity.png" alt="NYISO 二氧化碳排放图" title="NY ISO Grid CO2 Intensity"></p>
+<p><em><a href="http://ny-power.org/#">ny-power.org</a> 网站提供的 NYISO 二氧化碳排放图。</em></p>
+<p><code>ny-power/archive/co2/24h</code> 主题提供了时间序列数据，用于为 <a href="https://plot.ly/">Plotly</a> 线表提供数据。<code>ny-power/upstream/fuel-mix</code> 主题提供当前燃料组成情况，为漂亮的柱状图提供数据。</p>
+<p><img src="https://opensource.com/sites/default/files/uploads/mqtt_nyiso_fuel-mix.png" alt="NYISO 燃料组成情况" title="Fuel mix on NYISO grid"></p>
+<p><em><a href="http://ny-power.org/#">ny-power.org</a> 网站提供的燃料组成情况。</em></p>
+<p>这是一个动态网站，数据不从服务器拉取，而是结合 MQTT 消息总线，监听对外开放的 WebSocket。就像数据泵和打包器程序那样，网站页面也是一个发布订阅客户端，只不过是在你的浏览器中执行，而不是在公有云的微服务上。</p>
+<p>你可以在 <a href="http://ny-power.org">http://ny-power.org</a> 站点点看到动态变更，包括图像和可以看到消息到达的实时 MQTT 终端。</p>
+<h3 id="继续深入">继续深入</h3>
+<p>ny-power.org 应用的完整内容开源在 <a href="https://github.com/IBM/ny-power">GitHub</a> 中。你也可以查阅 <a href="https://developer.ibm.com/code/patterns/use-mqtt-stream-real-time-data/">架构简介</a>，学习如何使用 <a href="https://helm.sh/">Helm</a> 部署一系列 Kubernetes 微服务构建应用。另一个有趣的 MQTT 示例使用 MQTT 和 OpenWhisk 进行实时文本消息翻译，<ruby>代码模式<rt>code pattern</rt></ruby>参考<a href="https://developer.ibm.com/code/patterns/deploy-serverless-multilingual-conference-room/">链接</a>。</p>
+<p>MQTT 被广泛应用于物联网领域，更多关于 MQTT 用途的例子可以在 <a href="https://www.home-assistant.io/">Home Assistant</a> 项目中找到。</p>
+<p>如果你希望深入了解协议内容，可以从 <a href="http://mqtt.org/">mqtt.org</a> 获得该公开标准的全部细节。</p>
+<p>想了解更多，可以参加 Sean Dague 在 <a href="https://conferences.oreilly.com/oscon/oscon-or">OSCON</a> 上的演讲，主题为 <a href="https://conferences.oreilly.com/oscon/oscon-or/public/schedule/speaker/77317">将 MQTT 加入到你的工具箱</a>，会议将于 7 月 16-19 日在奥尔良州波特兰举办。</p>
+<hr>
+<p>via: <a href="https://opensource.com/article/18/6/mqtt">https://opensource.com/article/18/6/mqtt</a></p>
+<p>作者：<a href="https://opensource.com/users/sdague">Sean Dague</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/pinewall">pinewall</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#寻找数据">寻找数据</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#mqtt-是什么">MQTT 是什么？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#为何我喜爱-mqtt">为何我喜爱 MQTT</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#我们的第一个-mqtt-流">我们的第一个 MQTT 流</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#mqtt-主题">MQTT 主题</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#订阅主题">订阅主题</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#增加我们自己的数据层次">增加我们自己的数据层次</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从终端消费数据">从终端消费数据</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#从网页直接访问-mqtt">从网页直接访问 MQTT</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#继续深入">继续深入</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201808/20180607 Using MQTT to send and receive data for your next project","title":"使用 MQTT 在项目中实现数据收发"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

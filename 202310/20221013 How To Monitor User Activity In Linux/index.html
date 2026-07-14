@@ -1,0 +1,312 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在 Linux 中监控用户活动 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在 Linux 中监控用户活动 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在 Linux 中监控用户活动 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202310/20221013 How To Monitor User Activity In Linux#page","@type":"TechArticle","headline":"如何在 Linux 中监控用户活动","inLanguage":"en","name":"如何在 Linux 中监控用户活动","url":"https://zhengqbbb.github.io/pages-dev/202310/20221013 How To Monitor User Activity In Linux","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202310/20221013 How To Monitor User Activity In Linux"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是记账工具">什么是记账工具？</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#linux-中如何安装-psacct-或-acct">Linux 中如何安装 psacct 或 acct</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#启动-psacctacct-服务">启动 psacct/acct 服务</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#利用-psacct-或-acct-来监测-linux-中的用户活动">利用 psacct 或 acct 来监测 Linux 中的用户活动</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#资源">资源</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在 Linux 中监控用户活动</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202310/19/105911voe22858b5o7287s.jpg" alt=""></p>
+<p>作为一位 Linux 管理员，你需要跟踪所有用户的活动。当服务器发生故障时，你可以分析和查看用户活动，以便寻找问题的根源。监控 Linux 用户有多种方式。本指南将专门讨论 <strong>GNU 记账工具</strong>，这是一项用于监视 Linux 用户活动的实用工具。</p>
+<h3 id="什么是记账工具">什么是记账工具？</h3>
+<p>记账工具可以提供诸如 Linux 系统中的连接、已执行的程序以及系统资源的使用等有底系统使用信息。这些记账工具可以通过 <code>psacct</code> 或 <code>acct</code> 软件包安装。</p>
+<p><code>psacct</code> 和 <code>acct</code> 实际上是相同的。在基于 RPM 的系统中，它以 <code>psacct</code> 的形式存在；而在基于 DEB 的系统中，它作为 <code>acct</code> 提供。</p>
+<p>你可能想知道 <code>psacct</code> 或 <code>acct</code> 工具的作用。通常，用户在命令行的历史记录会保存在他们的 <code>$HOME</code> 目录下的 <code>.bash_history</code> 文件中。有些用户可能会尝试编辑、修改或删除这些历史记录。</p>
+<p>然而，即使他们完全 <a href="https://ostechnix.com/how-to-clear-command-line-history-in-linux/">清除了命令行历史</a>，记账工具依然能够获取用户活动信息。这是因为，<strong>所有进程记账文件都由 root 用户拥有</strong>，而普通用户则无法进行编辑。</p>
+<h3 id="linux-中如何安装-psacct-或-acct">Linux 中如何安装 psacct 或 acct</h3>
+<p><code>psacct</code>/<code>acct</code> 被打包在多种流行的 Linux 发行版本中。</p>
+<p>如果要在 Alpine Linux 中安装 <code>psacct</code>，请运行以下命令：</p>
+<pre><code>$ sudo apk add psacct
+</code></pre>
+<p>如果在 Arch Linux 及其变体版本（如 EndeavourOS 和 Manjaro Linux）中安装 <code>acct</code>，请运行以下命令：</p>
+<pre><code>$ sudo pacman -S acct
+</code></pre>
+<p>在 Fedora、RHEL 及其衍生版本（如 CentOS、AlmaLinux 和 Rocky Linux）中安装 <code>psacct</code>，请运行以下命令：</p>
+<pre><code>$ sudo dnf install psacct
+</code></pre>
+<p>在 RHEL 6 以及更早版本中，你应当使用 <code>yum</code> 命令而非 <code>dnf</code> 来安装 <code>psacct</code>。</p>
+<pre><code>$ sudo yum install psacct
+</code></pre>
+<p>在 Debian、Ubuntu 以及 Linux Mint 中，通过如下命令来安装 <code>acct</code>：</p>
+<pre><code>$ sudo apt install acct
+</code></pre>
+<p>若在 openSUSE 中安装 <code>acct</code>，则运行：</p>
+<pre><code>$ sudo zypper install acct
+</code></pre>
+<h3 id="启动-psacctacct-服务">启动 psacct/acct 服务</h3>
+<p>要启用并开启 <code>psacct</code> 服务，请执行以下命令：</p>
+<pre><code>$ sudo systemctl enable psacct
+</code></pre>
+<p>接着启动 <code>psacct</code> 服务：</p>
+<pre><code>$ sudo systemctl start psacct
+</code></pre>
+<p>如果你需要检查 <code>psacct</code> 服务是否已加载和激活，可以运行：</p>
+<pre><code>$ sudo systemctl status psacct
+</code></pre>
+<p>在基于 DEB 的系统中，安装完成之后，<code>acct</code> 服务会自动启动。</p>
+<p>如果你想验证 <code>acct</code> 服务是否已经启动，可以执行以下命令：</p>
+<pre><code>$ sudo systemctl status acct
+</code></pre>
+<pre><code>● acct.service - Kernel process accounting
+     Loaded: loaded (/lib/systemd/system/acct.service; enabled; vendor preset: enabled)
+     Active: active (exited) since Thu 2022-10-13 16:06:35 IST; 28s ago
+       Docs: man:accton(8)
+    Process: 3241 ExecStart=/usr/sbin/accton /var/log/account/pacct (code=exited, status=0/SUCCESS)
+   Main PID: 3241 (code=exited, status=0/SUCCESS)
+        CPU: 879us
+
+Oct 13 16:06:35 ubuntu2204 systemd[1]: Starting Kernel process accounting...
+Oct 13 16:06:35 ubuntu2204 accton[3241]: Turning on process accounting, file set to &#39;/var/log/account/pacct&#39;.
+Oct 13 16:06:35 ubuntu2204 systemd[1]: Finished Kernel process accounting.
+</code></pre>
+<h3 id="利用-psacct-或-acct-来监测-linux-中的用户活动">利用 psacct 或 acct 来监测 Linux 中的用户活动</h3>
+<p><code>psacct</code>（进程记账）软件包包含以下用来监测用户和进程活动的工具：</p>
+<ul>
+<li><code>ac</code> - 提供用户登录时间的统计信息。</li>
+<li><code>lastcomm</code> - 展示先前执行过的命令的信息。</li>
+<li><code>accton</code> - 开启或关闭进程记账。</li>
+<li><code>dump-acct</code> - 把 <code>accton</code> 的输出文件转化为易读的格式。</li>
+<li><code>dump-utmp</code> - 以易读的方式打印 <code>utmp</code> 文件。</li>
+<li><code>sa</code> - 汇总信息，关于先前执行的命令。</li>
+</ul>
+<p>现在就让我们一起了解如何通过每个工具来监控 Linux 用户的活动。</p>
+<h4 id="1使用-ac-命令">1、使用 ac 命令</h4>
+<p><code>ac</code> 工具可以为你提供以小时为单位的连接时间报告，这样你就能知道用户或一组用户连接到系统的时长。</p>
+<h5 id="11展示所有用户的总连接时间">1.1、展示所有用户的总连接时间</h5>
+<pre><code>$ ac
+</code></pre>
+<p>上述命令会显示所有用户的总连接时间（单位为小时）。</p>
+<pre><code>total       52.91
+</code></pre>
+<p><img src="https://ostechnix.com/wp-content/uploads/2022/10/Display-total-connect-time-of-all-users.png" alt="展示所有用户的总连接时间"></p>
+<h5 id="12按日期排序显示所有用户的总连接时间">1.2、按日期排序显示所有用户的总连接时间</h5>
+<p>你可以通过使用 <code>-d</code> 参数，按日期排序显示所有用户的连接时间，操作如下：</p>
+<pre><code>$ ac -d
+</code></pre>
+<p>示例输出：</p>
+<pre><code>May 11	total        4.29
+May 13	total        3.23
+May 14	total        7.66
+May 15	total        8.97
+May 16	total        0.52
+May 20	total        4.09
+May 24	total        1.32
+Jun  9	total       15.18
+Jun 10	total        2.97
+Jun 22	total        2.61
+Jul 19	total        1.95
+Today	total        0.29
+</code></pre>
+<p><img src="https://ostechnix.com/wp-content/uploads/2022/10/Show-total-connect-of-all-users-by-day-wise.png" alt="按日期排序显示所有用户的总时间"></p>
+<h5 id="13获取各个用户的总连接时间">1.3、获取各个用户的总连接时间</h5>
+<p>使用 <code>-p</code> 参数，你可以查看每位用户各自在系统中总的连接时长。</p>
+<pre><code>$ ac -p
+</code></pre>
+<p>示例输出：</p>
+<pre><code>ostechnix                           52.85
+root                                 0.51
+total       53.36
+</code></pre>
+<p><img src="https://ostechnix.com/wp-content/uploads/2022/10/Get-total-connect-time-by-user-wise.png" alt="获取各个用户的总连接时间"></p>
+<h5 id="14显示指定用户的总连接时间">1.4、显示指定用户的总连接时间</h5>
+<p>你还可以显示特定用户的总登录时间。</p>
+<pre><code>$ ac ostechnix
+</code></pre>
+<p>示例输出：</p>
+<pre><code>total       52.95
+</code></pre>
+<h5 id="15显示特定用户各日期的总连接时间">1.5、显示特定用户各日期的总连接时间</h5>
+<p>要按日期查看某个用户的登录时间，可以运行：</p>
+<pre><code>$ ac -d ostechnix
+</code></pre>
+<p>示例输出：</p>
+<pre><code>May 11	total        4.29
+May 13	total        3.23
+May 14	total        7.66
+May 15	total        8.97
+May 16	total        0.01
+May 20	total        4.09
+May 24	total        1.32
+Jun  9	total       15.18
+Jun 10	total        2.97
+Jun 22	total        2.61
+Jul 19	total        1.95
+Today	total        0.68
+</code></pre>
+<p><img src="https://ostechnix.com/wp-content/uploads/2022/10/View-total-connect-time-of-a-certain-user-by-day-wise.png" alt="显示某个用户各日期的总连接时间"></p>
+<p>如需更多详情，可参考手册页面。</p>
+<pre><code>$ man ac
+</code></pre>
+<h4 id="2lastcomm-命令使用示例">2、lastcomm 命令使用示例</h4>
+<p><code>lastcomm</code> 工具用于列出过去执行过的命令，它会按执行的最近程度将命令列在前面。</p>
+<h5 id="21展示过去执行的命令">2.1、展示过去执行的命令</h5>
+<pre><code>$ lastcomm
+</code></pre>
+<p>示例输出：</p>
+<pre><code>systemd-hostnam  S     root     __         0.06 secs Thu Oct 13 17:21
+systemd-localed  S     root     __         0.06 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+awk                    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+uname                  ostechni pts/1      0.00 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+sed                    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+grep                   ostechni pts/1      0.00 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+grep                   ostechni pts/1      0.00 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+bash              F    ostechni pts/1      0.00 secs Thu Oct 13 17:22
+[...]
+</code></pre>
+<h5 id="22打印特定用户先前执行的命令">2.2、打印特定用户先前执行的命令</h5>
+<p>上述命令显示的是所有用户的命令。要显示特定用户以前执行的命令，可以使用下面的命令：</p>
+<pre><code>$ lastcomm ostechnix
+</code></pre>
+<p>示例输出：</p>
+<pre><code>less                   ostechni pts/1      0.00 secs Thu Oct 13 17:26
+lastcomm               ostechni pts/1      0.00 secs Thu Oct 13 17:26
+lastcomm               ostechni pts/1      0.00 secs Thu Oct 13 17:26
+lastcomm               ostechni pts/1      0.00 secs Thu Oct 13 17:26
+gdbus                X ostechni __         0.00 secs Thu Oct 13 17:24
+lastcomm               ostechni pts/1      0.00 secs Thu Oct 13 17:24
+ac                     ostechni pts/1      0.00 secs Thu Oct 13 17:24
+update-notifier   F    ostechni __         0.00 secs Thu Oct 13 17:23
+apport-checkrep        ostechni __         0.06 secs Thu Oct 13 17:23
+apport-checkrep        ostechni __         0.05 secs Thu Oct 13 17:23
+systemctl              ostechni __         0.00 secs Thu Oct 13 17:23
+apt-check              ostechni __         0.81 secs Thu Oct 13 17:23
+dpkg                   ostechni __         0.00 secs Thu Oct 13 17:23
+ischroot               ostechni __         0.00 secs Thu Oct 13 17:23
+dpkg                   ostechni __         0.00 secs Thu Oct 13 17:23
+[...]
+</code></pre>
+<h5 id="23打印特定命令的执行次数">2.3、打印特定命令的执行次数</h5>
+<p>你还可以查看特定命令被执行的次数。</p>
+<pre><code>$ lastcomm apt
+</code></pre>
+<p>示例输出：</p>
+<pre><code>apt              S     root     pts/2      0.70 secs Thu Oct 13 16:06
+apt               F    root     pts/2      0.00 secs Thu Oct 13 16:06
+apt               F    root     pts/2      0.00 secs Thu Oct 13 16:06
+</code></pre>
+<p>如上述输出所示，root 用户执行了 <code>apt</code> 命令三次。</p>
+<p>更详细的信息，可参考手册页：</p>
+<pre><code>$ man lastcomm
+</code></pre>
+<h4 id="3sa-命令示例">3、sa 命令示例</h4>
+<p><code>sa</code> 实用程序将总结关于先前执行的命令的信息。</p>
+<h5 id="31打印所有命令的总结">3.1、打印所有命令的总结</h5>
+<pre><code>$ sa
+</code></pre>
+<p>示例输出：</p>
+<pre><code>1522    1598.63re       0.23cp         0avio     32712k
+    139     570.90re       0.05cp         0avio     36877k   ***other*
+     38     163.63re       0.05cp         0avio    111445k   gdbus
+      3       0.05re       0.04cp         0avio     12015k   apt-check
+     27     264.27re       0.02cp         0avio         0k   kworker/dying*
+      2      51.87re       0.01cp         0avio   5310464k   Docker Desktop
+      5       0.03re       0.01cp         0avio       785k   snap-confine
+      8      59.48re       0.01cp         0avio     85838k   gmain
+      5     103.94re       0.01cp         0avio    112720k   dconf worker
+     24       3.38re       0.00cp         0avio      2937k   systemd-udevd*
+      7       0.01re       0.00cp         0avio     36208k   5
+      3       1.51re       0.00cp         0avio      3672k   systemd-timedat
+      2       0.00re       0.00cp         0avio     10236k   apport-checkrep
+      2       0.01re       0.00cp         0avio   4316160k   ThreadPoolForeg*
+      2       0.00re       0.00cp         0avio      8550k   package-data-do
+      3       0.79re       0.00cp         0avio      2156k   dbus-daemon
+     12       0.00re       0.00cp         0avio     39631k   ffmpeg
+[...]
+</code></pre>
+<h5 id="32查看进程数量和-cpu-分钟数">3.2、查看进程数量和 CPU 分钟数</h5>
+<p>要打印基于每个用户的进程数量和 CPU 分钟数，运行带 <code>-m</code> 标志的 <code>sa</code> 命令：</p>
+<pre><code>$ sa -m
+</code></pre>
+<p>示例输出：</p>
+<pre><code>1525    1598.63re       0.23cp         0avio     32651k
+root                                  561     647.23re       0.09cp         0avio      3847k
+ostechnix                             825     780.79re       0.08cp         0avio     47788k
+gdm                                   117      13.43re       0.06cp         0avio     63715k
+colord                                  2      52.01re       0.00cp         0avio     89720k
+geoclue                                 1       1.01re       0.00cp         0avio     70608k
+jellyfin                               12       0.00re       0.00cp         0avio     39631k
+man                                     1       0.00re       0.00cp         0avio      3124k
+kernoops                                4     104.12re       0.00cp         0avio      3270k
+sshd                                    1       0.05re       0.00cp         0avio      3856k
+whoopsie                                1       0.00re       0.00cp         0avio      8552k
+</code></pre>
+<h5 id="33打印用户-id-和命令名称">3.3、打印用户 ID 和命令名称</h5>
+<p>对于账户文件中的每个命令，使用 <code>-u</code> 标志打印用户 ID 和命令名称。</p>
+<pre><code>$ sa -u
+</code></pre>
+<p>示例输出：</p>
+<pre><code>root       0.00 cpu      693k mem      0 io accton          
+root       0.00 cpu     3668k mem      0 io systemd-tty-ask 
+root       0.00 cpu     3260k mem      0 io systemctl       
+root       0.01 cpu     3764k mem      0 io deb-systemd-inv 
+root       0.00 cpu      722k mem      0 io acct.postinst   
+root       0.00 cpu      704k mem      0 io rm              
+root       0.00 cpu      939k mem      0 io cp              
+root       0.00 cpu      704k mem      0 io rm              
+root       0.00 cpu      951k mem      0 io find            
+root       0.00 cpu      911k mem      0 io gzip            
+root       0.00 cpu      722k mem      0 io sh              
+root       0.00 cpu      748k mem      0 io install-info    
+root       0.00 cpu      911k mem      0 io gzip            
+[...]
+</code></pre>
+<p>如需更多详细信息，请参考手册页：</p>
+<pre><code>$ man sa
+</code></pre>
+<h4 id="4dump-acct-和-dump-utmp-命令">4、dump-acct 和 dump-utmp 命令</h4>
+<p><code>dump-acct</code> 实用工具将 accton 格式的输出文件显示为人类可读的格式。</p>
+<pre><code>$ dump-acct /var/account/pacct
+</code></pre>
+<p><code>dump-utmp</code> 将 utmp 文件显示为人类可读的格式。</p>
+<pre><code>$ dump-utmp /var/run/utmp
+</code></pre>
+<p>如需了解更多详情，请参考手册页：</p>
+<pre><code>$ man dump-acct
+</code></pre>
+<pre><code>$ man dump-utmp
+</code></pre>
+<h4 id="5accton-命令">5、accton 命令</h4>
+<p><code>accton</code> 命令将允许你开启或关闭记账。</p>
+<p>要开启进程记账，请运行：</p>
+<pre><code>$ accton on
+</code></pre>
+<p>要关闭它，运行：</p>
+<pre><code>$ accton off
+</code></pre>
+<p>如需了解更多详情，请参考手册页：</p>
+<pre><code>$ man accton
+</code></pre>
+<h3 id="总结">总结</h3>
+<p>每个 Linux 管理员都应该知道 GNU 记账实用程序，以便注意所有用户的行为。在故障排除时，这些实用程序会非常有帮助。</p>
+<h3 id="资源">资源</h3>
+<ul>
+<li><a href="https://www.gnu.org/software/acct/manual/accounting.html">GNU 记账实用程序官网</a></li>
+</ul>
+<p><em>（题图：MJ/da3f7e79-2a53-4121-a2ed-d63a22c3d3f4）</em></p>
+<hr>
+<p>via: <a href="https://ostechnix.com/monitor-user-activity-linux/">https://ostechnix.com/monitor-user-activity-linux/</a></p>
+<p>作者：<a href="https://ostechnix.com/author/sk/">sk</a>
+选题：<a href="https://github.com/lkxed">lkxed</a>
+译者：<a href="https://linux.cn/lctt/ChatGPT">ChatGPT</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是记账工具">什么是记账工具？</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#linux-中如何安装-psacct-或-acct">Linux 中如何安装 psacct 或 acct</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#启动-psacctacct-服务">启动 psacct/acct 服务</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#利用-psacct-或-acct-来监测-linux-中的用户活动">利用 psacct 或 acct 来监测 Linux 中的用户活动</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#总结">总结</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#资源">资源</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202310/20221013 How To Monitor User Activity In Linux","title":"如何在 Linux 中监控用户活动"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

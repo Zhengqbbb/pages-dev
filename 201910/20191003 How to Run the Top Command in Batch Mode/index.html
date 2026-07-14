@@ -1,0 +1,292 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>如何在批处理模式下运行 top 命令 - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="如何在批处理模式下运行 top 命令 - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="如何在批处理模式下运行 top 命令 - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/201910/20191003 How to Run the Top Command in Batch Mode#page","@type":"TechArticle","headline":"如何在批处理模式下运行 top 命令","inLanguage":"en","name":"如何在批处理模式下运行 top 命令","url":"https://zhengqbbb.github.io/pages-dev/201910/20191003 How to Run the Top Command in Batch Mode","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/201910/20191003 How to Run the Top Command in Batch Mode"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-top-命令的批处理模式">什么是 top 命令的批处理模式</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-如何在批处理模式下运行-top-命令">1) 如何在批处理模式下运行 top 命令</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-如何在批处理模式下运行-top-命令并按内存使用率排序结果">2) 如何在批处理模式下运行 top 命令并按内存使用率排序结果</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-如何在批处理模式下运行-top-命令并按照指定的用户进程对结果进行排序">3) 如何在批处理模式下运行 top 命令并按照指定的用户进程对结果进行排序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-如何在批处理模式下运行-top-命令并按照处理时间进行排序">4) 如何在批处理模式下运行 top 命令并按照处理时间进行排序</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-如何在批处理模式下运行-top-命令并将结果保存到文件中">5) 如何在批处理模式下运行 top 命令并将结果保存到文件中</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何按照指定字段对结果进行排序">如何按照指定字段对结果进行排序</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>如何在批处理模式下运行 top 命令</h1><p><img src="https://img.linux.net.cn/data/attachment/album/201910/22/235420ylswdescv5ddffit.jpg" alt=""></p>
+<p><a href="https://www.2daygeek.com/linux-top-command-linux-system-performance-monitoring-tool/">top 命令</a> 是每个人都在使用的用于 <a href="https://www.2daygeek.com/category/system-monitoring/">监控 Linux 系统性能</a> 的最好的命令。你可能已经知道 <code>top</code> 命令的绝大部分操作，除了很少的几个操作，如果我没错的话，批处理模式就是其中之一。</p>
+<p>大部分的脚本编写者和开发人员都知道这个，因为这个操作主要就是用来编写脚本。</p>
+<p>如果你不了解这个，不用担心，我们将在这里介绍它。</p>
+<h3 id="什么是-top-命令的批处理模式">什么是 top 命令的批处理模式</h3>
+<p>批处理模式允许你将 <code>top</code> 命令的输出发送至其他程序或者文件中。</p>
+<p>在这个模式中，<code>top</code> 命令将不会接收输入并且持续运行，直到迭代次数达到你用 <code>-n</code> 选项指定的次数为止。</p>
+<p>如果你想解决 Linux 服务器上的任何性能问题，你需要正确的 <a href="https://www.2daygeek.com/understanding-linux-top-command-output-usage/">理解 top 命令的输出</a>。</p>
+<h3 id="1-如何在批处理模式下运行-top-命令">1) 如何在批处理模式下运行 top 命令</h3>
+<p>默认地，<code>top</code> 命令按照 CPU 的使用率来排序输出结果，所以当你在批处理模式中运行以下命令时，它会执行同样的操作并打印前 35 行：</p>
+<pre><code># top -bc | head -35
+
+top - 06:41:14 up 8 days, 20:24,  1 user,  load average: 0.87, 0.77, 0.81
+Tasks: 139 total,   1 running, 136 sleeping,   0 stopped,   2 zombie
+%Cpu(s):  0.0 us,  3.2 sy,  0.0 ni, 96.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  3880940 total,  1595932 free,   886736 used,  1398272 buff/cache
+KiB Swap:  1048572 total,   514640 free,   533932 used.  2648472 avail Mem
+
+PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+     1 root      20   0  191144   2800   1596 S   0.0  0.1   5:43.63 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+     2 root      20   0       0      0      0 S   0.0  0.0   0:00.32 [kthreadd]
+     3 root      20   0       0      0      0 S   0.0  0.0   0:28.10 [ksoftirqd/0]
+     5 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kworker/0:0H]
+     7 root      rt   0       0      0      0 S   0.0  0.0   0:33.96 [migration/0]
+     8 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [rcu_bh]
+     9 root      20   0       0      0      0 S   0.0  0.0  63:05.12 [rcu_sched]
+    10 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [lru-add-drain]
+    11 root      rt   0       0      0      0 S   0.0  0.0   0:08.79 [watchdog/0]
+    12 root      rt   0       0      0      0 S   0.0  0.0   0:08.82 [watchdog/1]
+    13 root      rt   0       0      0      0 S   0.0  0.0   0:44.27 [migration/1]
+    14 root      20   0       0      0      0 S   0.0  0.0   1:22.45 [ksoftirqd/1]
+    16 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kworker/1:0H]
+    18 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kdevtmpfs]
+    19 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [netns]
+    20 root      20   0       0      0      0 S   0.0  0.0   0:01.35 [khungtaskd]
+    21 root       0 -20       0      0      0 S   0.0  0.0   0:00.02 [writeback]
+    22 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kintegrityd]
+    23 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [bioset]
+    24 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kblockd]
+    25 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [md]
+    26 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [edac-poller]
+    33 root      20   0       0      0      0 S   0.0  0.0   1:19.07 [kswapd0]
+    34 root      25   5       0      0      0 S   0.0  0.0   0:00.00 [ksmd]
+    35 root      39  19       0      0      0 S   0.0  0.0   0:12.80 [khugepaged]
+    36 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [crypto]
+    44 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kthrotld]
+    46 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kmpath_rdacd]
+</code></pre>
+<h3 id="2-如何在批处理模式下运行-top-命令并按内存使用率排序结果">2) 如何在批处理模式下运行 top 命令并按内存使用率排序结果</h3>
+<p>在批处理模式中运行以下命令按内存使用率对结果进行排序：</p>
+<pre><code># top -bc -o +%MEM | head -n 20
+
+top - 06:42:00 up 8 days, 20:25,  1 user,  load average: 0.66, 0.74, 0.80
+Tasks: 146 total,   1 running, 145 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  3880940 total,  1422044 free,  1059176 used,  1399720 buff/cache
+KiB Swap:  1048572 total,   514640 free,   533932 used.  2475984 avail Mem
+
+ PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 18105 mysql     20   0 1453900 156096   8816 S   0.0  4.0   2:12.98 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid
+  1841 root      20   0  228980 107036   5360 S   0.0  2.8   0:05.56 /usr/local/cpanel/3rdparty/perl/528/bin/perl -T -w /usr/local/cpanel/3rdparty/bin/spamd --max-children=3 --max-spare=1 --allowed-ips=127.0.0.+
+  4301 root      20   0  230208 104608   1816 S   0.0  2.7   0:03.77 spamd child
+  8139 nobody    20   0  257000  27108   3408 S   0.0  0.7   0:00.04 /usr/sbin/httpd -k start
+  7961 nobody    20   0  256988  26912   3160 S   0.0  0.7   0:00.05 /usr/sbin/httpd -k start
+  8190 nobody    20   0  256976  26812   3140 S   0.0  0.7   0:00.05 /usr/sbin/httpd -k start
+  8353 nobody    20   0  256976  26812   3144 S   0.0  0.7   0:00.04 /usr/sbin/httpd -k start
+  8629 nobody    20   0  256856  26736   3108 S   0.0  0.7   0:00.02 /usr/sbin/httpd -k start
+  8636 nobody    20   0  256856  26712   3100 S   0.0  0.7   0:00.03 /usr/sbin/httpd -k start
+  8611 nobody    20   0  256844  25764   2228 S   0.0  0.7   0:00.01 /usr/sbin/httpd -k start
+  8451 nobody    20   0  256844  25760   2220 S   0.0  0.7   0:00.04 /usr/sbin/httpd -k start
+  8610 nobody    20   0  256844  25748   2224 S   0.0  0.7   0:00.01 /usr/sbin/httpd -k start
+  8632 nobody    20   0  256844  25744   2216 S   0.0  0.7   0:00.03 /usr/sbin/httpd -k start
+</code></pre>
+<p>上面命令的详细信息：</p>
+<ul>
+<li><code>-b</code>：批处理模式选项</li>
+<li><code>-c</code>：打印运行中的进程的绝对路径</li>
+<li><code>-o</code>：指定进行排序的字段</li>
+<li><code>head</code>：输出文件的第一部分</li>
+<li><code>-n</code>：打印前 n 行</li>
+</ul>
+<h3 id="3-如何在批处理模式下运行-top-命令并按照指定的用户进程对结果进行排序">3) 如何在批处理模式下运行 top 命令并按照指定的用户进程对结果进行排序</h3>
+<p>如果你想要按照指定用户进程对结果进行排序请运行以下命令：</p>
+<pre><code># top -bc -u mysql | head -n 10
+
+top - 06:44:58 up 8 days, 20:27,  1 user,  load average: 0.99, 0.87, 0.84
+Tasks: 140 total,   1 running, 137 sleeping,   0 stopped,   2 zombie
+%Cpu(s): 13.3 us,  3.3 sy,  0.0 ni, 83.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  3880940 total,  1589832 free,   885648 used,  1405460 buff/cache
+KiB Swap:  1048572 total,   514640 free,   533932 used.  2649412 avail Mem
+
+ PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 18105 mysql     20   0 1453900 156888   8816 S   0.0  4.0   2:16.42 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid
+</code></pre>
+<h3 id="4-如何在批处理模式下运行-top-命令并按照处理时间进行排序">4) 如何在批处理模式下运行 top 命令并按照处理时间进行排序</h3>
+<p>在批处理模式中使用以下 <code>top</code> 命令按照处理时间对结果进行排序。这展示了任务从启动以来已使用的总 CPU 时间。</p>
+<p>但是如果你想要检查一个进程在 Linux 上运行了多长时间请看接下来的文章：</p>
+<ul>
+<li><a href="https://www.2daygeek.com/how-to-check-how-long-a-process-has-been-running-in-linux/">检查 Linux 中进程运行时间的五种方法</a></li>
+</ul>
+<pre><code># top -bc -o TIME+ | head -n 20
+
+top - 06:45:56 up 8 days, 20:28,  1 user,  load average: 0.56, 0.77, 0.81
+Tasks: 148 total,   1 running, 146 sleeping,   0 stopped,   1 zombie
+%Cpu(s):  0.0 us,  3.1 sy,  0.0 ni, 96.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  3880940 total,  1378664 free,  1094876 used,  1407400 buff/cache
+KiB Swap:  1048572 total,   514640 free,   533932 used.  2440332 avail Mem
+
+ PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+     9 root      20   0       0      0      0 S   0.0  0.0  63:05.70 [rcu_sched]
+   272 root      20   0       0      0      0 S   0.0  0.0  16:12.13 [xfsaild/vda1]
+  3882 root      20   0  229832   6212   1220 S   0.0  0.2   9:00.84 /usr/sbin/httpd -k start
+     1 root      20   0  191144   2800   1596 S   0.0  0.1   5:43.75 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+  3761 root      20   0   68784   9820   2048 S   0.0  0.3   5:09.67 tailwatchd
+  3529 root      20   0  404380   3472   2604 S   0.0  0.1   3:24.98 /usr/sbin/rsyslogd -n
+  3520 root      20   0  574208    572    164 S   0.0  0.0   3:07.74 /usr/bin/python2 -Es /usr/sbin/tuned -l -P
+   444 dbus      20   0   58444   1144    612 S   0.0  0.0   2:23.90 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
+ 18105 mysql     20   0 1453900 157152   8816 S   0.0  4.0   2:17.29 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid
+   249 root       0 -20       0      0      0 S   0.0  0.0   1:28.83 [kworker/0:1H]
+    14 root      20   0       0      0      0 S   0.0  0.0   1:22.46 [ksoftirqd/1]
+    33 root      20   0       0      0      0 S   0.0  0.0   1:19.07 [kswapd0]
+   342 root      20   0   39472   2940   2752 S   0.0  0.1   1:18.17 /usr/lib/systemd/systemd-journald
+</code></pre>
+<h3 id="5-如何在批处理模式下运行-top-命令并将结果保存到文件中">5) 如何在批处理模式下运行 top 命令并将结果保存到文件中</h3>
+<p>如果出于解决问题的目的，你想要和别人分享 <code>top</code> 命令的输出，请使用以下命令重定向输出到文件中：</p>
+<pre><code># top -bc | head -35 &gt; top-report.txt
+
+# cat top-report.txt
+
+top - 06:47:11 up 8 days, 20:30,  1 user,  load average: 0.67, 0.77, 0.81
+Tasks: 133 total,   4 running, 129 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 59.4 us, 12.5 sy,  0.0 ni, 28.1 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  3880940 total,  1596268 free,   843284 used,  1441388 buff/cache
+KiB Swap:  1048572 total,   514640 free,   533932 used.  2659084 avail Mem
+
+ PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+  9686 daygeekc  20   0  406132  62184  43448 R  94.1  1.6   0:00.34 /opt/cpanel/ea-php56/root/usr/bin/php-cgi
+  9689 nobody    20   0  256588  24428   1184 S   5.9  0.6   0:00.01 /usr/sbin/httpd -k start
+     1 root      20   0  191144   2800   1596 S   0.0  0.1   5:43.79 /usr/lib/systemd/systemd --switched-root --system --deserialize 22
+     2 root      20   0       0      0      0 S   0.0  0.0   0:00.32 [kthreadd]
+     3 root      20   0       0      0      0 S   0.0  0.0   0:28.11 [ksoftirqd/0]
+     5 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kworker/0:0H]
+     7 root      rt   0       0      0      0 S   0.0  0.0   0:33.96 [migration/0]
+     8 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [rcu_bh]
+     9 root      20   0       0      0      0 R   0.0  0.0  63:05.82 [rcu_sched]
+    10 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [lru-add-drain]
+    11 root      rt   0       0      0      0 S   0.0  0.0   0:08.79 [watchdog/0]
+    12 root      rt   0       0      0      0 S   0.0  0.0   0:08.82 [watchdog/1]
+    13 root      rt   0       0      0      0 S   0.0  0.0   0:44.28 [migration/1]
+    14 root      20   0       0      0      0 S   0.0  0.0   1:22.46 [ksoftirqd/1]
+    16 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kworker/1:0H]
+    18 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kdevtmpfs]
+    19 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [netns]
+    20 root      20   0       0      0      0 S   0.0  0.0   0:01.35 [khungtaskd]
+    21 root       0 -20       0      0      0 S   0.0  0.0   0:00.02 [writeback]
+    22 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kintegrityd]
+    23 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [bioset]
+    24 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [kblockd]
+    25 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [md]
+    26 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [edac-poller]
+    33 root      20   0       0      0      0 S   0.0  0.0   1:19.07 [kswapd0]
+    34 root      25   5       0      0      0 S   0.0  0.0   0:00.00 [ksmd]
+    35 root      39  19       0      0      0 S   0.0  0.0   0:12.80 [khugepaged]
+    36 root       0 -20       0      0      0 S   0.0  0.0   0:00.00 [crypto]
+</code></pre>
+<h3 id="如何按照指定字段对结果进行排序">如何按照指定字段对结果进行排序</h3>
+<p>在 <code>top</code> 命令的最新版本中， 按下 <code>f</code> 键进入字段管理界面。</p>
+<p>要使用新字段进行排序， 请使用 <code>up</code>/<code>down</code> 箭头选择正确的选项，然后再按下 <code>s</code> 键进行排序。最后按 <code>q</code> 键退出此窗口。</p>
+<pre><code>Fields Management for window 1:Def, whose current sort field is %CPU
+    Navigate with Up/Dn, Right selects for move then  or Left commits,
+    &#39;d&#39; or  toggles display, &#39;s&#39; sets sort.  Use &#39;q&#39; or  to end!
+ PID     = Process Id             nsUTS   = UTS namespace Inode
+ USER    = Effective User Name    LXC     = LXC container name
+ PR      = Priority               RSan    = RES Anonymous (KiB)
+ NI      = Nice Value             RSfd    = RES File-based (KiB)
+ VIRT    = Virtual Image (KiB)    RSlk    = RES Locked (KiB)
+ RES     = Resident Size (KiB)    RSsh    = RES Shared (KiB)
+ SHR     = Shared Memory (KiB)    CGNAME  = Control Group name
+ S       = Process Status         NU      = Last Used NUMA node
+ %CPU    = CPU Usage
+ %MEM    = Memory Usage (RES)
+ TIME+   = CPU Time, hundredths
+ COMMAND = Command Name/Line
+ PPID    = Parent Process pid
+ UID     = Effective User Id
+ RUID    = Real User Id
+ RUSER   = Real User Name
+ SUID    = Saved User Id
+ SUSER   = Saved User Name
+ GID     = Group Id
+ GROUP   = Group Name
+ PGRP    = Process Group Id
+ TTY     = Controlling Tty
+ TPGID   = Tty Process Grp Id
+ SID     = Session Id
+ nTH     = Number of Threads
+ P       = Last Used Cpu (SMP)
+ TIME    = CPU Time
+ SWAP    = Swapped Size (KiB)
+ CODE    = Code Size (KiB)
+ DATA    = Data+Stack (KiB)
+ nMaj    = Major Page Faults
+ nMin    = Minor Page Faults
+ nDRT    = Dirty Pages Count
+ WCHAN   = Sleeping in Function
+ Flags   = Task Flags
+ CGROUPS = Control Groups
+ SUPGIDS = Supp Groups IDs
+ SUPGRPS = Supp Groups Names
+ TGID    = Thread Group Id
+ OOMa    = OOMEM Adjustment
+ OOMs    = OOMEM Score current
+ ENVIRON = Environment vars
+ vMj     = Major Faults delta
+ vMn     = Minor Faults delta
+ USED    = Res+Swap Size (KiB)
+ nsIPC   = IPC namespace Inode
+ nsMNT   = MNT namespace Inode
+ nsNET   = NET namespace Inode
+ nsPID   = PID namespace Inode
+ nsUSER  = USER namespace Inode
+</code></pre>
+<p>对 <code>top</code> 命令的旧版本，请按 <code>shift+f</code> 或 <code>shift+o</code> 键进入字段管理界面进行排序。</p>
+<p>要使用新字段进行排序，请选择相应的排序字段字母， 然后按下回车键排序。</p>
+<pre><code>Current Sort Field:  N  for window 1:Def
+ Select sort field via field letter, type any other key to return
+  a: PID        = Process Id
+  b: PPID       = Parent Process Pid
+  c: RUSER      = Real user name
+  d: UID        = User Id
+  e: USER       = User Name
+  f: GROUP      = Group Name
+  g: TTY        = Controlling Tty
+  h: PR         = Priority
+  i: NI         = Nice value
+  j: P          = Last used cpu (SMP)
+  k: %CPU       = CPU usage
+  l: TIME       = CPU Time
+  m: TIME+      = CPU Time, hundredths
+* N: %MEM       = Memory usage (RES)
+  o: VIRT       = Virtual Image (kb)
+  p: SWAP       = Swapped size (kb)
+  q: RES        = Resident size (kb)
+  r: CODE       = Code size (kb)
+  s: DATA       = Data+Stack size (kb)
+  t: SHR        = Shared Mem size (kb)
+  u: nFLT       = Page Fault count
+  v: nDRT       = Dirty Pages count
+  w: S          = Process Status
+  x: COMMAND    = Command name/line
+  y: WCHAN      = Sleeping in Function
+  z: Flags      = Task Flags
+ Note1:
+   If a selected sort field can&#39;t be
+   shown due to screen width or your
+   field order, the &#39;&lt;&#39; and &#39;&gt;&#39; keys
+   will be unavailable until a field
+   within viewable range is chosen.
+ Note2:
+   Field sorting uses internal values,
+   not those in column display.  Thus,
+   the TTY &amp; WCHAN fields will violate
+   strict ASCII collating sequence.
+   (shame on you if WCHAN is chosen)
+</code></pre>
+<hr>
+<p>via: <a href="https://www.2daygeek.com/linux-run-execute-top-command-in-batch-mode/">https://www.2daygeek.com/linux-run-execute-top-command-in-batch-mode/</a></p>
+<p>作者：<a href="https://www.2daygeek.com/author/magesh/">Magesh Maruthamuthu</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://github.com/way-ww">way-ww</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#什么是-top-命令的批处理模式">什么是 top 命令的批处理模式</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#1-如何在批处理模式下运行-top-命令">1) 如何在批处理模式下运行 top 命令</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#2-如何在批处理模式下运行-top-命令并按内存使用率排序结果">2) 如何在批处理模式下运行 top 命令并按内存使用率排序结果</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#3-如何在批处理模式下运行-top-命令并按照指定的用户进程对结果进行排序">3) 如何在批处理模式下运行 top 命令并按照指定的用户进程对结果进行排序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#4-如何在批处理模式下运行-top-命令并按照处理时间进行排序">4) 如何在批处理模式下运行 top 命令并按照处理时间进行排序</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#5-如何在批处理模式下运行-top-命令并将结果保存到文件中">5) 如何在批处理模式下运行 top 命令并将结果保存到文件中</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何按照指定字段对结果进行排序">如何按照指定字段对结果进行排序</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/201910/20191003 How to Run the Top Command in Batch Mode","title":"如何在批处理模式下运行 top 命令"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>

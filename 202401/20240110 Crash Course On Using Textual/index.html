@@ -1,0 +1,703 @@
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Textual：为 Python 增加漂亮的文本用户界面（TUI） - LCTT | X-CMD</title><link href="/pages-dev/favicon.svg" rel="icon" type="image/svg+xml"><style>@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/2536380416fd59fe.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a";src:url("/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:96.4951%;ascent-override:100.3937%;descent-override:24.9972%;line-gap-override:0%;}@font-face{font-family:"Inter Tight-baf59d872beb280a fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:89.6236%;ascent-override:108.0909%;descent-override:26.9138%;line-gap-override:0%;}:root{--blume-ff-inter-tight:"Inter Tight-baf59d872beb280a","Inter Tight-baf59d872beb280a fallback: Arial","Inter Tight-baf59d872beb280a fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/2536380416fd59fe.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6d4bffbf7335e8f1.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:italic;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:Inter-b3ad1a2eee839360;src:url("/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:700;font-style:normal;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:italic;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:italic;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:500;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial";src:local("Arial");font-display:swap;font-weight:600;font-style:normal;size-adjust:107.7766%;ascent-override:89.885%;descent-override:22.3806%;line-gap-override:0%;}@font-face{font-family:"Inter-b3ad1a2eee839360 fallback: Arial Bold";src:local("Arial Bold");font-display:swap;font-weight:700;font-style:normal;size-adjust:100.1017%;ascent-override:96.7765%;descent-override:24.0966%;line-gap-override:0%;}:root{--blume-ff-inter:Inter-b3ad1a2eee839360,"Inter-b3ad1a2eee839360 fallback: Arial","Inter-b3ad1a2eee839360 fallback: Arial Bold",ui-sans-serif,system-ui,sans-serif;}</style><link rel="preload" href="/pages-dev/_astro/fonts/91753f8d8da3aeb7.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e868cdf4720e9ea5.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:italic;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/45f5561f938fa232.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/e24ff982d90e3401.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:500;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7";src:url("/pages-dev/_astro/fonts/f276da2ba24f5203.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:600;font-style:normal;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:italic;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:400;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:500;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}@font-face{font-family:"IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New";src:local("Courier New");font-display:swap;font-weight:600;font-style:normal;size-adjust:99.9837%;ascent-override:102.5167%;descent-override:27.5045%;}:root{--blume-ff-ibm-plex-mono:"IBM Plex Mono-66157aa95d42a4d7","IBM Plex Mono-66157aa95d42a4d7 fallback: Courier New",ui-monospace,"SF Mono",Menlo,monospace;}</style><link rel="preload" href="/pages-dev/_astro/fonts/04dd54f8b9dc7022.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/6289d3ddfa5c9533.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f7a5011e02f4baeb.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/45f5561f938fa232.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/e24ff982d90e3401.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/pages-dev/_astro/fonts/f276da2ba24f5203.woff2" as="font" type="font/woff2" crossorigin><meta property="og:type" content="website"><meta property="og:site_name" content="LCTT | X-CMD"><meta property="og:title" content="Textual：为 Python 增加漂亮的文本用户界面（TUI） - LCTT | X-CMD"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Textual：为 Python 增加漂亮的文本用户界面（TUI） - LCTT | X-CMD"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@id":"https://zhengqbbb.github.io#website","@type":"WebSite","name":"LCTT | X-CMD","url":"https://zhengqbbb.github.io/pages-dev"},{"@id":"https://zhengqbbb.github.io/pages-dev/202401/20240110 Crash Course On Using Textual#page","@type":"TechArticle","headline":"Textual：为 Python 增加漂亮的文本用户界面（TUI）","inLanguage":"en","name":"Textual：为 Python 增加漂亮的文本用户界面（TUI）","url":"https://zhengqbbb.github.io/pages-dev/202401/20240110 Crash Course On Using Textual","isPartOf":{"@id":"https://zhengqbbb.github.io#website"}}]}</script><script data-mode="system">(()=>{const m=document.currentScript?.dataset.mode??"system";const s=localStorage.getItem("blume-theme");const sys=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s??(m==="system"?sys:m);})();</script><script>
+      (() => {
+        const applyTheme = () => {
+          const mode =
+            document.querySelector("script[data-mode]")?.dataset.mode ?? "system";
+          const stored = localStorage.getItem("blume-theme");
+          const system = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+          document.documentElement.dataset.theme =
+            stored ?? (mode === "system" ? system : mode);
+        };
+        if (window.__blumeThemePersist) return;
+        window.__blumeThemePersist = true;
+        document.addEventListener("astro:after-swap", applyTheme);
+        document.addEventListener("astro:page-load", applyTheme);
+      })();
+    </script><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="swap"><script type="module" src="/pages-dev/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CyWaYSQV.js"></script><style>@keyframes astroFadeInOut{0%{opacity:1}to{opacity:0}}@keyframes astroFadeIn{0%{opacity:0;mix-blend-mode:plus-lighter}to{opacity:1;mix-blend-mode:plus-lighter}}@keyframes astroFadeOut{0%{opacity:1;mix-blend-mode:plus-lighter}to{opacity:0;mix-blend-mode:plus-lighter}}@keyframes astroSlideFromRight{0%{transform:translate(100%)}}@keyframes astroSlideFromLeft{0%{transform:translate(-100%)}}@keyframes astroSlideToRight{to{transform:translate(100%)}}@keyframes astroSlideToLeft{to{transform:translate(-100%)}}@media (prefers-reduced-motion){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*),[data-astro-transition-scope]{animation:none!important}}.lctt-group.lctt-collapsed>.lctt-items{display:none}.lctt-group:not(.lctt-collapsed)>.lctt-group-toggle{z-index:10;background-color:var(--color-background,var(--blume-background));position:sticky;top:-23px}aside[data-blume-nav-drawer]{scrollbar-width:thin;scrollbar-color:var(--blume-border) transparent}aside[data-blume-nav-drawer]::-webkit-scrollbar{width:8px}aside[data-blume-nav-drawer]::-webkit-scrollbar-track{background:0 0}aside[data-blume-nav-drawer]::-webkit-scrollbar-thumb{background-color:var(--blume-border);border-radius:var(--blume-radius)}.astro-route-announcer{clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;width:1px;height:1px;position:absolute;top:0;left:0;overflow:hidden}::view-transition-old(root),::view-transition-new(root){mix-blend-mode:normal;animation:none}
+.prose .page-title[data-astro-cid-uv676rxp]{margin:0 0 1rem;font-size:2rem;line-height:1.25}@media (width<=640px){.prose .page-title[data-astro-cid-uv676rxp]{font-size:1.75rem}}
+</style><link rel="stylesheet" href="/pages-dev/_astro/Header.cUB-gkHf.css"><script type="module" src="/pages-dev/_astro/page.C7vmn47F.js"></script></head><body class="bg-background font-sans text-foreground antialiased" data-blume-image-zoom data-i18n-copy-code="Copy code" data-i18n-diagram-error="Could not render this diagram."><a class="absolute start-[-999px] top-0 z-[100] bg-accent px-4 py-2 text-accent-foreground focus:start-0" href="#blume-content">Skip to content</a><header class="sticky top-0 z-40 flex h-16 items-center gap-3 bg-background/90 px-4 backdrop-blur md:px-6" data-blume-header><button aria-label="Toggle navigation" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground lg:hidden" data-blume-nav-toggle type="button"><svg aria-hidden="true" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16M4 12h16M4 19h16"/></svg></button><a class="inline-flex items-center gap-2 font-semibold text-base text-foreground" href="/pages-dev"><span>LCTT | X-CMD</span></a><div class="flex-1"></div><div class="flex items-center gap-2"><button aria-label="Toggle color theme" class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground" data-blume-theme-toggle type="button"><span class="inline-flex dark:hidden"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g></svg></span><span class="hidden dark:inline-flex"><svg aria-hidden="true" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></span></button></div></header><script>(()=>{const dr=()=>{const h=document.querySelector("[data-blume-header]");if(h){document.documentElement.style.setProperty("--blume-drawer-top",h.getBoundingClientRect().bottom+"px");}};document.addEventListener("click",(e)=>{const t=e.target.closest("[data-blume-theme-toggle]");if(t){const d=document.documentElement;const next=d.dataset.theme==="dark"?"light":"dark";const s=document.createElement("style");s.appendChild(document.createTextNode("*,*::before,*::after{transition:none!important}"));document.head.appendChild(s);d.dataset.theme=next;localStorage.setItem("blume-theme",next);window.getComputedStyle(d).opacity;setTimeout(()=>document.head.removeChild(s),1);}const n=e.target.closest("[data-blume-nav-toggle]");if(n){const d=document.documentElement;const open=d.toggleAttribute("data-blume-nav-open");if(open){dr();}d.style.overflow=open?"hidden":"";}const b=e.target.closest("[data-blume-banner-dismiss]");if(b){const bar=b.closest("[data-blume-banner]");const k=bar&&bar.getAttribute("data-banner-key");if(k){localStorage.setItem("blume-banner:"+k,"1");}document.documentElement.setAttribute("data-blume-banner-hidden","");requestAnimationFrame(dr);}});addEventListener("resize",()=>{const d=document.documentElement;if(!d.hasAttribute("data-blume-nav-open")){return;}if(matchMedia("(min-width:64rem)").matches){d.removeAttribute("data-blume-nav-open");d.style.overflow="";}else{dr();}});})();</script><div class="mx-auto grid grid-cols-1 items-start lg:grid-cols-[17.5rem_minmax(0,1fr)] xl:grid-cols-[17.5rem_minmax(0,1fr)_17.5rem]" data-blume-doc-grid><aside aria-label="Primary" data-blume-nav-drawer class="fixed top-[var(--blume-drawer-top,4rem)] start-0 z-[35] h-[calc(100dvh-var(--blume-drawer-top,4rem))] w-64 max-w-[80vw] -translate-x-[105%] overflow-y-auto border-border border-e bg-background px-5 pt-4 pb-6 transition-transform rtl:translate-x-[105%] [:where([data-blume-nav-open])_&amp;]:translate-x-0! lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:w-auto lg:max-w-none lg:translate-x-0! lg:border-e-0 lg:bg-transparent lg:px-4"><nav><div data-astro-transition-persist="lctt-sidebar" class="lctt-sidebar-root" data-blume-sidebar data-current-route="/202401/20240110 Crash Course On Using Textual"><div class="lctt-loading px-2.5 py-1.5 text-muted-foreground text-sm">加载目录中...</div></div><script type="module">var e=`/pages-dev`.replace(/\/+$/,``)||``,t=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors hover:bg-muted hover:text-foreground text-muted-foreground`,n=`lctt-link block truncate rounded-[0.65rem] px-2.5 py-1.5 text-sm transition-colors bg-muted font-medium text-foreground`;function r(t){return(decodeURIComponent(t).slice(e.length)||`/`).replace(/\/+$/,``)||`/`}function i(t){return`${e}${t.startsWith(`/`)?t:`/${t}`}`}function a(e,t){for(let n of e)for(let e of n.items||[])if((e.link.replace(/\/+$/,``)||`/`)===t)return n.text;return null}function o(e){let i=r(window.location.pathname);e.querySelectorAll(`a.lctt-link`).forEach(e=>{let a=r(e.getAttribute(`href`)||``)===i;if(e.className=a?n:t,a?e.setAttribute(`aria-current`,`page`):e.removeAttribute(`aria-current`),a){let t=e.closest(`.lctt-group`);t?.classList.remove(`lctt-collapsed`);let n=t?.querySelector(`button.lctt-group-toggle`);n&&n.setAttribute(`aria-expanded`,`true`),(t?.querySelector(`.lctt-chevron`))?.classList.add(`rotate-90`)}})}function s(e,n){let s=a(n,r(window.location.pathname)),c=document.createElement(`nav`);c.setAttribute(`aria-label`,`文档目录`),c.className=`lctt-client-sidebar space-y-1 pb-6`;let l=document.createElement(`ul`);l.className=`space-y-1`;for(let e of n){let n=document.createElement(`li`);n.className=`lctt-group space-y-0.5`+(s===e.text?``:` lctt-collapsed`);let r=document.createElement(`button`);r.type=`button`,r.className=`lctt-group-toggle flex w-full cursor-pointer list-none items-center gap-1.5 rounded-[0.65rem] bg-background px-2.5 py-1.5 text-left text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground`,r.setAttribute(`aria-expanded`,s===e.text?`true`:`false`);let a=document.createElement(`span`);a.className=`flex-1 truncate`,a.textContent=e.text;let o=document.createElementNS(`http://www.w3.org/2000/svg`,`svg`);o.setAttribute(`aria-hidden`,`true`),o.setAttribute(`class`,`lctt-chevron shrink-0 text-muted-foreground transition-transform`+(s===e.text?` rotate-90`:``)),o.setAttribute(`width`,`13`),o.setAttribute(`height`,`13`),o.setAttribute(`viewBox`,`0 0 24 24`),o.setAttribute(`fill`,`none`),o.setAttribute(`stroke`,`currentColor`),o.setAttribute(`stroke-width`,`2`),o.setAttribute(`stroke-linecap`,`round`),o.setAttribute(`stroke-linejoin`,`round`);let c=document.createElementNS(`http://www.w3.org/2000/svg`,`path`);c.setAttribute(`d`,`m9 18 6-6-6-6`),o.appendChild(c),r.append(a,o);let u=document.createElement(`ul`);u.className=`lctt-items space-y-0.5 border-border border-l pl-3`;for(let n of e.items||[]){let e=document.createElement(`li`),r=document.createElement(`a`);r.className=t,r.href=i(n.link),r.dataset.astroPrefetch=`viewport`,r.textContent=n.text,e.appendChild(r),u.appendChild(e)}r.addEventListener(`click`,()=>{let e=n.classList.toggle(`lctt-collapsed`);r.setAttribute(`aria-expanded`,e?`false`:`true`),o.classList.toggle(`rotate-90`,!e)}),n.append(r,u),l.appendChild(n)}c.appendChild(l),e.replaceChildren(c),e.dataset.ready=`1`,o(e)}var c=null;async function l(){let t=document.querySelector(`[data-blume-sidebar]`);if(t){if(t.dataset.ready===`1`){o(t);return}if(c){await c,o(document.querySelector(`[data-blume-sidebar]`));return}c=(async()=>{try{let t=await(await fetch(`${e}/sidebar.json`)).json(),n=document.querySelector(`[data-blume-sidebar]`);if(!n||n.dataset.ready===`1`)return;s(n,t)}catch{let e=document.querySelector(`[data-blume-sidebar]`);e&&e.dataset.ready!==`1`&&(e.innerHTML=`<div class="px-2.5 py-1.5 text-muted-foreground text-sm">目录加载失败</div>`)}})();try{await c}finally{c=null}}}document.addEventListener(`astro:page-load`,()=>{l()}),l();</script></nav></aside><main class="px-6 pt-6 pb-10 lg:px-8 xl:px-10" id="blume-content"><details class="group mx-auto mb-6 max-w-[42rem] rounded-blume border border-border xl:hidden"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3 font-medium text-foreground text-sm [&amp;::-webkit-details-marker]:hidden"><span>On this page</span><svg aria-hidden="true" class="text-muted-foreground transition-transform group-open:rotate-180" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 9l6 6l6-6"/></svg></summary><blume-toc class="block"><ul class="m-0 list-none border-border border-t p-2"><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#快速入门使用-textual">快速入门使用 Textual</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#我们的首个程序日志浏览器">我们的首个程序：日志浏览器</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例二展示赛事成绩的表格">示例二：展示赛事成绩的表格</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#textual-应用的问题排查">Textual 应用的问题排查</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何编写单元测试">如何编写单元测试</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#打包-textual-应用">打包 Textual 应用</a></li><li style="padding-inline-start:0.75rem"><a class="block rounded-md px-2 py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#未来计划">未来计划</a></li></ul></blume-toc></details><article class="prose mx-auto max-w-[42rem]"><h1 class="page-title" data-astro-cid-uv676rxp>Textual：为 Python 增加漂亮的文本用户界面（TUI）</h1><p><img src="https://img.linux.net.cn/data/attachment/album/202401/15/110359fptrxpqffztniz45.jpg" alt=""></p>
+<h3 id="快速入门使用-textual">快速入门使用 Textual</h3>
+<p>Python 在 Linux 上有像 <a href="https://docs.python.org/3/library/tkinter.html">TkInter</a> 这样的优秀 GUI（图形用户界面）开发库，但如果你不能运行图形应用程序怎么办？</p>
+<p>文本终端，并非只在 Linux 上有，而且 BSD 和其它的出色的类 Unix 操作系统上也有。如果你的代码是用 Python 编写的，你应该使用 <a href="https://textual.textualize.io/">Textual</a> 来帮助你编写 TUI（文本用户界面）。在这个快速介绍中，我将向你展示两个你可以用 Textual 做的示例，并且介绍它未来可能的应用方向。</p>
+<p>所以 Textual 是什么？</p>
+<blockquote>
+<p>Textual 是一个为 Python 构建的快速应用程序开发框架，由 Textualize.io 构建。它可以让你用简单的 Python API 构建复杂的用户界面，并运行在终端或网络浏览器上！</p>
+</blockquote>
+<h4 id="你需要的跟进这个教程的工具">你需要的跟进这个教程的工具</h4>
+<p>你需要有以下条件：</p>
+<ol>
+<li>具备基础的编程经验，最好熟练使用 Python。</li>
+<li>理解基础的面向对象概念，比如类和继承。</li>
+<li>一台安装了 Linux 与 Python 3.9+ 的机器</li>
+<li>一款好的编辑器（Vim 或者 PyCharm 是不错的选择）</li>
+</ol>
+<p>我尽可能简单化代码，以便你能轻松理解。此外，我强烈建议你下载代码，或至少按照接下来的说明安装相关程序。</p>
+<h4 id="安装步骤">安装步骤</h4>
+<p>首先创建一个虚拟环境：</p>
+<pre><code>python3 -m venv ~/virtualenv/Textualize
+</code></pre>
+<p>现在，你可以克隆 Git 仓库并创建一个可以编辑的发布版本：</p>
+<pre><code>. ~/virtualenv/Textualize/bin/activate
+pip install --upgrade pip
+pip install --upgrade wheel
+pip install --upgrade build
+pip install --editable .
+</code></pre>
+<p>或者直接从 Pypi.org 安装：</p>
+<pre><code>. ~/virtualenv/Textualize/bin/activate
+pip install --upgrade KodegeekTextualize
+</code></pre>
+<h3 id="我们的首个程序日志浏览器">我们的首个程序：日志浏览器</h3>
+<p><img src="https://tutorials.kodegeek.com/Textualize/img/output_of_multiple_well_known_unix_commands_2023-12-28T19_13_32_605621.svg" alt=""></p>
+<p>这个 <em>日志浏览器</em> 就是一款简单的应用，能执行用户 <em><a href="https://manpages.org/bash">PATH</a></em> 路径上的一系列 UNIX 命令，并在任务执行完毕后捕获输出。</p>
+<p>以下是该应用的代码：</p>
+<pre><code>import shutil
+from textual import on
+from textual.app import ComposeResult, App
+from textual.widgets import Footer, Header, Button, SelectionList
+from textual.widgets.selection_list import Selection
+from textual.screen import ModalScreen
+# Operating system commands are hardcoded
+OS_COMMANDS = {
+    &quot;LSHW&quot;: [&quot;lshw&quot;, &quot;-json&quot;, &quot;-sanitize&quot;, &quot;-notime&quot;, &quot;-quiet&quot;],
+    &quot;LSCPU&quot;: [&quot;lscpu&quot;, &quot;--all&quot;, &quot;--extended&quot;, &quot;--json&quot;],
+    &quot;LSMEM&quot;: [&quot;lsmem&quot;, &quot;--json&quot;, &quot;--all&quot;, &quot;--output-all&quot;],
+    &quot;NUMASTAT&quot;: [&quot;numastat&quot;, &quot;-z&quot;]
+}
+
+class LogScreen(ModalScreen):
+    # ... Code of the full separate screen omitted, will be explained next
+    def __init__(self, name = None, ident = None, classes = None, selections = None):
+        super().__init__(name, ident, classes)
+        pass
+
+class OsApp(App):
+    BINDINGS = [
+        (&quot;q&quot;, &quot;quit_app&quot;, &quot;Quit&quot;),
+    ]
+    CSS_PATH = &quot;os_app.tcss&quot;
+    ENABLE_COMMAND_PALETTE = False  # Do not need the command palette
+
+    def action_quit_app(self):
+        self.exit(0)
+
+    def compose(self) -&gt; ComposeResult:
+        # Create a list of commands, valid commands are assumed to be on the PATH variable.
+        selections = [Selection(name.title(), &#39; &#39;.join(cmd), True) for name, cmd in OS_COMMANDS.items() if shutil.which(cmd[0].strip())]
+        yield Header(show_clock=False)
+        sel_list = SelectionList(*selections, id=&#39;cmds&#39;)
+        sel_list.tooltip = &quot;Select one more more command to execute&quot;
+        yield sel_list
+        yield Button(f&quot;Execute {len(selections)} commands&quot;, id=&quot;exec&quot;, variant=&quot;primary&quot;)
+        yield Footer()
+
+    @on(SelectionList.SelectedChanged)
+    def on_selection(self, event: SelectionList.SelectedChanged) -&gt; None:
+        button = self.query_one(&quot;#exec&quot;, Button)
+        selections = len(event.selection_list.selected)
+        if selections:
+            button.disabled = False
+        else:
+            button.disabled = True
+        button.label = f&quot;Execute {selections} commands&quot;
+
+    @on(Button.Pressed)
+    def on_button_click(self):
+        selection_list = self.query_one(&#39;#cmds&#39;, SelectionList)
+        selections = selection_list.selected
+        log_screen = LogScreen(selections=selections)
+        self.push_screen(log_screen)
+
+def main():
+    app = OsApp()
+    app.title = f&quot;Output of multiple well known UNIX commands&quot;.title()
+    app.sub_title = f&quot;{len(OS_COMMANDS)} commands available&quot;
+    app.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>现在我们逐条梳理一下程序的代码：</p>
+<ol>
+<li>每个应用都扩展自 <code>App</code> 类。其中最重要的有 <code>compose</code> 与 <code>mount</code> 等方法。但在当前应用中，我们只实现了 <a href="https://textual.textualize.io/tutorial/#composing-the-widgets">compose</a>。</li>
+<li>在 <code>compose</code> 方法中，你会返回一系列 <ruby><a href="https://textual.textualize.io/widget_gallery/">组件</a><rt>Widget</rt></ruby>，并按顺序添加到主屏幕中。每一个组件都有定制自身外观的选项。</li>
+<li>你可以设定单字母的 <ruby><a href="https://textual.textualize.io/api/binding/">绑定</a><rt>binding</rt></ruby>，比如此处我们设定了 <code>q</code> 键来退出应用（参见 <code>action_quit_app</code> 函数和 <code>BINDINGS</code> 列表）。</li>
+<li>利用 <code>SelectionList</code> 组件，我们展示了待运行的命令列表。然后，你可以通过 <code>@on(SelectionList.SelectedChanged)</code> 注解以及 <code>on_selection</code> 方法告知应用获取所选的内容。</li>
+<li>对于无选定元素的应对很重要，我们会根据运行的命令数量来决定是否禁用 “exec” 按钮。</li>
+<li>我们使用类似的监听器（ <code>@on(Button.Pressed)</code> ）来执行命令。我们做的就是将我们的选择送到一个新的屏幕，该屏幕会负责执行命令并收集结果。</li>
+</ol>
+<p>你注意到 <code>CSS_PATH = &quot;os_app.tcss&quot;</code> 这个变量了吗？Textual 允许你使用 CSS 来控制单个或多个组件的外观（色彩、位置、尺寸）：</p>
+<pre><code>Screen {
+        layout: vertical;
+}
+
+Header {
+        dock: top;
+}
+
+Footer {
+        dock: bottom;
+}
+
+SelectionList {
+        padding: 1;
+        border: solid $accent;
+        width: 1fr;
+        height: 80%;
+}
+
+Button {
+        width: 1fr
+}
+</code></pre>
+<p>引自 Textual 官方网站：</p>
+<blockquote>
+<p>Textual 中使用的 CSS 是互联网上常见 CSS 的简化版本，容易上手。</p>
+</blockquote>
+<p><em>这真是太棒了</em>，只需要用一哥独立的 <a href="https://textual.textualize.io/guide/styles/">样式表</a>，就可以轻松调整应用的样式。</p>
+<p>好，我们现在来看看如何在新屏幕上展示结果。</p>
+<h4 id="在新屏幕上展示结果">在新屏幕上展示结果</h4>
+<p><img src="https://tutorials.kodegeek.com/Textualize/img/output_of_multiple_well_known_unix_commands_2023-12-28T19_13_40_503695.svg" alt=""></p>
+<p>以下是在新屏幕上处理输出的代码：</p>
+<pre><code>import asyncio
+from typing import List
+from textual import on, work
+from textual.reactive import reactive
+from textual.screen import ModalScreen
+from textual.widgets import Button, Label, Log
+from textual.worker import Worker
+from textual.app import ComposeResult
+
+class LogScreen(ModalScreen):
+    count = reactive(0)
+    MAX_LINES = 10_000
+    ENABLE_COMMAND_PALETTE = False
+    CSS_PATH = &quot;log_screen.tcss&quot;
+
+    def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            selections: List = None
+    ):
+        super().__init__(name, ident, classes)
+        self.selections = selections
+
+    def compose(self) -&gt; ComposeResult:
+        yield Label(f&quot;Running {len(self.selections)} commands&quot;)
+        event_log = Log(
+            id=&#39;event_log&#39;,
+            max_lines=LogScreen.MAX_LINES,
+            highlight=True
+        )
+        event_log.loading = True
+        yield event_log
+        button = Button(&quot;Close&quot;, id=&quot;close&quot;, variant=&quot;success&quot;)
+        button.disabled = True
+        yield button
+
+    async def on_mount(self) -&gt; None:
+        event_log = self.query_one(&#39;#event_log&#39;, Log)
+        event_log.loading = False
+        event_log.clear()
+        lst = &#39;\n&#39;.join(self.selections)
+        event_log.write(f&quot;Preparing:\n{lst}&quot;)
+        event_log.write(&quot;\n&quot;)
+
+        for command in self.selections:
+            self.count += 1
+            self.run_process(cmd=command)
+
+    def on_worker_state_changed(self, event: Worker.StateChanged) -&gt; None:
+        if self.count == 0:
+            button = self.query_one(&#39;#close&#39;, Button)
+            button.disabled = False
+        self.log(event)
+
+    @work(exclusive=False)
+    async def run_process(self, cmd: str) -&gt; None:
+        event_log = self.query_one(&#39;#event_log&#39;, Log)
+        event_log.write_line(f&quot;Running: {cmd}&quot;)
+        # Combine STDOUT and STDERR output
+        proc = await asyncio.create_subprocess_shell(
+            cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT
+        )
+        stdout, _ = await proc.communicate()
+        if proc.returncode != 0:
+            raise ValueError(f&quot;&#39;{cmd}&#39; finished with errors ({proc.returncode})&quot;)
+        stdout = stdout.decode(encoding=&#39;utf-8&#39;, errors=&#39;replace&#39;)
+        if stdout:
+            event_log.write(f&#39;\nOutput of &quot;{cmd}&quot;:\n&#39;)
+            event_log.write(stdout)
+        self.count -= 1
+
+    @on(Button.Pressed, &quot;#close&quot;)
+    def on_button_pressed(self, _) -&gt; None:
+        self.app.pop_screen()
+</code></pre>
+<p>你会注意到：</p>
+<ol>
+<li><code>LogScreen</code> 类扩展自 <code>ModalScreen</code> 类， 该类负责处理模态模式的屏幕。</li>
+<li>这个屏幕同样有一个 <code>compose</code> 方法，我们在这里添加了组件以展示 Unix 命令的内容。</li>
+<li>我们创建了一个叫做 <code>mount</code> 的新方法。一旦你用 <code>compose</code> 编排好组件，你就可以运行代码来获取数据，并再进一步定制它们的外观。</li>
+<li>我们使用 <a href="https://docs.python.org/3/library/asyncio.html">asyncio</a> 运行命令，这样我们就能让 TUI 主工作线程在每个命令的结果出来时就及时更新内容。</li>
+<li>对于“工作线程”，请注意 <code>run_process</code> 方法上的 <code>@work(exclusive=False)</code> 注解，该方法用于运行命令并捕获 STDOUT + STDERR 输出。使用 <a href="https://textual.textualize.io/guide/workers/">工作线程</a> 来管理并发并不复杂，尽管它们在手册中确实有专门的章节。这主要是因为运行的外部命令可能会执行很长时间。</li>
+<li>在 <code>run_process</code> 中，我们通过调用 <code>write</code> 以命令的输出内容来更新 <code>event_log</code>。</li>
+<li>最后，<code>on_button_pressed</code> 把我们带回到前一屏幕（从堆栈中移除屏幕）。</li>
+</ol>
+<p>这个小应用向你展示了如何一份不到 200 行的代码来编写一个简单的前端，用来运行非 Python 代码。</p>
+<p>现在我们来看一个更复杂的例子，这个例子用到了我们还未探索过的 Textual 的新特性。</p>
+<h3 id="示例二展示赛事成绩的表格">示例二：展示赛事成绩的表格</h3>
+<p><img src="https://tutorials.kodegeek.com/Textualize/img/summary_2023-12-28T19_05_20_213933.svg" alt="通过 Textual 创建的表格应用"></p>
+<p>本示例将展示如何使用 <code>DataTable</code> 组件在表格中展示赛事成绩。你能通过这个应用实现：</p>
+<ul>
+<li>通过列来排序表格</li>
+<li>选择表格中的行，完整窗口展示赛事细节，我们将使用我们在日志浏览器中看到的 “推送屏幕” 技巧。</li>
+<li>能进行表格搜索，查看选手详情，或执行其他操作如退出应用。</li>
+</ul>
+<p>下面，我们来看看应用代码：</p>
+<pre><code>
+#!/usr/bin/env python
+&quot;&quot;&quot;
+Author: Jose Vicente Nunez
+&quot;&quot;&quot;
+from typing import Any, List
+
+from rich.style import Style
+from textual import on
+from textual.app import ComposeResult, App
+from textual.command import Provider
+from textual.screen import ModalScreen, Screen
+from textual.widgets import DataTable, Footer, Header
+
+MY_DATA = [
+    (&quot;level&quot;, &quot;name&quot;, &quot;gender&quot;, &quot;country&quot;, &quot;age&quot;),
+    (&quot;Green&quot;, &quot;Wai&quot;, &quot;M&quot;, &quot;MYS&quot;, 22),
+    (&quot;Red&quot;, &quot;Ryoji&quot;, &quot;M&quot;, &quot;JPN&quot;, 30),
+    (&quot;Purple&quot;, &quot;Fabio&quot;, &quot;M&quot;, &quot;ITA&quot;, 99),
+    (&quot;Blue&quot;, &quot;Manuela&quot;, &quot;F&quot;, &quot;VEN&quot;, 25)
+]
+
+class DetailScreen(ModalScreen):
+    ENABLE_COMMAND_PALETTE = False
+    CSS_PATH = &quot;details_screen.tcss&quot;
+
+    def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            row: List[Any] | None = None,
+    ):
+        super().__init__(name, ident, classes)
+        # Rest of screen code will be show later
+
+class CustomCommand(Provider):
+
+    def __init__(self, screen: Screen[Any], match_style: Style | None = None):
+        super().__init__(screen, match_style)
+        self.table = None
+        # Rest of provider code will be show later
+
+class CompetitorsApp(App):
+    BINDINGS = [
+        (&quot;q&quot;, &quot;quit_app&quot;, &quot;Quit&quot;),
+    ]
+    CSS_PATH = &quot;competitors_app.tcss&quot;
+    # Enable the command palette, to add our custom filter commands
+    ENABLE_COMMAND_PALETTE = True
+    # Add the default commands and the TablePopulateProvider to get a row directly by name
+    COMMANDS = App.COMMANDS | {CustomCommand}
+
+    def action_quit_app(self):
+        self.exit(0)
+
+    def compose(self) -&gt; ComposeResult:
+        yield Header(show_clock=True)
+
+        table = DataTable(id=f&#39;competitors_table&#39;)
+        table.cursor_type = &#39;row&#39;
+        table.zebra_stripes = True
+        table.loading = True
+        yield table
+        yield Footer()
+
+    def on_mount(self) -&gt; None:
+        table = self.get_widget_by_id(f&#39;competitors_table&#39;, expect_type=DataTable)
+        columns = [x.title() for x in MY_DATA[0]]
+        table.add_columns(*columns)
+        table.add_rows(MY_DATA[1:])
+        table.loading = False
+        table.tooltip = &quot;Select a row to get more details&quot;
+
+    @on(DataTable.HeaderSelected)
+    def on_header_clicked(self, event: DataTable.HeaderSelected):
+        table = event.data_table
+        table.sort(event.column_key)
+
+    @on(DataTable.RowSelected)
+    def on_row_clicked(self, event: DataTable.RowSelected) -&gt; None:
+        table = event.data_table
+        row = table.get_row(event.row_key)
+        runner_detail = DetailScreen(row=row)
+        self.show_detail(runner_detail)
+
+    def show_detail(self, detailScreen: DetailScreen):
+        self.push_screen(detailScreen)
+
+def main():
+    app = CompetitorsApp()
+    app.title = f&quot;Summary&quot;.title()
+    app.sub_title = f&quot;{len(MY_DATA)} users&quot;
+    app.run()
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>有哪些部分值得我们关注呢？</p>
+<ol>
+<li><code>compose</code> 方法中添加了 <a href="https://textual.textualize.io/widgets/header/">表头</a>，“命令面板” 就位于此处，我们的表格（<a href="https://textual.textualize.io/widgets/data_table/#guide">DataTable</a>）也在这里。表格数据在 <code>mount</code> 方法中填充。</li>
+<li>我们设定了预期的绑定（<code>BINDINGS</code>），并指定了外部的 CSS 文件来设置样式（<code>CSS_PATH</code>）。</li>
+<li>默认情况下，我们无需任何设置便能使用 <a href="https://textual.textualize.io/guide/command_palette/">命令面板</a>，但在此我们显式启用了它（<code>ENABLE_COMMAND_PALETTE = True</code>）。</li>
+<li>我们的应用有一个自定义表格搜索功能。当用户输入一名选手的名字后，应用会显示可能的匹配项，用户可以点击匹配项查看该选手的详细信息。这需要告诉应用我们有一个定制的命令提供者（<code>COMMANDS = App.COMMANDS | {CustomCo_ mmand}</code>），即类 <code>CustomCommand(Provider)</code>。</li>
+<li>如果用户点击了表头，表格内容会按照该列进行排序。这是通过 <code>on_header_clicked</code> 方法实现的，该方法上具有 <code>@on(DataTable.HeaderSelected)</code> 注解。</li>
+<li>类似地，当选中表格中的一行时， <code>on_row_clicked</code> 方法会被调用，这得益于它拥有 <code>@on(DataTable.RowSelected)</code> 注解。当方法接受选中的行后，它会推送一个新的屏幕，显示选中行的详细信息（<code>class DetailScreen(ModalScreen)</code>）。</li>
+</ol>
+<p>现在，我们详细地探讨一下如何显示选手的详细信息。</p>
+<h4 id="利用多屏展示复杂视图">利用多屏展示复杂视图</h4>
+<p><img src="https://tutorials.kodegeek.com/Textualize/img/summary_2023-12-28T19_05_44_404837.svg" alt=""></p>
+<p>当用户选择表格中的一行，<code>on_row_clicked</code> 方法就会被调用。它收到的是一个 <code>DataTable.RowSelected</code> 类型的事件。从这里我们会用选中的行的内容构建一个 <code>DetailScreen(ModalScreen)</code> 类的实例：</p>
+<pre><code>from typing import Any, List
+from textual import on
+from textual.app import ComposeResult
+from textual.screen import ModalScreen
+from textual.widgets import Button, MarkdownViewer
+
+MY_DATA = [
+    (&quot;level&quot;, &quot;name&quot;, &quot;gender&quot;, &quot;country&quot;, &quot;age&quot;),
+    (&quot;Green&quot;, &quot;Wai&quot;, &quot;M&quot;, &quot;MYS&quot;, 22),
+    (&quot;Red&quot;, &quot;Ryoji&quot;, &quot;M&quot;, &quot;JPN&quot;, 30),
+    (&quot;Purple&quot;, &quot;Fabio&quot;, &quot;M&quot;, &quot;ITA&quot;, 99),
+    (&quot;Blue&quot;, &quot;Manuela&quot;, &quot;F&quot;, &quot;VEN&quot;, 25)
+]
+
+class DetailScreen(ModalScreen):
+    ENABLE_COMMAND_PALETTE = False
+    CSS_PATH = &quot;details_screen.tcss&quot;
+
+    def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            row: List[Any] | None = None,
+    ):
+        super().__init__(name, ident, classes)
+        self.row: List[Any] = row
+
+    def compose(self) -&gt; ComposeResult:
+        self.log.info(f&quot;Details: {self.row}&quot;)
+        columns = MY_DATA[0]
+        row_markdown = &quot;\n&quot;
+        for i in range(0, len(columns)):
+            row_markdown += f&quot;* **{columns[i].title()}:** {self.row[i]}\n&quot;
+        yield MarkdownViewer(f&quot;&quot;&quot;## User details:
+        {row_markdown}
+        &quot;&quot;&quot;)
+        button = Button(&quot;Close&quot;, variant=&quot;primary&quot;, id=&quot;close&quot;)
+        button.tooltip = &quot;Go back to main screen&quot;
+        yield button
+
+    @on(Button.Pressed, &quot;#close&quot;)
+    def on_button_pressed(self, _) -&gt; None:
+        self.app.pop_screen()
+</code></pre>
+<p>这个类的职责很直接：</p>
+<ol>
+<li><code>compose</code> 方法取得此行数据，并利用一个 <a href="https://textual.textualize.io/widget_gallery/#markdownviewer">支持 Markdown 渲染的组件</a> 来展示内容。它的便利之处在于，它会为我们自动生成一个内容目录。</li>
+<li>当用户点击 “close” 后，方法 <code>on_button_pressed</code> 会引导应用回到原始屏幕。注解 <code>@on(Button.Pressed, &quot;#close&quot;)</code> 用来接收按键被点击的事件。</li>
+</ol>
+<p>最后，我们来详细讲解一下那个多功能的搜索栏（也叫做命令面板）。</p>
+<h4 id="命令面板的搜索功能">命令面板的搜索功能</h4>
+<p><img src="https://tutorials.kodegeek.com/Textualize/img/summary_2023-12-28T19_05_55_822030.svg" alt=""></p>
+<p>任何使用了表头的 Textual 应用都默认开启了 <a href="https://textual.textualize.io/guide/command_palette/">命令面板</a>。有意思的是，你可以在 <code>CompetitorsApp</code> 类中添加自定义的命令，这会增加到默认命令集之上：</p>
+<pre><code>COMMANDS = App.COMMANDS | {CustomCommand}
+</code></pre>
+<p>然后是执行大部分任务的 <code>CustomCommand(Provider)</code> 类：</p>
+<pre><code>from functools import partial
+from typing import Any, List
+from rich.style import Style
+from textual.command import Provider, Hit
+from textual.screen import ModalScreen, Screen
+from textual.widgets import DataTable
+from textual.app import App
+
+class CustomCommand(Provider):
+
+    def __init__(self, screen: Screen[Any], match_style: Style | None = None):
+        super().__init__(screen, match_style)
+        self.table = None
+
+    async def startup(self) -&gt; None:
+        my_app = self.app
+        my_app.log.info(f&quot;Loaded provider: CustomCommand&quot;)
+        self.table = my_app.query(DataTable).first()
+
+    async def search(self, query: str) -&gt; Hit:
+        matcher = self.matcher(query)
+
+        my_app = self.screen.app
+        assert isinstance(my_app, CompetitorsApp)
+
+        my_app.log.info(f&quot;Got query: {query}&quot;)
+        for row_key in self.table.rows:
+            row = self.table.get_row(row_key)
+            my_app.log.info(f&quot;Searching {row}&quot;)
+            searchable = row[1]
+            score = matcher.match(searchable)
+            if score &gt; 0:
+                runner_detail = DetailScreen(row=row)
+                yield Hit(
+                    score,
+                    matcher.highlight(f&quot;{searchable}&quot;),
+                    partial(my_app.show_detail, runner_detail),
+                    help=f&quot;Show details about {searchable}&quot;
+                )
+
+class DetailScreen(ModalScreen):
+        def __init__(
+            self,
+            name: str | None = None,
+            ident: str | None = None,
+            classes: str | None = None,
+            row: List[Any] | None = None,
+    ):
+        super().__init__(name, ident, classes)
+        # Code of this class explained on the previous section
+
+class CompetitorsApp(App):
+    # Add the default commands and the TablePopulateProvider to get a row directly by name
+    COMMANDS = App.COMMANDS | {CustomCommand}
+    # Most of the code shown before, only displaying relevant code
+    def show_detail(self, detailScreen: DetailScreen):
+        self.push_screen(detailScreen)
+</code></pre>
+<ol>
+<li>所有继承自 <code>Provider</code> 的类需实现 <code>search</code> 方法。在我们的例子中，我们还覆盖了 <code>startup</code> 方法，为了获取到我们应用表格（和其内容）的引用，这里使用到了 <code>App.query(DataTable).first()</code>。在类的生命周期中， <code>startup</code> 方法只会被调用一次。</li>
+<li>在 <code>search</code> 方法内，我们使用 <code>Provider.matcher</code> 对每个表格行的第二列（即名字）进行模糊搜索，以与用户在 TUI 中输入的词条进行比较。<code>matcher.match(searchable)</code> 返回一个整型的评分，大于零说明匹配成功。</li>
+<li>在 <code>search</code> 方法中，如果评分大于零，则返回一个 <code>Hit</code> 对象，以告知命令面板搜索查询是否成功。</li>
+<li>每个 <code>Hit</code> 都有以下信息：评分（用于在命令面板中对匹配项排序）、高亮显示的搜索词、一个可调用对象的引用（在我们的案例中，它是一个可以将表格行推送到新屏幕的函数）。</li>
+<li><code>Provider</code> 类的所有方法都是异步的。这使你能释放主线程，只有当响应准备好后才返回结果，这个过程不会冻结用户界面。</li>
+</ol>
+<p>理解了这些信息，我们就可以现在展示赛手的详细信息了。</p>
+<p>尽管这个架构的追踪功能相对直观，但是组件间传递的消息复杂性不可忽视。幸运的是，Textual 提供了有效的调试工具帮助我们理解背后的工作原理。</p>
+<h3 id="textual-应用的问题排查">Textual 应用的问题排查</h3>
+<p>对于 Python 的 Textual 应用进行 <a href="https://github.com/josevnz/tutorials/blob/main/docs/PythonDebugger/README.md">调试</a> 相较而言更具挑战性。这是因为其中有一些操作可能是异步的，而在解决组件问题时设置断点可能颇为复杂。</p>
+<p>根据具体情况，你可以使用一些工具。但首先，确保你已经安装了 textual 的开发工具：</p>
+<pre><code>pip install textual-dev==1.3.0
+</code></pre>
+<h4 id="确保你能捕捉到正确的按键">确保你能捕捉到正确的按键</h4>
+<p>不确定 Textual 应用是否能捕捉到你的按键操作？运行 keys 应用：</p>
+<pre><code>textual keys
+</code></pre>
+<p>这让你能够验证一下你的按键组合，并确认在 Textual 中产生了哪些事件。</p>
+<h4 id="图片比千言万语更直观">图片比千言万语更直观</h4>
+<p>如果说你在布局设计上遇到了问题，想向他人展示你当前的困境，Textual 为你的运行应用提供了截图功能：</p>
+<pre><code>textual run --screenshot 5 ./kodegeek_textualize/log_scroller.py
+</code></pre>
+<p>就像你所看到的，我是通过这种方式为这篇教程创建了插图。</p>
+<h4 id="捕获事件并输出定制消息">捕获事件并输出定制消息</h4>
+<p>在 Textual 中，每一个应用实例都有一个日志记录器，可以使用如下方式访问：</p>
+<pre><code>my_app = self.screen.app
+my_app.log.info(f&quot;Loaded provider: CustomCommand&quot;)
+</code></pre>
+<p>想要查看这些消息，首先需要开启一个控制台：</p>
+<pre><code>. ~/virtualenv/Textualize/bin/activate
+textual console
+</code></pre>
+<p>然后在另一个终端运行你的应用程序：</p>
+<pre><code>. ~/virtualenv/Textualize/bin/activate
+textual run --dev ./kodegeek_textualize/log_scroller.py
+</code></pre>
+<p>在运行控制台的终端中，你可以看到实时的事件和消息输出：</p>
+<pre><code>
+▌Textual Development Console v0.46.0
+▌Run a Textual app with textual run --dev my_app.py to connect.
+▌Press Ctrl+C to quit.
+─────────────────────────────────────────────────────────────────────────────── Client &#39;127.0.0.1&#39; connected ────────────────────────────────────────────────────────────────────────────────
+[20:29:43] SYSTEM                                                                                                                                                                 app.py:2188
+Connected to devtools ( ws://127.0.0.1:8081 )
+[20:29:43] SYSTEM                                                                                                                                                                 app.py:2192
+---
+[20:29:43] SYSTEM                                                                                                                                                                 app.py:2194
+driver=&lt;class &#39;textual.drivers.linux_driver.LinuxDriver&#39;&gt;
+[20:29:43] SYSTEM                                                                                                                                                                 app.py:2195
+loop=&lt;_UnixSelectorEventLoop running=True closed=False debug=False&gt;
+[20:29:43] SYSTEM                                                                                                                                                                 app.py:2196
+features=frozenset({&#39;debug&#39;, &#39;devtools&#39;})
+[20:29:43] SYSTEM                                                                                                                                                                 app.py:2228
+STARTED FileMonitor({PosixPath(&#39;/home/josevnz/TextualizeTutorial/docs/Textualize/kodegeek_textualize/os_app.tcss&#39;)})
+[20:29:43] EVENT
+</code></pre>
+<p>此外，以开发者模式运行的另一大好处是，如果你更改了 CSS，应用会尝试重新渲染，而无需重启程序。</p>
+<h3 id="如何编写单元测试">如何编写单元测试</h3>
+<p>为你全新开发的 Textual 应用编写 <a href="https://docs.python.org/3/library/unittest.html">单元测试</a>，应该如何操作呢？</p>
+<p>在 <a href="https://textual.textualize.io/guide/testing/">官方文档</a> 展示了几种用于测试我们应用的方式。</p>
+<p>我将采用 <a href="https://docs.python.org/3/library/unittest.html">unittest</a> 进行测试。为了处理异步例程，我们会需要特别的类 <code>unittest.IsolatedAsyncioTestCase</code> ：</p>
+<pre><code>import unittest
+from textual.widgets import Log, Button
+from kodegeek_textualize.log_scroller import OsApp
+
+class LogScrollerTestCase(unittest.IsolatedAsyncioTestCase):
+    async def test_log_scroller(self):
+        app = OsApp()
+        self.assertIsNotNone(app)
+        async with app.run_test() as pilot:
+            # Execute the default commands
+            await pilot.click(Button)
+            await pilot.pause()
+            event_log = app.screen.query(Log).first()  # We pushed the screen, query nodes from there
+            self.assertTrue(event_log.lines)
+            await pilot.click(&quot;#close&quot;)  # Close the new screen, pop the original one
+            await pilot.press(&quot;q&quot;)  # Quit the app by pressing q
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+<p>现在让我们详细看看 <code>test_log_scroller</code> 方法中的操作步骤：</p>
+<ol>
+<li>通过 <code>app.run_test()</code> 获取一个 <code>Pilot</code> 实例。然后点击主按钮，运行包含默认指令的查询，随后等待所有事件的处理。</li>
+<li>从我们新推送出的屏幕中获取 <code>Log</code>，确保我们已获得几行返回的内容，即它并非空的。</li>
+<li>关闭新屏幕并重新呈现旧屏幕。</li>
+<li>最后，按下 <code>q</code>，退出应用。</li>
+</ol>
+<p>可以测试表格吗？</p>
+<pre><code>import unittest
+from textual.widgets import DataTable, MarkdownViewer
+from kodegeek_textualize.table_with_detail_screen import CompetitorsApp
+
+
+class TableWithDetailTestCase(unittest.IsolatedAsyncioTestCase):
+    async def test_app(self):
+        app = CompetitorsApp()
+        self.assertIsNotNone(app)
+        async with app.run_test() as pilot:
+
+            &quot;&quot;&quot;
+            Test the command palette
+            &quot;&quot;&quot;
+            await pilot.press(&quot;ctrl+\\&quot;)
+            for char in &quot;manuela&quot;.split():
+                await pilot.press(char)
+            await pilot.press(&quot;enter&quot;)
+            markdown_viewer = app.screen.query(MarkdownViewer).first()
+            self.assertTrue(markdown_viewer.document)
+            await pilot.click(&quot;#close&quot;)  # Close the new screen, pop the original one
+
+            &quot;&quot;&quot;
+            Test the table
+            &quot;&quot;&quot;
+            table = app.screen.query(DataTable).first()
+            coordinate = table.cursor_coordinate
+            self.assertTrue(table.is_valid_coordinate(coordinate))
+            await pilot.press(&quot;enter&quot;)
+            await pilot.pause()
+            markdown_viewer = app.screen.query(MarkdownViewer).first()
+            self.assertTrue(markdown_viewer)
+            # Quit the app by pressing q
+            await pilot.press(&quot;q&quot;)
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+<p>如果你运行所有的测试，你将看到如下类似的输出：</p>
+<pre><code>(Textualize) [josevnz@dmaf5 Textualize]$ python -m unittest tests/*.py
+..
+----------------------------------------------------------------------
+Ran 2 tests in 2.065s
+
+OK
+</code></pre>
+<p>这是测试 TUI 的一个不错的方式，对吧？</p>
+<h3 id="打包-textual-应用">打包 Textual 应用</h3>
+<p>打包 Textual 应用与打包常规 Python 应用并没有太大区别。你需要记住，需要包含那些控制应用外观的 CSS 文件：</p>
+<pre><code>. ~/virtualenv/Textualize/bin/activate
+python -m build
+pip install dist/KodegeekTextualize-*-py3-none-any.whl
+</code></pre>
+<p>这个教程的 <a href="https://tutorials.kodegeek.com/Textualize/pyproject.toml">pyproject.toml</a> 文件是一个打包应用的良好起点，告诉你需要做什么。</p>
+<pre><code>[build-system]
+requires = [
+    &quot;setuptools &gt;= 67.8.0&quot;,
+    &quot;wheel&gt;=0.42.0&quot;,
+    &quot;build&gt;=1.0.3&quot;,
+    &quot;twine&gt;=4.0.2&quot;,
+    &quot;textual-dev&gt;=1.2.1&quot;
+]
+build-backend = &quot;setuptools.build_meta&quot;
+
+[project]
+name = &quot;KodegeekTextualize&quot;
+version = &quot;0.0.3&quot;
+authors = [
+    {name = &quot;Jose Vicente Nunez&quot;, email = &quot;kodegeek.com@protonmail.com&quot;},
+]
+description = &quot;Collection of scripts that show how to use several features of textualize&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.9&quot;
+keywords = [&quot;running&quot;, &quot;race&quot;]
+classifiers = [
+    &quot;Environment :: Console&quot;,
+    &quot;Development Status :: 4 - Beta&quot;,
+    &quot;Programming Language :: Python :: 3&quot;,
+    &quot;Intended Audience :: End Users/Desktop&quot;,
+    &quot;Topic :: Utilities&quot;
+]
+dynamic = [&quot;dependencies&quot;]
+
+[project.scripts]
+log_scroller = &quot;kodegeek_textualize.log_scroller:main&quot;
+table_detail = &quot;kodegeek_textualize.table_with_detail_screen:main&quot;
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = [&quot;.&quot;]
+exclude = [&quot;test*&quot;]
+
+[tool.setuptools.package-data]
+kodegeek_textualize = [&quot;*.txt&quot;, &quot;*.tcss&quot;, &quot;*.csv&quot;]
+img = [&quot;*.svg&quot;]
+
+[tool.setuptools.dynamic]
+dependencies = {file = [&quot;requirements.txt&quot;]}
+</code></pre>
+<h3 id="未来计划">未来计划</h3>
+<p>这个简短的教程只覆盖了 Textual 的部分方面。还有很多需要探索和学习的内容：</p>
+<ul>
+<li>强烈建议你查看 <a href="https://textual.textualize.io/tutorial/">官方教程</a>。有大量的示例和指向参考 <a href="https://textual.textualize.io/api/">API</a> 的链接。</li>
+<li>Textual 可以使用来自 <a href="https://github.com/Textualize/rich">Rich</a> 项目的组件，这个项目是一切的起源。我认为其中一些甚至可能所有这些组件在某些时候都会合并到 Textual 中。Textual 框架对于使用高级 API 的复杂应用更能胜任，但 Rich 也有很多漂亮的功能。</li>
+<li>创建你自己的组件！同样，在设计 TUI 时，<a href="https://textual.textualize.io/how-to/design-a-layout/">拿一张纸，画出你希望这些组件如何布局的</a>，这会为你后期省去很多时间和麻烦。</li>
+<li>调试 Python 应用可能会有点复杂。有时你可能需要 <a href="https://github.com/josevnz/DebuggingApplications/blob/main/StracePythonWireshark/README.md">混合使用不同的工具</a> 来找出应用的问题所在。</li>
+<li>异步 IO 是一个复杂的话题，你应该 <a href="https://docs.python.org/3/library/asyncio-dev.html">阅读开发者文档</a> 来了解更多可能的选择。</li>
+<li>Textual 被其他项目所使用。其中一个非常易于使用的项目是 <a href="https://github.com/Textualize/trogon">Trogon</a>。<a href="https://github.com/josevnz/CLIWithClickAndTrogon/blob/main/README.md">它会让你的 CLI 可以自我发现</a>。</li>
+<li><a href="https://github.com/Textualize/textual-web">Textual-web</a> 是个很有前景的项目，能让你在浏览器上运行 Textual 应用。尽管它不如 Textual 成熟，但它的进化速度非常快。</li>
+<li>最后，<a href="https://www.textualize.io/projects/">查看这些外部项目</a>。在项目组合中有许多有用的开源应用。</li>
+</ul>
+<p><em>（题图：DA/f11b0eb0-8e16-4cbe-986a-0fe978f6732a）</em></p>
+<hr>
+<p>via: <a href="https://fedoramagazine.org/crash-course-on-using-textual/">https://fedoramagazine.org/crash-course-on-using-textual/</a></p>
+<p>作者：<a href="https://fedoramagazine.org/author/josevnz/">Jose Nunez</a>
+选题：<a href="https://github.com/lujun9972">lujun9972</a>
+译者：<a href="https://linux.cn/lctt/ChatGPT">ChatGPT</a>
+校对：<a href="https://github.com/wxy">wxy</a></p>
+<p>本文由 <a href="https://github.com/LCTT/TranslateProject">LCTT</a> 原创编译，<a href="https://linux.cn/">Linux中国</a> 荣誉推出</p>
+</article></main><aside aria-label="On this page" class="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto px-4 pt-6 pb-10 text-sm xl:block" data-blume-toc><p class="mb-3 font-semibold text-foreground text-sm">On this page</p><blume-toc class="block"><ul class="m-0 list-none p-0"><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#快速入门使用-textual">快速入门使用 Textual</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#我们的首个程序日志浏览器">我们的首个程序：日志浏览器</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#示例二展示赛事成绩的表格">示例二：展示赛事成绩的表格</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#textual-应用的问题排查">Textual 应用的问题排查</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#如何编写单元测试">如何编写单元测试</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#打包-textual-应用">打包 Textual 应用</a></li><li style="padding-inline-start:0.75rem"><a class="block py-1.5 text-muted-foreground transition-colors hover:text-foreground aria-[current=location]:font-medium aria-[current=location]:text-foreground" href="#未来计划">未来计划</a></li></ul></blume-toc><div class="mt-8 space-y-0.5 border-border border-t pt-4" data-blume-page-actions><button class="flex w-full items-center gap-2.5 py-1.5 text-start text-muted-foreground text-sm transition-colors hover:text-foreground" data-blume-scroll-top type="button"><svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12l7-7l7 7m-7 7V5"/></svg>Scroll to top</button></div><script type="module">document.querySelectorAll(`[data-blume-scroll-top]`).forEach(e=>{e.addEventListener(`click`,()=>{window.scrollTo({top:0,behavior:`smooth`})})});</script></aside></div><script id="blume-client-data" type="application/json">{"config":{"analytics":null,"appleIcon":null,"ask":null,"banner":null,"basePath":"","codeThemes":{"dark":"github-dark","light":"github-light"},"codeWrap":false,"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","favicon":{"href":"/favicon.svg","type":"image/svg+xml"},"feedback":false,"i18n":null,"imageZoom":true,"logo":null,"mcp":null,"og":{"enabled":false},"repoUrl":null,"search":{"enabled":false,"provider":"none"},"site":"https://zhengqbbb.github.io","structuredData":true,"theme":{"accent":{"dark":"blue","light":"blue"},"fonts":{"body":"inter","display":"inter-tight","mono":"ibm-plex-mono"},"layout":"sidebar","mode":"system","radius":"md"},"title":"LCTT | X-CMD","toc":{"enabled":true,"maxLevel":3,"minLevel":2},"x":{}},"navigation":{"featured":[],"selectors":[],"sidebar":[{"description":"Linux 中国 (linux.cn) 翻译计划镜像站点","kind":"page","label":"LCTT 镜像站点","pageId":"filesystem:index.mdx","route":"/"}],"tabs":[],"repoUrl":null},"page":{"route":"/202401/20240110 Crash Course On Using Textual","title":"Textual：为 Python 增加漂亮的文本用户界面（TUI）"}}</script><button aria-label="Close navigation" class="fixed inset-0 z-[30] hidden cursor-pointer border-0 bg-black/40 [:where([data-blume-nav-open])_&amp;]:block lg:hidden" data-blume-nav-toggle type="button"></button><script type="module" src="/pages-dev/_astro/RootLayoutWithTransitions.astro_astro_type_script_index_0_lang.DuweD8Nz.js"></script></body></html>
